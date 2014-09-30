@@ -28,15 +28,17 @@ c[[1]] <- rstring(c0_size,str_length)
 
 #Initiate Global Resources + abundances
 #The identity of the resource/coproduct/species needs to be paired with numerical abundance
-Rid <- c(c[[1]],a[1])
-Rab <- sample(seq(1,max_ab),length(Rid))
-R <- data.frame(Rid,Rab,row.names=NULL)
+R_id <- c(c[[1]],a[1])
+#Draw the abundances of the current resources
+R_ab <- sample(seq(1,max_ab),length(R_id))
+R <- data.frame(R_id,R_ab,row.names=NULL)
 colnames(R) <- c("ID","Abund")
 
 #Build the coproducts
+b[[1]] <- sample(c[[1]],round(runif(1,1,length(c[[1]])),0))
 #What is the probability that a unique coproduct is formed?
 pr_newco <- 1/length(c0)
-b[[1]] <- sample(c[[1]],round(runif(1,0,length(c[[1]])),0))
+
 #For each coproduct draw a probability of creating a new coproduct
 #Create new coproducts in accordance to this probability
 draw_newco <- runif(length(b[[1]])) < pr_newco
@@ -51,9 +53,9 @@ if (num_newco > 0) {
   b[[1]] <- c(b[[1]],newco_id)
   
   #Rebuild Global resource matrix
-  Rid <- c(as.character(R$ID),newco_id)
-  Rab <- c(R$Abund,newco_ab)
-  R <- data.frame(Rid,Rab,row.names=NULL)
+  R_id <- c(as.character(R$ID),newco_id)
+  R_ab <- c(R$Abund,newco_ab)
+  R <- data.frame(R_id,R_ab,row.names=NULL)
   colnames(R) <- c("ID","Abund")
 
 }
