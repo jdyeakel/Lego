@@ -5,10 +5,16 @@
 source("rstring.r")
 source("insertRow.r")
 
-str_length <- 10
-max_ab <- 1000
+str.length <- 10
+max.ab <- 1000
+t.term <- 100
 
-#Initial conditions
+#Initial conditions (t = 1)
+
+#Global properties
+niche.space <- numeric(t.term)
+sp.richness <- numeric(t.term)
+avg.complexity <- numeric(t.term)
 
 #Vector of species
 a <- numeric()
@@ -16,52 +22,74 @@ a <- numeric()
 b <- list()
 #List of resources
 c <- list()
-c_ab <- list()
+c.ab <- list()
 
 #Define eden species
-a[1] <- paste("sp_",rstring(1,str_length),sep="")
+a[1] <- paste("sp.",rstring(1,str.length),sep="")
 
 #Create vector of initial resource requirements for eden species
-c0_size <- round(runif(1,0,10),0)
+c0.size <- round(runif(1,0,10),0)
 #Draw random initial resources
-c[[1]] <- rstring(c0_size,str_length)
+c[[1]] <- rstring(c0.size,str.length)
 
 #Initiate Global Resources + abundances
 #The identity of the resource/coproduct/species needs to be paired with numerical abundance
-R_id <- c(c[[1]],a[1])
+R.id <- c(c[[1]],a[1])
 #Draw the abundances of the current resources
-R_ab <- sample(seq(1,max_ab),length(R_id))
-R <- data.frame(R_id,R_ab,row.names=NULL)
+R.ab <- sample(seq(1,max.ab),length(R.id))
+R <- data.frame(R.id,R.ab,row.names=NULL)
 colnames(R) <- c("ID","Abund")
 
 #Build the coproducts
 b[[1]] <- sample(c[[1]],round(runif(1,1,length(c[[1]])),0))
 #What is the probability that a unique coproduct is formed?
-pr_newco <- 1/length(c0)
+pr.newco <- 1/length(c0)
 
 #For each coproduct draw a probability of creating a new coproduct
 #Create new coproducts in accordance to this probability
-draw_newco <- runif(length(b[[1]])) < pr_newco
-num_newco <- length(which(draw_newco))
-if (num_newco > 0) {
+draw.newco <- runif(length(b[[1]])) < pr.newco
+num.newco <- length(which(draw.newco))
+if (num.newco > 0) {
   
-  newco_id <- rstring(num_newco,str_length)
-  newco_ab <- sample(seq(1,max_ab),length(newco_id))
-  #newco <- data.frame(newco_id,newco_ab,row.names=NULL)
+  newco.id <- rstring(num.newco,str.length)
+  #Determine the global abundance of the new coproduct
+  newco.ab <- sample(seq(1,max.ab),length(newco.id))
+  #newco <- data.frame(newco.id,newco.ab,row.names=NULL)
   
   #Update the coproduct list for the eden organism
-  b[[1]] <- c(b[[1]],newco_id)
+  b[[1]] <- c(b[[1]],newco.id)
   
   #Rebuild Global resource matrix
-  R_id <- c(as.character(R$ID),newco_id)
-  R_ab <- c(R$Abund,newco_ab)
-  R <- data.frame(R_id,R_ab,row.names=NULL)
+  R.id <- c(as.character(R$ID),newco.id)
+  R.ab <- c(R$Abund,newco.ab)
+  R <- data.frame(R.id,R.ab,row.names=NULL)
   colnames(R) <- c("ID","Abund")
 
 }
 
 #Establish Resource use for the eden organism
-c_ab[[1]] <- 
+#i.e. how much of the global resources is the eden organism using?
+#This could be a function of an exponential distribution... so that generally resource use is small rather than large
+c.ab[[1]] <- numeric(length(c[[1]]))
+for (i in 1:length(c[[1]])) {
+  res <- which(R$ID == c[[1]][i])
+  #Choose whatever is smaller - a random draw or the global amount of each resource
+  c.ab[[1]][i] <- min(rexp(1,rate=0.25),R$Abund[res])
+}
+
+
+#Calculate Global Properties of the System
+niche.space[1] <- length(R$ID)
+sp.richness[1] <- length(a)
+avg.complexity[1] <- mean(unlist(lapply(c,length)))
+
+
+
+
+
+
+
+
 
 
 
