@@ -7,6 +7,7 @@ rm(list=c(ls()))
 
 source("rstring.r")
 source("insertRow.r")
+source("string.similarity.r")
 
 str.length <- 10
 max.ab <- 1000
@@ -135,6 +136,7 @@ for (t in 2:t.term) {
     #The IDs of mut.event determine which species are mutating
     new.sp <- numeric(length(mut.event))
     mut.res <- list(length(mut.event))
+    mut.res.ab <- list(length(mut.event))
     
     for (i in 1:length(mut.event)) {
       mutated <- mut.event[i]
@@ -143,7 +145,7 @@ for (t in 2:t.term) {
       old.res <- c[[mutated]]
       
       #Build new resource list. Should be similar, but not the same.
-      #For now, we can just delete one resource and replace it with a random draw from the R list
+      #For now, we can just delete a random resource and replace it with a random draw from the R list
       mut.res[[i]] <- old.res[-sample(seq(1,length(old.res)),1)]
       
       #Ensure that the new resource is not already in it's list
@@ -151,18 +153,63 @@ for (t in 2:t.term) {
       while (new.res %in% mut.res[[i]] == TRUE) {
         new.res <- as.character(sample(R$ID,1))
       }
+      #Define the new resource list for the mutated species
       mut.res[[i]] <- c(mut.res[[i]],new.res)
       
-    }
+      #Draw resource use for mutated species... must be between [0 : R-R.inuse]
+      mut.res.id <- as.numeric(sapply(mut.res[[i]],function(x){which(x==as.character(R$ID))}))
+      mut.res.ab[[i]] <- sapply(mut.res.id,function(x){min(rexp(1,rate=0.25),R$Abund[x]-R.inuse$Abund[x])})
+    
+      #Determine co-products of new species
+      #Build the coproducts
+      mut.co <- sample(as.character(R$ID),round(runif(1,1,length(as.character(R$ID))),0))
+      #What is the probability that a unique coproduct is formed?
+      pr.newco <- 1/niche.space[t-1]
+      
+      #For each coproduct draw a probability of creating a new coproduct
+      #Create new coproducts in accordance to this probability
+      draw.newco <- runif(length(mut.co)) < pr.newco
+      num.newco <- length(which(draw.newco))
+      if (num.newco > 0) {
+        
+        newco.id <- rstring(num.newco,str.length)
+        #Determine the global abundance of the new coproduct
+        newco.ab <- sample(seq(1,max.ab),length(newco.id))
+        #newco <- data.frame(newco.id,newco.ab,row.names=NULL)
+        
+        #Update the coproduct list for the eden organism
+        mut.co <- c(mut.co,newco.id)
+        
+#         #Rebuild Global resource matrix
+#         R.id <- c(as.character(R$ID),newco.id)
+#         R.ab <- c(R$Abund,newco.ab)
+#         R <- data.frame(R.id,R.ab,row.names=NULL)
+#         colnames(R) <- c("ID","Abund")
+        
+      }
+    
+    } #End loop over mut.events
+    
+    #Update Species list
+    a <- c(a,new.sp)
+    c <- c(c,mut.res)
+    c.ab <- c(c.ab,mut.res.ab)
+    
+    #Update Resources-In-Use dataframe
+    
     
   }
   
   
   
   
-  #Determine species similarities
+  #Determine similarities in resource use among species
+  #CURRENTLY DOES NOT TAKE ABUNDANCES INTO ACCOUNT
+  sim.m <- matrix(0,length(a),length(a))
   for (i in 1:length(a)) {
-    
+    for (j in 1:length(a)) {
+      sim.m[i,j] <- string.similarity(c[[i]],c[[j]])
+    }
   }
   
   #Set dynamic rates
