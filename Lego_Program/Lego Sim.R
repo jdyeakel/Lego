@@ -2,6 +2,9 @@
 # Niche Evolution Model #
 #########################
 
+rm(list=c(ls()))
+
+
 source("rstring.r")
 source("insertRow.r")
 
@@ -45,7 +48,7 @@ colnames(R) <- c("ID","Abund")
 #Build the coproducts
 b[[1]] <- sample(c[[1]],round(runif(1,1,length(c[[1]])),0))
 #What is the probability that a unique coproduct is formed?
-pr.newco <- 1/length(c0)
+pr.newco <- 1/c0.size
 
 #For each coproduct draw a probability of creating a new coproduct
 #Create new coproducts in accordance to this probability
@@ -79,7 +82,7 @@ for (i in 1:length(c[[1]])) {
   c.ab[[1]][i] <- min(rexp(1,rate=0.25),R$Abund[res])
 }
 
-#Create a Resource In Use dataframe
+#Create a Resource-In-Use dataframe
 R.inuse <- R
 tot.res.use <- numeric(length(R$ID))
 for (i in 1:length(R$ID)) {
