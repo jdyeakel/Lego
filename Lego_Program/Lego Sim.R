@@ -89,12 +89,12 @@ tot.res.use <- numeric(length(R$ID))
 for (i in 1:length(R$ID)) {
   res <- as.character(R$ID[i])
   #Find which species is using resource i
-  sp.res.use <- unlist(lapply(c,function(x){which(x==res)}))
+  sp.res.use <- which(unlist(lapply(c,function(x){res %in% x})))
   if (length(sp.res.use) > 0) {
     #Obtain the abundances of resource i in use
-    sp.res.use.ab <- numeric(length(a))
-    for (j in 1:length(a)) {
-      sp.res.use.ab[j] <- c.ab[[j]][sp.res.use[j]]
+    sp.res.use.ab <- numeric(length(sp.res.use))
+    for (j in 1:length(sp.res.use)) {
+      sp.res.use.ab[j] <- c.ab[[sp.res.use[j]]][which(c[[sp.res.use[j]]] == res)]
     }
     tot.res.use[i] <- sum(sp.res.use.ab)
   } else {tot.res.use[i] <- 0}
@@ -137,11 +137,11 @@ for (t in 2:t.term) {
     
     #The IDs of mut.event determine which species are mutating
     new.sp <- numeric(length(mut.event))
-    mut.res <- list(length(mut.event))
-    mut.res.ab <- list(length(mut.event))
-    mut.co <- list(length(mut.event))
-    newco.id <- list(length(mut.event))
-    newco.ab <- list(length(mut.event))
+    mut.res <- list()
+    mut.res.ab <- list()
+    mut.co <- list()
+    newco.id <- list()
+    newco.ab <- list()
     
     for (i in 1:length(mut.event)) {
       #Which species is speciating?
@@ -216,7 +216,7 @@ for (t in 2:t.term) {
         new.trophic.w <- c(new.trophic.w,trophic.w)
       }
     
-    } #End loop over mut.events
+    } #End loop over mut.events (i)
     
     #Update Species list
     a <- c(a,new.sp)
@@ -240,13 +240,26 @@ for (t in 2:t.term) {
     }
     
     #Update Resources-In-Use dataframe
-    
+    R.inuse.new <- R
+    tot.res.use <- numeric(length(R$ID))
+    for (i in 1:length(R$ID)) {
+      res <- as.character(R$ID[i])
+      #Find which species is using resource i
+      sp.res.use <- which(unlist(lapply(c,function(x){res %in% x})))
+      if (length(sp.res.use) > 0) {
+        #Obtain the abundances of resource i in use
+        sp.res.use.ab <- numeric(length(sp.res.use))
+        for (j in 1:length(sp.res.use)) {
+          sp.res.use.ab[j] <- c.ab[[sp.res.use[j]]][which(c[[sp.res.use[j]]] == res)]
+        }
+        tot.res.use[i] <- sum(sp.res.use.ab)
+      } else {tot.res.use[i] <- 0}
+    }
+    R.inuse.new$Abund <- tot.res.use
     
   }
   
-  
-  
-  
+
   #Determine similarities in resource use among species
   #CURRENTLY DOES NOT TAKE ABUNDANCES INTO ACCOUNT
   sim.m <- matrix(0,length(a),length(a))
@@ -255,6 +268,9 @@ for (t in 2:t.term) {
       sim.m[i,j] <- string.similarity(c[[i]],c[[j]])
     }
   }
+  #Eliminate the effect of competition with yourself
+  diag(sim.m) <- 0
+  comp.pres <- apply(sim.m,2,sum)
   
   #Update system trophic edgelist
   #The consumers are in the left column and the prey are in the right column
@@ -272,21 +288,42 @@ for (t in 2:t.term) {
     pred.pres[j] <- max(0,trophic.edgelist.w[[t]][which(trophic.edgelist[[t]][,2] == a[j])]) / R$Abund[which(as.character(R$ID) == a[j])]
   }
   
-  
   #Set dynamic rates
-
-  #Extinction rate
-  #For each species, what is the degree of competition?
+  #Extinction rate :: should increase with competition load and predation load
+  ext.background <- 0.01
+  ext.rate <- ext.background + 0.5*comp.pres + 0.5*pred.pres
+  draw.ext <- runif(length(a),0,1) < ext.rate
+  extinct <- which(draw.ext)
   
-  #For each species, what is the degree of predation?
+  #Induce extinctions
+  #Modify R.inuse matrix
+  #Modify trophic interactions + trophic interaction weights
+  #Determine whether coproducts of extinct species are unique
+  #If coproducts are unique, eliminate them from the Global Resources
   
-  ext.rate <- 
+  
+  
+  #Delete trophic interactions involving the extinct species
+  pred.extinct <- which(trophic.edgelist[[t]][,1] == a[extinct])
+  prey.extinct <- which(trophic.edgelist[[t]][,2] == a[extinct]) #this also records the ID of the predators that are consuming the extinct prey
+  trophic.edgelist[[t]] <- trophic.edgelist[[t]][-c(pred.extinct,prey.extinct),]
+  trophic.edgelist.w[[t]] <- trophic.edgelist.w[[t]][-c(pred.extinct,prey.extinct)]
+  
+  #Modify Resources-in-use by extinct species
+  modify.res.id <- unlist(c[extinct])
+  modify.res.ab <- unlist(c.ab[extinct])
+  
+  for (j in 1:length(prey.extinct)) {
+    pred.id <- prey.extinct[j]
+    prey.id <- 
+    c[[pred.id]] <- c[[pred.id]][-which(c[[pred.id]] == )]
+    c.ab[[j]] 
+  }
   
   
   
-  
-  
-  #For each species, determine whether a mutation occurs
+  #Delete species from the a vector
+  a <- a[-extinct]
   
   
   
