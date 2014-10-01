@@ -15,7 +15,7 @@ The `Global Resources` are then updated to include `R = {C, C', B, B', A, A'}`.
 The similarity of `A` and `A'` is measured as a function of the similarity between `C` and `C'`.
 
 From these basic reactions, the following ecological relationships can be observed:
-```S
+```
 Competition: (`A` vs. `A'`) determined as a function of Sim(`C`,`C'`).
 Facilitation: When `B` is in the `C'` of `A'`, then the persistence of A facilitates the persistence of `A'`.
 Predation: When the `C'` of `A'` includes `A`.
