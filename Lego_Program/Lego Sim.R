@@ -137,8 +137,12 @@ for (t in 2:t.term) {
     new.sp <- numeric(length(mut.event))
     mut.res <- list(length(mut.event))
     mut.res.ab <- list(length(mut.event))
+    mut.co <- list(length(mut.event))
+    newco.id <- list(length(mut.event))
+    newco.ab <- list(length(mut.event))
     
     for (i in 1:length(mut.event)) {
+      #Which species is speciating?
       mutated <- mut.event[i]
       new.sp[i] <- paste("sp.",rstring(i,str.length),sep="")
       #Resources should be similar to resources of mutated species
@@ -157,34 +161,33 @@ for (t in 2:t.term) {
       mut.res[[i]] <- c(mut.res[[i]],new.res)
       
       #Draw resource use for mutated species... must be between [0 : R-R.inuse]
+      #First get the location of the resource in R
       mut.res.id <- as.numeric(sapply(mut.res[[i]],function(x){which(x==as.character(R$ID))}))
+      #Second, draw a usage between 0 and R-R.use (available resources)
       mut.res.ab[[i]] <- sapply(mut.res.id,function(x){min(rexp(1,rate=0.25),R$Abund[x]-R.inuse$Abund[x])})
     
       #Determine co-products of new species
       #Build the coproducts
-      mut.co <- sample(as.character(R$ID),round(runif(1,1,length(as.character(R$ID))),0))
+      mut.co[[i]] <- sample(as.character(R$ID),round(runif(1,1,length(as.character(R$ID))),0))
+      while(any(grepl("sp.",mut.co[[i]]))) {
+        mut.co[[i]] <- sample(as.character(R$ID),round(runif(1,1,length(as.character(R$ID))),0))
+      }
       #What is the probability that a unique coproduct is formed?
       pr.newco <- 1/niche.space[t-1]
       
       #For each coproduct draw a probability of creating a new coproduct
       #Create new coproducts in accordance to this probability
-      draw.newco <- runif(length(mut.co)) < pr.newco
+      draw.newco <- runif(length(mut.co[[i]])) < pr.newco
       num.newco <- length(which(draw.newco))
       if (num.newco > 0) {
         
-        newco.id <- rstring(num.newco,str.length)
+        newco.id[[i]] <- rstring(num.newco,str.length)
         #Determine the global abundance of the new coproduct
-        newco.ab <- sample(seq(1,max.ab),length(newco.id))
+        newco.ab[[i]] <- sample(seq(1,max.ab),length(newco.id))
         #newco <- data.frame(newco.id,newco.ab,row.names=NULL)
         
         #Update the coproduct list for the eden organism
-        mut.co <- c(mut.co,newco.id)
-        
-#         #Rebuild Global resource matrix
-#         R.id <- c(as.character(R$ID),newco.id)
-#         R.ab <- c(R$Abund,newco.ab)
-#         R <- data.frame(R.id,R.ab,row.names=NULL)
-#         colnames(R) <- c("ID","Abund")
+        mut.co[[i]] <- c(mut.co[[i]],newco.id[[i]])
         
       }
     
@@ -194,8 +197,22 @@ for (t in 2:t.term) {
     a <- c(a,new.sp)
     c <- c(c,mut.res)
     c.ab <- c(c.ab,mut.res.ab)
-
+    b <- c(b,mut.co)
     
+    #Rebuild Global resource matrix IF there are new coproducts AND there are newly evolved species
+    if ((length(unlist(newco.id)) > 0) && (length(mut.event) > 0)) {
+      R.id <- c(as.character(R$ID),new.sp,unlist(newco.id))
+      R.ab <- c(R$Abund,sample(seq(1,max.ab),length(mut.event)),unlist(newco.ab))
+      R <- data.frame(R.id,R.ab,row.names=NULL)
+      colnames(R) <- c("ID","Abund")
+    }
+    #Rebuild Global resource matrix IF there are NO new coproducts AND there are newly evolved species
+    if ((length(unlist(newco.id)) == 0) && (length(mut.event) > 0)) {
+      R.id <- c(as.character(R$ID),new.sp)
+      R.ab <- c(R$Abund,sample(seq(1,max.ab),length(mut.event)))
+      R <- data.frame(R.id,R.ab,row.names=NULL)
+      colnames(R) <- c("ID","Abund")
+    }
     
     #Update Resources-In-Use dataframe
     
