@@ -16,7 +16,7 @@ The similarity of `A` and `A'` is measured as a function of the similarity betwe
 
 From these basic reactions, the following ecological relationships can be observed:
 ```
-Competition: (_A_ vs. _A'_) determined as a function of Sim(`C`,`C'`).
-Facilitation: When `B` is in the `C'` of `A'`, then the persistence of A facilitates the persistence of `A'`.
-Predation: When the `C'` of `A'` includes `A`.
-Engineering: When the `B'` of `A'` has high overlap with the resources of many species.
+Competition: (A vs. A') determined as a function of Sim(C,C').
+Facilitation: When B is in the C' of A', then the persistence of A facilitates the persistence of A'.
+Predation: When the C' of A' includes A.
+Engineering: When the B' of A' has high overlap with the resources of many species.
