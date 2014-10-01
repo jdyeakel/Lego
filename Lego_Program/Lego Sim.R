@@ -107,8 +107,8 @@ niche.space[1] <- length(R$ID)
 sp.richness[1] <- length(a)
 avg.complexity[1] <- mean(unlist(lapply(c,length)))
 
-
-
+trophic.edgelist <- list(t.term)
+trophic.edgelist[[1]] <- matrix(0,0,2)
 
 
 ####################################
@@ -129,7 +129,7 @@ for (t in 2:t.term) {
   m.rate <- 0.01
   m.draw <- runif(length(a),0,1) < m.rate
   mut.event <- which(m.draw)
-  
+  new.trophic <- matrix(0,0,2)
   #Initiate mutations ~ new species with small differences in respective b (coproduct) and c (resource) vectors
   if (length(mut.event)>0) {
     
@@ -165,7 +165,16 @@ for (t in 2:t.term) {
       mut.res.id <- as.numeric(sapply(mut.res[[i]],function(x){which(x==as.character(R$ID))}))
       #Second, draw a usage between 0 and R-R.use (available resources)
       mut.res.ab[[i]] <- sapply(mut.res.id,function(x){min(rexp(1,rate=0.25),R$Abund[x]-R.inuse$Abund[x])})
-    
+      
+      #Record any trophic interactions
+      #Identify the prey
+      prey <- mut.res[[i]][which(grepl("sp.",mut.res[[i]]))]
+      trophic <- matrix(0,length(prey),2)
+      for (j in 1:length(prey)) {
+        trophic[j,] <- c(new.sp[i],prey[j])
+      }
+      
+      
       #Determine co-products of new species
       #Build the coproducts
       mut.co[[i]] <- sample(as.character(R$ID),round(runif(1,1,length(as.character(R$ID))),0))
@@ -189,6 +198,13 @@ for (t in 2:t.term) {
         #Update the coproduct list for the eden organism
         mut.co[[i]] <- c(mut.co[[i]],newco.id[[i]])
         
+      }
+      
+      #Update trophic interactions
+      if (length(new.trophic[,1]) == 0) {
+        new.trophic <- trophic
+      } else {
+        new.trophic <- rbind(new.trophic,trophic)
       }
     
     } #End loop over mut.events
@@ -231,9 +247,16 @@ for (t in 2:t.term) {
     }
   }
   
+  #Update system trophic edgelist
+  if (length(trophic.edgelist[[t]][,1]) == 0) {
+    trophic.edgelist[[t]] <- new.trophic
+  } else {
+    trophic.edgelist[[t]] <- rbind(trophic.edgelist[[t-1]],new.trophic)
+  }
+  
+  
   #Set dynamic rates
-  
-  
+
   #Extinction rate
   #For each species, what is the degree of competition?
   
