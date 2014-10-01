@@ -109,7 +109,8 @@ avg.complexity[1] <- mean(unlist(lapply(c,length)))
 
 trophic.edgelist <- list(t.term)
 trophic.edgelist[[1]] <- matrix(0,0,2)
-
+trophic.edgelist.w <- list(t.term)
+trophic.edgelist.w[[1]] <- numeric()
 
 ####################################
 #Forward Iterations
@@ -130,6 +131,7 @@ for (t in 2:t.term) {
   m.draw <- runif(length(a),0,1) < m.rate
   mut.event <- which(m.draw)
   new.trophic <- matrix(0,0,2)
+  new.trophic.w <- numeric()
   #Initiate mutations ~ new species with small differences in respective b (coproduct) and c (resource) vectors
   if (length(mut.event)>0) {
     
@@ -166,12 +168,17 @@ for (t in 2:t.term) {
       #Second, draw a usage between 0 and R-R.use (available resources)
       mut.res.ab[[i]] <- sapply(mut.res.id,function(x){min(rexp(1,rate=0.25),R$Abund[x]-R.inuse$Abund[x])})
       
+      
       #Record any trophic interactions
       #Identify the prey
       prey <- mut.res[[i]][which(grepl("sp.",mut.res[[i]]))]
       trophic <- matrix(0,length(prey),2)
+      trophic.w <- numeric()
       for (j in 1:length(prey)) {
+        #Record the identities of the trophic interaction
         trophic[j,] <- c(new.sp[i],prey[j])
+        #Record the amount consumed
+        trophic.w[j] <- mut.res.ab[[i]][which(grepl("sp.",mut.res[[i]]))]
       }
       
       
@@ -203,8 +210,10 @@ for (t in 2:t.term) {
       #Update trophic interactions
       if (length(new.trophic[,1]) == 0) {
         new.trophic <- trophic
+        new.trophic.w <- trophic.w
       } else {
         new.trophic <- rbind(new.trophic,trophic)
+        new.trophic.w <- c(new.trophic.w,trophic.w)
       }
     
     } #End loop over mut.events
@@ -248,10 +257,19 @@ for (t in 2:t.term) {
   }
   
   #Update system trophic edgelist
-  if (length(trophic.edgelist[[t]][,1]) == 0) {
+  #The consumers are in the left column and the prey are in the right column
+  if (length(trophic.edgelist[[t-1]][,1]) == 0) {
     trophic.edgelist[[t]] <- new.trophic
+    trophic.edgelist.w[[t]] <- new.trophic.w
   } else {
     trophic.edgelist[[t]] <- rbind(trophic.edgelist[[t-1]],new.trophic)
+    trophic.edgelist.w[[t]] <- c(trophic.edgelist[[t-1]],new.trophic.w)
+  }
+  
+  #What are the predation pressures for each species?
+  pred.pres <- numeric(length(a))
+  for (j in 1:length(a)) {
+    pred.pres[j] <- max(0,trophic.edgelist.w[[t]][which(trophic.edgelist[[t]][,2] == a[j])]) / R$Abund[which(as.character(R$ID) == a[j])]
   }
   
   
