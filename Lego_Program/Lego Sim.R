@@ -194,6 +194,8 @@ for (t in 2:t.term) {
     a <- c(a,new.sp)
     c <- c(c,mut.res)
     c.ab <- c(c.ab,mut.res.ab)
+
+    
     
     #Update Resources-In-Use dataframe
     
