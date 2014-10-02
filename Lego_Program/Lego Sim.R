@@ -47,7 +47,7 @@ R <- data.frame(R.id,R.ab,row.names=NULL)
 colnames(R) <- c("ID","Abund")
 
 #Build the coproducts
-b[[1]] <- sample(c[[1]],round(runif(1,1,length(c[[1]])),0))
+b[[1]] <- sample(c[[1]],round(runif(1,1,length(c[[1]])-1),0))
 #What is the probability that a unique coproduct is formed?
 pr.newco <- 1/c0.size
 
@@ -178,19 +178,21 @@ for (t in 2:t.term) {
       #Record any trophic interactions
       #Identify the prey
       prey <- mut.res[[i]][which(grepl("sp.",mut.res[[i]]))]
-      trophic <- matrix(0,length(prey),2)
-      trophic.w <- numeric()
-      for (j in 1:length(prey)) {
-        #Record the identities of the trophic interaction
-        trophic[j,] <- c(new.sp[i],prey[j])
-        #Record the amount consumed
-        trophic.w[j] <- mut.res.ab[[i]][which(grepl("sp.",mut.res[[i]]))]
+      if (length(prey > 0)) {
+        trophic <- matrix(0,length(prey),2)
+        trophic.w <- numeric()
+        for (j in 1:length(prey)) {
+          #Record the identities of the trophic interaction
+          trophic[j,] <- c(new.sp[i],prey[j])
+          #Record the amount consumed
+          trophic.w[j] <- mut.res.ab[[i]][which(grepl("sp.",mut.res[[i]]))]
+        }
       }
       
-      
       #Determine co-products of new species
-      #Build the coproducts
-      mut.co[[i]] <- sample(as.character(R$ID),round(runif(1,1,length(as.character(R$ID))),0))
+      co.full <- mut.res[[1]][which(grepl("sp.",mut.res[[1]])==FALSE)]
+      mut.co[[i]] <- sample(co.full,round(runif(1,1,length(co.full)-1),0))
+      #Ensure that drawn coproducts do not involve a 'species'
       while(any(grepl("sp.",mut.co[[i]]))) {
         mut.co[[i]] <- sample(as.character(R$ID),round(runif(1,1,length(as.character(R$ID))),0))
       }

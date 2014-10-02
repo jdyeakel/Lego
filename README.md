@@ -20,3 +20,7 @@ Competition: (A vs. A') determined as a function of Sim(C,C').
 Facilitation: When B is in the C' of A', then the persistence of A facilitates the persistence of A'.
 Predation: When the C' of A' includes A.
 Engineering: When the B' of A' has high overlap with the resources of many species.
+```
+
+The PseudoCode:
+
