@@ -59,7 +59,9 @@ if (num.newco > 0) {
   
   newco.id <- rstring(num.newco,str.length)
   #Determine the global abundance of the new coproduct
-  newco.ab <- sample(seq(1,max.ab),length(newco.id))
+  #Limit its max abundance to the abundance of the species
+  #newco.ab <- sample(seq(1,max.ab),length(newco.id))
+  newco.ab <- sample(seq(1,R$Abund[which(as.character(R$ID)==a[1])]),length(newco.id))
   #newco <- data.frame(newco.id,newco.ab,row.names=NULL)
   
   #Update the coproduct list for the eden organism
@@ -73,7 +75,7 @@ if (num.newco > 0) {
 
 }
 
-#Establish Resource use for the eden organism
+#Establish abundance of Resource use for the eden organism
 #i.e. how much of the global resources is the eden organism using?
 #This could be a function of an exponential distribution... so that generally resource use is small rather than large
 c.ab[[1]] <- numeric(length(c[[1]]))
@@ -100,6 +102,10 @@ for (i in 1:length(R$ID)) {
   } else {tot.res.use[i] <- 0}
 }
 R.inuse$Abund <- tot.res.use
+
+#Note that the coproducts are being PRODUCED. So the number of coproducts in R is the number being produced by the presence of an organism.
+#If an organism that produces a coproduct dies - if that coproduct is being used by another organism, it might have to die too
+
 
 
 #Calculate Global Properties of the System
@@ -218,6 +224,8 @@ for (t in 2:t.term) {
     
     } #End loop over mut.events (i)
     
+    #Updating
+    
     #Update Species list
     a <- c(a,new.sp)
     c <- c(c,mut.res)
@@ -256,6 +264,7 @@ for (t in 2:t.term) {
       } else {tot.res.use[i] <- 0}
     }
     R.inuse.new$Abund <- tot.res.use
+    R.inuse <- R.inuse.new
     
   }
   
