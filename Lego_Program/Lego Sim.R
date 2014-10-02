@@ -192,10 +192,7 @@ for (t in 2:t.term) {
       #Determine co-products of new species
       co.full <- mut.res[[1]][which(grepl("sp.",mut.res[[1]])==FALSE)]
       mut.co[[i]] <- sample(co.full,round(runif(1,1,length(co.full)-1),0))
-      #Ensure that drawn coproducts do not involve a 'species'
-      while(any(grepl("sp.",mut.co[[i]]))) {
-        mut.co[[i]] <- sample(as.character(R$ID),round(runif(1,1,length(as.character(R$ID))),0))
-      }
+      
       #What is the probability that a unique coproduct is formed?
       pr.newco <- 1/niche.space[t-1]
       
@@ -215,11 +212,12 @@ for (t in 2:t.term) {
         
       }
       
-      #Update trophic interactions
-      if (length(new.trophic[,1]) == 0) {
+      #Update trophic interactions IF there is a trophic interaction formed such that length(prey) > 0
+      if ((length(new.trophic[,1]) == 0) && (length(prey) > 0)) {
         new.trophic <- trophic
         new.trophic.w <- trophic.w
-      } else {
+      } 
+      if ((length(new.trophic[,1]) > 0) && (length(prey) > 0)) {
         new.trophic <- rbind(new.trophic,trophic)
         new.trophic.w <- c(new.trophic.w,trophic.w)
       }
@@ -285,12 +283,21 @@ for (t in 2:t.term) {
   
   #Update system trophic edgelist
   #The consumers are in the left column and the prey are in the right column
-  if (length(trophic.edgelist[[t-1]][,1]) == 0) {
-    trophic.edgelist[[t]] <- new.trophic
-    trophic.edgelist.w[[t]] <- new.trophic.w
+  #If there has NOT been an additional trophic interaction formed
+  if (length(new.trophic) == 0)) {
+    trophic.edgelist[[t]] <- trophic.edgelist[[t-1]]
+    trophic.edgelist.w[[t]] <- trophic.edgelist.w[[t-1]]
   } else {
-    trophic.edgelist[[t]] <- rbind(trophic.edgelist[[t-1]],new.trophic)
-    trophic.edgelist.w[[t]] <- c(trophic.edgelist[[t-1]],new.trophic.w)
+    #If this is the first trophic interaction, AND there has been an additional trophic interaction formed
+    if ((length(trophic.edgelist[[t-1]][,1]) == 0) && (length(new.trophic) > 0)) {
+      trophic.edgelist[[t]] <- new.trophic
+      trophic.edgelist.w[[t]] <- new.trophic.w
+    } 
+    #If this is not the first trophic interaction, and there has been an additional trophic interaction formed
+    if ((length(trophic.edgelist[[t-1]][,1]) > 0) && (length(new.trophic) > 0)) {
+      trophic.edgelist[[t]] <- rbind(trophic.edgelist[[t-1]],new.trophic)
+      trophic.edgelist.w[[t]] <- c(trophic.edgelist[[t-1]],new.trophic.w)
+    }
   }
   
   #What are the predation pressures for each species?
