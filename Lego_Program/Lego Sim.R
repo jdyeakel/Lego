@@ -143,6 +143,7 @@ for (t in 2:t.term) {
     
     #The IDs of mut.event determine which species are mutating
     new.sp <- numeric(length(mut.event))
+    new.sp.ab <- sample(seq(1,max.ab),length(mut.event))
     mut.res <- list()
     mut.res.ab <- list()
     mut.co <- list()
@@ -204,7 +205,7 @@ for (t in 2:t.term) {
         
         newco.id[[i]] <- rstring(num.newco,str.length)
         #Determine the global abundance of the new coproduct
-        newco.ab[[i]] <- sample(seq(1,max.ab),length(newco.id))
+        newco.ab[[i]] <- sample(seq(1,new.sp.ab[i]),length(newco.id))
         #newco <- data.frame(newco.id,newco.ab,row.names=NULL)
         
         #Update the coproduct list for the eden organism
@@ -213,13 +214,14 @@ for (t in 2:t.term) {
       }
       
       #Update trophic interactions IF there is a trophic interaction formed such that length(prey) > 0
-      if ((length(new.trophic[,1]) == 0) && (length(prey) > 0)) {
-        new.trophic <- trophic
-        new.trophic.w <- trophic.w
-      } 
-      if ((length(new.trophic[,1]) > 0) && (length(prey) > 0)) {
-        new.trophic <- rbind(new.trophic,trophic)
-        new.trophic.w <- c(new.trophic.w,trophic.w)
+      if (length(prey) > 0) {
+        if (length(new.trophic[,1]) == 0) {
+          new.trophic <- trophic
+          new.trophic.w <- trophic.w
+        } else {
+          new.trophic <- rbind(new.trophic,trophic)
+          new.trophic.w <- c(new.trophic.w,trophic.w)
+        }
       }
     
     } #End loop over mut.events (i)
@@ -235,14 +237,14 @@ for (t in 2:t.term) {
     #Rebuild Global resource matrix IF there are new coproducts AND there are newly evolved species
     if ((length(unlist(newco.id)) > 0) && (length(mut.event) > 0)) {
       R.id <- c(as.character(R$ID),new.sp,unlist(newco.id))
-      R.ab <- c(R$Abund,sample(seq(1,max.ab),length(mut.event)),unlist(newco.ab))
+      R.ab <- c(R$Abund,new.sp.ab,unlist(newco.ab))
       R <- data.frame(R.id,R.ab,row.names=NULL)
       colnames(R) <- c("ID","Abund")
     }
     #Rebuild Global resource matrix IF there are NO new coproducts AND there are newly evolved species
     if ((length(unlist(newco.id)) == 0) && (length(mut.event) > 0)) {
       R.id <- c(as.character(R$ID),new.sp)
-      R.ab <- c(R$Abund,sample(seq(1,max.ab),length(mut.event)))
+      R.ab <- c(R$Abund,new.sp.ab)
       R <- data.frame(R.id,R.ab,row.names=NULL)
       colnames(R) <- c("ID","Abund")
     }
@@ -284,7 +286,7 @@ for (t in 2:t.term) {
   #Update system trophic edgelist
   #The consumers are in the left column and the prey are in the right column
   #If there has NOT been an additional trophic interaction formed
-  if (length(new.trophic) == 0)) {
+  if (length(new.trophic) == 0) {
     trophic.edgelist[[t]] <- trophic.edgelist[[t-1]]
     trophic.edgelist.w[[t]] <- trophic.edgelist.w[[t-1]]
   } else {
