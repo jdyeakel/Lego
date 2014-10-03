@@ -52,7 +52,8 @@ colnames(R) <- c("ID","Abund")
 
 #Establish abundance of Resource use for the eden organism
 #i.e. how much of the global resources is the eden organism using?
-#This could be a function of an exponential distribution... so that generally resource use is small rather than large
+#This could be a function of an exponential distribution... 
+#so that generally resource use is small rather than large
 c.ab[[1]] <- numeric(length(c[[1]]))
 for (i in 1:length(c[[1]])) {
   res <- which(R$ID == c[[1]][i])
@@ -76,11 +77,6 @@ num.newco <- length(which(draw.newco))
 if (num.newco > 0) {
   
   newco.id <- paste("co.",rstring(num.newco,str.length),sep="")
-  #Determine the global abundance of the new coproduct
-  #Limit its max abundance to the abundance of the species
-  #newco.ab <- sample(seq(1,max.ab),length(newco.id))
-  #newco.ab <- sample(seq(1,R$Abund[which(as.character(R$ID)==a[1])]),length(newco.id))
-  #newco <- data.frame(newco.id,newco.ab,row.names=NULL)
   
   #Update the coproduct list for the eden organism
   b[[1]] <- c(b[[1]],newco.id)
@@ -106,7 +102,6 @@ b.id <- as.numeric(unlist(sapply(b[[1]],function(x){which(x == as.character(R$ID
 R$Abund[b.id] <- R$Abund[b.id] + b.ab[[1]]
 
 
-
 #Create a Resource-In-Use dataframe
 R.inuse <- R
 tot.res.use <- numeric(length(R$ID))
@@ -125,8 +120,10 @@ for (i in 1:length(R$ID)) {
 }
 R.inuse$Abund <- tot.res.use
 
-#Note that the coproducts are being PRODUCED. So the number of coproducts in R is the number being produced by the presence of an organism.
-#If an organism that produces a coproduct dies - if that coproduct is being used by another organism, it might have to die too
+#Note that the coproducts are being PRODUCED. 
+#So the number of coproducts in R is the number being produced by the presence of an organism.
+#If an organism that produces a coproduct dies - if that coproduct is being used by another organism, 
+#it might have to die too
 
 
 
@@ -165,7 +162,7 @@ for (t in 2:t.term) {
     
     #The IDs of mut.event determine which species are mutating
     new.sp <- numeric(length(mut.event))
-    new.sp.ab <- sample(seq(1,max.ab),length(mut.event))
+    #new.sp.ab <- sample(seq(1,max.ab),length(mut.event))
     mut.res <- list()
     mut.res.ab <- list()
     mut.co <- list()
@@ -197,6 +194,8 @@ for (t in 2:t.term) {
       #Second, draw a usage between 0 and R-R.use (available resources)
       mut.res.ab[[i]] <- sapply(mut.res.id,function(x){min(rexp(1,rate=0.25),R$Abund[x]-R.inuse$Abund[x])})
       
+      #Draw the species abundance
+      sp.ab <- runif(1)*sum(mut.res.ab[[i]])
       
       #Record any trophic interactions
       #Identify the prey
@@ -225,15 +224,21 @@ for (t in 2:t.term) {
       num.newco <- length(which(draw.newco))
       if (num.newco > 0) {
         
-        newco.id[[i]] <- rstring(num.newco,str.length)
+        newco.id[[i]] <- paste("co.",rstring(num.newco,str.length),sep="")
         #Determine the global abundance of the new coproduct
-        newco.ab[[i]] <- sample(seq(1,new.sp.ab[i]/num.newco),length(newco.id[[i]]))
+        #newco.ab[[i]] <- sample(seq(1,new.sp.ab[i]/num.newco),length(newco.id[[i]]))
         #newco <- data.frame(newco.id,newco.ab,row.names=NULL)
         
         #Update the coproduct list for the eden organism
         mut.co[[i]] <- c(mut.co[[i]],newco.id[[i]])
         
       }
+      
+      #Amount of coproducts PRODUCED must equal the sum(resources) - species abundance
+      co.prop <- runif(length(mut.co[[i]]))
+      co.prop <- co.prop/sum(co.prop)
+      mut.co.ab[[i]] <- co.prop*(sum(mut.res.ab[[i]]) - sp.ab)
+      
       
       #Update trophic interactions IF there is a trophic interaction formed such that length(prey) > 0
       if (length(prey) > 0) {
@@ -255,21 +260,36 @@ for (t in 2:t.term) {
     c <- c(c,mut.res)
     c.ab <- c(c.ab,mut.res.ab)
     b <- c(b,mut.co)
+    b.ab <- c(b.ab,mut.co.ab)
     
-    #Rebuild Global resource matrix IF there are new coproducts AND there are newly evolved species
-    if ((length(unlist(newco.id)) > 0) && (length(mut.event) > 0)) {
-      R.id <- c(as.character(R$ID),new.sp,unlist(newco.id))
-      R.ab <- c(R$Abund,new.sp.ab,unlist(newco.ab))
-      R <- data.frame(R.id,R.ab,row.names=NULL)
-      colnames(R) <- c("ID","Abund")
-    }
-    #Rebuild Global resource matrix IF there are NO new coproducts AND there are newly evolved species
-    if ((length(unlist(newco.id)) == 0) && (length(mut.event) > 0)) {
-      R.id <- c(as.character(R$ID),new.sp)
-      R.ab <- c(R$Abund,new.sp.ab)
-      R <- data.frame(R.id,R.ab,row.names=NULL)
-      colnames(R) <- c("ID","Abund")
-    }
+    #Add 0 amt of NEW coproducts to the Resource List 
+    #(just the ID, essentially - ab will be added during next step)
+    R.id <- c(as.character(R$ID),new.sp,unlist(newco.id))
+    R.ab <- c(R$Abund,sp.ab,rep(0,length(unlist(newco.id))))
+    R <- data.frame(R.id,R.ab,row.names=NULL)
+    colnames(R) <- c("ID","Abund")
+    
+    #Add ALL coproduct abundances to the global resource matrix for each new species i
+    #Rebuild Global resource matrix
+    for (i in 1:length(mut.event)) {
+      b.id <- as.numeric(unlist(sapply(mut.co[[i]],function(x){which(x == as.character(R$ID))})))
+      R$Abund[b.id] <- R$Abund[b.id] + mut.co.ab[[i]]
+    }    
+
+#     #Rebuild Global resource matrix IF there are new coproducts AND there are newly evolved species
+#     if ((length(unlist(newco.id)) > 0) && (length(mut.event) > 0)) {
+#       R.id <- c(as.character(R$ID),new.sp,unlist(newco.id))
+#       R.ab <- c(R$Abund,new.sp.ab,unlist(newco.ab))
+#       R <- data.frame(R.id,R.ab,row.names=NULL)
+#       colnames(R) <- c("ID","Abund")
+#     }
+#     #Rebuild Global resource matrix IF there are NO new coproducts AND there are newly evolved species
+#     if ((length(unlist(newco.id)) == 0) && (length(mut.event) > 0)) {
+#       R.id <- c(as.character(R$ID),new.sp)
+#       R.ab <- c(R$Abund,new.sp.ab)
+#       R <- data.frame(R.id,R.ab,row.names=NULL)
+#       colnames(R) <- c("ID","Abund")
+#     }
     
     #Update Resources-In-Use dataframe
     R.inuse.new <- R
