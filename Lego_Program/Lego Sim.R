@@ -12,6 +12,7 @@ source("string.similarity.r")
 str.length <- 10
 max.ab <- 1000
 t.term <- 100
+innov.rate <- 5
 
 ####################################
 #Initial conditions (t = 1)
@@ -26,6 +27,7 @@ avg.complexity <- numeric(t.term)
 a <- numeric()
 #List of coproducts
 b <- list()
+b.ab <- list()
 #List of resources
 c <- list()
 c.ab <- list()
@@ -34,46 +36,19 @@ c.ab <- list()
 a[1] <- paste("sp.",rstring(1,str.length),sep="")
 
 #Create vector of initial resource requirements for eden species
-c0.size <- round(runif(1,0,10),0)
+c0.size <- round(runif(1,1,10),0)
 #Draw random initial resources
-c[[1]] <- rstring(c0.size,str.length)
+c[[1]] <- paste("r.",rstring(c0.size,str.length),sep="")
 
 #Initiate Global Resources + abundances
 #The identity of the resource/coproduct/species needs to be paired with numerical abundance
 R.id <- c(c[[1]],a[1])
 #Draw the abundances of the current resources
-R.ab <- sample(seq(1,max.ab),length(R.id))
-R <- data.frame(R.id,R.ab,row.names=NULL)
+R.ab <- sample(seq(1,max.ab),length(R.id)-1)
+a1.ab <- 0
+R <- data.frame(R.id,c(R.ab,a1.ab),row.names=NULL)
 colnames(R) <- c("ID","Abund")
 
-#Build the coproducts
-b[[1]] <- sample(c[[1]],round(runif(1,1,length(c[[1]])-1),0))
-#What is the probability that a unique coproduct is formed?
-pr.newco <- 1/c0.size
-
-#For each coproduct draw a probability of creating a new coproduct
-#Create new coproducts in accordance to this probability
-draw.newco <- runif(length(b[[1]])) < pr.newco
-num.newco <- length(which(draw.newco))
-if (num.newco > 0) {
-  
-  newco.id <- rstring(num.newco,str.length)
-  #Determine the global abundance of the new coproduct
-  #Limit its max abundance to the abundance of the species
-  #newco.ab <- sample(seq(1,max.ab),length(newco.id))
-  newco.ab <- sample(seq(1,R$Abund[which(as.character(R$ID)==a[1])]),length(newco.id))
-  #newco <- data.frame(newco.id,newco.ab,row.names=NULL)
-  
-  #Update the coproduct list for the eden organism
-  b[[1]] <- c(b[[1]],newco.id)
-  
-  #Rebuild Global resource matrix
-  R.id <- c(as.character(R$ID),newco.id)
-  R.ab <- c(R$Abund,newco.ab)
-  R <- data.frame(R.id,R.ab,row.names=NULL)
-  colnames(R) <- c("ID","Abund")
-
-}
 
 #Establish abundance of Resource use for the eden organism
 #i.e. how much of the global resources is the eden organism using?
@@ -84,6 +59,53 @@ for (i in 1:length(c[[1]])) {
   #Choose whatever is smaller - a random draw or the global amount of each resource
   c.ab[[1]][i] <- min(rexp(1,rate=0.25),R$Abund[res])
 }
+#Set species abundance
+a1.ab <- runif(1)*sum(c.ab[[1]])
+#Record species abundance in R
+R$Abund[length(c[[1]])+1] <- a1.ab
+
+#Build the coproducts
+b[[1]] <- sample(c[[1]],round(runif(1,1,length(c[[1]])-1),0))
+#What is the probability that a unique coproduct is formed?
+pr.newco <- min(innov.rate * (1/c0.size),1)
+
+#For each coproduct draw a probability of creating a new coproduct
+#Create new coproducts in accordance to this probability
+draw.newco <- runif(length(b[[1]])) < pr.newco
+num.newco <- length(which(draw.newco))
+if (num.newco > 0) {
+  
+  newco.id <- paste("co.",rstring(num.newco,str.length),sep="")
+  #Determine the global abundance of the new coproduct
+  #Limit its max abundance to the abundance of the species
+  #newco.ab <- sample(seq(1,max.ab),length(newco.id))
+  #newco.ab <- sample(seq(1,R$Abund[which(as.character(R$ID)==a[1])]),length(newco.id))
+  #newco <- data.frame(newco.id,newco.ab,row.names=NULL)
+  
+  #Update the coproduct list for the eden organism
+  b[[1]] <- c(b[[1]],newco.id)
+
+}
+
+#Amount of coproducts PRODUCED must equal the sum(resources) - species abundance
+co.prop <- runif(length(b[[1]]))
+co.prop <- co.prop/sum(co.prop)
+b.ab[[1]] <- co.prop*(sum(c.ab[[1]]) - a1.ab)
+
+
+#Add 0 amt of new coproducts to the Resource List 
+#(just the ID, essentially - ab will be added during next step)
+R.id <- c(as.character(R$ID),newco.id)
+R.ab <- c(R$Abund,rep(0,length(newco.id)))
+R <- data.frame(R.id,R.ab,row.names=NULL)
+colnames(R) <- c("ID","Abund")
+
+#Add coproduct abundances to the global resource matrix
+#Rebuild Global resource matrix
+b.id <- as.numeric(unlist(sapply(b[[1]],function(x){which(x == as.character(R$ID))})))
+R$Abund[b.id] <- R$Abund[b.id] + b.ab[[1]]
+
+
 
 #Create a Resource-In-Use dataframe
 R.inuse <- R
@@ -190,12 +212,12 @@ for (t in 2:t.term) {
         }
       }
       
-      #Determine co-products of new species
+      #Determine co-products of new species (a species cannot be a coproduct!)
       co.full <- mut.res[[1]][which(grepl("sp.",mut.res[[1]])==FALSE)]
       mut.co[[i]] <- sample(co.full,round(runif(1,1,length(co.full)-1),0))
       
       #What is the probability that a unique coproduct is formed?
-      pr.newco <- 1/niche.space[t-1]
+      pr.newco <- min(innov.rate * (1/niche.space[t-1]),1)
       
       #For each coproduct draw a probability of creating a new coproduct
       #Create new coproducts in accordance to this probability
@@ -205,7 +227,7 @@ for (t in 2:t.term) {
         
         newco.id[[i]] <- rstring(num.newco,str.length)
         #Determine the global abundance of the new coproduct
-        newco.ab[[i]] <- sample(seq(1,new.sp.ab[i]),length(newco.id))
+        newco.ab[[i]] <- sample(seq(1,new.sp.ab[i]/num.newco),length(newco.id[[i]]))
         #newco <- data.frame(newco.id,newco.ab,row.names=NULL)
         
         #Update the coproduct list for the eden organism
@@ -276,7 +298,7 @@ for (t in 2:t.term) {
   sim.m <- matrix(0,length(a),length(a))
   for (i in 1:length(a)) {
     for (j in 1:length(a)) {
-      sim.m[i,j] <- string.similarity(c[[i]],c[[j]])
+      sim.m[i,j] <- string.similarity(c[[i]],c[[j]])[2] #[1] = Jaccard; [2] = Cosine Sim Index
     }
   }
   #Eliminate the effect of competition with yourself
