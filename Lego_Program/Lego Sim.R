@@ -25,6 +25,7 @@ avg.complexity <- numeric(t.term)
 
 #Vector of species
 a <- numeric()
+a.ab <- numeric()
 #List of coproducts
 b <- list()
 b.ab <- list()
@@ -62,6 +63,7 @@ for (i in 1:length(c[[1]])) {
 }
 #Set species abundance
 a1.ab <- runif(1)*sum(c.ab[[1]])
+a.ab[1] <- a1.ab
 #Record species abundance in R
 R$Abund[length(c[[1]])+1] <- a1.ab
 
@@ -162,10 +164,12 @@ for (t in 2:t.term) {
     
     #The IDs of mut.event determine which species are mutating
     new.sp <- numeric(length(mut.event))
+    sp.ab <- numeric(length(mut.event))
     #new.sp.ab <- sample(seq(1,max.ab),length(mut.event))
     mut.res <- list()
     mut.res.ab <- list()
     mut.co <- list()
+    mut.co.ab <- list()
     newco.id <- list()
     newco.ab <- list()
     
@@ -188,6 +192,8 @@ for (t in 2:t.term) {
       #Define the new resource list for the mutated species
       mut.res[[i]] <- c(mut.res[[i]],new.res)
       
+      #(!!) Could consider defining the DEVIATION in the abundance of resources use compared to sister species.
+      
       #Draw resource use for mutated species... must be between [0 : R-R.inuse]
       #First get the location of the resource in R
       mut.res.id <- as.numeric(sapply(mut.res[[i]],function(x){which(x==as.character(R$ID))}))
@@ -195,7 +201,7 @@ for (t in 2:t.term) {
       mut.res.ab[[i]] <- sapply(mut.res.id,function(x){min(rexp(1,rate=0.25),R$Abund[x]-R.inuse$Abund[x])})
       
       #Draw the species abundance
-      sp.ab <- runif(1)*sum(mut.res.ab[[i]])
+      sp.ab[i] <- runif(1)*sum(mut.res.ab[[i]])
       
       #Record any trophic interactions
       #Identify the prey
@@ -237,7 +243,7 @@ for (t in 2:t.term) {
       #Amount of coproducts PRODUCED must equal the sum(resources) - species abundance
       co.prop <- runif(length(mut.co[[i]]))
       co.prop <- co.prop/sum(co.prop)
-      mut.co.ab[[i]] <- co.prop*(sum(mut.res.ab[[i]]) - sp.ab)
+      mut.co.ab[[i]] <- co.prop*(sum(mut.res.ab[[i]]) - sp.ab[i])
       
       
       #Update trophic interactions IF there is a trophic interaction formed such that length(prey) > 0
@@ -257,6 +263,7 @@ for (t in 2:t.term) {
     
     #Update Species list
     a <- c(a,new.sp)
+    a.ab <- c(a.ab,sp.ab)
     c <- c(c,mut.res)
     c.ab <- c(c.ab,mut.res.ab)
     b <- c(b,mut.co)
