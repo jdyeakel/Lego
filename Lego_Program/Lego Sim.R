@@ -29,6 +29,9 @@ a.ab <- numeric()
 #List of coproducts
 b <- list()
 b.ab <- list()
+#List of unique coproducts
+b.unique <- list()
+b.unique.ab <- list()
 #List of resources
 c <- list()
 c.ab <- list()
@@ -82,14 +85,15 @@ if (num.newco > 0) {
   
   #Update the coproduct list for the eden organism
   b[[1]] <- c(b[[1]],newco.id)
-
+  b.unique[[1]] <- newco.id
 }
 
 #Amount of coproducts PRODUCED must equal the sum(resources) - species abundance
+num.co <- length(b[[1]])
 co.prop <- runif(length(b[[1]]))
 co.prop <- co.prop/sum(co.prop)
 b.ab[[1]] <- co.prop*(sum(c.ab[[1]]) - a1.ab)
-
+b.unique.ab[[1]] <- b.ab[[1]][seq(num.co-num.newco+1,num.co)]
 
 #Add 0 amt of new coproducts to the Resource List 
 #(just the ID, essentially - ab will be added during next step)
@@ -170,6 +174,8 @@ for (t in 2:t.term) {
     mut.res.ab <- list()
     mut.co <- list()
     mut.co.ab <- list()
+    mut.co.unique <- list()
+    mut.co.unique.ab <- list()
     newco.id <- list()
     newco.ab <- list()
     
@@ -181,11 +187,18 @@ for (t in 2:t.term) {
       mut.res[[i]] <- c[[mutated]]
       mut.res.ab[[i]] <- c.ab[[mutated]]
       
-      #Randomly select some deviation ~ we may want to skew these values toward zero (combined -ExpDist, ExpDist)
-      mut.res.dev <- runif(length(mut.res[[i]]),-1,1)*max(mut.res.ab[[i]])
-      #Apply the deviation
-      mut.res.ab[[i]] <- mut.res.ab[[i]] + mut.res.dev
-      #Ensure there are no zeros
+      #Draw changes in the abundances of resource use.
+      #The While Loop ensures that there is SOME abundance of SOME resource
+      res.check <- TRUE
+      while (res.check) {
+        #Randomly select some deviation ~ we may want to skew these values toward zero (combined -ExpDist, ExpDist)
+        mut.res.dev <- runif(length(mut.res[[i]]),-1,1)*max(mut.res.ab[[i]])
+        #Apply the deviation
+        mut.res.ab[[i]] <- mut.res.ab[[i]] + mut.res.dev
+        res.check <- sum(mut.res.ab[[i]]) < 0
+      }
+      
+      #Eliminate resources with abundances <= 0
       elim <- which(mut.res.ab[[i]] <= 0)
       mut.res[[i]] <- mut.res[[i]][-elim]
       mut.res.ab[[i]] <- mut.res.ab[[i]][-elim]
@@ -257,10 +270,19 @@ for (t in 2:t.term) {
       }
       
       #Amount of coproducts PRODUCED must equal the sum(resources) - species abundance
-      co.prop <- runif(length(mut.co[[i]]))
+      num.co <- length(mut.co[[i]])
+      co.prop <- runif(num.co)
       co.prop <- co.prop/sum(co.prop)
       mut.co.ab[[i]] <- co.prop*(sum(mut.res.ab[[i]]) - sp.ab[i])
       
+      #Record the ids abundances of unique coproducts
+      if (num.newco > 0) {
+        mut.co.unique[[i]] <- newco.id[[i]]
+        mut.co.unique.ab[[i]] <- mut.co.ab[[i]][seq(num.co-num.newco+1,num.co)]
+      } else {
+        mut.co.unique[[i]] <- NA
+        mut.co.unique.ab[[i]] <- NA
+      }
       
       #Update trophic interactions IF there is a trophic interaction formed such that length(prey) > 0
       if (length(prey) > 0) {
@@ -284,6 +306,8 @@ for (t in 2:t.term) {
     c.ab <- c(c.ab,mut.res.ab)
     b <- c(b,mut.co)
     b.ab <- c(b.ab,mut.co.ab)
+    b.unique <- c(b.unique,mut.co.unique)
+    b.unique.ab <- c(b.unique.ab,mut.co.unique.ab)
     
     #Add 0 amt of NEW coproducts to the Resource List 
     #(just the ID, essentially - ab will be added during next step)
@@ -388,31 +412,43 @@ for (t in 2:t.term) {
   #Determine whether coproducts of extinct species are unique
   #If coproducts are unique, eliminate them from the Global Resources
   
-  
-  
-  #Delete trophic interactions involving the extinct species
-  pred.extinct <- which(trophic.edgelist[[t]][,1] == a[extinct])
-  prey.extinct <- which(trophic.edgelist[[t]][,2] == a[extinct]) #this also records the ID of the predators that are consuming the extinct prey
-  trophic.edgelist[[t]] <- trophic.edgelist[[t]][-c(pred.extinct,prey.extinct),]
-  trophic.edgelist.w[[t]] <- trophic.edgelist.w[[t]][-c(pred.extinct,prey.extinct)]
-  
-  #Modify Resources-in-use by extinct species
-  modify.res.id <- unlist(c[extinct])
-  modify.res.ab <- unlist(c.ab[extinct])
-  
-  for (j in 1:length(prey.extinct)) {
-    pred.id <- prey.extinct[j]
-    prey.id <- 
-    c[[pred.id]] <- c[[pred.id]][-which(c[[pred.id]] == )]
-    c.ab[[j]] 
-  }
-  
-  
-  
-  #Delete species from the a vector
-  a <- a[-extinct]
-  
-  
+  if (length(extinct) > 0) {
+    
+    #Delete trophic interactions involving the extinct species
+    #Nothing happens if there are no preds/prey that go extinct
+    pred.extinct <- which(trophic.edgelist[[t]][,1] == a[extinct])
+    prey.extinct <- which(trophic.edgelist[[t]][,2] == a[extinct]) #this also records the ID of the predators that are consuming the extinct prey
+    trophic.edgelist[[t]] <- trophic.edgelist[[t]][-c(pred.extinct,prey.extinct),]
+    trophic.edgelist.w[[t]] <- trophic.edgelist.w[[t]][-c(pred.extinct,prey.extinct)]
+    
+    #Modify Resources-in-use by ALL extinct species
+    modify.res.id <- unlist(c[extinct])
+    modify.res.ab <- unlist(c.ab[extinct])
+    
+    #Modify coproducts producted by ALL extinct species
+    modify.coprod.id <- unlist(b[extinct])
+    modify.coprod.ab <- unlist(b.ab[extinct])
+    
+    #Are there any unique coproducts formed by the extinct species?
+    all.coprod <- unlist(b)
+    all.co <- all.coprod[which(grepl("co.",all.coprod))]
+    unique.coprod lapply(b,function(x){which(x)})
+    
+    
+    
+    
+    
+    for (j in 1:length(prey.extinct)) {
+      pred.id <- prey.extinct[j]
+      prey.id <- 
+        c[[pred.id]] <- c[[pred.id]][-which(c[[pred.id]] == )]
+      c.ab[[j]] 
+    }
+
+    #Delete species from the a vector
+    a <- a[-extinct]
+    
+  } #End 'induce extinctions'
   
 }
 
