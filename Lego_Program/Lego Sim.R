@@ -194,6 +194,9 @@ for (t in 2:t.term) {
       pr.newres <- min(innov.rate * (1/niche.space[t-1]),1)
       draw.newres <- runif(1) < pr.newco
       
+      #If there is a new resource drawn to differentiate the new species,
+      #draw the resource and draw and abundance from the AVAILABLE global distribution of that abundance 
+      #based on the exponetial distribution
       if (draw.newres) {
         #Ensure that the new resource is not already in it's list
         new.res <- mut.res[[i]][1]
@@ -209,9 +212,6 @@ for (t in 2:t.term) {
                                                    R.inuse$Abund[which(as.character(R$ID) == new.res)]))
       }
       
-      #Second, draw a usage between 0 and R-R.use (available resources)
-      mut.res.ab[[i]] <- sapply(mut.res.id,function(x){min(rexp(1,rate=0.25),R$Abund[x]-R.inuse$Abund[x])})
-      
       #Draw the species abundance
       sp.ab[i] <- runif(1)*sum(mut.res.ab[[i]])
       
@@ -222,14 +222,18 @@ for (t in 2:t.term) {
         trophic <- matrix(0,length(prey),2)
         trophic.w <- numeric()
         for (j in 1:length(prey)) {
+          
           #Record the identities of the trophic interaction
           trophic[j,] <- c(new.sp[i],prey[j])
+          
           #Record the amount consumed
-          trophic.w[j] <- mut.res.ab[[i]][which(grepl("sp.",mut.res[[i]]))]
+          #Random draw btw 0 and abundance of the resource
+          trophic.w[j] <- runif(1)*mut.res.ab[[i]][which(grepl("sp.",mut.res[[i]]))]
         }
       }
       
       #Determine co-products of new species (a species cannot be a coproduct!)
+      #The number of co-products is constrained to be numb. of resources - 1
       co.full <- mut.res[[1]][which(grepl("sp.",mut.res[[1]])==FALSE)]
       mut.co[[i]] <- sample(co.full,round(runif(1,1,length(co.full)-1),0))
       
@@ -365,6 +369,7 @@ for (t in 2:t.term) {
   }
   
   #What are the predation pressures for each species?
+  #Trophic weight if species is prey / Total abundance of the species
   pred.pres <- numeric(length(a))
   for (j in 1:length(a)) {
     pred.pres[j] <- max(0,trophic.edgelist.w[[t]][which(trophic.edgelist[[t]][,2] == a[j])]) / R$Abund[which(as.character(R$ID) == a[j])]
