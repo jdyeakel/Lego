@@ -154,6 +154,7 @@ trophic.edgelist.w[[1]] <- numeric()
 
 
 #Begin time iterations
+secondary.extinct <- numeric()
 for (t in 2:t.term) {
   
   #First, allow mutations for each species
@@ -323,21 +324,6 @@ for (t in 2:t.term) {
       R$Abund[b.id] <- R$Abund[b.id] + mut.co.ab[[i]]
     }    
 
-    #     #Rebuild Global resource matrix IF there are new coproducts AND there are newly evolved species
-    #     if ((length(unlist(newco.id)) > 0) && (length(mut.event) > 0)) {
-    #       R.id <- c(as.character(R$ID),new.sp,unlist(newco.id))
-    #       R.ab <- c(R$Abund,new.sp.ab,unlist(newco.ab))
-    #       R <- data.frame(R.id,R.ab,row.names=NULL)
-    #       colnames(R) <- c("ID","Abund")
-    #     }
-    #     #Rebuild Global resource matrix IF there are NO new coproducts AND there are newly evolved species
-    #     if ((length(unlist(newco.id)) == 0) && (length(mut.event) > 0)) {
-    #       R.id <- c(as.character(R$ID),new.sp)
-    #       R.ab <- c(R$Abund,new.sp.ab)
-    #       R <- data.frame(R.id,R.ab,row.names=NULL)
-    #       colnames(R) <- c("ID","Abund")
-    #     }
-    
     #Update Resources-In-Use dataframe
     R.inuse.new <- R
     tot.res.use <- numeric(length(R$ID))
@@ -404,9 +390,14 @@ for (t in 2:t.term) {
   ext.background <- 0.01
   ext.rate <- ext.background + 0.5*comp.pres + 0.5*pred.pres
   draw.ext <- runif(length(a),0,1) < ext.rate
-  extinct <- which(draw.ext)
   
-  #Induce extinctions
+  #Combine newly eliminated species with the secondary-extinct species from the previous timestep
+  extinct <- c(which(draw.ext),secondary.extinct)
+  
+  ######################
+  # Induce extinctions #
+  ######################
+  
   #Modify R.inuse matrix
   #Modify trophic interactions + trophic interaction weights
   #Determine whether coproducts of extinct species are unique
@@ -421,20 +412,44 @@ for (t in 2:t.term) {
     trophic.edgelist[[t]] <- trophic.edgelist[[t]][-c(pred.extinct,prey.extinct),]
     trophic.edgelist.w[[t]] <- trophic.edgelist.w[[t]][-c(pred.extinct,prey.extinct)]
     
-    #Modify Resources-in-use by ALL extinct species
+    #Eliminate species and their unique coproducts from the Resource Matrix
+    extinct.unique <- c(a[extinct],unlist(b.unique[extinct]))
+    
+    #Revise R by coproduct abs (this is what the extinct species was providing to R)
+    #Revise R.inuse by the res abs (this is what the extinct species was taking away from R)
+    
+    #Modify Resources-in-use by ALL extinct species - combine abundance amongst like resources
     modify.res.id <- unlist(c[extinct])
     modify.res.ab <- unlist(c.ab[extinct])
+    for (j in 1:length(modify.res.id)) {
+      R.id <- which(as.character(R.inuse$ID) == modify.res.id[j])
+      R.inuse$Abund[R.id] <- R.inuse$Abund[R.id] - modify.res.ab[j]
+    }
     
-    #Modify coproducts producted by ALL extinct species
+    #Modify coproducts producted by ALL extinct species - combine abundance amongst like resources
     modify.coprod.id <- unlist(b[extinct])
     modify.coprod.ab <- unlist(b.ab[extinct])
+    for (j in 1:length(modify.coprod.id)) {
+      R.id <- which(as.character(R$ID) == modify.coprod.id[j])
+      R$Abund[R.id] <- R$Abund[R.id] - modify.coprod.ab[j]
+    }
+
+    #Eliminate SPECIES + UNIQUE COPRODUCTS and their corresponding abundances from the R and R.inuse matrix
+    del.R <- as.numeric(sapply(extinct.unique,function(x){which(x == as.character(R$ID))}))
+    R <- R[-del.R,]
+    R.inuse <- R.inuse[-del.R,]
     
-    #Are there any unique coproducts formed by the extinct species?
-    all.coprod <- unlist(b)
-    all.co <- all.coprod[which(grepl("co.",all.coprod))]
-    unique.coprod lapply(b,function(x){which(x)})
+    
+    #Identify SECONDARY EXTINCTIONS
+    #These are species that use resources/coproducts/species that are eliminated during this timestep
+    #They will be eliminated in the next timestep along with the species that go extinct due to stochastic effects
+    
+    lapply(c,function(x){any(extinct.unique %in% x)})
     
     
+    #Delete extinct species from the a vector + abundances from the a.ab vector
+    a <- a[-extinct]
+    a.ab <- a.ab[-extinct]
     
     
     
