@@ -154,12 +154,12 @@ trophic.edgelist.w[[1]] <- numeric()
 
 
 #Begin time iterations
-secondary.extinct <- numeric()
+secondary.extinct <- integer()
 for (t in 2:t.term) {
   
   #First, allow mutations for each species
   #Mutation rate
-  m.rate <- 0.01
+  m.rate <- 1
   m.draw <- runif(length(a),0,1) < m.rate
   mut.event <- which(m.draw)
   new.trophic <- matrix(0,0,2)
@@ -183,7 +183,7 @@ for (t in 2:t.term) {
     for (i in 1:length(mut.event)) {
       #Which species is speciating?
       mutated <- mut.event[i]
-      new.sp[i] <- paste("sp.",rstring(i,str.length),sep="")
+      new.sp[i] <- paste("sp.",rstring(1,str.length),sep="")
       #Resources should be similar to resources of mutated species
       mut.res[[i]] <- c[[mutated]]
       mut.res.ab[[i]] <- c.ab[[mutated]]
@@ -193,10 +193,10 @@ for (t in 2:t.term) {
       res.check <- TRUE
       while (res.check) {
         #Randomly select some deviation ~ we may want to skew these values toward zero (combined -ExpDist, ExpDist)
-        mut.res.dev <- runif(length(mut.res[[i]]),-1,1)*max(mut.res.ab[[i]])
+        mut.res.dev <- runif(length(mut.res[[i]]),-1,1)*sd(mut.res.ab[[i]])
         #Apply the deviation
         mut.res.ab[[i]] <- mut.res.ab[[i]] + mut.res.dev
-        res.check <- sum(mut.res.ab[[i]]) < 0
+        res.check <- all(mut.res.ab[[i]] < 0)
       }
       
       #Eliminate resources with abundances <= 0
@@ -343,7 +343,11 @@ for (t in 2:t.term) {
     R.inuse.new$Abund <- tot.res.use
     R.inuse <- R.inuse.new
     
-  }
+  } #End speciation Loop
+  
+  
+  
+  
   
 
   #Determine similarities in resource use among species
@@ -356,8 +360,11 @@ for (t in 2:t.term) {
   }
   #Eliminate the effect of competition with yourself
   diag(sim.m) <- 0
-  comp.pres <- apply(sim.m,2,sum)
-  #Need to normalize this measure
+  #C
+  comp.pres <- apply(sim.m,2,sum) / length(sim.m[,1])
+  
+  
+  
   
   #Update system trophic edgelist
   #The consumers are in the left column and the prey are in the right column
@@ -385,11 +392,16 @@ for (t in 2:t.term) {
     pred.pres[j] <- max(0,trophic.edgelist.w[[t]][which(trophic.edgelist[[t]][,2] == a[j])]) / R$Abund[which(as.character(R$ID) == a[j])]
   }
   
+  
+  
+  
   #Set dynamic rates
-  #Extinction rate :: should increase with competition load and predation load
+  #Extinction rate :: should increase with competition load and predation load... we can play around with the relative weights
   ext.background <- 0.01
-  ext.rate <- ext.background + 0.5*comp.pres + 0.5*pred.pres
+  ext.rate <- ext.background + 0.25*comp.pres + 0.75*pred.pres
   draw.ext <- runif(length(a),0,1) < ext.rate
+  
+  if (all(draw.ext)) { stop("Everyone has gone extinct!") }
   
   #Combine newly eliminated species with the secondary-extinct species from the previous timestep
   extinct <- c(which(draw.ext),secondary.extinct)
@@ -413,7 +425,7 @@ for (t in 2:t.term) {
     trophic.edgelist.w[[t]] <- trophic.edgelist.w[[t]][-c(pred.extinct,prey.extinct)]
     
     #Eliminate species and their unique coproducts from the Resource Matrix
-    extinct.unique <- c(a[extinct],unlist(b.unique[extinct]))
+    extinct.unique <- as.character(na.omit(c(a[extinct],unlist(b.unique[extinct]))))
     
     #Revise R by coproduct abs (this is what the extinct species was providing to R)
     #Revise R.inuse by the res abs (this is what the extinct species was taking away from R)
@@ -433,37 +445,44 @@ for (t in 2:t.term) {
       R.id <- which(as.character(R$ID) == modify.coprod.id[j])
       R$Abund[R.id] <- R$Abund[R.id] - modify.coprod.ab[j]
     }
-
+    
+    #Update R and R.use
     #Eliminate SPECIES + UNIQUE COPRODUCTS and their corresponding abundances from the R and R.inuse matrix
     del.R <- as.numeric(sapply(extinct.unique,function(x){which(x == as.character(R$ID))}))
     R <- R[-del.R,]
     R.inuse <- R.inuse[-del.R,]
     
+    #Update the lists to exclude any extinctions that have just occurred
+    a <- a[-extinct]
+    a.ab <- a.ab[-extinct]
+    c <- c[-extinct]
+    c.ab <- c.ab[-extinct]
+    b <- b[-extinct]
+    b.ab <- b.ab[-extinct]
+    b.unique <- b.unique[-extinct]
+    b.unique.ab <- b.unique.ab[-extinct]
     
     #Identify SECONDARY EXTINCTIONS
     #These are species that use resources/coproducts/species that are eliminated during this timestep
     #They will be eliminated in the next timestep along with the species that go extinct due to stochastic effects
-    
-    lapply(c,function(x){any(extinct.unique %in% x)})
-    
-    
-    #Delete extinct species from the a vector + abundances from the a.ab vector
-    a <- a[-extinct]
-    a.ab <- a.ab[-extinct]
-    
-    
-    
-    for (j in 1:length(prey.extinct)) {
-      pred.id <- prey.extinct[j]
-      prey.id <- 
-        c[[pred.id]] <- c[[pred.id]][-which(c[[pred.id]] == )]
-      c.ab[[j]] 
-    }
+    secondary.extinct <- which(unlist(lapply(c,function(x){any(extinct.unique %in% x)})))
 
-    #Delete species from the a vector
-    a <- a[-extinct]
+        
+    #     for (j in 1:length(prey.extinct)) {
+    #       pred.id <- prey.extinct[j]
+    #       prey.id <- 
+    #         c[[pred.id]] <- c[[pred.id]][-which(c[[pred.id]] == )]
+    #       c.ab[[j]] 
+    #     }
     
   } #End 'induce extinctions'
+  
+  #Record Stats
+  
+  #Calculate Global Properties of the System
+  niche.space[t] <- length(R$ID)
+  sp.richness[t] <- length(a)
+  avg.complexity[t] <- mean(unlist(lapply(c,length)))
   
 }
 
