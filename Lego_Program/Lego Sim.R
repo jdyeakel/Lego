@@ -276,20 +276,20 @@ for (t in 2:t.term) {
       R$Abund[b.id] <- R$Abund[b.id] + mut.co.ab[[i]]
     }    
 
-#     #Rebuild Global resource matrix IF there are new coproducts AND there are newly evolved species
-#     if ((length(unlist(newco.id)) > 0) && (length(mut.event) > 0)) {
-#       R.id <- c(as.character(R$ID),new.sp,unlist(newco.id))
-#       R.ab <- c(R$Abund,new.sp.ab,unlist(newco.ab))
-#       R <- data.frame(R.id,R.ab,row.names=NULL)
-#       colnames(R) <- c("ID","Abund")
-#     }
-#     #Rebuild Global resource matrix IF there are NO new coproducts AND there are newly evolved species
-#     if ((length(unlist(newco.id)) == 0) && (length(mut.event) > 0)) {
-#       R.id <- c(as.character(R$ID),new.sp)
-#       R.ab <- c(R$Abund,new.sp.ab)
-#       R <- data.frame(R.id,R.ab,row.names=NULL)
-#       colnames(R) <- c("ID","Abund")
-#     }
+    #     #Rebuild Global resource matrix IF there are new coproducts AND there are newly evolved species
+    #     if ((length(unlist(newco.id)) > 0) && (length(mut.event) > 0)) {
+    #       R.id <- c(as.character(R$ID),new.sp,unlist(newco.id))
+    #       R.ab <- c(R$Abund,new.sp.ab,unlist(newco.ab))
+    #       R <- data.frame(R.id,R.ab,row.names=NULL)
+    #       colnames(R) <- c("ID","Abund")
+    #     }
+    #     #Rebuild Global resource matrix IF there are NO new coproducts AND there are newly evolved species
+    #     if ((length(unlist(newco.id)) == 0) && (length(mut.event) > 0)) {
+    #       R.id <- c(as.character(R$ID),new.sp)
+    #       R.ab <- c(R$Abund,new.sp.ab)
+    #       R <- data.frame(R.id,R.ab,row.names=NULL)
+    #       colnames(R) <- c("ID","Abund")
+    #     }
     
     #Update Resources-In-Use dataframe
     R.inuse.new <- R
@@ -318,12 +318,13 @@ for (t in 2:t.term) {
   sim.m <- matrix(0,length(a),length(a))
   for (i in 1:length(a)) {
     for (j in 1:length(a)) {
-      sim.m[i,j] <- string.similarity(c[[i]],c[[j]])[2] #[1] = Jaccard; [2] = Cosine Sim Index
+      sim.m[i,j] <- string.similarity(c[[i]],c.ab[[i]],c[[j]],c.ab[[j]])[2] #[1] = Jaccard; [2] = Cosine Sim Index
     }
   }
   #Eliminate the effect of competition with yourself
   diag(sim.m) <- 0
   comp.pres <- apply(sim.m,2,sum)
+  #Need to normalize this measure
   
   #Update system trophic edgelist
   #The consumers are in the left column and the prey are in the right column
