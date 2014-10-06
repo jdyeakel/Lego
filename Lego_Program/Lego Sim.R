@@ -178,25 +178,37 @@ for (t in 2:t.term) {
       mutated <- mut.event[i]
       new.sp[i] <- paste("sp.",rstring(i,str.length),sep="")
       #Resources should be similar to resources of mutated species
-      old.res <- c[[mutated]]
+      mut.res[[i]] <- c[[mutated]]
+      mut.res.ab[[i]] <- c.ab[[mutated]]
       
-      #Build new resource list. Should be similar, but not the same.
-      #For now, we can just delete a random resource and replace it with a random draw from the R list
-      mut.res[[i]] <- old.res[-sample(seq(1,length(old.res)),1)]
+      #Randomly select some deviation ~ we may want to skew these values toward zero (combined -ExpDist, ExpDist)
+      mut.res.dev <- runif(length(mut.res[[i]]),-1,1)*max(mut.res.ab[[i]])
+      #Apply the deviation
+      mut.res.ab[[i]] <- mut.res.ab[[i]] + mut.res.dev
+      #Ensure there are no zeros
+      elim <- which(mut.res.ab[[i]] <= 0)
+      mut.res[[i]] <- mut.res[[i]][-elim]
+      mut.res.ab[[i]] <- mut.res.ab[[i]][-elim]
       
-      #Ensure that the new resource is not already in it's list
-      new.res <- mut.res[[i]][1]
-      while (new.res %in% mut.res[[i]] == TRUE) {
-        new.res <- as.character(sample(R$ID,1))
+      #Add a single new resource? Inventiveness measure
+      pr.newres <- min(innov.rate * (1/niche.space[t-1]),1)
+      draw.newres <- runif(1) < pr.newco
+      
+      if (draw.newres) {
+        #Ensure that the new resource is not already in it's list
+        new.res <- mut.res[[i]][1]
+        while (new.res %in% mut.res[[i]] == TRUE) {
+          new.res <- as.character(sample(R$ID,1))
+        }
+        #Define the new resource list for the mutated species
+        mut.res[[i]] <- c(mut.res[[i]],new.res)
+        
+        #Determine the abundance of the new resource
+        mut.res.ab[[i]] <- c(mut.res.ab[[i]],min(rexp(1,rate=0.25),
+                                                 R$Abund[which(as.character(R$ID) == new.res)] -
+                                                   R.inuse$Abund[which(as.character(R$ID) == new.res)]))
       }
-      #Define the new resource list for the mutated species
-      mut.res[[i]] <- c(mut.res[[i]],new.res)
       
-      #(!!) Could consider defining the DEVIATION in the abundance of resources use compared to sister species.
-      
-      #Draw resource use for mutated species... must be between [0 : R-R.inuse]
-      #First get the location of the resource in R
-      mut.res.id <- as.numeric(sapply(mut.res[[i]],function(x){which(x==as.character(R$ID))}))
       #Second, draw a usage between 0 and R-R.use (available resources)
       mut.res.ab[[i]] <- sapply(mut.res.id,function(x){min(rexp(1,rate=0.25),R$Abund[x]-R.inuse$Abund[x])})
       
