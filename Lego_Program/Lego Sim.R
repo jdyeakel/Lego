@@ -40,7 +40,7 @@ c.ab <- list()
 a[1] <- paste("sp.",rstring(1,str.length),sep="")
 
 #Create vector of initial resource requirements for eden species
-c0.size <- round(runif(1,1,10),0)
+c0.size <- 20
 #Draw random initial resources
 c[[1]] <- paste("r.",rstring(c0.size,str.length),sep="")
 
@@ -111,8 +111,8 @@ R$Abund[b.id] <- R$Abund[b.id] + b.ab[[1]]
 #Create a Resource-In-Use dataframe
 R.inuse <- R
 tot.res.use <- numeric(length(R$ID))
-for (i in 1:length(R$ID)) {
-  res <- as.character(R$ID[i])
+for (k in 1:length(R$ID)) {
+  res <- as.character(R$ID[k])
   #Find which species is using resource i
   sp.res.use <- which(unlist(lapply(c,function(x){res %in% x})))
   if (length(sp.res.use) > 0) {
@@ -121,8 +121,8 @@ for (i in 1:length(R$ID)) {
     for (j in 1:length(sp.res.use)) {
       sp.res.use.ab[j] <- c.ab[[sp.res.use[j]]][which(c[[sp.res.use[j]]] == res)]
     }
-    tot.res.use[i] <- sum(sp.res.use.ab)
-  } else {tot.res.use[i] <- 0}
+    tot.res.use[k] <- sum(sp.res.use.ab)
+  } else {tot.res.use[k] <- 0}
 }
 R.inuse$Abund <- tot.res.use
 
@@ -161,7 +161,7 @@ for (t in 2:t.term) {
   
   #First, allow mutations for each species
   #Mutation rate
-  m.rate <- 0.25
+  m.rate <- 0.5
   m.draw <- runif(length(a),0,1) < m.rate
   mut.event <- which(m.draw)
   new.trophic <- matrix(0,0,2)
@@ -198,7 +198,7 @@ for (t in 2:t.term) {
         mut.res.dev <- runif(length(mut.res[[i]]),-1,1)*sd(mut.res.ab[[i]])
         #Apply the deviation
         mut.res.ab[[i]] <- mut.res.ab[[i]] + mut.res.dev
-        res.check <- length(which(mut.res.ab[[i]] < 0)) >= 2
+        res.check <- length(which(mut.res.ab[[i]] < 0)) <= 2
       }
       
       #Eliminate resources with abundances <= 0
@@ -324,17 +324,17 @@ for (t in 2:t.term) {
     
     #Add ALL coproduct abundances to the global resource matrix for each new species i
     #Rebuild Global resource matrix
-    for (i in 1:length(mut.event)) {
-      b.id <- as.numeric(unlist(sapply(mut.co[[i]],function(x){which(x == as.character(R$ID))})))
-      R$Abund[b.id] <- R$Abund[b.id] + mut.co.ab[[i]]
+    for (j in 1:length(mut.event)) {
+      b.id <- as.numeric(unlist(sapply(mut.co[[j]],function(x){which(x == as.character(R$ID))})))
+      R$Abund[b.id] <- R$Abund[b.id] + mut.co.ab[[j]]
     }    
 
     #Update Resources-In-Use dataframe
     R.inuse.new <- R
     tot.res.use <- numeric(length(R$ID))
-    for (i in 1:length(R$ID)) {
-      res <- as.character(R$ID[i])
-      #Find which species is using resource i
+    for (k in 1:length(R$ID)) {
+      res <- as.character(R$ID[k])
+      #Find which species is using resource k
       sp.res.use <- which(unlist(lapply(c,function(x){res %in% x})))
       if (length(sp.res.use) > 0) {
         #Obtain the abundances of resource i in use
@@ -342,8 +342,8 @@ for (t in 2:t.term) {
         for (j in 1:length(sp.res.use)) {
           sp.res.use.ab[j] <- c.ab[[sp.res.use[j]]][which(c[[sp.res.use[j]]] == res)]
         }
-        tot.res.use[i] <- sum(sp.res.use.ab)
-      } else {tot.res.use[i] <- 0}
+        tot.res.use[k] <- sum(sp.res.use.ab)
+      } else {tot.res.use[k] <- 0}
     }
     R.inuse.new$Abund <- tot.res.use
     R.inuse <- R.inuse.new
@@ -359,9 +359,9 @@ for (t in 2:t.term) {
   #CURRENTLY DOES NOT TAKE ABUNDANCES INTO ACCOUNT
   if (length(a) > 1) {
   sim.m <- matrix(0,length(a),length(a))
-  for (i in 1:length(a)) {
+  for (k in 1:length(a)) {
     for (j in 1:length(a)) {
-      sim.m[i,j] <- string.similarity(c[[i]],c.ab[[i]],c[[j]],c.ab[[j]])[2] #[1] = Jaccard; [2] = Cosine Sim Index
+      sim.m[k,j] <- string.similarity(c[[k]],c.ab[[k]],c[[j]],c.ab[[j]])[2] #[1] = Jaccard; [2] = Cosine Sim Index
     }
   }
   #Eliminate the effect of competition with yourself
@@ -406,7 +406,7 @@ for (t in 2:t.term) {
   #Set dynamic rates
   #Extinction rate :: should increase with competition load and predation load... we can play around with the relative weights
   ext.background <- 0.01
-  ext.rate <- 0.50*(ext.background + 0.25*comp.pres + 0.75*pred.pres)
+  ext.rate <- (ext.background + 0.25*comp.pres + 0.75*pred.pres)
   draw.ext <- runif(length(a),0,1) < ext.rate
   
   if (all(draw.ext)) { stop("You are all alone with your simulation.") }
@@ -424,40 +424,46 @@ for (t in 2:t.term) {
   #If coproducts are unique, eliminate them from the Global Resources
   
   #This corrects for the effects of extinction across all extinct species at once
+  
+  
   if (length(extinct) > 0) {
     
     #Delete trophic interactions involving the extinct species
     #Nothing happens if there are no preds/prey that go extinct
     #The if statement just gets around the peculiarity of R treating a matrix w/ single row differently
     
-    #If there is just one trophic interaction... then it is eliminated and the matrix form of trophic.edgelist is retained
-    if (length(trophic.edgelist[[t]]) == 2) {
-      
-      pred.extinct <- which(trophic.edgelist[[t]][1] == a[extinct])
-      prey.extinct <- which(trophic.edgelist[[t]][2] == a[extinct]) #this also records the ID of the predators that are consuming the extinct prey
-      
-      #Eliminate the single trophic interaction
-      #Ensure that trophic.edgelist[[t]] remains a MATRIX and not a VECTOR
-      trophic.edgelist[[t]] <- matrix(0,0,2)
-      trophic.edgelist.w[[t]] <- integer(0)
-    } else {
-      
-      #If there are multiple or no trophic interactions
-      pred.extinct <- which(trophic.edgelist[[t]][,1] == a[extinct])
-      prey.extinct <- which(trophic.edgelist[[t]][,2] == a[extinct]) #this also records the ID of the predators that are consuming the extinct prey
-      
-      #Combine ids of extinct predator and prey interactions
-      elim.ints <- unique(c(pred.extinct,prey.extinct))
-      
-      #Eliminate all rows that contain either the predator or the prey trophic interaction
-      trophic.edgelist[[t]] <- trophic.edgelist[[t]][-elim.ints,]
-      #Eliminate all elements that contain
-      trophic.edgelist.w[[t]] <- trophic.edgelist.w[[t]][-elim.ints]
-      
+    #If the trophic.edgelist matrix got turned into a vector, then turn it back into a matrix
+    if (is.vector(trophic.edgelist[[t]]) == TRUE) {
+      trophic.edgelist[[t]] <- as.matrix(t(trophic.edgelist[[t]]))
     }
+    #     
+    #     
+    #     #If there is just one trophic interaction... then it is eliminated and the matrix form of trophic.edgelist is retained
+    #     if (length(trophic.edgelist[[t]]) == 2) {
+    #       
+    #       pred.extinct <- which(trophic.edgelist[[t]][1] == a[extinct])
+    #       prey.extinct <- which(trophic.edgelist[[t]][2] == a[extinct]) #this also records the ID of the predators that are consuming the extinct prey
+    #       
+    #       #Eliminate the single trophic interaction
+    #       #Ensure that trophic.edgelist[[t]] remains a MATRIX and not a VECTOR
+    #       trophic.edgelist[[t]] <- matrix(0,0,2)
+    #       trophic.edgelist.w[[t]] <- integer(0)
+    #     } else {
+    #       
+
+    pred.extinct <- which(trophic.edgelist[[t]][,1] == a[extinct])
+    prey.extinct <- which(trophic.edgelist[[t]][,2] == a[extinct]) #this also records the ID of the predators that are consuming the extinct prey
     
-    #Ensure that trophic.edgelist[[t]] remains a matrix
-    if (is.matrix(trophic.edgelist[[t]]) == FALSE) {stop("Trophic.edgelist is no longer a matrix!")}
+    #Combine ids of extinct predator and prey interactions
+    elim.ints <- unique(c(pred.extinct,prey.extinct))
+    
+    #Eliminate all rows that contain either the predator or the prey trophic interaction
+    trophic.edgelist[[t]] <- trophic.edgelist[[t]][-elim.ints,]
+    #Eliminate all elements that contain
+    trophic.edgelist.w[[t]] <- trophic.edgelist.w[[t]][-elim.ints]
+      
+    #}
+
     
     #Identify species and their unique coproducts to be eliminated from the Resource Matrix
     extinct.unique <- as.character(na.omit(c(a[extinct],unlist(b.unique[extinct]))))
