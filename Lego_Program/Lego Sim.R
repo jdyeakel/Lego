@@ -157,9 +157,11 @@ trophic.edgelist.w[[1]] <- numeric()
 secondary.extinct <- integer()
 for (t in 2:t.term) {
   
+  print(paste("t=",t,sep=""))
+  
   #First, allow mutations for each species
   #Mutation rate
-  m.rate <- 1
+  m.rate <- 0.25
   m.draw <- runif(length(a),0,1) < m.rate
   mut.event <- which(m.draw)
   new.trophic <- matrix(0,0,2)
@@ -196,13 +198,15 @@ for (t in 2:t.term) {
         mut.res.dev <- runif(length(mut.res[[i]]),-1,1)*sd(mut.res.ab[[i]])
         #Apply the deviation
         mut.res.ab[[i]] <- mut.res.ab[[i]] + mut.res.dev
-        res.check <- all(mut.res.ab[[i]] < 0)
+        res.check <- length(which(mut.res.ab[[i]] < 0)) >= 2
       }
       
       #Eliminate resources with abundances <= 0
       elim <- which(mut.res.ab[[i]] <= 0)
-      mut.res[[i]] <- mut.res[[i]][-elim]
-      mut.res.ab[[i]] <- mut.res.ab[[i]][-elim]
+      if (length(elim) > 0) {
+        mut.res[[i]] <- mut.res[[i]][-elim]
+        mut.res.ab[[i]] <- mut.res.ab[[i]][-elim]
+      }
       
       #Add a single new resource? Inventiveness measure
       pr.newres <- min(innov.rate * (1/niche.space[t-1]),1)
@@ -419,10 +423,27 @@ for (t in 2:t.term) {
     
     #Delete trophic interactions involving the extinct species
     #Nothing happens if there are no preds/prey that go extinct
-    pred.extinct <- which(trophic.edgelist[[t]][,1] == a[extinct])
-    prey.extinct <- which(trophic.edgelist[[t]][,2] == a[extinct]) #this also records the ID of the predators that are consuming the extinct prey
-    trophic.edgelist[[t]] <- trophic.edgelist[[t]][-c(pred.extinct,prey.extinct),]
-    trophic.edgelist.w[[t]] <- trophic.edgelist.w[[t]][-c(pred.extinct,prey.extinct)]
+    #The if statement just gets around the peculiarity of R treating a matrix w/ single row differently
+    
+    #If there is just one trophic interaction...
+    if (length(trophic.edgelist[[t]]) == 2) {
+      
+      pred.extinct <- which(trophic.edgelist[[t]][1] == a[extinct])
+      prey.extinct <- which(trophic.edgelist[[t]][2] == a[extinct]) #this also records the ID of the predators that are consuming the extinct prey
+      
+      #Eliminate the single trophic interaction
+      trophic.edgelist[[t]] <- matrix(0,0,2)
+      trophic.edgelist.w[[t]] <- integer(0)
+    } else {
+      
+      #If tthere are multiple or no trophic interactions
+      pred.extinct <- which(trophic.edgelist[[t]][,1] == a[extinct])
+      prey.extinct <- which(trophic.edgelist[[t]][,2] == a[extinct]) #this also records the ID of the predators that are consuming the extinct prey
+      trophic.edgelist[[t]] <- trophic.edgelist[[t]][-c(pred.extinct,prey.extinct),]
+      trophic.edgelist.w[[t]] <- trophic.edgelist.w[[t]][-c(pred.extinct,prey.extinct)]
+      
+    }
+    
     
     #Eliminate species and their unique coproducts from the Resource Matrix
     extinct.unique <- as.character(na.omit(c(a[extinct],unlist(b.unique[extinct]))))
@@ -489,10 +510,11 @@ for (t in 2:t.term) {
 
 
 
+plot(niche.space,type="l")
 
+plot(sp.richness,type="l")
 
-
-
+plot(avg.complexity,type="l")
 
 
 
