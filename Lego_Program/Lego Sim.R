@@ -244,15 +244,16 @@ for (t in 2:t.term) {
           #Record the identities of the trophic interaction
           trophic[j,] <- c(new.sp[i],prey[j])
           
-          #Record the amount consumed
+          #Record the amount consumed ~ was already determined from mut.res.ab
           #Random draw btw 0 and abundance of the resource
-          trophic.w[j] <- runif(1)*mut.res.ab[[i]][which(grepl("sp.",mut.res[[i]]))]
+          #trophic.w[j] <- runif(1)*mut.res.ab[[i]][which(grepl("sp.",mut.res[[i]]))]
+          trophic.w[j] <- mut.res.ab[[i]][which(mut.res[[i]] == prey)]
         }
       }
       
       #Determine co-products of new species (a species cannot be a coproduct!)
       #The number of co-products is constrained to be numb. of resources - 1
-      co.full <- mut.res[[1]][which(grepl("sp.",mut.res[[1]])==FALSE)]
+      co.full <- mut.res[[i]][which(grepl("sp.",mut.res[[i]])==FALSE)]
       mut.co[[i]] <- sample(co.full,round(runif(1,1,length(co.full)-1),0))
       
       #What is the probability that a unique coproduct is formed?
@@ -356,6 +357,7 @@ for (t in 2:t.term) {
 
   #Determine similarities in resource use among species
   #CURRENTLY DOES NOT TAKE ABUNDANCES INTO ACCOUNT
+  if (length(a) > 1) {
   sim.m <- matrix(0,length(a),length(a))
   for (i in 1:length(a)) {
     for (j in 1:length(a)) {
@@ -364,9 +366,11 @@ for (t in 2:t.term) {
   }
   #Eliminate the effect of competition with yourself
   diag(sim.m) <- 0
-  #C
-  comp.pres <- apply(sim.m,2,sum) / length(sim.m[,1])
-  
+  #Competitive pressure is proportional to the number of potential competitions (Num. species - 1)
+  comp.pres <- apply(sim.m,2,sum) / (length(sim.m[,1]) - 1)
+  } else {
+    comp.pres <- 0
+  }
   
   
   
@@ -385,7 +389,7 @@ for (t in 2:t.term) {
     #If this is not the first trophic interaction, and there has been an additional trophic interaction formed
     if ((length(trophic.edgelist[[t-1]][,1]) > 0) && (length(new.trophic) > 0)) {
       trophic.edgelist[[t]] <- rbind(trophic.edgelist[[t-1]],new.trophic)
-      trophic.edgelist.w[[t]] <- c(trophic.edgelist[[t-1]],new.trophic.w)
+      trophic.edgelist.w[[t]] <- c(trophic.edgelist.w[[t-1]],new.trophic.w)
     }
   }
   
@@ -402,10 +406,10 @@ for (t in 2:t.term) {
   #Set dynamic rates
   #Extinction rate :: should increase with competition load and predation load... we can play around with the relative weights
   ext.background <- 0.01
-  ext.rate <- ext.background + 0.25*comp.pres + 0.75*pred.pres
+  ext.rate <- 0.50*(ext.background + 0.25*comp.pres + 0.75*pred.pres)
   draw.ext <- runif(length(a),0,1) < ext.rate
   
-  if (all(draw.ext)) { stop("Everyone has gone extinct!") }
+  if (all(draw.ext)) { stop("You are all alone with your simulation.") }
   
   #Combine newly eliminated species with the secondary-extinct species from the previous timestep
   extinct <- c(which(draw.ext),secondary.extinct)
@@ -419,33 +423,43 @@ for (t in 2:t.term) {
   #Determine whether coproducts of extinct species are unique
   #If coproducts are unique, eliminate them from the Global Resources
   
+  #This corrects for the effects of extinction across all extinct species at once
   if (length(extinct) > 0) {
     
     #Delete trophic interactions involving the extinct species
     #Nothing happens if there are no preds/prey that go extinct
     #The if statement just gets around the peculiarity of R treating a matrix w/ single row differently
     
-    #If there is just one trophic interaction...
+    #If there is just one trophic interaction... then it is eliminated and the matrix form of trophic.edgelist is retained
     if (length(trophic.edgelist[[t]]) == 2) {
       
       pred.extinct <- which(trophic.edgelist[[t]][1] == a[extinct])
       prey.extinct <- which(trophic.edgelist[[t]][2] == a[extinct]) #this also records the ID of the predators that are consuming the extinct prey
       
       #Eliminate the single trophic interaction
+      #Ensure that trophic.edgelist[[t]] remains a MATRIX and not a VECTOR
       trophic.edgelist[[t]] <- matrix(0,0,2)
       trophic.edgelist.w[[t]] <- integer(0)
     } else {
       
-      #If tthere are multiple or no trophic interactions
+      #If there are multiple or no trophic interactions
       pred.extinct <- which(trophic.edgelist[[t]][,1] == a[extinct])
       prey.extinct <- which(trophic.edgelist[[t]][,2] == a[extinct]) #this also records the ID of the predators that are consuming the extinct prey
-      trophic.edgelist[[t]] <- trophic.edgelist[[t]][-c(pred.extinct,prey.extinct),]
-      trophic.edgelist.w[[t]] <- trophic.edgelist.w[[t]][-c(pred.extinct,prey.extinct)]
+      
+      #Combine ids of extinct predator and prey interactions
+      elim.ints <- unique(c(pred.extinct,prey.extinct))
+      
+      #Eliminate all rows that contain either the predator or the prey trophic interaction
+      trophic.edgelist[[t]] <- trophic.edgelist[[t]][-elim.ints,]
+      #Eliminate all elements that contain
+      trophic.edgelist.w[[t]] <- trophic.edgelist.w[[t]][-elim.ints]
       
     }
     
+    #Ensure that trophic.edgelist[[t]] remains a matrix
+    if (is.matrix(trophic.edgelist[[t]]) == FALSE) {stop("Trophic.edgelist is no longer a matrix!")}
     
-    #Eliminate species and their unique coproducts from the Resource Matrix
+    #Identify species and their unique coproducts to be eliminated from the Resource Matrix
     extinct.unique <- as.character(na.omit(c(a[extinct],unlist(b.unique[extinct]))))
     
     #Revise R by coproduct abs (this is what the extinct species was providing to R)
