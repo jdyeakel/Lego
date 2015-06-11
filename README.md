@@ -8,6 +8,27 @@ M: make
 E: eat
 ```
 
+Initial matrix seeding rules
+
+Sp A | Sp B
+--- | ---
+E | {M, I, E}
+M | N
+I | {A, N, I, E}
+N | {N, I, M, E}
+A | {A, I}
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 The goal of the `Lego` project is to provide a fundamental model for the evolution of biodiversity and organismal niche spaces. The `Lego` project is currently built around a mass-balance equation
