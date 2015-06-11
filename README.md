@@ -27,11 +27,12 @@ Interaction | Biological meaning
 {N,I} | Commensalism
 {I,A} | Asymmetric unstable comp.
 {A,A} | Symmetric unstable comp.
-{I,E} | Predation
+{I,E} | Asymmetric Predation
 {M,I} | Engineering
 {I,I} | Stable competition, coexistence
-
-
+{E,E} | Symmetric predation
+{N,A} | DNE
+{E,A} | DNE
 
 
 
