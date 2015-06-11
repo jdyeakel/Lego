@@ -18,6 +18,19 @@ I | {A, N, I, E}
 N | {N, I, M, E}
 A | {A, I}
 
+Biological mapping
+
+Interaction | Biological meaning
+--- | ---
+{N,E} | Facultative mutualism
+{N.N} | Obligate mutualism
+{N,I} | Commensalism
+{I,A} | Asymmetric unstable comp.
+{A,A} | Symmetric unstable comp.
+{I,E} | Predation
+{M,I} | Engineering
+{I,I} | Stable competition, coexistence
+
 
 
 
