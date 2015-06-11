@@ -17,7 +17,7 @@ Initial matrix seeding rules
 
 Sp A | Sp B
 --- | ---
-E | {M, I, E}
+E | {I, M, E}
 M | N
 I | {A, N, I, E}
 N | {N, I, M, E}
