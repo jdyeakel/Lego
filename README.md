@@ -1,5 +1,15 @@
 This is a work in progress.
 
+```S
+A: avoid
+N: need
+I: ignore
+M: make
+E: eat
+```
+
+
+
 The goal of the `Lego` project is to provide a fundamental model for the evolution of biodiversity and organismal niche spaces. The `Lego` project is currently built around a mass-balance equation
 ```S
 A + B = C
