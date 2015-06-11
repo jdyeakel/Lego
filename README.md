@@ -33,11 +33,17 @@ Interaction | Biological meaning
 {I,A} | Asymmetric unstable comp.
 {A,A} | Symmetric unstable comp.
 {I,E} | Asymmetric Predation
-{M,I} | Engineering
+{M,N} | Engineering
 {I,I} | Stable competition, coexistence
 {E,E} | Symmetric predation
 {N,A} | DNE
 {E,A} | DNE
+{M,M} | DNE
+{M,A} | DNE
+{M,I} | DNE
+{M,E} | DNE
+
+
 
 on diagonal CAN determine active, but not passive
 
