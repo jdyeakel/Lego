@@ -1,3 +1,8 @@
+## Lego Anime model
+
+Community assembly and evolution via discrete interaction rules
+
+
 This is a work in progress.
 
 ```S
@@ -34,6 +39,20 @@ Interaction | Biological meaning
 {N,A} | DNE
 {E,A} | DNE
 
+on diagonal CAN determine active, but not passive
+
+
+RULES:
+1. if a -M-> b, then b -I-> everything, except b -N-> a
+
+2. if similarity(a,b) > X; then a -A-> b
+
+3. active players must consume: number(E) > 0
+
+4. row 1 is the sun, R1 = I; C1 = {E,I}
+
+RULES FOR CULLING:
+1. if nothing from a given set ?(primary producers) is present; then everything else is culled
 
 
 
@@ -43,6 +62,12 @@ Interaction | Biological meaning
 
 
 
+
+
+
+
+
+##Old version
 
 
 The goal of the `Lego` project is to provide a fundamental model for the evolution of biodiversity and organismal niche spaces. The `Lego` project is currently built around a mass-balance equation
