@@ -5,7 +5,7 @@ library(plotrix)
 library(RColorBrewer)
 
 source("R/build_template.R")
-
+source("R/test_compatability.R")
 
 #sequence <- seq(10,2000,100)
 #prop_active <- numeric(length(sequence))
@@ -53,14 +53,10 @@ source("R/build_template.R")
 
 
 #Subselect the template
-num_sub <- 20
-sub_play <- sample(labels,num_sub,replace=FALSE)
+num_sub <- 100
+sub_play <- c("P1",sample(labels[-1],num_sub-1,replace=FALSE))
 sub_play_id <- sapply(sub_play,function(x){which(labels == x)})
 subint_m <- int_m[sub_play_id,sub_play_id]
-#Insert the sun back into the submatrix
-subint_m[1,] <- int_m[1,]
-subint_m[,1] <- int_m[,1]
-
 
 seed_int_m <- test_compatability(subint_m,labels)
 

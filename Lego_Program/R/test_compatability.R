@@ -9,21 +9,23 @@ test_compatability <- function(orig_subint_m,labels) {
     num_play <- length(subint_m[,1])
     
     for (i in 2:num_play)  #ignore the sun
-      {
-      #Test compatability of PASSIVE players
-      if (subint_m[i,i] == "i") 
+    {
+      if (is.matrix(subint_m) == TRUE) {
+        
+        #Test compatability of PASSIVE players
+        if (subint_m[i,i] == "i") 
         {
-        #Where are things making the passive player?
-        makers <- labels[which(subint[i,] == "n")]
-        #Are the makers present?
-        test <- any(makers %in% colnames(subint_m))
-        if (test == FALSE) 
+          #Where are things making the passive player?
+          makers <- labels[which(subint_m[i,] == "n")]
+          #Are the makers present?
+          test <- any(makers %in% colnames(subint_m))
+          if (test == FALSE) 
           {
-          subint_m <- subint_m[-i,]
-          subint_m <- subint_m[,-i]
-          break
-        }
-      } else #Test compatability of ACTIVE players
+            subint_m <- subint_m[-i,]
+            subint_m <- subint_m[,-i]
+            break
+          }
+        } else #Test compatability of ACTIVE players
         {
           
           #Does the species eat something?
@@ -43,18 +45,23 @@ test_compatability <- function(orig_subint_m,labels) {
               break
             }
           }
+        }
+      } else {
+        compatable <- TRUE
       }
       
     } #End For Loop
     
-    if (i == num_play) {
-      compatable <- TRUE
-    } else {
-      compatable <- FALSE
+    if (compatable == FALSE) {
+      if (i == num_play) {
+        compatable <- TRUE
+      } else {
+        compatable <- FALSE
+      }
     }
-    
+
   } #End While loop
   
-  return subint_m
+  return(subint_m)
   
 } #End function
