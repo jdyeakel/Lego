@@ -5,7 +5,7 @@ library(plotrix)
 library(RColorBrewer)
 
 
-num_play <- 50
+num_play <- 10
 
 #Interaction probabilities
 #Must add to 1
@@ -155,12 +155,34 @@ int_m[1,] <- rep("i",num_play)
 
 #2: if player A contains an "m" with player B, player B is "i" with everything
 # except it is "n" with player A
+#Which species 'make things?'
+#NOTE: multiple A,B,C can make the same D
+
+for (i in 1:num_play) {
+  #what things are made?
+  made <- which(int_m[i,] == "m")
+  l_made <- length(made)
+  if (l_made > 0) {
+    for (k in 1:l_made) {
+      int_m[made[k],] <- rep("i",num_play) #ignores all
+      #what thing(s) make it?
+      makers <- which(int_m[,made[k]] == "m")
+      int_m[made[k],makers] <- "n" #Except the thing that makes it
+    }
+  }
+}
+
+
+#Some funky things
+# Passive players can 'make' things... this might be okay (chemical rxns)
+
 
 
 #Visualize matrix:
 xx=matrix(as.numeric(as.factor(int_m)),c(num_play,num_play))
 color2D.matplot(xx,extremes=c(1:5), border="white", axes=FALSE, xlab="", ylab="",main="")
 
+#Extract food web
 fw <- (int_m == "e")*1
 fw_g <- graph.adjacency(fw)
 basal_pos <- 1
