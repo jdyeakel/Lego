@@ -4,37 +4,9 @@ library(igraph)
 library(plotrix)
 library(RColorBrewer)
 
+source("R/build_template.R")
 
-num_play <- 10
-
-#Interaction probabilities
-#Must add to 1
-pr_a <- 1/5
-pr_n <- 1/5
-pr_i <- 1/5
-pr_m <- 1/5
-pr_e <- 1/5
-
-#Pairwise interaction probabilities
-
-# pr_aa <- pr_a*(pr_a/(pr_a + pr_i))
-# pr_ai <- pr_a*(pr_i/(pr_a + pr_i))
-# 
-# pr_nn <- pr_n*(pr_n/(pr_i + pr_n + pr_e + pr_m))
-# pr_ni <- pr_n*(pr_i/(pr_i + pr_n + pr_e + pr_m))
-# pr_nm <- pr_n*(pr_m/(pr_i + pr_n + pr_e + pr_m))
-# pr_ne <- pr_n*(pr_e/(pr_i + pr_n + pr_e + pr_m))
-# 
-# pr_ia <- pr_i*(pr_a/(pr_a + pr_n + pr_i + pr_e))
-# pr_in <- pr_i*(pr_n/(pr_a + pr_n + pr_i + pr_e))
-# pr_ii <- pr_i*(pr_i/(pr_a + pr_n + pr_i + pr_e))
-# pr_ie <- pr_i*(pr_e/(pr_a + pr_n + pr_i + pr_e))
-# 
-# pr_mn <- pr_m*pr_n
-# 
-# pr_ei <- pr_e*(pr_i/(pr_i + pr_n + pr_e))
-# pr_en <- pr_e*(pr_n/(pr_i + pr_n + pr_e))
-# pr_ee <- pr_e*(pr_e/(pr_i + pr_n + pr_e))
+num_play <- 100
 
 pw_prob <- c(
   pr_ne = 0.025,
@@ -50,132 +22,14 @@ pw_prob <- c(
 #make sure this vector sums to one
 pw_prob <- pw_prob / sum(pw_prob)
 
-#Define player interaction matrix
-int_m <- matrix(0,num_play,num_play)
-
-#Fill out matrix based on probabilities above
-prob_line <- cumsum(sort(pw_prob))
-
-for (i in 1:num_play) {
-  for (j in 1:num_play) {
-    
-    if (i < j) {
-      
-      #draw an interaction pair
-      r_draw <- runif(1)
-      
-      if (r_draw < prob_line[2]) {
-        #Obtain the interaction types from the probability line, randomize, and assign
-        int_name <- unlist(strsplit(strsplit(names(prob_line)[1],"_")[[1]][2],""))
-        mij <- sample(int_name,2,replace=FALSE)
-        int_m[i,j] <- mij[1]
-        int_m[j,i] <- mij[2]
-      }
-      
-      if ((r_draw > prob_line[1]) && (r_draw < prob_line[2])) {
-        #Obtain the interaction types from the probability line, randomize, and assign
-        int_name <- unlist(strsplit(strsplit(names(prob_line)[2],"_")[[1]][2],""))
-        mij <- sample(int_name,2,replace=FALSE)
-        int_m[i,j] <- mij[1]
-        int_m[j,i] <- mij[2]
-      }
-      
-      if ((r_draw > prob_line[2]) && (r_draw < prob_line[3])) {
-        #Obtain the interaction types from the probability line, randomize, and assign
-        int_name <- unlist(strsplit(strsplit(names(prob_line)[3],"_")[[1]][2],""))
-        mij <- sample(int_name,2,replace=FALSE)
-        int_m[i,j] <- mij[1]
-        int_m[j,i] <- mij[2]
-      }
-      
-      if ((r_draw > prob_line[3]) && (r_draw < prob_line[4])) {
-        #Obtain the interaction types from the probability line, randomize, and assign
-        int_name <- unlist(strsplit(strsplit(names(prob_line)[4],"_")[[1]][2],""))
-        mij <- sample(int_name,2,replace=FALSE)
-        int_m[i,j] <- mij[1]
-        int_m[j,i] <- mij[2]
-      }
-      
-      if ((r_draw > prob_line[4]) && (r_draw < prob_line[5])) {
-        #Obtain the interaction types from the probability line, randomize, and assign
-        int_name <- unlist(strsplit(strsplit(names(prob_line)[5],"_")[[1]][2],""))
-        mij <- sample(int_name,2,replace=FALSE)
-        int_m[i,j] <- mij[1]
-        int_m[j,i] <- mij[2]
-      }
-      
-      if ((r_draw > prob_line[5]) && (r_draw < prob_line[6])) {
-        #Obtain the interaction types from the probability line, randomize, and assign
-        int_name <- unlist(strsplit(strsplit(names(prob_line)[6],"_")[[1]][2],""))
-        mij <- sample(int_name,2,replace=FALSE)
-        int_m[i,j] <- mij[1]
-        int_m[j,i] <- mij[2]
-      }
-      
-      if ((r_draw > prob_line[6]) && (r_draw < prob_line[7])) {
-        #Obtain the interaction types from the probability line, randomize, and assign
-        int_name <- unlist(strsplit(strsplit(names(prob_line)[7],"_")[[1]][2],""))
-        mij <- sample(int_name,2,replace=FALSE)
-        int_m[i,j] <- mij[1]
-        int_m[j,i] <- mij[2]
-      }
-      
-      if ((r_draw > prob_line[7]) && (r_draw < prob_line[8])) {
-        #Obtain the interaction types from the probability line, randomize, and assign
-        int_name <- unlist(strsplit(strsplit(names(prob_line)[8],"_")[[1]][2],""))
-        mij <- sample(int_name,2,replace=FALSE)
-        int_m[i,j] <- mij[1]
-        int_m[j,i] <- mij[2]
-      }
-      
-      if ((r_draw > prob_line[8]) && (r_draw < prob_line[9])) {
-        #Obtain the interaction types from the probability line, randomize, and assign
-        int_name <- unlist(strsplit(strsplit(names(prob_line)[9],"_")[[1]][2],""))
-        mij <- sample(int_name,2,replace=FALSE)
-        int_m[i,j] <- mij[1]
-        int_m[j,i] <- mij[2]
-      }
-      
-    }
-  }
-}
-#Determine which are active players and which aren't
-for (i in 1:num_play) {
-  if (length(which(int_m[i,] == "e")) > 0) {
-    int_m[i,i] <- "n"
-  } else {
-    int_m[i,i] = "i"
-  }
-}
-
-#Implement posthoc Rules
-
-#1: Row/Col 1 is the sun
-int_m[1,] <- rep("i",num_play)
-
-#2: if player A contains an "m" with player B, player B is "i" with everything
-# except it is "n" with player A
-#Which species 'make things?'
-#NOTE: multiple A,B,C can make the same D
-
-for (i in 1:num_play) {
-  #what things are made?
-  made <- which(int_m[i,] == "m")
-  l_made <- length(made)
-  if (l_made > 0) {
-    for (k in 1:l_made) {
-      int_m[made[k],] <- rep("i",num_play) #ignores all
-      #what thing(s) make it?
-      makers <- which(int_m[,made[k]] == "m")
-      int_m[made[k],makers] <- "n" #Except the thing that makes it
-    }
-  }
-}
-
+#Build the interaction template
+int_m <- build_template(num_play,pw_prob)
 
 #Some funky things
 # Passive players can 'make' things... this might be okay (chemical rxns)
 
+#Proportion of active players
+sum(apply(int_m,1,function(x){length(which(x == "e")) > 0})*1)/num_play
 
 
 #Visualize matrix:
@@ -187,8 +41,9 @@ fw <- (int_m == "e")*1
 fw_g <- graph.adjacency(fw)
 basal_pos <- 1
 trophic <- sapply(1:num_play,function(x){shortest.paths(fw_g,v = basal_pos, to = x)})
+trophic[which(trophic==Inf)] <- 0
 coords <- cbind(runif(num_play),trophic); coords[basal_pos,] <- c(0.5,trophic[basal_pos])
-plot(fw_g,layout=coords,vertex.size=5,edge.arrow.size=0.4,main=ecount(fw_g)/num_play^2,vertex.label=NA)
+plot(fw_g,layout=coords,vertex.size=5,edge.arrow.size=0.04,main=ecount(fw_g)/num_play^2,vertex.label=NA)
 
 #for 'need' coexistence: if vector of need for spA != player vector, spA is locally extinct
 
