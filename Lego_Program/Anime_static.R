@@ -1,5 +1,9 @@
 rm(list=c(ls()))
 
+library(igraph)
+library(plotrix)
+library(RColorBrewer)
+
 
 num_play <- 50
 
@@ -149,6 +153,20 @@ for (i in 1:num_play) {
 #1: Row/Col 1 is the sun
 int_m[1,] <- rep("i",num_play)
 
+#2: if player A contains an "m" with player B, player B is "i" with everything
+# except it is "n" with player A
+
+
+#Visualize matrix:
+xx=matrix(as.numeric(as.factor(int_m)),c(num_play,num_play))
+color2D.matplot(xx,extremes=c(1:5), border="white", axes=FALSE, xlab="", ylab="",main="")
+
+fw <- (int_m == "e")*1
+fw_g <- graph.adjacency(fw)
+basal_pos <- 1
+trophic <- sapply(1:num_play,function(x){shortest.paths(fw_g,v = basal_pos, to = x)})
+coords <- cbind(runif(num_play),trophic); coords[basal_pos,] <- c(0.5,trophic[basal_pos])
+plot(fw_g,layout=coords,vertex.size=5,edge.arrow.size=0.4,main=ecount(fw_g)/num_play^2,vertex.label=NA)
 
 #for 'need' coexistence: if vector of need for spA != player vector, spA is locally extinct
 
