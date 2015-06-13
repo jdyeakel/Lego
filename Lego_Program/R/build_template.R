@@ -1,8 +1,10 @@
 build_template <- function(num_players, pw_prob) {
   
   
+  
   #Define player interaction matrix
   int_m <- matrix(0,num_play,num_play)
+  
   
   #Fill out matrix based on probabilities above
   prob_line <- cumsum(sort(pw_prob))
@@ -125,7 +127,9 @@ build_template <- function(num_players, pw_prob) {
   
   #Determine ACTIVE player similarity for avoidance
   
-  
+  labels <- unlist(sapply(seq(1,num_play),function(x){paste("P",x,sep="")}))
+  colnames(int_m) <- labels
+  rownames(int_m) <- labels
   
   return(int_m)
   
