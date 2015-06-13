@@ -1,5 +1,5 @@
 
-#Testing git
+#Testing push to Justin
 rm(list=c(ls()))
 
 library(igraph)
@@ -9,17 +9,17 @@ library(RColorBrewer)
 source("R/build_template.R")
 
 
-#sequence <- seq(10,2000,100)
-#prop_active <- numeric(length(sequence))
+sequence <- seq(10,2000,100)
+prop_active <- numeric(length(sequence))
 
 
-#tic <- 0
-#for (i in sequence) {
+tic <- 0
+for (i in sequence) {
   
-  #tic <- tic + 1
+  tic <- tic + 1
   
-  num_play <- 100
-
+  num_play <- i
+  
   pw_prob <- c(
     pr_ne = 0.025,
     pr_nn = 0.025,
@@ -44,29 +44,14 @@ source("R/build_template.R")
   
   #Proportion of active players
   player_id <- apply(int_m,1,function(x){length(which(x == "e")) > 0})*1
-  #prop_active[tic] <- sum(player_id)/num_play
+  prop_active[tic] <- sum(player_id)/num_play
   
-  #fw_connectance[tic] <- 
+  fw_connectance[tic] <- 
   
   
-#}
+}
 
-#plot(sequence,prop_active,xlab="size",ylab="proportion active players",ylim=c(0,1))
-
-
-#Subselect the template
-num_sub <- 20
-sub_play <- sample(labels,num_sub,replace=FALSE)
-sub_play_id <- sapply(sub_play,function(x){which(labels == x)})
-subint_m <- int_m[sub_play_id,sub_play_id]
-#Insert the sun back into the submatrix
-subint_m[1,] <- int_m[1,]
-subint_m[,1] <- int_m[,1]
-
-
-seed_int_m <- test_compatability(subint_m,labels)
-
-
+plot(sequence,prop_active,xlab="size",ylab="proportion active players",ylim=c(0,1))
 
 
 #VISUALIZATION OF THE TEMPLATE
