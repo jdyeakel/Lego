@@ -1,5 +1,4 @@
 
-#Testing push to Justin
 rm(list=c(ls()))
 
 library(igraph)
@@ -9,12 +8,14 @@ library(RColorBrewer)
 source("R/build_template.R")
 
 
-sequence <- seq(10,2000,100)
-prop_active <- numeric(length(sequence))
+#sequence <- seq(10,2000,100)
+#prop_active <- numeric(length(sequence))
 
 
 tic <- 0
-for (i in sequence) {
+
+i=100
+#for (i in sequence) {
   
   tic <- tic + 1
   
@@ -43,15 +44,15 @@ for (i in sequence) {
   # Passive players can 'make' things... this might be okay (chemical rxns)
   
   #Proportion of active players
-  player_id <- apply(int_m,1,function(x){length(which(x == "e")) > 0})*1
-  prop_active[tic] <- sum(player_id)/num_play
+  #player_id <- apply(int_m,1,function(x){length(which(x == "e")) > 0})*1
+  #prop_active[tic] <- sum(player_id)/num_play
   
-  fw_connectance[tic] <- 
+  #fw_connectance[tic] <- 
   
   
-}
+#}
 
-plot(sequence,prop_active,xlab="size",ylab="proportion active players",ylim=c(0,1))
+#plot(sequence,prop_active,xlab="size",ylab="proportion active players",ylim=c(0,1))
 
 
 #VISUALIZATION OF THE TEMPLATE
@@ -60,6 +61,7 @@ plot(sequence,prop_active,xlab="size",ylab="proportion active players",ylim=c(0,
 #Visualize matrix:
 xx=matrix(as.numeric(as.factor(int_m)),c(num_play,num_play))
 color2D.matplot(xx,extremes=c(1:5), border="white", axes=FALSE, xlab="", ylab="",main="")
+legend(i,i,legend=levels(as.factor(int_m)),pch=22,pt.bg=c(1:5),xpd=TRUE, bty="n")
 
 #Extract food web
 pal <- brewer.pal(3,"Set1")
