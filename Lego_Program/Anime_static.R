@@ -1,6 +1,5 @@
 
-#Testing a few changes usig git
-#second test
+#Testing git
 rm(list=c(ls()))
 
 library(igraph)
