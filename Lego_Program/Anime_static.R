@@ -1,7 +1,8 @@
 
 #Testing a few changes usig git
+#second test
 rm(list=c(ls()))
-#test
+
 library(igraph)
 library(plotrix)
 library(RColorBrewer)
