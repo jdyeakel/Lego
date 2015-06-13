@@ -1,3 +1,5 @@
+
+#Testing a few changes usig git
 rm(list=c(ls()))
 
 library(igraph)
