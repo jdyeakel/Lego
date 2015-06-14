@@ -1,4 +1,4 @@
-build_template <- function(num_players, pw_prob) {
+build_template <- function(num_players, pw_prob, tr.avoid) {
   
   
   
@@ -105,6 +105,9 @@ build_template <- function(num_players, pw_prob) {
   
   #1: Row/Col 1 is the sun
   int_m[1,] <- rep("i",num_play)
+  #Things can only eat the sun... they cannot avoid, need, or make it
+  #suggestion:
+  int_m[which(int_m[,1]!="e"),1]="i"
   
   #2: if player A contains an "m" with player B, player B is "i" with everything
   # except it is "n" with player A
@@ -130,6 +133,39 @@ build_template <- function(num_players, pw_prob) {
   labels <- unlist(sapply(seq(1,num_play),function(x){paste("P",x,sep="")}))
   colnames(int_m) <- labels
   rownames(int_m) <- labels
+  
+  #One each time so avoidance can be asymmetrical; 
+  #tr.avoid=0.8 #the threshold determines how much overlap is needed for avoidance
+  #This seems to be very similar to tilman rules of competition:
+  #... a species excludes the other if it exploits (partially) the resources that the other needs the most
+  for (k in 2:num_play){ #Start from column 2 to avoid competition for the sun
+    for (l in 3:(num_play-1)){
+      aux=int_m[k,] #fix a row
+      aux.e=which(aux=="e") #positions of resources
+      aux.n=which(aux=="n") #position of needs
+      
+      aux.c=int_m[l,c(aux.e,aux.n)] #the potential "competitor"
+      sum.rn=length(c(aux.e,aux.n)) #number of resources and needs
+      
+      if (sum.rn>0){ #avoiding div by 0 (things may not have needs or eat)
+        share=sum(aux[c(aux.e,aux.n)]==aux.c) #number of shared resources and needs
+        prop.sh=share/sum.rn
+        if (prop.sh > tr.avoid){ #only avoids if proportion of shared needs/rec > threshold
+          int_m[k,l]="a"
+        }  
+      }
+    }
+  }
+  
+  #Determine which are active players and which aren't
+  for (i in 1:num_play) {
+    if (length(which(int_m[i,] == "e")) > 0) {
+      int_m[i,i] <- "n"
+    } else {
+      int_m[i,i] = "i"
+    }
+  }
+  
   
   return(int_m)
   
