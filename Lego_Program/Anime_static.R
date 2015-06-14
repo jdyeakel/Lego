@@ -115,8 +115,24 @@ plot(fw_g,layout=coords,vertex.size=5,edge.arrow.size=0.4,
 #for 'need' coexistence: if vector of need for spA != player vector, spA is locally extinct
 
 source("R/test_compatability.R")
-labels <- sort(sample(1:num_play,30))
-test_compatability (int_m,labels)
+
+R<-1 #counter
+min_size=10 #minimum number of elements
+
+#iterate until finding a viable community with at least min_size elements
+while (R<min_size){ 
+  
+  num_play<-dim(int_m)[1] #template size
+  N_size=30 #sample richness
+  r_sample <- c(1,sort(sample(2:num_play,N_size))) #sun + sampled elements 
+  
+  #Testing
+  local=test_compatability (int_m,r_sample)
+  R=dim(local)[1] #community size
+}
+
+
+
 
 
 
