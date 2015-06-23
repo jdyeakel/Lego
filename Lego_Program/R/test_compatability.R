@@ -21,8 +21,9 @@ test_compatability <- function(orig_subint_m,labels) {
           test <- any(makers %in% colnames(subint_m))
           if (test == FALSE) 
           {
-            subint_m <- subint_m[-i,]
-            subint_m <- subint_m[,-i]
+            kill <- i
+            subint_m <- subint_m[-kill,]
+            subint_m <- subint_m[,-kill]
             break
           }
         } else #Test compatability of ACTIVE players
@@ -30,18 +31,20 @@ test_compatability <- function(orig_subint_m,labels) {
           
           #Does the species eat something?
           if (length(which(subint_m[i,] == "e")) == 0) {
-            subint_m <- subint_m[-i,]
-            subint_m <- subint_m[,-i]
+            kill <- i
+            subint_m <- subint_m[-kill,]
+            subint_m <- subint_m[,-kill]
             break
           } 
           #Does the species have what it needs?
           required <- labels[which(subint_m[i,] == "n")]
           if (length(required) > 0) {
-            test <- all(required %in% colnames(subint_m))
+            test <- any(required %in% colnames(subint_m))
             if (test == FALSE) 
             {
-              subint_m <- subint_m[-i,]
-              subint_m <- subint_m[,-i]
+              kill <- i
+              subint_m <- subint_m[-kill,]
+              subint_m <- subint_m[,-kill]
               break
             }
           }
@@ -59,7 +62,7 @@ test_compatability <- function(orig_subint_m,labels) {
         compatable <- FALSE
       }
     }
-
+  print(paste("Size:",num_play,"  Kill:",kill,sep=""))
   } #End While loop
   
   return(subint_m)

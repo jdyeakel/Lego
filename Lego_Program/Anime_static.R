@@ -16,16 +16,16 @@ source("R/test_compatability.R")
   
   #tic <- tic + 1
   
-  num_play <- 100
+  num_play <- 200
 
   pw_prob <- c(
-    pr_ne = 0.025,
-    pr_nn = 0.025,
-    pr_ni = 0.05,
+    pr_ne = 0.005,
+    pr_nn = 0.005,
+    pr_ni = 0.005,
     pr_nm = 0.005,
     pr_ia = 0.05,
     pr_ie = 0.2,
-    pr_ii = 0.5,
+    pr_ii = 0.8,
     pr_aa = 0.05,
     pr_ee = 0.05
   )
@@ -53,7 +53,7 @@ source("R/test_compatability.R")
 
 
 #Subselect the template
-num_sub <- 100
+num_sub <- 50
 sub_play <- c("P1",sample(labels[-1],num_sub-1,replace=FALSE))
 sub_play_id <- sapply(sub_play,function(x){which(labels == x)})
 subint_m <- int_m[sub_play_id,sub_play_id]
