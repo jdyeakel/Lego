@@ -14,7 +14,7 @@ source("R/test_compatability.R")
 
 tic <- 0
 
-i<-100 #template size
+i<-50 #template size
 #for (i in sequence) {
 
 tic <- tic + 1
@@ -116,19 +116,27 @@ plot(fw_g,layout=coords,vertex.size=5,edge.arrow.size=0.4,
 
 source("R/test_compatability.R")
 
+
+min_size=10 #minimum number of elements
 R<-1 #counter
-min_size=20 #minimum number of elements
+prime_prod <- FALSE
 
 #iterate until finding a viable community with at least min_size elements
-while (R<min_size){ 
+while ((R<min_size) && (prime_prod == FALSE)) { 
   
   num_play<-dim(int_m)[1] #template size
   N_size=30 #sample richness
   r_sample <- c(1,sort(sample(2:num_play,N_size))) #sun + sampled elements 
   
-  #Testing
+  #Testing: Size
   local=test_compatability (int_m,r_sample)
   R=dim(local)[1] #community size
+  #Testing: is there at least ONE primary producer
+  if (length(which(local[,1] == "e")) == 0) {
+    prime_prod <- FALSE
+  } else {
+    prime_prod <- TRUE
+  }
 }
 
 
