@@ -106,7 +106,7 @@ coords <- cbind(runif(vcount(fw_g)),trophic); coords[basal_pos,] <- c(0.5,trophi
 par(mar=c(1,1,1,1))
 plot(fw_g,layout=coords,vertex.size=5,edge.arrow.size=0.4,
      main=ecount(fw_g)/num_play^2,vertex.label=NA,
-     vertex.color=pal[player_id+1])
+     vertex.color=pal[2])
 
 ###############################
 
@@ -116,29 +116,25 @@ plot(fw_g,layout=coords,vertex.size=5,edge.arrow.size=0.4,
 
 source("R/test_compatability.R")
 
-
+N_size=30 #sample richness
 min_size=10 #minimum number of elements
-R<-1 #counter
-prime_prod <- FALSE
 
-#iterate until finding a viable community with at least min_size elements
-while ((R<min_size) && (prime_prod == FALSE)) { 
-  
-  num_play<-dim(int_m)[1] #template size
-  N_size=30 #sample richness
-  r_sample <- c(1,sort(sample(2:num_play,N_size))) #sun + sampled elements 
-  
-  #Testing: Size
-  local=test_compatability (int_m,r_sample)
-  R=dim(local)[1] #community size
-  #Testing: is there at least ONE primary producer
-  if (length(which(local[,1] == "e")) == 0) {
-    prime_prod <- FALSE
-  } else {
-    prime_prod <- TRUE
-  }
+#Lattice edge size
+#L determines the size for the internal lattice.
+#The bordering rows and columns
+L <- 5 
+size <- (L+2)^2
+#Nearest neighbor function for Torus
+source("R/ipbc.R")
+
+#Populate the metacommunity with local interaction webs
+meta_com <- as.list(rep(0,size))
+for (i in 1:size) {
+  local <- test_compatability(int_m, N_size, min_size)
+  meta_com[[i]] <- local
 }
 
+#Interactions...
 
 
 
