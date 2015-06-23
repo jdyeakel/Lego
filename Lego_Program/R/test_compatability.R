@@ -1,13 +1,17 @@
-test_compatability <- function(orig_subint_m,labels) {
+test_compatability <- function(orig_subint_m,r_sample) {
   
-  subint_m <- orig_subint_m
+  subint_m <- orig_subint_m[r_sample,r_sample]
+  labels<-row.names(subint_m)
+  
   compatable <- FALSE
+
   
   while (compatable == FALSE) 
     {
     
     num_play <- length(subint_m[,1])
     
+  
     for (i in 2:num_play)  #ignore the sun
     {
       if (is.matrix(subint_m) == TRUE) {
@@ -52,7 +56,6 @@ test_compatability <- function(orig_subint_m,labels) {
       } else {
         compatable <- TRUE
       }
-      
     } #End For Loop
     
     if (compatable == FALSE) {
@@ -66,5 +69,5 @@ test_compatability <- function(orig_subint_m,labels) {
   } #End While loop
   
   return(subint_m)
-  
+
 } #End function
