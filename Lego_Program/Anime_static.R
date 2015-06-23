@@ -14,7 +14,7 @@ source("R/test_compatability.R")
 
 tic <- 0
 
-i<-50 #template size
+i<-100 #template size
 #for (i in sequence) {
 
 tic <- tic + 1
@@ -102,7 +102,7 @@ fw_g <- graph.adjacency(fw)
 basal_pos <- 1
 trophic <- sapply(1:vcount(fw_g),function(x){shortest.paths(fw_g,v = basal_pos, to = x)})
 trophic[which(trophic==Inf)] <- 0
-coords <- cbind(runif(num_play),trophic); coords[basal_pos,] <- c(0.5,trophic[basal_pos])
+coords <- cbind(runif(vcount(fw_g)),trophic); coords[basal_pos,] <- c(0.5,trophic[basal_pos])
 par(mar=c(1,1,1,1))
 plot(fw_g,layout=coords,vertex.size=5,edge.arrow.size=0.4,
      main=ecount(fw_g)/num_play^2,vertex.label=NA,
@@ -117,7 +117,7 @@ plot(fw_g,layout=coords,vertex.size=5,edge.arrow.size=0.4,
 source("R/test_compatability.R")
 
 R<-1 #counter
-min_size=10 #minimum number of elements
+min_size=20 #minimum number of elements
 
 #iterate until finding a viable community with at least min_size elements
 while (R<min_size){ 

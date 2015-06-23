@@ -138,24 +138,30 @@ build_template <- function(num_players, pw_prob, tr.avoid) {
   #tr.avoid=0.8 #the threshold determines how much overlap is needed for avoidance
   #This seems to be very similar to tilman rules of competition:
   #... a species excludes the other if it exploits (partially) the resources that the other needs the most
+
   for (k in 2:num_play){ #Start from column 2 to avoid competition for the sun
-    for (l in 3:(num_play-1)){
-      aux=int_m[k,] #fix a row
-      aux.e=which(aux=="e") #positions of resources
-      aux.n=which(aux=="n") #position of needs
-      
-      aux.c=int_m[l,c(aux.e,aux.n)] #the potential "competitor"
-      sum.rn=length(c(aux.e,aux.n)) #number of resources and needs
-      
-      if (sum.rn>0){ #avoiding div by 0 (things may not have needs or eat)
-        share=sum(aux[c(aux.e,aux.n)]==aux.c) #number of shared resources and needs
-        prop.sh=share/sum.rn
-        if (prop.sh > tr.avoid){ #only avoids if proportion of shared needs/rec > threshold
-          int_m[k,l]="a"
-        }  
+    for (l in 2:(num_play)){
+      #To ensure we aren't comparing 3:3, 4:4, etc.
+      if (k != l) {
+        aux=int_m[k,] #fix a row
+        aux.e=which(aux=="e") #positions of resources
+        aux.n=which(aux=="n") #position of needs
+        
+        aux.c=int_m[l,c(aux.e,aux.n)] #the potential "competitor"
+        sum.rn=length(c(aux.e,aux.n)) #number of resources and needs
+        
+        if (sum.rn>0){ #avoiding div by 0 (things may not have needs or eat)
+          share=sum(aux[c(aux.e,aux.n)]==aux.c) #number of shared resources and needs
+          prop.sh=share/sum.rn
+          if (prop.sh > tr.avoid){ #only avoids if proportion of shared needs/rec > threshold
+            int_m[k,l]="a"
+          }  
+        }
       }
     }
   }
+  
+  #Do we need to run the below code again? I don't think that we do...
   
   #Determine which are active players and which aren't
   for (i in 1:num_play) {
