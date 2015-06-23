@@ -6,7 +6,7 @@ library(plotrix)
 library(RColorBrewer)
 
 source("R/build_template.R")
-
+source("R/test_compatability.R")
 
 #sequence <- seq(10,2000,100)
 #prop_active <- numeric(length(sequence))
@@ -17,9 +17,9 @@ tic <- 0
 i<-50 #template size
 #for (i in sequence) {
   
-  tic <- tic + 1
-  
-  num_play <- i
+tic <- tic + 1
+
+num_play <- i
   
 #   pw_prob <- c(
 #     pr_ne = 0.025,
