@@ -38,17 +38,18 @@ num_play <- i
 
 p.n=0.02 
 p.e=0.1
-p.i=0.72
 p.m=0.1
 p.a=0
+#Ignore with 1 - pr(sum(other))
+p.i= 1 - (sum(p.n,p.e,p.m,p.a))
 
 #Normalization [0,1]
-S_prob=sum(c(p.n,p.e,p.i,p.m,p.a))
-p.n=p.n/S_prob
-p.e=p.e/S_prob
-p.i=p.i/S_prob
-p.m=p.m/S_prob
-p.a=p.a/S_prob
+# S_prob=sum(c(p.n,p.e,p.i,p.m,p.a))
+# p.n=p.n/S_prob
+# p.e=p.e/S_prob
+# p.i=p.i/S_prob
+# p.m=p.m/S_prob
+# p.a=p.a/S_prob
 
 #Defining paiwise probabilities 
 pw_prob <- c(
