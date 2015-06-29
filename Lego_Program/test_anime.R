@@ -9,7 +9,7 @@ source("R/test_compatability.R")
 
 #sequence <- seq(10,2000,100)
 #prop_active <- numeric(length(sequence))
-sequence <- seq(10,200,2)
+sequence <- seq(10,1000,20)
 num_e <- numeric(length(sequence))
 tic <- 0
 for (i in sequence) {
@@ -82,4 +82,5 @@ for (i in sequence) {
   num_e[tic] <- length(which(int_m == "e"))
 }
 plot(sequence,num_e,xlab="Template size",ylab="Number of trophic interactions",pch=16)
+lmodel <- lm(num_e~sequence)
 
