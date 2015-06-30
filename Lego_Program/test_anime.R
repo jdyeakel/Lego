@@ -9,8 +9,9 @@ source("R/test_compatability.R")
 
 #sequence <- seq(10,2000,100)
 #prop_active <- numeric(length(sequence))
-sequence <- seq(10,1000,20)
+sequence <- seq(10,200,10)
 num_e <- numeric(length(sequence))
+avg_num_e <- numeric(length(sequence))
 tic <- 0
 for (i in sequence) {
   
@@ -35,29 +36,29 @@ for (i in sequence) {
   #Defining probabilities of each type
   #Basic probs could also be based on num_play. e.g., We should expect p.n*num_play n's per column/row
   
-  p.n=0.02/(i-9) 
-  p.e=0.1/(i-9)
-  p.m=0.1/(i-9)
-  p.a=0/(i-9)
-  #Ignore with 1 - pr(sum(other))
-  p.i= 1 - (sum(p.n,p.e,p.m,p.a))
-  
-#   p.n=0.02
-#   p.e=0.1
-#   p.m=0.1
-#   p.a=0
+#   p.n=0.02/(i-9) 
+#   p.e=0.1/(i-9)
+#   p.m=0.1/(i-9)
+#   p.a=0/(i-9)
 #   #Ignore with 1 - pr(sum(other))
 #   p.i= 1 - (sum(p.n,p.e,p.m,p.a))
   
-
+    p.n=0.02
+    p.e=0.1
+    p.m=0.1
+    p.a=0
+    #Ignore with 1 - pr(sum(other))
+    p.i= 1 - (sum(p.n,p.e,p.m,p.a))
   
-#   #Normalization [0,1]
-#   S_prob=sum(c(p.n,p.e,p.i,p.m,p.a))
-#   p.n=p.n/S_prob
-#   p.e=p.e/S_prob
-#   p.i=p.i/S_prob
-#   p.m=p.m/S_prob
-#   p.a=p.a/S_prob
+  
+  
+  #   #Normalization [0,1]
+  #   S_prob=sum(c(p.n,p.e,p.i,p.m,p.a))
+  #   p.n=p.n/S_prob
+  #   p.e=p.e/S_prob
+  #   p.i=p.i/S_prob
+  #   p.m=p.m/S_prob
+  #   p.a=p.a/S_prob
   
   #Defining paiwise probabilities 
   pw_prob <- c(
@@ -80,7 +81,16 @@ for (i in sequence) {
   int_m <- build_template(num_play,pw_prob, 0.8)
   
   num_e[tic] <- length(which(int_m == "e"))
+  
+  #Average number of trophic interactions per species
+  avg_num_e[tic] <- mean(apply(int_m,1,function(x){length(which(x == "e"))}))
+  
+  
+  
 }
 plot(sequence,num_e,xlab="Template size",ylab="Number of trophic interactions",pch=16)
+
+plot(sequence,avg_num_e,xlab="Template size",ylab="Avg Num. trophic interactions",pch=16)
+
 lmodel <- lm(num_e~sequence)
 
