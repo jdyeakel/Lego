@@ -102,6 +102,6 @@ This network is just the subset of ```e``` interactions, and again is not expect
 3. Insert an evolutionary component to assembled communities, such that living players can speciate via small changes to their interactions
 
 
-![Master Template; Size=50](Lego/fig_mtemp.pdf)
+![Master Template; Size=50](fig_mtemp.pdf)
 
-![Food web; sun is at the bottom, connectance displayed at the top](Lego/fig_foodweb.pdf)
+![Food web; sun is at the bottom, connectance displayed at the top](fig_foodweb.pdf)
