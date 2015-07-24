@@ -105,7 +105,7 @@ trophic <- sapply(1:vcount(fw_g),function(x){shortest.paths(fw_g,v = basal_pos, 
 trophic[which(trophic==Inf)] <- 0
 coords <- cbind(runif(vcount(fw_g)),trophic); coords[basal_pos,] <- c(0.5,trophic[basal_pos])
 par(mar=c(1,1,1,1))
-plot(fw_g,layout=coords,vertex.size=5,edge.arrow.size=0.4,
+plot(fw_g,layout=coords,vertex.size=5,edge.arrow.size=0.0,
      main=ecount(fw_g)/num_play^2,vertex.label=NA,
      vertex.color=pal[2])
 

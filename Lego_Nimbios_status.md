@@ -1,4 +1,4 @@
-## Lego project
+## Lego project status :: July 24, 2015
 JD Yeakel, MM Pires, MAM de Aguiar, J O'Donnell, PR Guimarães, T Gross
 
 #Background
