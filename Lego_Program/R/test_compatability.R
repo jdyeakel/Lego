@@ -14,7 +14,7 @@ test_compatability <- function(orig_subint_m,N_size,min_size) {
     
     compatable <- FALSE
     
-    
+    Counter=0
     while (compatable == FALSE) 
     {
       
@@ -64,6 +64,7 @@ test_compatability <- function(orig_subint_m,N_size,min_size) {
             }
           }
         }
+        Counter<-Counter+1
       } #End For Loop
       
       if (i == num_play) {
@@ -85,7 +86,7 @@ test_compatability <- function(orig_subint_m,N_size,min_size) {
     }
     
   } #End While loop
-  
-  return(local)
+  out<-list(local,Counter)
+  return(out)
   
 } #End function

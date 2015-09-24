@@ -7,33 +7,57 @@ build_template <- function(num_players, pw_prob, tr.avoid) {
   
   
   #Fill out matrix based on probabilities above
-  prob_line <- cumsum(sort(pw_prob))
+  prob_line <- cumsum(sort(pw_prob)) 
   
-  for (i in 1:num_play) {
-    for (j in 1:num_play) {
-      
-      if (i < j) {
-        
+  # Distributing trophic interactions (e's) according to a degree distribution
+  #probabilities are for the whole matrix
+  #this means we should have N.e<-p.e*(num_play*(num_play-1)) trophic interactions (e)
+  #thus the mean degree should be mean.k=N.e/num_play
+  #we can sample degrre from a exponential ditribution with mean (1/rate) equal to mean.k; degrees=rexp(num_play,1/mean.k)
+  
+  N.e<-p.e*(num_play*(num_play-1))
+  mean.k<-N.e/(num_play-1)
+  aux=1
+  while(aux==1){
+    degrees<-rexp(num_play-1,1/mean.k)
+    degrees<-round(degrees)
+    degrees=c(0,degrees) #degree of the sun is 0
+    if(max(degrees)<num_play-1){aux=0}
+  }
+
+  int_m <- matrix(0,num_play,num_play)
+  for (i in 2:num_play) {
+    #for (j in 1:num_play) {
+    vec<-(1:num_play)
+    vec<-vec[-i]
+    resource<-sample(vec,degrees[i])
+    int_m[i,resource]<-"e"
+    
+    #Assigning complimentary interactions
+    ee_int=which(int_m[resource,i]=="e") # first disconsider ee interactions
+    if(length(ee_int)>=1){resource=resource[-ee_int]}
+  
+    bin.draw<-rbinom(length(resource),1,pw_prob[1]/pw_prob[6]) #randomly determine ei or en (ee already emerge from assigning e's)
+    int_m[resource*bin.draw,i]<-"n" #assigning n's according to random draw
+    int_m[resource*(1-bin.draw),i]<-"i"#assigning i's according to random draw
+  }
+  
+ 
+
+
+pw_prob.new=pw_prob[-c(1,6,9)]
+pw_prob.new=pw_prob.new/sum(pw_prob.new)
+prob_line <- cumsum(sort(pw_prob.new)) 
+
+for (i in 2:num_play) {
+  for (j in 2:num_play) {    
+
+    if (int_m[i,j]=="0"){ #only for the remaining interactions
+      if (i < j) {    
         #draw an interaction pair
         r_draw <- runif(1)
         
-        if (r_draw < prob_line[2]) {
-          #Obtain the interaction types from the probability line, randomize, and assign
-          int_name <- unlist(strsplit(strsplit(names(prob_line)[1],"_")[[1]][2],""))
-          mij <- sample(int_name,2,replace=FALSE)
-          int_m[i,j] <- mij[1]
-          int_m[j,i] <- mij[2]
-        }
-        
-        if ((r_draw > prob_line[1]) && (r_draw < prob_line[2])) {
-          #Obtain the interaction types from the probability line, randomize, and assign
-          int_name <- unlist(strsplit(strsplit(names(prob_line)[2],"_")[[1]][2],""))
-          mij <- sample(int_name,2,replace=FALSE)
-          int_m[i,j] <- mij[1]
-          int_m[j,i] <- mij[2]
-        }
-        
-        if ((r_draw > prob_line[2]) && (r_draw < prob_line[3])) {
+        if (r_draw < prob_line[3]) {
           #Obtain the interaction types from the probability line, randomize, and assign
           int_name <- unlist(strsplit(strsplit(names(prob_line)[3],"_")[[1]][2],""))
           mij <- sample(int_name,2,replace=FALSE)
@@ -65,33 +89,10 @@ build_template <- function(num_players, pw_prob, tr.avoid) {
           int_m[j,i] <- mij[2]
         }
         
-        if ((r_draw > prob_line[6]) && (r_draw < prob_line[7])) {
-          #Obtain the interaction types from the probability line, randomize, and assign
-          int_name <- unlist(strsplit(strsplit(names(prob_line)[7],"_")[[1]][2],""))
-          mij <- sample(int_name,2,replace=FALSE)
-          int_m[i,j] <- mij[1]
-          int_m[j,i] <- mij[2]
-        }
-        
-        if ((r_draw > prob_line[7]) && (r_draw < prob_line[8])) {
-          #Obtain the interaction types from the probability line, randomize, and assign
-          int_name <- unlist(strsplit(strsplit(names(prob_line)[8],"_")[[1]][2],""))
-          mij <- sample(int_name,2,replace=FALSE)
-          int_m[i,j] <- mij[1]
-          int_m[j,i] <- mij[2]
-        }
-        
-        if ((r_draw > prob_line[8]) && (r_draw < prob_line[9])) {
-          #Obtain the interaction types from the probability line, randomize, and assign
-          int_name <- unlist(strsplit(strsplit(names(prob_line)[9],"_")[[1]][2],""))
-          mij <- sample(int_name,2,replace=FALSE)
-          int_m[i,j] <- mij[1]
-          int_m[j,i] <- mij[2]
-        }
-        
       }
     }
   }
+}
   #Determine which are active players and which aren't
   for (i in 1:num_play) {
     if (length(which(int_m[i,] == "e")) > 0) {
