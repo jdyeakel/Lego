@@ -1,5 +1,15 @@
-## Lego project status :: July 24, 2015
-JD Yeakel, MM Pires, MAM de Aguiar, J O'Donnell, PR Guimarães, T Gross
+#The roles of niche space and evolutionary innovation in determining the structure and functioning of ecological communities
+
+
+JD Yeakel, MM Pires, MAM de Aguiar, J O'Donnell, PR Guimarães, T Gross   
+
+
+
+
+#Abstract
+There are many different types of interactions between and among species as well as their abiotic environments, and it is the reciprocal feedback that occurs across these interactions that determines whether a given species can persist in an ecosystem. Here we outline five fundamental one-way interactions that, ordered in different pairwise combinations, account for most (all?) biotic and abiotic interactions in ecosystems. Based on the compatibility of species to coexist as a function of these discrete interaction types, we aim to address 1) whether and to what extent communities find a steady state composition, 2) whether biomes emerge on a spatially explicitly landscape, and 3) if subtle changes in interactions over time mirror evolutionary processes at the scale of the community.
+
+
 
 #Background
 We aim to explore community assembly and dynamics by considering a basic set of underlying, asymmetric interactions between species and their local environment.

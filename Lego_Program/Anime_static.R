@@ -25,7 +25,7 @@ num_play <- i
 #Basic probs could also be based on num_play. e.g., We should expect p.n*num_play n's per column/row
 
 p.n=0.02 
-p.e=0.1
+p.e=0.05
 p.m=0.1
 p.a=0
 p.i= 1 - (sum(p.n,p.e,p.m,p.a))#Ignore with 1 - pr(sum(other))

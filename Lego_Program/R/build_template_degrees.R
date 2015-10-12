@@ -2,9 +2,6 @@ build_template <- function(num_players, pw_prob, tr.avoid) {
   
   num_play <- num_players   
   
-  #Define player interaction matrix
-  int_m <- matrix(0,num_play,num_play)
-  
   
   #Fill out matrix based on probabilities above
   prob_line <- cumsum(sort(pw_prob)) 
@@ -15,6 +12,8 @@ build_template <- function(num_players, pw_prob, tr.avoid) {
   #thus the mean degree should be mean.k=N.e/num_play
   #we can sample degrre from a exponential ditribution with mean (1/rate) equal to mean.k; degrees=rexp(num_play,1/mean.k)
   
+  
+  #Still, the degree distrobution scales with fw size.
   N.e<-p.e*(num_play*(num_play-1))
   mean.k<-N.e/(num_play-1)
   aux=1
@@ -24,7 +23,8 @@ build_template <- function(num_players, pw_prob, tr.avoid) {
     degrees=c(0,degrees) #degree of the sun is 0
     if(max(degrees)<num_play-1){aux=0}
   }
-
+  
+  #determining trophic interactions in the interaction matrix
   int_m <- matrix(0,num_play,num_play)
   for (i in 2:num_play) {
     #for (j in 1:num_play) {
@@ -36,63 +36,73 @@ build_template <- function(num_players, pw_prob, tr.avoid) {
     #Assigning complimentary interactions
     ee_int=which(int_m[resource,i]=="e") # first disconsider ee interactions
     if(length(ee_int)>=1){resource=resource[-ee_int]}
-  
+    
     bin.draw<-rbinom(length(resource),1,pw_prob[1]/pw_prob[6]) #randomly determine ei or en (ee already emerge from assigning e's)
+    #Faculatative mutualism
     int_m[resource*bin.draw,i]<-"n" #assigning n's according to random draw
+    #Asymmetric predation
     int_m[resource*(1-bin.draw),i]<-"i"#assigning i's according to random draw
   }
   
- 
-
-
-pw_prob.new=pw_prob[-c(1,6,9)]
-pw_prob.new=pw_prob.new/sum(pw_prob.new)
-prob_line <- cumsum(sort(pw_prob.new)) 
-
-for (i in 2:num_play) {
-  for (j in 2:num_play) {    
-
-    if (int_m[i,j]=="0"){ #only for the remaining interactions
-      if (i < j) {    
-        #draw an interaction pair
-        r_draw <- runif(1)
-        
-        if (r_draw < prob_line[3]) {
-          #Obtain the interaction types from the probability line, randomize, and assign
-          int_name <- unlist(strsplit(strsplit(names(prob_line)[3],"_")[[1]][2],""))
-          mij <- sample(int_name,2,replace=FALSE)
-          int_m[i,j] <- mij[1]
-          int_m[j,i] <- mij[2]
+  
+  #We now focus on non-trophic interactions
+  #First, remove probabilities including 'e'...
+  pw_prob.new=pw_prob[-c(1,6,9)]
+  pw_prob.new=pw_prob.new/sum(pw_prob.new)
+  prob_line <- cumsum(sort(pw_prob.new)) 
+  
+  for (i in 2:num_play) {
+    for (j in 2:num_play) {    
+      
+      if (int_m[i,j]=="0"){ #only for the remaining interactions
+        if (i < j) {    
+          #draw an interaction pair
+          r_draw <- runif(1)
+          
+          #We don't have 1 & 2 yet, because we haven't considered 'avoid' interaction types
+          
+          #N:N
+          if (r_draw < prob_line[3]) {
+            #Obtain the interaction types from the probability line, randomize, and assign
+            int_name <- unlist(strsplit(strsplit(names(prob_line)[3],"_")[[1]][2],""))
+            mij <- sample(int_name,2,replace=FALSE)
+            int_m[i,j] <- mij[1]
+            int_m[j,i] <- mij[2]
+          }
+          
+          #N:M
+          if ((r_draw > prob_line[3]) && (r_draw < prob_line[4])) {
+            #Obtain the interaction types from the probability line, randomize, and assign
+            int_name <- unlist(strsplit(strsplit(names(prob_line)[4],"_")[[1]][2],""))
+            mij <- sample(int_name,2,replace=FALSE)
+            int_m[i,j] <- mij[1]
+            int_m[j,i] <- mij[2]
+          }
+          
+          #N:I
+          if ((r_draw > prob_line[4]) && (r_draw < prob_line[5])) {
+            #Obtain the interaction types from the probability line, randomize, and assign
+            int_name <- unlist(strsplit(strsplit(names(prob_line)[5],"_")[[1]][2],""))
+            mij <- sample(int_name,2,replace=FALSE)
+            int_m[i,j] <- mij[1]
+            int_m[j,i] <- mij[2]
+          }
+          
+          #I:I
+          if ((r_draw > prob_line[5]) && (r_draw < prob_line[6])) {
+            #Obtain the interaction types from the probability line, randomize, and assign
+            int_name <- unlist(strsplit(strsplit(names(prob_line)[6],"_")[[1]][2],""))
+            mij <- sample(int_name,2,replace=FALSE)
+            int_m[i,j] <- mij[1]
+            int_m[j,i] <- mij[2]
+          }
+          
         }
-        
-        if ((r_draw > prob_line[3]) && (r_draw < prob_line[4])) {
-          #Obtain the interaction types from the probability line, randomize, and assign
-          int_name <- unlist(strsplit(strsplit(names(prob_line)[4],"_")[[1]][2],""))
-          mij <- sample(int_name,2,replace=FALSE)
-          int_m[i,j] <- mij[1]
-          int_m[j,i] <- mij[2]
-        }
-        
-        if ((r_draw > prob_line[4]) && (r_draw < prob_line[5])) {
-          #Obtain the interaction types from the probability line, randomize, and assign
-          int_name <- unlist(strsplit(strsplit(names(prob_line)[5],"_")[[1]][2],""))
-          mij <- sample(int_name,2,replace=FALSE)
-          int_m[i,j] <- mij[1]
-          int_m[j,i] <- mij[2]
-        }
-        
-        if ((r_draw > prob_line[5]) && (r_draw < prob_line[6])) {
-          #Obtain the interaction types from the probability line, randomize, and assign
-          int_name <- unlist(strsplit(strsplit(names(prob_line)[6],"_")[[1]][2],""))
-          mij <- sample(int_name,2,replace=FALSE)
-          int_m[i,j] <- mij[1]
-          int_m[j,i] <- mij[2]
-        }
-        
       }
     }
   }
-}
+  
+  #Filling in the diagonal
   #Determine which are active players and which aren't
   for (i in 1:num_play) {
     if (length(which(int_m[i,] == "e")) > 0) {
@@ -102,7 +112,9 @@ for (i in 2:num_play) {
     }
   }
   
+  ########################
   #Implement posthoc Rules
+  ########################
   
   #1: Row/Col 1 is the sun
   int_m[1,] <- rep("i",num_play)
@@ -111,7 +123,7 @@ for (i in 2:num_play) {
   int_m[which(int_m[,1]!="e"),1]="i"
   
   #2: if player A contains an "m" with player B, player B is "i" with everything
-  # except it is "n" with player A
+  # except if it is "n" with player A
   #Which species 'make things?'
   #NOTE: multiple A,B,C can make the same D
   
@@ -139,7 +151,7 @@ for (i in 2:num_play) {
   #tr.avoid=0.8 #the threshold determines how much overlap is needed for avoidance
   #This seems to be very similar to tilman rules of competition:
   #... a species excludes the other if it exploits (partially) the resources that the other needs the most
-
+  
   for (k in 2:num_play){ #Start from column 2 to avoid competition for the sun
     for (l in 2:(num_play)){
       #To ensure we aren't comparing 3:3, 4:4, etc.
