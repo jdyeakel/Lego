@@ -65,7 +65,24 @@ List build_template_degrees(
     if(max(degrees)<(num_play-1)){
       aux=0;
     }
-  }s
+  }
+
+  IntegerMatrix int_m(num_play,num_play);
+
+  //Remember that index 0 is the sun
+
+  //Population the matrix with trophic interactions
+  for(int i=1;int<num_play;i++){
+      IntegerVector vec(num_play-1);
+      int tic = 0;
+      for(int j=0;j<num_play;j++){
+          if (j != i) {
+              vec(tic) = tic;
+              tic = tic + 1;
+          }
+      }
+
+  }
 
 
 }
