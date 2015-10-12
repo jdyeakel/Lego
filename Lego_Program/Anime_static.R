@@ -94,6 +94,32 @@ plot(fw_g,layout=coords,vertex.size=5,edge.arrow.size=0.0,
 
 ###############################
 
+
+
+
+#Analysis of community equilibrium
+source("R/equilib_sim.R")
+num_play <- 200
+redraws = 10
+num = 20
+pairs = ((num-1)*(num))/2
+sim_raw <- matrix(0,pairs,redraws) 
+for (i in 1:redraws) {
+  int_m <- build_template(num_play,pw_prob, 0.8)
+  sim <- equilib_sim(int_m=int_m, init_size=100, reps=num)
+  sim_raw[,i] <- sim[upper.tri(sim)]
+  sim_m <- mean(sim[upper.tri(sim)])
+  sim_sd <- sd(sim[upper.tri(sim)])
+}
+boxplot(sim_raw)
+
+
+
+
+
+
+
+
 #Compatibility of subsampled community
 
 #for 'need' coexistence: if vector of need for spA != player vector, spA is locally extinct
