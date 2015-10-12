@@ -112,9 +112,9 @@ build_template <- function(num_players, pw_prob, tr.avoid) {
     }
   }
   
-  ########################
+  #===============================
   #Implement posthoc Rules
-  ########################
+  #===============================
   
   #1: Row/Col 1 is the sun
   int_m[1,] <- rep("i",num_play)

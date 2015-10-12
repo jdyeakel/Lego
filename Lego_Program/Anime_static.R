@@ -66,7 +66,7 @@ player_id <- apply(int_m,1,function(x){length(which(x == "e")) > 0})*1
 
 
 #VISUALIZATION OF THE TEMPLATE
-###############################
+#===============================
 
 #Visualize matrix:
 plot_matrix<-function(int_m, num_play){
