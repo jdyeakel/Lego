@@ -54,7 +54,8 @@ int_m <- build_template(num_play,pw_prob, 0.8)
 # Passive players can 'make' things... this might be okay (chemical rxns)
 
 #Proportion of active players
-player_id <- apply(int_m,1,function(x){length(which(x == "e")) > 0})*1
+player_id <- apply(int_m,1,function(x){length(which(x == "e")) > 0})*1; player_id[1] <-1
+#player_id <- which(diag(int_m) == "n")
 #prop_active[tic] <- sum(player_id)/num_play
 
 #fw_connectance[tic] <- 
@@ -84,11 +85,13 @@ fw <- (int_m == "e")*1
 fw <- fw[-which(player_id==0),-which(player_id==0)]
 fw_g <- graph.adjacency(fw)
 basal_pos <- 1
-trophic <- sapply(1:vcount(fw_g),function(x){shortest.paths(fw_g,v = basal_pos, to = x)})
-trophic[which(trophic==Inf)] <- 0
+#trophic <- sapply(1:vcount(fw_g),function(x){shortest.paths(fw_g,v = basal_pos, to = x)})
+trophic <- sapply(1:vcount(fw_g),function(x){mean(shortest.paths(fw_g,basal_pos,which(fw[x,]==1)))+0})
+#trophic[which(trophic==Inf)] <- 0
+trophic[which(trophic=="NaN")] <- 0
 coords <- cbind(runif(vcount(fw_g)),trophic); coords[basal_pos,] <- c(0.5,trophic[basal_pos])
 par(mar=c(1,1,1,1))
-plot(fw_g,layout=coords,vertex.size=5,edge.arrow.size=0.0,
+plot(fw_g,layout=coords,vertex.size=5,edge.arrow.size=0.5,
      main=ecount(fw_g)/num_play^2,vertex.label=NA,
      vertex.color=pal[2])
 

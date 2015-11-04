@@ -2,7 +2,7 @@ equilib_sim <- function(int_m,init_size,reps){
   source("R/test_compatability.R")
   
   comm_comp <- list()
-  
+  comm_dim <- numeric(reps)
   
   for (r in 1:reps) {
     #Build sub-communities from master template
@@ -10,6 +10,7 @@ equilib_sim <- function(int_m,init_size,reps){
     sub_m<-out[[1]]
     #feasibility=out[[2]] #iterations to find a feasible subcommunity
     comm_comp[[r]] <- rownames(sub_m)
+    comm_dim[r] <- dim(sub_m)[1]
   }
   
   
