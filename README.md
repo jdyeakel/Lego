@@ -1,14 +1,6 @@
-## The roles of niche space and evolutionary innovation in determining the structure and functioning of ecological communities
+## Lego Anime model
 
-
-#Abstract
-There are many different types of interactions between and among species as well as their abiotic environments, and it is the reciprocal feedback that occurs across these interactions that determines whether a given species can persist in an ecosystem. Here we outline five fundamental one-way interactions that, ordered in different pairwise combinations, account for most (all?) biotic and abiotic interactions in ecosystems. Based on the compatibility of species to coexist as a function of these discrete interaction types, we aim to address 1) whether and to what extent communities find a steady state composition, 2) whether biomes emerge on a spatially explicitly landscape, and 3) if subtle changes in interactions over time mirror evolutionary processes at the scale of the community.   
-
-#TODO   
-* Build a Cpp version of build template (slow in R)
-* Consider a compatability function in Cpp
-* Equilibrium analysis
-* Lattice simulation
+Community assembly and evolution via discrete interaction rules
 
 
 This is a work in progress.
@@ -25,31 +17,31 @@ Initial matrix seeding rules
 
 Sp A | Sp B
 --- | ---
-E | {I, M, E}
+A | {I, M, A}
 M | N
-I | {A, N, I, E}
-N | {N, I, M, E}
-A | {A, I}
+I | {E, N, I, A}
+N | {N, I, M, A}
+E | {E, I}
 
 Biological mapping
 
 Interaction | Biological meaning
 --- | ---
-{N,E} | Facultative mutualism
+{N,A} | Facultative mutualism
 {N.N} | Obligate mutualism
 {N,I} | Commensalism
-{I,A} | Asymmetric unstable comp.
-{A,A} | Symmetric unstable comp.
-{I,E} | Asymmetric Predation
+{I,E} | Asymmetric unstable comp.
+{E,E} | Symmetric unstable comp.
+{I,A} | Asymmetric Predation
 {M,N} | Engineering
 {I,I} | Stable competition, coexistence
-{E,E} | Symmetric predation
-{N,A} | DNE
-{E,A} | DNE
+{A,A} | Symmetric predation
+{N,E} | DNE
+{E,E} | DNE
 {M,M} | DNE
-{M,A} | DNE
-{M,I} | DNE
 {M,E} | DNE
+{M,I} | DNE
+{M,A} | DNE
 
 
 

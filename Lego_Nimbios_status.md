@@ -16,23 +16,23 @@ We aim to explore community assembly and dynamics by considering a basic set of 
 As such, the presence of a species within a community is a function of whether a suite of dependencies is met with regard to its needs, and the needs of the other species in the system.
 The set of one-way interactions are:
 ```S
-A: avoid
+A: assimilate
 N: need
 I: ignore
 M: make
-E: eat
+E: exclude
 ```
 These interactions are asymmetric in the sense that if Sp. A has an ``` M ``` interaction with Sp. B, the reverse interaction from Sp. B to Sp. A is limited.
-For example, if Sp. A *eats* Sp. B, Sp. B can either *ignore*, *make*, or *eat* Sp. A, but it could not *avoid* Sp. A, because then the original interaction could not occur.
+For example, if Sp. A *assimilates* Sp. B, Sp. B can either *ignore*, *make*, or *assimilate* Sp. A, but it could not *exclude* Sp. A, because then the original interaction could not occur.
 The full set of pairwise interactions from which these dependencies arise are
 
 Sp A | Sp B
 --- | ---
-E | {I, M, E}
+A | {I, M, A}
 M | N
-I | {A, N, I, E}
-N | {N, I, M, E}
-A | {A, I}
+I | {E, N, I, A}
+N | {N, I, M, A}
+E | {E, I}
 
 The available combinations of potential interactions each have ecological analogues.
 This is obviously important, because we aim for this project to shed light on ecosystem assembly and function.
@@ -40,21 +40,21 @@ The potential interactions, and their ecological mappings are
 
 Interaction | Biological meaning (DNE = Does Not Exist)
 --- | ---
-{N,E} | Facultative mutualism
+{N,A} | Facultative mutualism
 {N.N} | Obligate mutualism
 {N,I} | Commensalism
-{I,A} | Asymmetric unstable competition
-{A,A} | Symmetric unstable competition
-{I,E} | Asymmetric predation
+{I,E} | Asymmetric unstable competition
+{E,E} | Symmetric unstable competition
+{I,A} | Asymmetric predation
 {M,N} | Engineering
 {I,I} | Stable competition, coexistence
-{E,E} | Symmetric predation
-{N,A} | DNE
-{E,A} | DNE
+{A,A} | Symmetric predation
+{N,E} | DNE
+{A,E} | DNE
 {M,M} | DNE
-{M,A} | DNE
-{M,I} | DNE
 {M,E} | DNE
+{M,I} | DNE
+{M,A} | DNE
 
 
 **Details in establishing interactions between species/objects**
@@ -66,7 +66,7 @@ If, for some reason, Sp. A goes extinct, Object B will disappear, and Sp. C will
 The interconnections between dependencies that are built into the system thus have a large effect on the potential dynamics.
 To distinguish between living and nonliving players (for lack of a better word) in the system, a living player *needs* itself to exist; a nonliving player *ignores* itself.
 * To ensure that energy flows from the bottom up, an basal object - the sun - exists in all systems, ignoring all players in the system, but existing as a consumptive energy source.
-* There are a few of these interactions that seem strange... for example, asymmetric predation (where there is a predator-prey pair) consists of an ```e``` interaction from the predator to the prey, and an ```i``` interaction from the prey to the predator.
+* There are a few of these interactions that seem strange... for example, asymmetric predation (where there is a predator-prey pair) consists of an ```a``` interaction from the predator to the prey, and an ```i``` interaction from the prey to the predator.
 The idea that the prey *ignores* the predator stems from the assumption that the species within the communities that we are examining exist in some steady state... that is, if the suite of dependencies allow for the species to exist in the community, then we assume that its population exists in some kind of stable state, where the dependencies function only to determine its presence/absence.
 So the idea that the prey *ignores* the predator essentially means that although the prey population might be depressed from consumption by the predator population, it still exists in the system, so with respect to existence/nonexistence, the prey is ignoring the predator.
 
@@ -82,10 +82,10 @@ In addition to the criteria introduced from the list of interactions, we imposed
 
 Additional Rules
 1. Make Rule: if A ```m``` B, then B ```i``` everything, except B ```n``` A
-2. Coexistence/Competition Rule: if similarity(A,B) > $t_c$; then A ```a``` B, where $t_c$ is some avoidance threshold.
-3. Consumption Rule: Living players must consume something: $\sum(e) > 0$
+2. Coexistence/Competition Rule: if similarity(A,B) > $t_c$; then A ```e``` B, where $t_c$ is some avoidance threshold.
+3. Consumption Rule: Living players must consume something: $\sum(a) > 0$
 4. Sun Rule: Row/Column 1 of the community adjacency matrix is the sun.
-5. If there are no primary producers in the system (living players that have an ```e``` interaction with the sun), the system implodes and is drawn again.
+5. If there are no primary producers in the system (living players that have an ```a``` interaction with the sun), the system implodes and is drawn again.
 
 
 #Preliminary results
@@ -97,7 +97,7 @@ Also note that the master tempalate does not need to meet all coexistence criter
 
 
 **Figure 2** An example of the food web embedded within the master template.
-This network is just the subset of ```e``` interactions, and again is not expected to exist on its own, as a local community would be composed of a subset of living/nonliving player from the master template.
+This network is just the subset of ```a``` interactions, and again is not expected to exist on its own, as a local community would be composed of a subset of living/nonliving player from the master template.
 
 
 
