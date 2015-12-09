@@ -28,6 +28,8 @@ function build_template_degrees(num_players, pw_prob, tr_avoid)
 
   #Create an empty character array with dimensions equal to the number of players
   int_m = Array(Char,num_play,num_play)
+  #Set array equal to zero
+  int_m[1:num_play*num_play] = '0'
 
   for i = 2:num_play
 
@@ -58,5 +60,45 @@ function build_template_degrees(num_players, pw_prob, tr_avoid)
       int_m[find(x->x==0,resource.*bin_draw),i]<-"i"#assigning i's according to random draw
     end
 
+    int_labels = ["ne","nn","ni","nm","ia","ie","ii","aa","ee"]
 
-    
+    pw_prob_new = pw_prob
+    deleteat!(pw_prob_new,[1,6,9])
+    new_int_labels = int_labels
+    pw_prob_new = pw_prob_new/sum(pw_prob_new)
+    deleteat!(new_int_labels,[1,6,9])
+
+    prob_line = cumsum(sort(pw_prob_new))
+
+
+
+    for i = 2:num_play
+      for j = 2:num_play
+        if int_m[i,j] == '0'
+          if i < j
+
+            r_draw = rand()
+
+            #N:N
+            if r_draw < prob_line[3]
+              mij = Array(Char,2)
+              mij[1] = rand([new_int_labels[1][1],new_int_labels[1][2]])
+              if mij[1] == new_int_labels[1][1]
+                mij[2] = new_int_labels[1][2]
+              else mij[2] = new_int_labels[1][1]
+              end
+              int_m[i,j] = mij[1]
+              int_m[j,i] = mij[2]
+            end
+
+            #N:M
+            if r_draw > prob_line[3] && r_draw < prob_line[4]
+              mij = Array(Char,2)
+              mij[1] = rand([new_int_labels[2][1],new_int_labels[2][2]])
+              if mij[1] == new_int_labels[2][1]
+                mij[2] = new_int_labels[2][2]
+              else mij[2] = new_int_labels[2][1]
+              end
+              int_m[i,j] = mij[1]
+              int_m[j,i] = mij[2]
+            end
