@@ -3,7 +3,7 @@
 Community assembly and evolution via discrete interaction rules
 
 
-This is a work in progress.
+This is a work in progress. (check)
 
 ```S
 A: avoid
@@ -17,31 +17,31 @@ Initial matrix seeding rules
 
 Sp A | Sp B
 --- | ---
-A | {I, M, A}
+E | {I, M, E}
 M | N
-I | {E, N, I, A}
-N | {N, I, M, A}
-E | {E, I}
+I | {A, N, I, E}
+N | {N, I, M, E}
+A | {A, I}
 
 Biological mapping
 
 Interaction | Biological meaning
 --- | ---
-{N,A} | Facultative mutualism
+{N,E} | Facultative mutualism
 {N.N} | Obligate mutualism
 {N,I} | Commensalism
-{I,E} | Asymmetric unstable comp.
-{E,E} | Symmetric unstable comp.
-{I,A} | Asymmetric Predation
+{I,A} | Asymmetric unstable comp.
+{A,A} | Symmetric unstable comp.
+{I,E} | Asymmetric Predation
 {M,N} | Engineering
 {I,I} | Stable competition, coexistence
-{A,A} | Symmetric predation
-{N,E} | DNE
-{E,E} | DNE
+{E,E} | Symmetric predation
+{N,A} | DNE
+{E,A} | DNE
 {M,M} | DNE
-{M,E} | DNE
-{M,I} | DNE
 {M,A} | DNE
+{M,I} | DNE
+{M,E} | DNE
 
 
 
