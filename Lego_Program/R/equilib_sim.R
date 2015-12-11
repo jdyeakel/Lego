@@ -17,7 +17,7 @@ equilib_sim <- function(int_m,init_size,reps){
     #trophic degree distributions
     trophic_dd <- numeric(dim(sub_m)[1])
     for (i in 2:dim(sub_m)[1]) {
-      trophic_dd[i] <- length(which(sub_m[i,] == "e"))
+      trophic_dd[i] <- length(which(sub_m[,i] == "e"))
     }
     comm_dd[[r]] <- trophic_dd
   }

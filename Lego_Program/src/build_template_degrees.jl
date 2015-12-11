@@ -187,4 +187,13 @@ function build_template_degrees(num_play, pw_prob, tr_avoid)
     int_v = int_m[i,:]
     made = find(x->x=='m',int_v)
     l_made = length(made)
-    for k = 1:l_made
+    if l_made > 0
+      for k = 1:l_made
+        #The made thing ignores everything...
+        int_m[made[k],:] = 'i'
+        #what thing(s) make it?
+        makers = find(x->x=="m",int_m[:,made[k]])
+        int_m[made[k],makers] <- "n" #Except the thing that makes it
+      end
+    end
+  end

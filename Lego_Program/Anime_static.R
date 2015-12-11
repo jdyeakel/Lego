@@ -97,7 +97,14 @@ plot(fw_g,layout=coords,vertex.size=5,edge.arrow.size=0.5,
 
 ###############################
 
+#Major problem: sub matrices contain a lot of 'ignores all'
+#Also, in the master template, things that 'avoid' have 'ignore' diagonals... why?
 
+#Extract a sub-community
+init_size = 100
+out<-test_compatability(int_m, N_size=init_size, min_size=10) #Need to add a counter to infer feasibility
+sub_m<-out[[1]]
+plot_matrix(sub_m, dim(sub_m)[1])
 
 
 #Analysis of community equilibrium
@@ -109,12 +116,15 @@ pairs = ((num-1)*(num))/2
 sim_raw <- matrix(0,pairs,redraws) 
 for (i in 1:redraws) {
   int_m <- build_template(num_play,pw_prob, 0.8)
-  sim <- equilib_sim(int_m=int_m, init_size=100, reps=num)
+  sim_out <- equilib_sim(int_m=int_m, init_size=100, reps=num)
+  sim <- sim_out[[1]]
   sim_raw[,i] <- sim[upper.tri(sim)]
   sim_m <- mean(sim[upper.tri(sim)])
   sim_sd <- sd(sim[upper.tri(sim)])
+  
+  tdd <- sim_out[[2]]
 }
-boxplot(sim_raw)
+boxplot(sim_raw,xlab="Replicates",ylab="Pairwise species similarity across comm.")
 
 
 
