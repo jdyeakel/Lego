@@ -1,6 +1,8 @@
 function build_template_degrees(num_play, pw_prob, tr_avoid)
 
-  num_play = 50
+  using Distributions
+
+  num_play = 10
 
   p_n=0.02
   p_e=0.05
@@ -21,7 +23,7 @@ function build_template_degrees(num_play, pw_prob, tr_avoid)
     pr_ee = p_e*(p_e/(p_i+p_n+p_e))
   ]
 
-
+  pw_prob = pw_prob / sum(pw_prob)
 
   #Fill out matrix based on probabilities above
   prob_line = cumsum(sort(pw_prob))
@@ -38,9 +40,11 @@ function build_template_degrees(num_play, pw_prob, tr_avoid)
 
   mean_k = N_e/(num_play-1)
 
-  aux=1
+
   expdist = Exponential(1/mean_k)
-  while aux==1
+  degrees = Array(Int64)
+  aux=1
+  while aux == 1
     degrees = rand(expdist,num_play-1)
     degrees = round(Int64,degrees)
     degrees = [0;degrees] #degree of the sun is 0
@@ -62,8 +66,11 @@ function build_template_degrees(num_play, pw_prob, tr_avoid)
     deleteat!(vec,i)
     #What is the degree of player i?
     k = degrees[i]
+    #Randomly choose the identities of prey
     resource = rand(vec,k)
+    #Establish these prey in the interaction matrix
     int_m[i,[resource]] = 'e'
+    #Note: to vectorize a row from int_m (so that it is an Array{Char,1}), we would write v = int_m[i,:][:]
 
     #Assigning complimentary interactions
     #First disconsider ee interactions
@@ -79,9 +86,11 @@ function build_template_degrees(num_play, pw_prob, tr_avoid)
     bin_draw = rand(bindist,length(resource))
 
     #Faculatative mutualism
-    int_m[find(x->x==1,resource.*bin_draw),i]<-"n" #assigning n's according to random draw
+    res_n = resource[find(x->x==1,bin_draw)]
+    int_m[[res_n],i] = 'n' #assigning n's according to random draw
     #Asymmetric predation
-    int_m[find(x->x==0,resource.*bin_draw),i]<-"i"#assigning i's according to random draw
+    res_i = resource[find(x->x==0,bin_draw)]
+    int_m[[res_i],i] = 'i' #assigning i's according to random draw
 
   end
 
@@ -192,8 +201,8 @@ function build_template_degrees(num_play, pw_prob, tr_avoid)
         #The made thing ignores everything...
         int_m[made[k],:] = 'i'
         #what thing(s) make it?
-        makers = find(x->x=="m",int_m[:,made[k]])
-        int_m[made[k],makers] <- "n" #Except the thing that makes it
+        makers = find(x->x=='m',int_m[:,made[k]])
+        int_m[made[k],makers] = 'n' #Except the thing that makes it
       end
     end
   end
