@@ -2,19 +2,35 @@ function build_template_degrees(num_play, probs)
 
 
   #Defining paiwise probabilities
-  pw_prob = [
-    pr_ne = p_n*(p_e/(p_e+p_n+p_i+p_m)),
-    pr_nn = p_n*(p_n/(p_e+p_n+p_i+p_m)),
-    pr_ni = p_n*(p_i/(p_e+p_n+p_i+p_m)),
-    pr_nm = p_n*(p_m/(p_e+p_n+p_i+p_m)),
-    pr_ia = p_i*(p_a/(p_e+p_a+p_n+p_i)),
-    pr_ie = p_i*(p_e/(p_e+p_a+p_n+p_i)),
-    pr_ii = p_i*(p_i/(p_e+p_a+p_n+p_i)),
-    pr_aa = p_a*(p_a/(p_a+p_i)),
-    pr_ee = p_e*(p_e/(p_i+p_n+p_e))
+  #These are probabilities of pairwise interactions within the whole universe of possible interactions (15)
+  #THIS IS PROBABLY WRONG
+  # pw_prob_init = [
+  #   pr_na = p_n*(p_a/(p_a+p_n+p_i+p_m)),
+  #   pr_nn = p_n*(p_n/(p_a+p_n+p_i+p_m)),
+  #   pr_ni = p_n*(p_i/(p_a+p_n+p_i+p_m)),
+  #   pr_nm = p_n*(p_m/(p_a+p_n+p_i+p_m)),
+  #   pr_ie = p_i*(p_e/(p_a+p_e+p_n+p_i)),
+  #   pr_ia = p_i*(p_a/(p_a+p_e+p_n+p_i)),
+  #   pr_ii = p_i*(p_i/(p_a+p_e+p_n+p_i)),
+  #   pr_ee = p_e*(p_e/(p_e+p_i)),
+  #   pr_aa = p_a*(p_a/(p_i+p_n+p_a))
+  # ]
+
+  #THIS IS PROBABLY RIGHT
+  pw_prob_init = [
+    pr_na = p_n*(p_a/(p_a+p_n+p_i+p_m)) + p_a*(p_n/(p_a+p_i+p_n)),
+    pr_nn = p_n*(p_n/(p_a+p_n+p_i+p_m)),
+    pr_ni = p_n*(p_i/(p_a+p_n+p_i+p_m)) + p_i*(p_n/(p_a+p_n+p_i+p_e)),
+    pr_nm = p_n*(p_m/(p_a+p_n+p_i+p_m)) + p_m*(p_n/p_n),
+    pr_ie = p_i*(p_e/(p_a+p_e+p_n+p_i)) + p_e*(p_i/(p_i+p_e)),
+    pr_ia = p_i*(p_a/(p_a+p_e+p_n+p_i)) + p_a*(p_i/(p_a+p_i+p_n)),
+    pr_ii = p_i*(p_i/(p_a+p_e+p_n+p_i)),
+    pr_ee = p_e*(p_e/(p_e+p_i)),
+    pr_aa = p_a*(p_a/(p_i+p_n+p_a))
   ]
 
-  pw_prob = pw_prob / sum(pw_prob)
+
+  pw_prob = copy(pw_prob_init) / sum(pw_prob_init)
 
   #Fill out matrix based on probabilities above
   prob_line = cumsum(sort(pw_prob))
