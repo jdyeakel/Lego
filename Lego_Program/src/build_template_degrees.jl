@@ -27,13 +27,13 @@ function build_template_degrees(num_play, probs)
     pr_ii = p_i*(p_i/(p_a+p_e+p_n+p_i)),
     pr_ee = p_e*(p_e/(p_e+p_i)),
     pr_aa = p_a*(p_a/(p_i+p_n+p_a))
-  ]
+  ];
 
 
-  pw_prob = copy(pw_prob_init) / sum(pw_prob_init)
+  # pw_prob = copy(pw_prob_init) / sum(pw_prob_init)
 
   #Fill out matrix based on probabilities above
-  prob_line = cumsum(sort(pw_prob))
+  prob_line = cumsum(sort(pw_prob_init));
 
   # Distributing trophic interactions (e's) according to a degree distribution
   #probabilities are for the whole matrix
@@ -43,32 +43,34 @@ function build_template_degrees(num_play, probs)
 
 
   #Still, the degree distrobution scales with fw size.
-  N_e = p_e*(num_play*(num_play-1))
+  #Expected number of trophic links
+  N_a = p_a*(num_play*(num_play-1));
+  #Expected number of trophic links per species (discounting cannibalism)
+  mean_k = N_a/(num_play-1);
 
-  mean_k = N_e/(num_play-1)
-
-
-  expdist = Exponential(1/mean_k)
-  degrees = Array(Int64)
+  #Assuming trophic links follow an exponential distribution
+  #Draw number of trophic links per node, with element 1=sun (k=0)
+  expdist = Exponential(1/mean_k);
+  degrees = Array(Int64);
   aux=1
   while aux == 1
-    degrees = rand(expdist,num_play-1)
-    degrees = round(Int64,degrees)
-    degrees = [0;degrees] #degree of the sun is 0
+    degrees = rand(expdist,num_play-1);
+    degrees = round(Int64,degrees);
+    degrees = [0;copy(degrees)]; #degree of the sun is 0
     if maximum(degrees)<num_play-1
-      aux = 0
+      aux = 0;
     end
   end
 
   #Create an empty character array with dimensions equal to the number of players
   int_m = Array(Char,num_play,num_play)
   #Set array equal to zero
-  int_m[1:num_play*num_play] = '0'
+  int_m[1:num_play*num_play] = '0';
 
   for i = 2:num_play
 
     #Assigning initial trophic interactions
-    vec = collect(1:num_play)
+    vec = collect(1:num_play);
     #Remove ith element
     deleteat!(vec,i)
     #What is the degree of player i?
@@ -76,28 +78,31 @@ function build_template_degrees(num_play, probs)
     #Randomly choose the identities of prey
     resource = rand(vec,k)
     #Establish these prey in the interaction matrix
-    int_m[i,[resource]] = 'e'
+    int_m[i,collect(resource)] = 'a'
     #Note: to vectorize a row from int_m (so that it is an Array{Char,1}), we would write v = int_m[i,:][:]
 
     #Assigning complimentary interactions
-    #First disconsider ee interactions
-    ee_int = find(x -> x == 'e', int_m[[resource],i])
+    #First disconsider aa interactions
+    aa_int = find(x -> x == 'a', int_m[collect(resource),i])
 
-    if length(ee_int) >= 1
+    if length(aa_int) >= 1
       #Remove elements ee_int
-      deleteat!(resource,ee_int)
+      deleteat!(resource,aa_int)
     end
 
-    #randomly determine ei or en (ee already emerge from assigning e's)
-    bindist = Binomial(1,pw_prob[1]/pw_prob[6]) #PROBLEMS NEVER DRAWS ONES
+    #randomly determine ai or an (aa already emerges from assigning a's)
+    #Draw from a binomial: which interaciton will be Asymmetric predation?
+    #Draw 1 = Asymmetric predation; Draw 0 = facultative mutualism
+    pr_i_given_a = (p_i/(p_i+p_n));
+    bindist = Binomial(1,pr_i_given_a) #PROBLEMS NEVER DRAWS ONES
     bin_draw = rand(bindist,length(resource))
 
     #Faculatative mutualism
-    res_n = resource[find(x->x==1,bin_draw)]
-    int_m[[res_n],i] = 'n' #assigning n's according to random draw
+    res_i = resource[find(x->x==1,bin_draw)]
+    int_m[[res_i],i] = 'i' #assigning n's according to random draw
     #Asymmetric predation
-    res_i = resource[find(x->x==0,bin_draw)]
-    int_m[[res_i],i] = 'i' #assigning i's according to random draw
+    res_n = resource[find(x->x==0,bin_draw)]
+    int_m[[res_n],i] = 'n' #assigning i's according to random draw
 
   end
 
