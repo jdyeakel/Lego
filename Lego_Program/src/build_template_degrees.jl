@@ -54,6 +54,9 @@ function build_template_degrees(num_play, probs)
   #Set array equal to zero
   int_m[1:num_play*num_play] = '0';
 
+  prim_prod = zeros(num_play);
+  prim_prod[rand(collect(1:num_play),1)] = 1;
+
   for i = 2:num_play
 
     #Assigning initial trophic interactions
@@ -64,7 +67,14 @@ function build_template_degrees(num_play, probs)
     #What is the degree of player i?
     k = degrees[i]
     #Randomly choose the identities of prey without replacement
-    resource = sample(vec,k,replace=false)
+    if prim_prod[i] == 0
+      resource = sample(vec,k,replace=false)
+    else
+      resource_wop = sample(vec,k-1,replace=false)
+      resource = [resource_wop,1]
+    end
+
+
     #Establish these prey in the interaction matrix
     int_m[i,collect(resource)] = 'a'
     #Note: to vectorize a row from int_m (so that it is an Array{Char,1}), we would write v = int_m[i,:][:]
