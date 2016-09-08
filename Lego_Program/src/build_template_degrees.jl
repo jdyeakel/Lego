@@ -215,6 +215,37 @@ function build_template_degrees(num_play, probs)
     end
   end
 
-return(int_m)
+
+  #Derive the trophic adjacency matrix, which includes all 'ai','aa','an' interactions
+  t_m = zeros(num_play,num_play);
+  for i=1:num_play
+    for j=1:num_play
+      if i > j
+        if int_m[i,j] == 'a' && int_m[j,i] == 'i'
+          t_m[i,j] = 1
+          t_m[j,i] = 1
+        end
+        if int_m[i,j] == 'i' && int_m[j,i] == 'a'
+          t_m[i,j] = 1
+          t_m[j,i] = 1
+        end
+        if int_m[i,j] == 'a' && int_m[j,i] == 'n'
+          t_m[i,j] = 1
+          t_m[j,i] = 1
+        end
+        if int_m[i,j] == 'n' && int_m[j,i] == 'a'
+          t_m[i,j] = 1
+          t_m[i,j] = 1
+        end
+        if int_m[i,j] == 'a' && int_m[j,i] == 'a'
+          t_m[i,j] = 1
+          t_m[j,i] = 1
+        end
+      end
+    end
+  end
+
+
+return(int_m, t_m)
 
 end

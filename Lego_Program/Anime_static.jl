@@ -1,7 +1,8 @@
 using Distributions
-include("/Users/justinyeakel/Dropbox/PostDoc/2014_Lego/Lego_Program/src/build_template_degrees.jl")
+using Gadfly
+include("$(homedir())/Dropbox/PostDoc/2014_Lego/Lego_Program/src/build_template_degrees.jl")
 
-num_play = 100
+num_play = 30
 
 init_probs = [
 p_n=0.05,
@@ -10,39 +11,49 @@ p_m=0.001,
 p_i= 1 - sum([p_n,p_m,p_a]) #Ignore with 1 - pr(sum(other))
 ]
 
-int_m=build_template_degrees(num_play,init_probs);
+int_m, t_m = build_template_degrees(num_play,init_probs);
+writedlm("$(homedir())/Dropbox/PostDoc/2014_Lego/data_template/fw.csv",t_m);
 
-#Derive the trophic adjacency matrix, which includes all 'ai','aa','an' interactions
-t_m = zeros(num_play,num_play);
-for i=1:num_play
-  for j=1:num_play
-    if i > j
-      if int_m[i,j] == 'a' && int_m[j,i] == 'i'
-        t_m[i,j] = 1
-        t_m[j,i] = 1
-      end
-      if int_m[i,j] == 'i' && int_m[j,i] == 'a'
-        t_m[i,j] = 1
-        t_m[j,i] = 1
-      end
-      if int_m[i,j] == 'a' && int_m[j,i] == 'n'
-        t_m[i,j] = 1
-        t_m[j,i] = 1
-      end
-      if int_m[i,j] == 'n' && int_m[j,i] == 'a'
-        t_m[i,j] = 1
-        t_m[i,j] = 1
-      end
-      if int_m[i,j] == 'a' && int_m[j,i] == 'a'
-        t_m[i,j] = 1
-        t_m[j,i] = 1
-      end
+
+
+# Assessing stats across community size ranges
+svecpower = collect(1:0.01:5);
+svec=Array{Int64}(length(svecpower))*0;
+for i=1:length(svecpower)
+  svec[i]=round(Int64,10^svecpower[i]);
+end
+ls = length(svec);
+C_out=zeros(ls);
+for i=1:ls
+  s=svec[i];
+  print(s);
+  check=true;
+  while check==true
+    num_play = s;
+    init_probs = [
+    p_n=0.05,
+    p_a=0.02,
+    p_m=0.001,
+    p_i= 1 - sum([p_n,p_m,p_a]) #Ignore with 1 - pr(sum(other))
+    ];
+
+    int_m, t_m = build_template_degrees(num_play,init_probs);
+    #If there are no primary producers, then rinse and repeat
+    if sum(t_m[:,1])==0
+      check = true;
+    else
+      check = false;
     end
   end
+  diag_int=diag(int_m);
+  S = length(find(x->x=='n',diag_int));
+  #Directed Connectance
+  L = sum(t_m)/2;
+  C = L/(S^2);
+  C_out[i] = C;
 end
 
-#Food web network
-trophic_m = Array(Int,num_play,num_play)*0;
-trophic = find(x->x=='a',int_m);
-trophic_m[trophic]=1;
-trophic_m
+output = hcat(svec,C_out);
+writedlm("$(homedir())/Dropbox/PostDoc/2014_Lego/data_template/size_conn.csv",output);
+
+plot(x=svec,y=C_out,Geom.point,Scale.x_log10)
