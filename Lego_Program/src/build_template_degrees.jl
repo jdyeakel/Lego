@@ -46,7 +46,8 @@ function build_template_degrees(num_play, probs)
   #The number of prey in the range should just scale with the number of 'species'
   degrees = rangev .* num_play;
 
-  degrees = round(Int64,copy(degrees));
+  #The +1 forces species to eat at least one thing
+  degrees = round(Int64,copy(degrees)) + 1;
   #plot(x=degrees,Geom.histogram)
 
   #Create an empty character array with dimensions equal to the number of players
@@ -55,7 +56,7 @@ function build_template_degrees(num_play, probs)
   int_m[1:num_play*num_play] = '0';
 
   prim_prod = zeros(num_play);
-  prim_prod[rand(collect(1:num_play),1)] = 1;
+  prim_prod[sample(collect(1:num_play),1)] = 1;
 
   for i = 2:num_play
 
@@ -71,7 +72,7 @@ function build_template_degrees(num_play, probs)
       resource = sample(vec,k,replace=false)
     else
       resource_wop = sample(vec,k-1,replace=false)
-      resource = [resource_wop,1]
+      resource = [resource_wop;1]
     end
 
 
