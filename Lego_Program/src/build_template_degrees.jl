@@ -3,18 +3,6 @@ function build_template_degrees(num_play, probs)
 
   #Defining paiwise probabilities
   #These are probabilities of pairwise interactions within the whole universe of possible interactions (15)
-  #THIS IS PROBABLY WRONG
-  # pw_prob_init = [
-  #   pr_na = p_n*(p_a/(p_a+p_n+p_i+p_m)),
-  #   pr_nn = p_n*(p_n/(p_a+p_n+p_i+p_m)),
-  #   pr_ni = p_n*(p_i/(p_a+p_n+p_i+p_m)),
-  #   pr_nm = p_n*(p_m/(p_a+p_n+p_i+p_m)),
-  #   pr_ie = p_i*(p_e/(p_a+p_e+p_n+p_i)),
-  #   pr_ia = p_i*(p_a/(p_a+p_e+p_n+p_i)),
-  #   pr_ii = p_i*(p_i/(p_a+p_e+p_n+p_i)),
-  #   pr_ee = p_e*(p_e/(p_e+p_i)),
-  #   pr_aa = p_a*(p_a/(p_i+p_n+p_a))
-  # ]
 
   #THIS IS PROBABLY RIGHT
   pw_prob_init = [
@@ -38,28 +26,31 @@ function build_template_degrees(num_play, probs)
   #we can sample degrre from a exponential ditribution with mean (1/rate) equal to mean.k; degrees=rexp(num_play,1/mean.k)
 
 
-  #Still, the degree distrobution scales with fw size.
-  #Expected number of trophic links
-  N_a = p_a*(num_play*(num_play-1));
-  #Expected number of trophic links per species (discounting cannibalism)
-  mean_k = N_a/(num_play-1);
+  #Proposed method:
+  #Build a random food web from the niche model given the number of species
+  #Determine link-density properties from the web
+  #Populate the interaction matrix with these statistical properties, but the structure will be scrambled. (I think)
 
-  #Assuming trophic links follow an exponential distribution
-  #Draw number of trophic links per node, with element 1=sun (k=0)
-  expdist = Exponential(mean_k);
-  degrees = Array(Int64);
-  aux=1
-  while aux == 1
-    degrees = rand(expdist,num_play-1);
-    degrees = round(Int64,degrees);
-    degrees = [0;copy(degrees)]; #degree of the sun is 0
-    if maximum(degrees)<num_play-1
-      aux = 0;
-    end
-  end
+  #Step 1: niche values
+  nichev = rand(num_play);
+  #Derive connectance from the pr('assimilate')*number of potential links
+  #But first try to discount the number of players that are NOT species, which should be on average num_play*pr_nm
+  S = num_play - (pr_nm*num_play);
+  #Pr('A')*Directed Connectance
+  C = ((pr_ia+pr_na+pr_aa)*(S*(S-1)))/(S^2);
+  Ebeta = 2*C;
+  beta = (1/Ebeta) - 1;
+  BetaD = Beta(1,beta);
+  rBeta = rand(BetaD,num_play);
+  rangev = rBeta .* nichev;
+  #The number of prey in the range should just scale with the number of 'species'
+  degrees = rangev .* num_play;
+
+  degrees = round(Int64,copy(degrees));
+  #plot(x=degrees,Geom.histogram)
 
   #Create an empty character array with dimensions equal to the number of players
-  int_m = Array(Char,num_play,num_play)
+  int_m = Array(Char,num_play,num_play);
   #Set array equal to zero
   int_m[1:num_play*num_play] = '0';
 
@@ -72,8 +63,8 @@ function build_template_degrees(num_play, probs)
     deleteat!(vec,i)
     #What is the degree of player i?
     k = degrees[i]
-    #Randomly choose the identities of prey
-    resource = rand(vec,k)
+    #Randomly choose the identities of prey without replacement
+    resource = sample(vec,k,replace=false)
     #Establish these prey in the interaction matrix
     int_m[i,collect(resource)] = 'a'
     #Note: to vectorize a row from int_m (so that it is an Array{Char,1}), we would write v = int_m[i,:][:]
@@ -87,17 +78,18 @@ function build_template_degrees(num_play, probs)
       deleteat!(resource,aa_int)
     end
 
-    #randomly determine ai or an (aa already emerges from assigning a's)
+    #An 'a' has been drawn...
+    #Now randomly determine ai or an (aa already emerges from assigning a's)
     #Draw from a binomial: which interaciton will be Asymmetric predation?
     #Draw 1 = Asymmetric predation; Draw 0 = facultative mutualism
     pr_i_given_a = (p_i/(p_i+p_n)); #again discounting a-a, which are already determined
     bindist = Binomial(1,pr_i_given_a)
     bin_draw = rand(bindist,length(resource))
 
-    #Faculatative mutualism
+    #Asymmetric predation
     res_i = resource[find(x->x==1,bin_draw)]
     int_m[collect(res_i),i] = 'i' #assigning n's according to random draw
-    #Asymmetric predation
+    #Faculatative mutualism
     res_n = resource[find(x->x==0,bin_draw)]
     int_m[collect(res_n),i] = 'n' #assigning i's according to random draw
 
@@ -122,22 +114,15 @@ function build_template_degrees(num_play, probs)
   for i = 2:num_play
     for j = 2:num_play
       #Only choose interactions for empty elements (int_m = '0')
-      #Only do this for the triangular part of the matrix
-      if int_m[i,j] == '0' && i < j
+      #Only do this for the lower triangular part of the matrix
+      if int_m[i,j] == '0' && i > j
 
         r_draw = rand()
 
         #N:N
         if r_draw < prob_line[1]
-          index = 1 #find(x -> x == "nn",new_int_labels)
-          mij = Array(Char,2)
-          mij[1] = rand([new_int_labels[index][1],new_int_labels[index][2]])
-          if mij[1] == new_int_labels[index][1]
-            mij[2] = new_int_labels[index][2]
-          else mij[2] = new_int_labels[index][1]
-          end
-          int_m[i,j] = mij[1]
-          int_m[j,i] = mij[2]
+          int_m[i,j] = 'n'
+          int_m[j,i] = 'n'
         end
 
         #N:I
@@ -169,15 +154,8 @@ function build_template_degrees(num_play, probs)
 
         #I:I
         if r_draw > prob_line[3] && r_draw < prob_line[4]
-          index = 4 #find(x -> x == "ii",new_int_labels)
-          mij = Array(Char,2)
-          mij[1] = rand([new_int_labels[index][1],new_int_labels[index][2]])
-          if mij[1] == new_int_labels[index][1]
-            mij[2] = new_int_labels[index][2]
-          else mij[2] = new_int_labels[index][1]
-          end
-          int_m[i,j] = mij[1]
-          int_m[j,i] = mij[2]
+          int_m[i,j] = 'i'
+          int_m[j,i] = 'i'
         end
 
       end #if
@@ -206,7 +184,12 @@ function build_template_degrees(num_play, probs)
   #Which species 'make things?'
   #NOTE: multiple A,B,C can make the same D
 
-  for i = 1:num_play
+
+
+  #There is a LARGE PROBLEM HERE
+  #We are wiping out about 90% of the interaction when we implement this bit.
+
+  for i = 2:num_play
     int_v = copy(int_m[i,:])
     made = find(x->x=='m',int_v)
     l_made = length(made)
