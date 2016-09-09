@@ -214,7 +214,7 @@ function build_template_degrees(num_play, probs)
   #Which species 'make things?'
   #NOTE: multiple A,B,C can make the same D
 
-
+  #NOTE: Should 'made' things only be needed and not assimilated, which implies biomass flow? i.e. trophic int?
 
   for i = 2:num_play
     int_v = copy(int_m[i,:])
