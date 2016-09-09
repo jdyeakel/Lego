@@ -14,5 +14,5 @@ trophic[which(trophic=="NaN")] <- 0
 coords <- cbind(runif(vcount(fw_g)),trophic); coords[basal_pos,] <- c(0.5,trophic[basal_pos])
 par(mar=c(1,1,1,1))
 plot(fw_g,layout=coords,vertex.size=5,edge.arrow.size=0.5,
-     main=ecount(fw_g)/num_play^2,vertex.label=NA,
+     main=ecount(fw_g)/(num_play^2),vertex.label=NA,
      vertex.color=pal[2])

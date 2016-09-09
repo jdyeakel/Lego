@@ -207,14 +207,14 @@ function build_template_degrees(num_play, probs)
   int_m[1,:] = 'i'
   #All column elements that ARENT 'a' are 'ignore'
   force_ignore=find(x->x!='a',int_m[:,1])
-  int_m[1,force_ignore] = 'i'
+  int_m[force_ignore,1] = 'i';
 
   #2: if player A contains an "m" with player B, player B is "i" with everything
   # except if it is "n" with player A
   #Which species 'make things?'
   #NOTE: multiple A,B,C can make the same D
 
-# NOTE make sure this ignores the diagonal...
+
 
   for i = 2:num_play
     int_v = copy(int_m[i,:])
@@ -222,7 +222,7 @@ function build_template_degrees(num_play, probs)
     l_made = length(made)
     if l_made > 0
       for k = 1:l_made
-        #The made thing ignores everything...
+        #The made thing ignores everything... including diag
         int_m[made[k],:] = 'i'
         #what thing(s) make it?
         makers = find(x->x=='m',int_m[:,made[k]])
