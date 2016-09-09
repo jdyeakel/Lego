@@ -2,7 +2,7 @@ using Distributions
 using Gadfly
 include("/Users/justinyeakel/Dropbox/PostDoc/2014_Lego/Lego_Program/src/build_template_degrees.jl")
 
-num_play = 10000
+num_play = 1000
 
 init_probs = [
 p_n=0.05,

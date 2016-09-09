@@ -9,11 +9,12 @@ function build_template_degrees(num_play, probs)
     pr_na = p_n*(p_a/(p_a+p_n+p_i+p_m)) + p_a*(p_n/(p_a+p_i+p_n)),
     pr_nn = p_n*(p_n/(p_a+p_n+p_i+p_m)),
     pr_ni = p_n*(p_i/(p_a+p_n+p_i+p_m)) + p_i*(p_n/(p_a+p_n+p_i)),
-    pr_nm = p_n*(p_m/(p_a+p_n+p_i+p_m)) + p_m*(p_n/p_n),
+    pr_nm = p_n*(p_m/(p_a+p_n+p_i+p_m)) + p_m*1, #(p_n/p_n),
     pr_ia = p_i*(p_a/(p_a+p_n+p_i)) + p_a*(p_i/(p_a+p_i+p_n)),
     pr_ii = p_i*(p_i/(p_a+p_n+p_i)),
     pr_aa = p_a*(p_a/(p_i+p_n+p_a))
   ];
+  #pw_prob_init[find(x->x==true,isnan(pw_prob_init))]=0;
 
 
   # pw_prob = copy(pw_prob_init) / sum(pw_prob_init)
@@ -42,18 +43,35 @@ function build_template_degrees(num_play, probs)
   beta = (1/Ebeta) - 1;
   BetaD = Beta(1,beta);
   rBeta = rand(BetaD,num_play);
+  #NOTE: Perhaps I should accurately count how many prey fall within the range
+  # rangev = length(find(x->x>nmin&&x<nmax,nichev));
   rangev = rBeta .* nichev;
-  #The number of prey in the range should just scale with the number of 'species'
-  degrees = rangev .* num_play;
+  centerv = zeros(num_play);
+  nmin = zeros(num_play);
+  nmax = zeros(num_play);
+  degrees = Array{Int64}(num_play)*0;
+  for i=1:num_play
+    ud = Uniform(rangev[i]/2,nichev[i]);
+    centerv[i] = rand(ud);
+    nmin[i] = centerv[i] - (rangev[i]/2);
+    nmax[i] = centerv[i] + (rangev[i]/2);
+    degrees[i] = length(find(x->x>nmin[i]&&x<nmax[i],nichev));
+    #Force everything to eat SOMETHING
+    if degrees[i] == 0
+      degrees[i] = 1;
+    end
+  end
 
+  #The number of prey in the range should just scale with the number of 'species'
+  #degreesAn = rangev .* num_play;
   #The +1 forces species to eat at least one thing
-  degrees = round(Int64,copy(degrees)) + 1;
+  #degreesAn = round(Int64,copy(degreesAn)) + 1;
   #plot(x=degrees,Geom.histogram)
 
   #Create an empty character array with dimensions equal to the number of players
   int_m = Array(Char,num_play,num_play);
   #Set array equal to zero
-  int_m[1:num_play*num_play] = '0';
+  int_m[1:(num_play*num_play)] = '0';
 
   prim_prod = zeros(num_play);
   prim_prod[sample(collect(1:num_play),1)] = 1;
@@ -64,7 +82,7 @@ function build_template_degrees(num_play, probs)
     #We could add an additional vector of 1s to weight towards the basal resource
     vec = collect(1:num_play);
     #Remove ith element
-    deleteat!(vec,i)
+    deleteat!(vec,i);
     #What is the degree of player i?
     k = degrees[i]
     #Randomly choose the identities of prey without replacement
@@ -187,18 +205,16 @@ function build_template_degrees(num_play, probs)
 
   #1: Row/Col 1 is the sun
   int_m[1,:] = 'i'
-  #All column elements that ARENT 'e' are 'ignore'
-  int_m[find(x->x!='a',int_m[:,1])] = 'i'
+  #All column elements that ARENT 'a' are 'ignore'
+  force_ignore=find(x->x!='a',int_m[:,1])
+  int_m[1,force_ignore] = 'i'
 
   #2: if player A contains an "m" with player B, player B is "i" with everything
   # except if it is "n" with player A
   #Which species 'make things?'
   #NOTE: multiple A,B,C can make the same D
 
-
-
-  #There is a LARGE PROBLEM HERE
-  #We are wiping out about 90% of the interaction when we implement this bit.
+# NOTE make sure this ignores the diagonal...
 
   for i = 2:num_play
     int_v = copy(int_m[i,:])

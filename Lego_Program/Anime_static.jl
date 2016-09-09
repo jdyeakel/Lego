@@ -2,12 +2,12 @@ using Distributions
 using Gadfly
 include("$(homedir())/Dropbox/PostDoc/2014_Lego/Lego_Program/src/build_template_degrees.jl")
 
-num_play = 30
+num_play = 100
 
 init_probs = [
-p_n=0.05,
+p_n=0,
 p_a=0.02,
-p_m=0.001,
+p_m=0,
 p_i= 1 - sum([p_n,p_m,p_a]) #Ignore with 1 - pr(sum(other))
 ]
 
@@ -56,4 +56,7 @@ end
 output = hcat(svec,C_out);
 writedlm("$(homedir())/Dropbox/PostDoc/2014_Lego/data_template/size_conn.csv",output);
 
-plot(x=svec,y=C_out,Geom.point,Scale.x_log10)
+
+sc_data=readdlm("$(homedir())/Dropbox/PostDoc/2014_Lego/data_template/size_conn.csv");
+
+plot(x=sc_data[:,1],y=sc_data[:,2],Geom.point,Scale.x_log10,Theme(default_point_size=1pt, highlight_width = 0pt))
