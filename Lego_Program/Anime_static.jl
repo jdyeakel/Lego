@@ -2,12 +2,12 @@ using Distributions
 using Gadfly
 include("$(homedir())/Dropbox/PostDoc/2014_Lego/Lego_Program/src/build_template_degrees.jl")
 
-num_play = 11
+num_play = 10000
 
 init_probs = [
-p_n=0.001,
+p_n=0.01,
 p_a=0.01,
-p_m=0.001,
+p_m=0.01,
 p_i= 1 - sum([p_n,p_m,p_a]) #Ignore with 1 - pr(sum(other))
 ]
 
@@ -29,9 +29,9 @@ for i=1:ls
   print(s);
   num_play = s;
   init_probs = [
-  p_n=0.001,
+  p_n=0.01,
   p_a=0.01,
-  p_m=0.000,
+  p_m=0.01,
   p_i= 1 - sum([p_n,p_m,p_a]) #Ignore with 1 - pr(sum(other))
   ];
 

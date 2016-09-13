@@ -32,6 +32,7 @@ function build_template_degrees(num_play, probs)
   #Determine link-density properties from the web
   #Populate the interaction matrix with these statistical properties, but the structure will be scrambled. (I think)
 
+
   #Step 1: niche values
   nichev = rand(num_play);
   #Derive connectance from the pr('assimilate')*number of potential links
@@ -70,6 +71,7 @@ function build_template_degrees(num_play, probs)
 
   #Create an empty character array with dimensions equal to the number of players
   int_m = Array(Char,num_play,num_play);
+  t_mpre = zeros(num_play,num_play);
   #Set array equal to zero
   int_m[1:(num_play*num_play)] = '0';
 
@@ -96,11 +98,15 @@ function build_template_degrees(num_play, probs)
 
     #Establish these prey in the interaction matrix
     int_m[i,collect(resource)] = 'a'
+    t_mpre[i,collect(resource)] = 1;
+    t_mpre[collect(resource),i] = 1;
     #Note: to vectorize a row from int_m (so that it is an Array{Char,1}), we would write v = int_m[i,:][:]
 
     #Assigning complimentary interactions
     #First disconsider aa interactions
     aa_int = find(x -> x == 'a', int_m[collect(resource),i])
+    aa_int_loc = resource[aa_int];
+
 
     if length(aa_int) >= 1
       #Remove elements ee_int
@@ -123,6 +129,9 @@ function build_template_degrees(num_play, probs)
     int_m[collect(res_n),i] = 'n' #assigning i's according to random draw
 
   end
+
+
+  #Non-trophic interactions
 
   int_labels = ["na","nn","ni","nm","ia","ii","aa"]
 
@@ -206,8 +215,13 @@ function build_template_degrees(num_play, probs)
   #1: Row/Col 1 is the sun
   int_m[1,:] = 'i'
   #All column elements that ARENT 'a' are 'ignore'
-  force_ignore=find(x->x!='a',int_m[:,1])
+  force_ignore=find(x->x!='a',int_m[:,1]);
   int_m[force_ignore,1] = 'i';
+
+  #Connectance before excluding 'made' things
+  Sorig = length(find(x->x=='n',diag(int_m)));
+  Lorig = sum(t_mpre)/2;
+  Corig = Lorig/(Sorig^2);
 
   #2: if player A contains an "m" with player B, player B is "i" with everything
   # except if it is "n" with player A
@@ -215,15 +229,22 @@ function build_template_degrees(num_play, probs)
   #NOTE: multiple A,B,C can make the same D
 
   #NOTE: Should 'made' things only be needed and not assimilated, which implies biomass flow? i.e. trophic int?
-
+  madev = Array{Int64}(0);
   for i = 2:num_play
-    int_v = copy(int_m[i,:])
-    made = find(x->x=='m',int_v)
+    int_v = copy(int_m[i,:]);
+    made = find(x->x=='m',int_v);
     l_made = length(made)
     if l_made > 0
       for k = 1:l_made
+        #Compile list of made things
+        push!(madev,made[k])
         #The made thing ignores everything... including diag
         int_m[made[k],:] = 'i'
+        #Update trophic matrix:
+        #the made thing eats nothing
+        #It is not a living thing, so nothing 'eats' it
+        t_mpre[made[k],:] = 0;
+        t_mpre[:,made[k]] = 0;
         #what thing(s) make it?
         makers = find(x->x=='m',int_m[:,made[k]])
         int_m[made[k],makers] = 'n' #Except the thing that makes it
@@ -231,37 +252,41 @@ function build_template_degrees(num_play, probs)
     end
   end
 
+  #How many 'made things?'
+  Snew = length(find(x->x=='n',diag(int_m)));
+  Lnew = sum(t_mpre)/2;
+  Cnew = Lnew/(Snew^2);
 
   #Derive the trophic adjacency matrix, which includes all 'ai','aa','an' interactions
-  t_m = zeros(num_play,num_play);
-  for i=1:num_play
-    for j=1:num_play
-      if i > j
-        if int_m[i,j] == 'a' && int_m[j,i] == 'i'
-          t_m[i,j] = 1
-          t_m[j,i] = 1
-        end
-        if int_m[i,j] == 'i' && int_m[j,i] == 'a'
-          t_m[i,j] = 1
-          t_m[j,i] = 1
-        end
-        if int_m[i,j] == 'a' && int_m[j,i] == 'n'
-          t_m[i,j] = 1
-          t_m[j,i] = 1
-        end
-        if int_m[i,j] == 'n' && int_m[j,i] == 'a'
-          t_m[i,j] = 1
-          t_m[i,j] = 1
-        end
-        if int_m[i,j] == 'a' && int_m[j,i] == 'a'
-          t_m[i,j] = 1
-          t_m[j,i] = 1
-        end
-      end
-    end
-  end
+  # t_m = zeros(num_play,num_play);
+  # for i=1:num_play
+  #   for j=1:num_play
+  #     if i > j
+  #       if int_m[i,j] == 'a' && int_m[j,i] == 'i'
+  #         t_m[i,j] = 1
+  #         t_m[j,i] = 1
+  #       end
+  #       if int_m[i,j] == 'i' && int_m[j,i] == 'a'
+  #         t_m[i,j] = 1
+  #         t_m[j,i] = 1
+  #       end
+  #       if int_m[i,j] == 'a' && int_m[j,i] == 'n'
+  #         t_m[i,j] = 1
+  #         t_m[j,i] = 1
+  #       end
+  #       if int_m[i,j] == 'n' && int_m[j,i] == 'a'
+  #         t_m[i,j] = 1
+  #         t_m[j,i] = 1
+  #       end
+  #       if int_m[i,j] == 'a' && int_m[j,i] == 'a'
+  #         t_m[i,j] = 1
+  #         t_m[j,i] = 1
+  #       end
+  #     end
+  #   end
+  # end
 
 
-return(int_m, t_m)
+return(int_m, t_mpre)
 
 end
