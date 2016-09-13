@@ -2,18 +2,19 @@ using Distributions
 using Gadfly
 include("$(homedir())/Dropbox/PostDoc/2014_Lego/Lego_Program/src/build_template_degrees.jl")
 
-num_play = 10000
+num_play = 1000
 
 init_probs = [
 p_n=0.01,
 p_a=0.01,
-p_m=0.01,
+p_m=0.001,
 p_i= 1 - sum([p_n,p_m,p_a]) #Ignore with 1 - pr(sum(other))
 ]
 
-int_m, t_m = build_template_degrees(num_play,init_probs);
+int_m, sp_m, t_m = build_template_degrees(num_play,init_probs);
 writedlm("$(homedir())/Dropbox/PostDoc/2014_Lego/data_template/fw.csv",t_m);
 
+keeprc=find(x->x>0,sum(t_m,1));
 
 
 # Assessing stats across community size ranges
@@ -31,11 +32,11 @@ for i=1:ls
   init_probs = [
   p_n=0.01,
   p_a=0.01,
-  p_m=0.01,
+  p_m=0.001,
   p_i= 1 - sum([p_n,p_m,p_a]) #Ignore with 1 - pr(sum(other))
   ];
 
-  int_m, t_m = build_template_degrees(num_play,init_probs);
+  int_m, sp_m, t_m = build_template_degrees(num_play,init_probs);
   #If there are no primary producers, then rinse and repeat
   # if sum(t_m[:,1])==0
   #   check = true;

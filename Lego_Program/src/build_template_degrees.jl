@@ -252,6 +252,24 @@ function build_template_degrees(num_play, probs)
     end
   end
 
+  # #MANY I-I rows/columns? nope
+  # itestrc = Array{Bool}(num_play);
+  # itestr = Array{Bool}(num_play);
+  # itestc = Array{Bool}(num_play);
+  # for i=1:num_play
+  #   itestr[i] = all(int_m[i,:].=='i');
+  #   itestc[i] = all(int_m[:,i].=='i');
+  #   itestrc[i] = (itestr[i]== true && itestc[i]==true);
+  # end
+
+  #Which rows/columns are not animate objects?
+  sprc = find(x->x=='n',diag(int_m));
+  num_sp=length(sprc);
+  sp_m = Array{Char}(num_sp+1,num_sp+1);
+  sp_m[1,:] = hcat('i',int_m[1,sprc]);
+  sp_m[:,1] = vcat('i',int_m[sprc,1]);
+  sp_m[collect(2:num_sp+1),collect(2:num_sp+1)] = int_m[sprc,sprc];
+
   #How many 'made things?'
   Snew = length(find(x->x=='n',diag(int_m)));
   Lnew = sum(t_mpre)/2;
@@ -287,6 +305,6 @@ function build_template_degrees(num_play, probs)
   # end
 
 
-return(int_m, t_mpre)
+return(int_m, sp_m, t_mpre)
 
 end
