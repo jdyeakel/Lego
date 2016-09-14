@@ -71,7 +71,7 @@ function build_template_degrees(num_play, probs)
 
   #Create an empty character array with dimensions equal to the number of players
   int_m = Array(Char,num_play,num_play);
-  t_mpre = zeros(num_play,num_play);
+  t_m = Array{Int64}(num_play,num_play)*0;
   #Set array equal to zero
   int_m[1:(num_play*num_play)] = '0';
 
@@ -98,8 +98,8 @@ function build_template_degrees(num_play, probs)
 
     #Establish these prey in the interaction matrix
     int_m[i,collect(resource)] = 'a'
-    t_mpre[i,collect(resource)] = 1;
-    t_mpre[collect(resource),i] = 1;
+    t_m[i,collect(resource)] = 1;
+    t_m[collect(resource),i] = 1;
     #Note: to vectorize a row from int_m (so that it is an Array{Char,1}), we would write v = int_m[i,:][:]
 
     #Assigning complimentary interactions
@@ -129,6 +129,11 @@ function build_template_degrees(num_play, probs)
     int_m[collect(res_n),i] = 'n' #assigning i's according to random draw
 
   end
+
+  #Duplicate this information for tall_m
+  #This matrix includes indirect trophic interactions
+  #Where if 1 (m) 2, and 3 (a) 2, then 3 (a) 1
+  tall_m = copy(t_m);
 
 
   #Non-trophic interactions
@@ -220,7 +225,7 @@ function build_template_degrees(num_play, probs)
 
   #Connectance before excluding 'made' things
   Sorig = length(find(x->x=='n',diag(int_m)));
-  Lorig = sum(t_mpre)/2;
+  Lorig = sum(t_m)/2;
   Corig = Lorig/(Sorig^2);
 
   #2: if player A contains an "m" with player B, player B is "i" with everything
@@ -243,14 +248,15 @@ function build_template_degrees(num_play, probs)
         #Update trophic matrix:
         #the made thing eats nothing
         #It is not a living thing, so nothing 'eats' it
-        t_mpre[made[k],:] = 0;
-        t_mpre[:,made[k]] = 0;
+        t_m[made[k],:] = 0;
+        t_m[:,made[k]] = 0;
         #what thing(s) make it?
         makers = find(x->x=='m',int_m[:,made[k]])
         int_m[made[k],makers] = 'n' #Except the thing that makes it
       end
     end
   end
+
 
   # #MANY I-I rows/columns? nope
   # itestrc = Array{Bool}(num_play);
@@ -266,13 +272,17 @@ function build_template_degrees(num_play, probs)
   sprc = find(x->x=='n',diag(int_m));
   num_sp=length(sprc);
   sp_m = Array{Char}(num_sp+1,num_sp+1);
+  tp_m = Array{Int64}(num_sp+1,num_sp+1)*0;
   sp_m[1,:] = hcat('i',int_m[1,sprc]);
   sp_m[:,1] = vcat('i',int_m[sprc,1]);
+  tp_m[1,:] = hcat(0,t_m[1,sprc]);
+  tp_m[:,1] = vcat(0,t_m[sprc,1]);
   sp_m[collect(2:num_sp+1),collect(2:num_sp+1)] = int_m[sprc,sprc];
+  tp_m[collect(2:num_sp+1),collect(2:num_sp+1)] = t_m[sprc,sprc];
 
   #How many 'made things?'
   Snew = length(find(x->x=='n',diag(int_m)));
-  Lnew = sum(t_mpre)/2;
+  Lnew = sum(t_m)/2;
   Cnew = Lnew/(Snew^2);
 
   #Derive the trophic adjacency matrix, which includes all 'ai','aa','an' interactions
@@ -305,6 +315,6 @@ function build_template_degrees(num_play, probs)
   # end
 
 
-return(int_m, sp_m, t_mpre)
+return(int_m, sp_m, t_m, tp_m)
 
 end
