@@ -76,7 +76,8 @@ function build_template_degrees(num_play, probs)
   int_m[1:(num_play*num_play)] = '0';
 
   prim_prod = zeros(num_play);
-  prim_prod[sample(collect(1:num_play),1)] = 1;
+  #The first true species is always a primary producer
+  prim_prod[2] = 1;
 
   for i = 2:num_play
 
@@ -181,17 +182,20 @@ function build_template_degrees(num_play, probs)
           int_m[j,i] = mij[2]
         end
 
-        #N:M
-        if r_draw > prob_line[2] && r_draw < prob_line[3]
-          index = 3 #find(x -> x == "nm",new_int_labels)
-          mij = Array(Char,2)
-          mij[1] = rand([new_int_labels[index][1],new_int_labels[index][2]])
-          if mij[1] == new_int_labels[index][1]
-            mij[2] = new_int_labels[index][2]
-          else mij[2] = new_int_labels[index][1]
+        #Protect the second species (a primary producer)
+        if i != 2
+          #N:M
+          if r_draw > prob_line[2] && r_draw < prob_line[3]
+            index = 3 #find(x -> x == "nm",new_int_labels)
+            mij = Array(Char,2)
+            mij[1] = rand([new_int_labels[index][1],new_int_labels[index][2]])
+            if mij[1] == new_int_labels[index][1]
+              mij[2] = new_int_labels[index][2]
+            else mij[2] = new_int_labels[index][1]
+            end
+            int_m[i,j] = mij[1]
+            int_m[j,i] = mij[2]
           end
-          int_m[i,j] = mij[1]
-          int_m[j,i] = mij[2]
         end
 
 
@@ -238,21 +242,30 @@ function build_template_degrees(num_play, probs)
   for i = 2:num_play
     int_v = copy(int_m[i,:]);
     made = find(x->x=='m',int_v);
-    l_made = length(made)
+    l_made = length(made);
     if l_made > 0
       for k = 1:l_made
         #Compile list of made things
         push!(madev,made[k])
         #The made thing ignores everything... including diag
         int_m[made[k],:] = 'i'
+
+        #what thing(s) make it?
+        makers = find(x->x=='m',int_m[:,made[k]])
+        int_m[made[k],makers] = 'n' #Except the thing that makes it
+
         #Update trophic matrix:
         #the made thing eats nothing
         #It is not a living thing, so nothing 'eats' it
         t_m[made[k],:] = 0;
         t_m[:,made[k]] = 0;
-        #what thing(s) make it?
-        makers = find(x->x=='m',int_m[:,made[k]])
-        int_m[made[k],makers] = 'n' #Except the thing that makes it
+        tall_m[made[k],:] = 0;
+        tall_m[:,made[k]] = 0;
+        #What species EAT the made things?
+        ind_cons = find(x->x=='a',int_m[:,made[k]]);
+        #The consumers of the thing that species i makes indirectly consume species i
+        tall_m[i,ind_cons] = 1;
+        tall_m[ind_cons,i] = 1;
       end
     end
   end
@@ -284,36 +297,6 @@ function build_template_degrees(num_play, probs)
   Snew = length(find(x->x=='n',diag(int_m)));
   Lnew = sum(t_m)/2;
   Cnew = Lnew/(Snew^2);
-
-  #Derive the trophic adjacency matrix, which includes all 'ai','aa','an' interactions
-  # t_m = zeros(num_play,num_play);
-  # for i=1:num_play
-  #   for j=1:num_play
-  #     if i > j
-  #       if int_m[i,j] == 'a' && int_m[j,i] == 'i'
-  #         t_m[i,j] = 1
-  #         t_m[j,i] = 1
-  #       end
-  #       if int_m[i,j] == 'i' && int_m[j,i] == 'a'
-  #         t_m[i,j] = 1
-  #         t_m[j,i] = 1
-  #       end
-  #       if int_m[i,j] == 'a' && int_m[j,i] == 'n'
-  #         t_m[i,j] = 1
-  #         t_m[j,i] = 1
-  #       end
-  #       if int_m[i,j] == 'n' && int_m[j,i] == 'a'
-  #         t_m[i,j] = 1
-  #         t_m[j,i] = 1
-  #       end
-  #       if int_m[i,j] == 'a' && int_m[j,i] == 'a'
-  #         t_m[i,j] = 1
-  #         t_m[j,i] = 1
-  #       end
-  #     end
-  #   end
-  # end
-
 
 return(int_m, sp_m, t_m, tp_m)
 
