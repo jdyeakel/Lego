@@ -289,21 +289,21 @@ function build_template_degrees(num_play, probs)
   num_sp=length(sprc);
   sp_m = Array{Char}(num_sp+1,num_sp+1);
   tp_m = Array{Int64}(num_sp+1,num_sp+1)*0;
-  tallp_m = Array{Int64}(num_sp+1,num_sp+1)*0;
+  tind_m = Array{Int64}(num_sp+1,num_sp+1)*0;
   sp_m[1,:] = hcat('i',int_m[1,sprc]);
   sp_m[:,1] = vcat('i',int_m[sprc,1]);
   tp_m[1,:] = hcat(0,t_m[1,sprc]);
   tp_m[:,1] = vcat(0,t_m[sprc,1]);
-  tallp_m[1,:] = hcat(0,t_m[1,sprc]);
-  tallp_m[:,1] = vcat(0,t_m[sprc,1]);
+  tind_m[1,:] = hcat(0,t_m[1,sprc]);
+  tind_m[:,1] = vcat(0,t_m[sprc,1]);
   sp_m[collect(2:num_sp+1),collect(2:num_sp+1)] = int_m[sprc,sprc];
   tp_m[collect(2:num_sp+1),collect(2:num_sp+1)] = t_m[sprc,sprc];
-  tallp_m[collect(2:num_sp+1),collect(2:num_sp+1)] = tall_m[sprc,sprc];
+  tind_m[collect(2:num_sp+1),collect(2:num_sp+1)] = tall_m[sprc,sprc];
   #How many 'made things?'
   Snew = length(find(x->x=='n',diag(int_m)));
   Lnew = sum(t_m)/2;
   Cnew = Lnew/(Snew^2);
 
-return(int_m, sp_m, t_m, tp_m)
+return(int_m, sp_m, t_m, tp_m, tind_m)
 
 end
