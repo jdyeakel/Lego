@@ -182,19 +182,22 @@ function build_template_degrees(num_play, probs)
           int_m[j,i] = mij[2]
         end
 
-        #Protect the second species (a primary producer)
-        if i != 2
-          #N:M
-          if r_draw > prob_line[2] && r_draw < prob_line[3]
-            index = 3 #find(x -> x == "nm",new_int_labels)
-            mij = Array(Char,2)
-            mij[1] = rand([new_int_labels[index][1],new_int_labels[index][2]])
-            if mij[1] == new_int_labels[index][1]
-              mij[2] = new_int_labels[index][2]
-            else mij[2] = new_int_labels[index][1]
-            end
-            int_m[i,j] = mij[1]
-            int_m[j,i] = mij[2]
+
+        #N:M
+        if r_draw > prob_line[2] && r_draw < prob_line[3]
+          index = 3 #find(x -> x == "nm",new_int_labels)
+          mij = Array(Char,2)
+          mij[1] = rand([new_int_labels[index][1],new_int_labels[index][2]])
+          if mij[1] == new_int_labels[index][1]
+            mij[2] = new_int_labels[index][2]
+          else mij[2] = new_int_labels[index][1]
+          end
+          int_m[i,j] = mij[1]
+          int_m[j,i] = mij[2]
+          #Ensure nothing 'makes' the forced primary producer
+          if j == 2
+            int_m[i,j] = 'n'
+            int_m[j,i] = 'm'
           end
         end
 
@@ -286,13 +289,16 @@ function build_template_degrees(num_play, probs)
   num_sp=length(sprc);
   sp_m = Array{Char}(num_sp+1,num_sp+1);
   tp_m = Array{Int64}(num_sp+1,num_sp+1)*0;
+  tallp_m = Array{Int64}(num_sp+1,num_sp+1)*0;
   sp_m[1,:] = hcat('i',int_m[1,sprc]);
   sp_m[:,1] = vcat('i',int_m[sprc,1]);
   tp_m[1,:] = hcat(0,t_m[1,sprc]);
   tp_m[:,1] = vcat(0,t_m[sprc,1]);
+  tallp_m[1,:] = hcat(0,t_m[1,sprc]);
+  tallp_m[:,1] = vcat(0,t_m[sprc,1]);
   sp_m[collect(2:num_sp+1),collect(2:num_sp+1)] = int_m[sprc,sprc];
   tp_m[collect(2:num_sp+1),collect(2:num_sp+1)] = t_m[sprc,sprc];
-
+  tallp_m[collect(2:num_sp+1),collect(2:num_sp+1)] = tall_m[sprc,sprc];
   #How many 'made things?'
   Snew = length(find(x->x=='n',diag(int_m)));
   Lnew = sum(t_m)/2;
