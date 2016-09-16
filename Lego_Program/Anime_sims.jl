@@ -88,14 +88,15 @@ for t=1:tmax
   #Threshold check
   #run a while loop to find the next 'colonizer'
   #If it fails, find another primary producer
+  keepgoing = true;
   check = true;
   tic = 0;
   while check == true
+    tic = tic + 1;
 
     ncheck = true;
     acheck = true;
 
-    tic = tic + 1;
     #randomly select from the list
     did = tlink[tic];
 
@@ -117,14 +118,14 @@ for t=1:tmax
       end
     else
       #Chosen immigrant needs nothing
-      #Move on to next step
+      #Move on to next step (false = pass)
       ncheck = false;
     end
 
     #CHECKING ASSIMILATES
     #What things does this species Assimilate?
     dseedass = copy(dseed);
-    da = find(x->x=='n',dseedass;
+    da = find(x->x=='a',dseedass);
     lda=length(da);
     aperc = Array{Float64}(1);
     if lda>0
@@ -134,8 +135,8 @@ for t=1:tmax
         acheck = false;
       end
     else
-      #Chosen immigrant eats nothing
-      #Move on to next step
+      #This shouldn't happen based on constraints for tlink
+      #But just for completeness
       acheck = false;
     end
 
@@ -148,13 +149,13 @@ for t=1:tmax
     if check == true && tic == length(tlink)
       #to stop the while loop
       check = false;
-      restart = true;
+      keepgoing = false;
     end
 
   end
 
   #When nothing can colonize
-  if restart == true
+  if keepgoing == false
     print("Community is uninvadible")
     break
   end
@@ -167,7 +168,15 @@ for t=1:tmax
   dm = int_m[didm,:];
   dmrev = int_m[:,didm];
 
+
   #Update the community
-  push!(cid,draw);
-  c_m = vcat(c_mold,int_m[draw,:]);
-  crev_m = hcat(crev_mold,int_m[:,draw]);
+  cid_update = cat(1,cidold,did,didm);
+  c_m_update = vcat(c_mold,dseed,dm);
+  crev_m_update = hcat(crev_mold,dseedrev,dmrev);
+
+  #Update the updated variables to in-play variables
+  cid = copy(cid_update);
+  c_m = copy(c_m_update);
+  crev_m = copy(crev_m_update);
+
+end #end time loop
