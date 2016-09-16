@@ -36,6 +36,8 @@ Slist = find(x->x=='n',diag(int_m));
 #primary species
 prim_prod = find(x->x=='a',int_m[:,1]);
 id = rand(prim_prod);
+#update primary producer list
+deleteat!(prim_prod,find(x->x==id,prim_prod));
 #interactions of the seed species
 seed = int_m[id,:];
 #reverse interactions of the seed species
@@ -62,43 +64,108 @@ tmax = 100;
 for t=1:tmax
 
   #Prior community structure
+  cidold = copy(cid);
   c_mold = copy(c_m);
   crev_mold = copy(crev_m);
 
   #build a sublist of species that are trophically linked to anything in the community
-  tlinksp = Array{Int64}(0);
-  for i=1:length(cid)
+  #Start with the primary producers
+  tlink_full = copy(prim_prod);
+  for i=1:length(cidold)
     alink = find(x->x=='a',crev_m[:,i]);
-    append!(tlinksp,alink);
+    append!(tlink_full,alink);
   end
+  #Eliminate anything that is already there
+  for i=1:length(tlink_full)
+    if in(tlink_full[i],cidold)
+      deleteat!(tlink_full,i);
+    end
+  end
+
   #Randomize the list
-  tlink = sample(tlinksp,length(tlinksp),replace=false)
+  tlink = sample(tlink_full,length(tlink_full),replace=false)
 
   #Threshold check
-  #run a while loop
+  #run a while loop to find the next 'colonizer'
+  #If it fails, find another primary producer
   check = true;
   tic = 0;
   while check == true
+
+    ncheck = true;
+    acheck = true;
+
     tic = tic + 1;
     #randomly select from the list
-    draw = sample(tlinksp)
+    did = tlink[tic];
 
-    dm = int_m[draw,:];
-    dmrev = int_m[:,draw];
+    dseed = int_m[did,:];
+    dseedrev = int_m[:,did];
 
+    #CHECKING NEEDS
     #What things does this species need?
-    draw_n = find(x->x=='n',dm);
-    ln=length(draw_n);
-    if ln>0
+    dseedneed = copy(dseed);
+    dseedneed[did] = '0'
+    dn = find(x->x=='n',dseedneed);
+    ldn=length(dn);
+    nperc = Array{Float64}(1);
+    if ldn>0
       #Are needs fulfilled to threshold?
-      nperc = sum([in(draw_n[i],cid) for i=1:ln])/ln;
+      nperc = sum([in(draw_n[i],cid) for i=1:ldn])/ldn;
       if nperc >= n_thresh
-        check = false
+        ncheck = false;
       end
     else
-      check = false
+      #Chosen immigrant needs nothing
+      #Move on to next step
+      ncheck = false;
     end
+
+    #CHECKING ASSIMILATES
+    #What things does this species Assimilate?
+    dseedass = copy(dseed);
+    da = find(x->x=='n',dseedass;
+    lda=length(da);
+    aperc = Array{Float64}(1);
+    if lda>0
+      #Are needs fulfilled to threshold?
+      aperc = sum([in(da[i],cid) for i=1:lda])/lda;
+      if aperc >= a_thresh
+        acheck = false;
+      end
+    else
+      #Chosen immigrant eats nothing
+      #Move on to next step
+      acheck = false;
+    end
+
+    #If needs and assimilates are above thresholds, then stop while loop
+    if ncheck == false && acheck == false
+      check = false;
+    end
+
+    #Nothing can colonize?
+    if check == true && tic == length(tlink)
+      #to stop the while loop
+      check = false;
+      restart = true;
+    end
+
   end
+
+  #When nothing can colonize
+  if restart == true
+    print("Community is uninvadible")
+    break
+  end
+
+  #If we get here, the choice 'passes'
+
+  #What does this species make?
+  #Made things come along too!
+  didm = find(x->x=='m',dseed);
+  dm = int_m[didm,:];
+  dmrev = int_m[:,didm];
 
   #Update the community
   push!(cid,draw);
