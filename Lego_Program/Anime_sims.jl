@@ -2,17 +2,17 @@ using Distributions
 using Gadfly
 include("/Users/justinyeakel/Dropbox/PostDoc/2014_Lego/Lego_Program/src/build_template_degrees.jl")
 
-num_play = 10000
+num_play = 10
 
 init_probs = [
 p_n=0.01,
-p_a=0.01,
+p_a=0.1,
 p_m=0.001,
 p_i= 1 - sum([p_n,p_m,p_a]) #Ignore with 1 - pr(sum(other))
 ]
 
-int_m, sp_m, t_m, tp_m = build_template_degrees(num_play,init_probs);
-writedlm("$(homedir())/Dropbox/PostDoc/2014_Lego/data_template/fw.csv",t_m);
+int_m, sp_m, t_m, tp_m, tind_m = build_template_degrees(num_play,init_probs);
+#writedlm("$(homedir())/Dropbox/PostDoc/2014_Lego/data_template/fw.csv",t_m);
 
 
 #Order of operations
@@ -25,32 +25,82 @@ writedlm("$(homedir())/Dropbox/PostDoc/2014_Lego/data_template/fw.csv",t_m);
 #4) Cumulatively add species over time, where inclusion is determined by 1) thresholds, 2) exclusion
 
 
+#Setting thresholds
+n_thresh = 0.0;
+a_thresh = 0.0;
+
+
 #NOTE: NEED a matrix of JUST SPECIES interactions
+Slist = find(x->x=='n',diag(int_m));
 
 #primary species
 prim_prod = find(x->x=='a',int_m[:,1]);
-draw = rand(prim_prod);
-seed = int_m[draw,:];
-seedrev = int_m[:,draw];
-seedmake = find(x->x=='m',seed);
-init_play = vcat(seed,int_m[seedmake,:])
+id = rand(prim_prod);
+#interactions of the seed species
+seed = int_m[id,:];
+#reverse interactions of the seed species
+seedrev = int_m[:,id];
+#What things does the seed species make?
+idm = find(x->x=='m',seed);
+#What things does the seed species need?
+idn = find(x->x=='n',seed);
+
+#Interactions of idseed
+seedm = int_m[idm,:];
+#reverse interactions of seedmake
+seedmrev = int_m[:,idm];
+
+#Community composition
+cid = [id;idm];
+
+#Initialize the community matrix
+c_m = vcat(seed,seedm);
+crev_m = hcat(seedrev,seedmrev);
 
 tmax = 100;
 
 for t=1:tmax
 
-  #Current species list
-  if t==1
-    slist = seed;
-    srevlist = seedrev;
+  #Prior community structure
+  c_mold = copy(c_m);
+  crev_mold = copy(crev_m);
+
+  #build a sublist of species that are trophically linked to anything in the community
+  tlinksp = Array{Int64}(0);
+  for i=1:length(cid)
+    alink = find(x->x=='a',crev_m[:,i]);
+    append!(tlinksp,alink);
+  end
+  #Randomize the list
+  tlink = sample(tlinksp,length(tlinksp),replace=false)
+
+  #Threshold check
+  #run a while loop
+  check = true;
+  tic = 0;
+  while check == true
+    tic = tic + 1;
+    #randomly select from the list
+    draw = sample(tlinksp)
+
+    dm = int_m[draw,:];
+    dmrev = int_m[:,draw];
+
+    #What things does this species need?
+    draw_n = find(x->x=='n',dm);
+    ln=length(draw_n);
+    if ln>0
+      #Are needs fulfilled to threshold?
+      nperc = sum([in(draw_n[i],cid) for i=1:ln])/ln;
+      if nperc >= n_thresh
+        check = false
+      end
+    else
+      check = false
+    end
   end
 
-  #draw a random species
-  #continue to draw until you find a trophically-able species
-  #JUST GO THROUGH SPECIES!
-  contrun=true;
-  samplespp = sample(S,collect(1:S),replace=false);
-  while contrun == true
-    #Draw a new species from the pool
-    #List of things that they make
-    #Do they consume species or things they make that are present?
+  #Update the community
+  push!(cid,draw);
+  c_m = vcat(c_mold,int_m[draw,:]);
+  crev_m = hcat(crev_mold,int_m[:,draw]);

@@ -3,7 +3,6 @@ function build_template_degrees(num_play, probs)
 
   #Defining paiwise probabilities
   #These are probabilities of pairwise interactions within the whole universe of possible interactions (15)
-
   #THIS IS PROBABLY RIGHT
   pw_prob_init = [
     pr_na = p_n*(p_a/(p_a+p_n+p_i+p_m)) + p_a*(p_n/(p_a+p_i+p_n)),
@@ -14,18 +13,6 @@ function build_template_degrees(num_play, probs)
     pr_ii = p_i*(p_i/(p_a+p_n+p_i)),
     pr_aa = p_a*(p_a/(p_i+p_n+p_a))
   ];
-  #pw_prob_init[find(x->x==true,isnan(pw_prob_init))]=0;
-
-
-  # pw_prob = copy(pw_prob_init) / sum(pw_prob_init)
-
-
-  # Distributing trophic interactions (e's) according to a degree distribution
-  #probabilities are for the whole matrix
-  #this means we should have N.e<-p.e*(num_play*(num_play-1)) trophic interactions (e)
-  #thus the mean degree should be mean.k=N.e/num_play
-  #we can sample degrre from a exponential ditribution with mean (1/rate) equal to mean.k; degrees=rexp(num_play,1/mean.k)
-
 
   #Proposed method:
   #Build a random food web from the niche model given the number of species
@@ -63,11 +50,6 @@ function build_template_degrees(num_play, probs)
     end
   end
 
-  #The number of prey in the range should just scale with the number of 'species'
-  #degreesAn = rangev .* num_play;
-  #The +1 forces species to eat at least one thing
-  #degreesAn = round(Int64,copy(degreesAn)) + 1;
-  #plot(x=degrees,Geom.histogram)
 
   #Create an empty character array with dimensions equal to the number of players
   int_m = Array(Char,num_play,num_play);
@@ -76,7 +58,7 @@ function build_template_degrees(num_play, probs)
   int_m[1:(num_play*num_play)] = '0';
 
   prim_prod = zeros(num_play);
-  #The first true species is always a primary producer
+  #The first true species (row/col 2) is always a primary producer
   prim_prod[2] = 1;
 
   for i = 2:num_play
@@ -223,12 +205,14 @@ function build_template_degrees(num_play, probs)
 
 
   #Implement posthoc Rules
-
   #1: Row/Col 1 is the sun
   int_m[1,:] = 'i'
   #All column elements that ARENT 'a' are 'ignore'
   force_ignore=find(x->x!='a',int_m[:,1]);
   int_m[force_ignore,1] = 'i';
+
+  #Basal primary producer doesn't need anything
+  int_m[2,find(x->x=='n',int_m[2,3:num_play])] = 'i';
 
   #Connectance before excluding 'made' things
   Sorig = length(find(x->x=='n',diag(int_m)));
@@ -237,10 +221,10 @@ function build_template_degrees(num_play, probs)
 
   #2: if player A contains an "m" with player B, player B is "i" with everything
   # except if it is "n" with player A
-  #Which species 'make things?'
-  #NOTE: multiple A,B,C can make the same D
 
+  #NOTE: multiple A,B,C can make the same D
   #NOTE: Should 'made' things only be needed and not assimilated, which implies biomass flow? i.e. trophic int?
+
   madev = Array{Int64}(0);
   for i = 2:num_play
     int_v = copy(int_m[i,:]);
@@ -269,6 +253,9 @@ function build_template_degrees(num_play, probs)
         #The consumers of the thing that species i makes indirectly consume species i
         tall_m[i,ind_cons] = 1;
         tall_m[ind_cons,i] = 1;
+
+        #NOTE: if we want, here we could force 'made' things only to be needed and not assimlated... right now, there is no restriction
+
       end
     end
   end
