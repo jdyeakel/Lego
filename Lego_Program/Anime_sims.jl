@@ -59,7 +59,7 @@ cid = [id;idm];
 c_m = vcat(seed,seedm);
 crev_m = hcat(seedrev,seedmrev);
 
-tmax = 100;
+tmax = 5;
 
 for t=1:tmax
 
@@ -76,14 +76,18 @@ for t=1:tmax
     append!(tlink_full,alink);
   end
   #Eliminate anything that is already there
-  for i=1:length(tlink_full)
+  lt = length(tlink_full);
+  torm = Array{Int64}(0);
+  for i=1:lt
     if in(tlink_full[i],cidold)
-      deleteat!(tlink_full,i);
+      push!(torm,i);
     end
   end
+  deleteat!(tlink_full,torm);
+  tlink_unique = unique(tlink_full);
 
   #Randomize the list
-  tlink = sample(tlink_full,length(tlink_full),replace=false)
+  tlink = sample(tlink_unique,length(tlink_unique),replace=false)
 
   #Threshold check
   #run a while loop to find the next 'colonizer'
