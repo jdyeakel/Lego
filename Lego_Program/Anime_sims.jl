@@ -1,8 +1,8 @@
 using Distributions
 using Gadfly
-include("/Users/justinyeakel/Dropbox/PostDoc/2014_Lego/Lego_Program/src/build_template_degrees.jl")
+include("$(homedir())/Dropbox/PostDoc/2014_Lego/Lego_Program/src/build_template_degrees.jl")
 
-num_play = 10
+num_play = 20
 
 init_probs = [
 p_n=0.01,
@@ -59,7 +59,15 @@ cid = [id;idm];
 c_m = vcat(seed,seedm);
 crev_m = hcat(seedrev,seedmrev);
 
-tmax = 5;
+tmax = num_play-1;
+
+#Store assembling community as a sparse matrix?
+com_sparse = Array{Char}(num_play,num_play);
+com_sparse[1:num_play^2]='0';
+for i=1:length(cid);
+  com_sparse[cid[i],:] = c_m[i,:];
+  com_sparse[:,cid[i]] = crev_m[:,i];
+end
 
 for t=1:tmax
 
@@ -87,7 +95,7 @@ for t=1:tmax
   tlink_unique = unique(tlink_full);
 
   #Randomize the list
-  tlink = sample(tlink_unique,length(tlink_unique),replace=false)
+  tlink = sample(tlink_unique,length(tlink_unique),replace=false);
 
   #Threshold check
   #run a while loop to find the next 'colonizer'
@@ -110,13 +118,13 @@ for t=1:tmax
     #CHECKING NEEDS
     #What things does this species need?
     dseedneed = copy(dseed);
-    dseedneed[did] = '0'
+    dseedneed[did] = '0';
     dn = find(x->x=='n',dseedneed);
     ldn=length(dn);
     nperc = Array{Float64}(1);
     if ldn>0
       #Are needs fulfilled to threshold?
-      nperc = sum([in(draw_n[i],cid) for i=1:ldn])/ldn;
+      nperc = sum([in(dn[i],cid) for i=1:ldn])/ldn;
       if nperc >= n_thresh
         ncheck = false;
       end
@@ -160,11 +168,11 @@ for t=1:tmax
 
   #When nothing can colonize
   if keepgoing == false
-    print("Community is uninvadible")
+    print("Community is uninvadible at t=", t)
     break
   end
 
-  #If we get here, the choice 'passes'
+  #If we get here, the choice has 'passed' threshold analysis
 
   #What does this species make?
   #Made things come along too!
@@ -172,11 +180,19 @@ for t=1:tmax
   dm = int_m[didm,:];
   dmrev = int_m[:,didm];
 
+  idnew = cat(1,did,didm);
+  cmnew = vcat(dseed,dm);
+  crevmnew = hcat(dseedrev,dmrev);
+  #Update the sparse matrix
+  for i=1:length(idnew);
+    com_sparse[idnew[i],:] = cmnew[i,:];
+    com_sparse[:,idnew[i]] = crevmnew[:,i];
+  end
 
   #Update the community
-  cid_update = cat(1,cidold,did,didm);
-  c_m_update = vcat(c_mold,dseed,dm);
-  crev_m_update = hcat(crev_mold,dseedrev,dmrev);
+  cid_update = cat(1,cidold,idnew);
+  c_m_update = vcat(c_mold,cmnew);
+  crev_m_update = hcat(crev_mold,crevmnew);
 
   #Update the updated variables to in-play variables
   cid = copy(cid_update);
