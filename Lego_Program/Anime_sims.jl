@@ -59,7 +59,7 @@ cid = [id;idm];
 c_m = vcat(seed,seedm);
 crev_m = hcat(seedrev,seedmrev);
 
-tmax = num_play-1;
+tmax = 100;
 
 #Store assembling community as a sparse matrix?
 com_sparse = Array{Char}(num_play,num_play);
@@ -68,6 +68,7 @@ for i=1:length(cid);
   com_sparse[cid[i],:] = c_m[i,:];
   com_sparse[:,cid[i]] = crev_m[:,i];
 end
+c_t = Array{Char}(num_play,num_play,tmax);
 
 for t=1:tmax
 
@@ -97,73 +98,80 @@ for t=1:tmax
   #Randomize the list
   tlink = sample(tlink_unique,length(tlink_unique),replace=false);
 
-  #Threshold check
-  #run a while loop to find the next 'colonizer'
-  #If it fails, find another primary producer
-  keepgoing = true;
-  check = true;
-  tic = 0;
-  while check == true
-    tic = tic + 1;
+  #Run this look IF tlink has elements
+  if length(tlink) > 0
+    #Threshold check
+    #run a while loop to find the next 'colonizer'
+    #If it fails, find another primary producer
+    keepgoing = true;
+    check = true;
+    tic = 0;
+    while check == true
+      tic = tic + 1;
 
-    ncheck = true;
-    acheck = true;
+      ncheck = true;
+      acheck = true;
 
-    #randomly select from the list
-    did = tlink[tic];
+      #randomly select from the list
+      did = tlink[tic];
 
-    dseed = int_m[did,:];
-    dseedrev = int_m[:,did];
+      dseed = int_m[did,:];
+      dseedrev = int_m[:,did];
 
-    #CHECKING NEEDS
-    #What things does this species need?
-    dseedneed = copy(dseed);
-    dseedneed[did] = '0';
-    dn = find(x->x=='n',dseedneed);
-    ldn=length(dn);
-    nperc = Array{Float64}(1);
-    if ldn>0
-      #Are needs fulfilled to threshold?
-      nperc = sum([in(dn[i],cid) for i=1:ldn])/ldn;
-      if nperc >= n_thresh
+      #CHECKING NEEDS
+      #What things does this species need?
+      dseedneed = copy(dseed);
+      dseedneed[did] = '0';
+      dn = find(x->x=='n',dseedneed);
+      ldn=length(dn);
+      nperc = Array{Float64}(1);
+      if ldn>0
+        #Are needs fulfilled to threshold?
+        nperc = sum([in(dn[i],cid) for i=1:ldn])/ldn;
+        if nperc >= n_thresh
+          ncheck = false;
+        end
+      else
+        #Chosen immigrant needs nothing
+        #Move on to next step (false = pass)
         ncheck = false;
       end
-    else
-      #Chosen immigrant needs nothing
-      #Move on to next step (false = pass)
-      ncheck = false;
-    end
 
-    #CHECKING ASSIMILATES
-    #What things does this species Assimilate?
-    dseedass = copy(dseed);
-    da = find(x->x=='a',dseedass);
-    lda=length(da);
-    aperc = Array{Float64}(1);
-    if lda>0
-      #Are needs fulfilled to threshold?
-      aperc = sum([in(da[i],cid) for i=1:lda])/lda;
-      if aperc >= a_thresh
+      #CHECKING ASSIMILATES
+      #What things does this species Assimilate?
+      dseedass = copy(dseed);
+      da = find(x->x=='a',dseedass);
+      lda=length(da);
+      aperc = Array{Float64}(1);
+      if lda>0
+        #Are needs fulfilled to threshold?
+        aperc = sum([in(da[i],cid) for i=1:lda])/lda;
+        if aperc >= a_thresh
+          acheck = false;
+        end
+      else
+        #This shouldn't happen based on constraints for tlink
+        #But just for completeness
         acheck = false;
       end
-    else
-      #This shouldn't happen based on constraints for tlink
-      #But just for completeness
-      acheck = false;
+
+      #If needs and assimilates are above thresholds, then stop while loop
+      if ncheck == false && acheck == false
+        check = false;
+      end
+
+      #Nothing can colonize?
+      if check == true && tic == length(tlink)
+        #to stop the while loop
+        check = false;
+        keepgoing = false;
+      end
+
     end
 
-    #If needs and assimilates are above thresholds, then stop while loop
-    if ncheck == false && acheck == false
-      check = false;
-    end
-
-    #Nothing can colonize?
-    if check == true && tic == length(tlink)
-      #to stop the while loop
-      check = false;
-      keepgoing = false;
-    end
-
+  else
+    print("Community is full at t=", t)
+    break
   end
 
   #When nothing can colonize
@@ -198,5 +206,8 @@ for t=1:tmax
   cid = copy(cid_update);
   c_m = copy(c_m_update);
   crev_m = copy(crev_m_update);
+
+  #Save image of the community through time
+  c_t[:,:,t] = copy(com_sparse);
 
 end #end time loop
