@@ -1,9 +1,6 @@
-function anime_sims_func(num_play,init_probs,a_thresh,n_thresh)
+function anime_sims_func(int_m,a_thresh,n_thresh)
 
-  include("$(homedir())/Dropbox/PostDoc/2014_Lego/Lego_Program/src/build_template_degrees.jl")
 
-  int_m, sp_m, t_m, tp_m, tind_m = build_template_degrees(num_play,init_probs);
-  #writedlm("$(homedir())/Dropbox/PostDoc/2014_Lego/data_template/fw.csv",t_m);
 
 
   #Order of operations
@@ -19,7 +16,7 @@ function anime_sims_func(num_play,init_probs,a_thresh,n_thresh)
   # #Setting thresholds
   # n_thresh = 0.2;
   # a_thresh = 0.0;
-
+  num_plays = length(int_m[1,:]);
 
   #NOTE: NEED a matrix of JUST SPECIES interactions
   Slist = find(x->x=='n',diag(int_m));
@@ -50,16 +47,23 @@ function anime_sims_func(num_play,init_probs,a_thresh,n_thresh)
   c_m = vcat(seed,seedm);
   crev_m = hcat(seedrev,seedmrev);
 
-  tmax = 100;
+  tmax = num_play;
 
   #Store assembling community as a sparse matrix?
   com_sparse = Array{Char}(num_play,num_play);
   com_sparse[1:num_play^2]='0';
+  #Update direct and indirect trophic interaction matrices
+  com_tp = Array{Int64}(num_play,num_play);
+  com_tind = Array{Int64}(num_play,num_play);
   for i=1:length(cid);
     com_sparse[cid[i],:] = c_m[i,:];
     com_sparse[:,cid[i]] = crev_m[:,i];
+    com_tp[cid[i],:] = tp_m[i,:];
+    com_tind[:,cid[i]] = tind_m[:,i];
   end
   c_t = Array{Char}(num_play,num_play,tmax);
+  c_tp = Array{Int64}(num_play,num_play,tmax);
+  c_tind = Array{Int64}(num_play,num_play,tmax);
   tout = Array{Int64}(1);
 
   time_tic = 0;
@@ -189,10 +193,16 @@ function anime_sims_func(num_play,init_probs,a_thresh,n_thresh)
     idnew = cat(1,did,didm);
     cmnew = vcat(dseed,dm);
     crevmnew = hcat(dseedrev,dmrev);
-    #Update the sparse matrix
+    #Update the sparse and trophic matrices
     for i=1:length(idnew);
-      com_sparse[idnew[i],:] = cmnew[i,:];
-      com_sparse[:,idnew[i]] = crevmnew[:,i];
+      com_sparse[idnew[i],:] = copy(cmnew[i,:]);
+      com_sparse[:,idnew[i]] = copy(crevmnew[:,i]);
+      #Direct trophic interactions
+      com_tp[idnew[i],:] = copy(tp[idnew[i],:]);
+      com_tp[:,idnew[i]] = copy(tp[:,idnew[i]]);
+      #Indirect trophic interactions
+      com_tind[idnew[i],:] = copy(tind[idnew[i],:]);
+      com_tind[:,idnew[i]] = copy(tind[:,idnew[i]]);
     end
 
     #Update the community
@@ -207,11 +217,13 @@ function anime_sims_func(num_play,init_probs,a_thresh,n_thresh)
 
     #Save image of the community through time
     c_t[:,:,t] = copy(com_sparse);
+    c_tp[:,:,t] = copy(com_tp);
+    c_tind[:,:,t] = copy(com_tind);
 
     time_tic = time_tic + 1;
 
   end #end time loop
 
-  return(int_m, time_tic, c_t)
+  return(time_tic, c_t)
 
 end

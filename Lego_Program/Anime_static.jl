@@ -7,7 +7,7 @@ num_play = 20
 init_probs = [
 p_n=0.01,
 p_a=0.01,
-p_m=0.001,
+p_m=0.01,
 p_i= 1 - sum([p_n,p_m,p_a]) #Ignore with 1 - pr(sum(other))
 ]
 
