@@ -1,4 +1,4 @@
-function anime_sims_func(int_m,a_thresh,n_thresh)
+function anime_sims_func(int_m,tp_m,tind_m,a_thresh,n_thresh)
 
 
 
@@ -18,12 +18,13 @@ function anime_sims_func(int_m,a_thresh,n_thresh)
   # a_thresh = 0.0;
   num_plays = length(int_m[1,:]);
 
-  #NOTE: NEED a matrix of JUST SPECIES interactions
   Slist = find(x->x=='n',diag(int_m));
+  lS = length(Slist);
 
   #primary species
   prim_prod = find(x->x=='a',int_m[:,1]);
   id = rand(prim_prod);
+
   #update primary producer list
   deleteat!(prim_prod,find(x->x==id,prim_prod));
   #interactions of the seed species
@@ -52,18 +53,27 @@ function anime_sims_func(int_m,a_thresh,n_thresh)
   #Store assembling community as a sparse matrix?
   com_sparse = Array{Char}(num_play,num_play);
   com_sparse[1:num_play^2]='0';
-  #Update direct and indirect trophic interaction matrices
-  com_tp = Array{Int64}(num_play,num_play);
-  com_tind = Array{Int64}(num_play,num_play);
   for i=1:length(cid);
     com_sparse[cid[i],:] = c_m[i,:];
     com_sparse[:,cid[i]] = crev_m[:,i];
-    com_tp[cid[i],:] = tp_m[i,:];
-    com_tind[:,cid[i]] = tind_m[:,i];
   end
+
+  #Location on the species-only list?
+  #The +1 accounts for the fact that the sun is included in species-only matrices (but not species-only list)
+  spid = find(x->x==id,Slist)+1;
+  #Update direct and indirect trophic interaction matrices
+  com_tp = Array{Int64}(lS+1,lS+1)*0;
+  com_tind = Array{Int64}(lS+1,lS+1)*0;
+  #These matrices record species only
+  com_tp[spid,:] = tp_m[spid,:];
+  com_tp[:,spid] = tp_m[:,spid];
+  com_tind[spid,:] = tind_m[spid,:];
+  com_tind[:,spid] = tind_m[:,spid];
+
+
   c_t = Array{Char}(num_play,num_play,tmax);
-  c_tp = Array{Int64}(num_play,num_play,tmax);
-  c_tind = Array{Int64}(num_play,num_play,tmax);
+  c_tp = Array{Int64}(lS+1,lS+1,tmax);
+  c_tind = Array{Int64}(lS+1,lS+1,tmax);
   tout = Array{Int64}(1);
 
   time_tic = 0;
@@ -101,13 +111,13 @@ function anime_sims_func(int_m,a_thresh,n_thresh)
     dseedrev = Array{Char}(num_play,0);
 
     #Run this look IF tlink has elements
+    #Threshold check
+    #run a while loop to find the next 'colonizer'
+    #If it fails, find another primary producer
+    keepgoing = true;
+    check = true;
+    tic = 0;
     if length(tlink) > 0
-      #Threshold check
-      #run a while loop to find the next 'colonizer'
-      #If it fails, find another primary producer
-      keepgoing = true;
-      check = true;
-      tic = 0;
       while check == true
         tic = tic + 1;
 
@@ -184,6 +194,16 @@ function anime_sims_func(int_m,a_thresh,n_thresh)
 
     #If we get here, the choice has 'passed' threshold analysis
 
+    #Location on the species-only list?
+    #The +1 accounts for the fact that the sun is included in species-only matrices (but not species-only list)
+    spdid = find(x->x==did,Slist)+1;
+    #Direct trophic interactions
+    com_tp[spdid,:] = copy(tp_m[spdid,:]);
+    com_tp[:,spdid] = copy(tp_m[:,spdid]);
+    #Indirect trophic interactions
+    com_tind[spdid,:] = copy(tind_m[spdid,:]);
+    com_tind[:,spdid] = copy(tind_m[:,spdid]);
+
     #What does this species make?
     #Made things come along too!
     didm = find(x->x=='m',dseed);
@@ -197,12 +217,6 @@ function anime_sims_func(int_m,a_thresh,n_thresh)
     for i=1:length(idnew);
       com_sparse[idnew[i],:] = copy(cmnew[i,:]);
       com_sparse[:,idnew[i]] = copy(crevmnew[:,i]);
-      #Direct trophic interactions
-      com_tp[idnew[i],:] = copy(tp[idnew[i],:]);
-      com_tp[:,idnew[i]] = copy(tp[:,idnew[i]]);
-      #Indirect trophic interactions
-      com_tind[idnew[i],:] = copy(tind[idnew[i],:]);
-      com_tind[:,idnew[i]] = copy(tind[:,idnew[i]]);
     end
 
     #Update the community
@@ -224,6 +238,6 @@ function anime_sims_func(int_m,a_thresh,n_thresh)
 
   end #end time loop
 
-  return(time_tic, c_t)
+  return(time_tic, c_t, c_tp, c_tind)
 
 end
