@@ -14,7 +14,7 @@ tend = Array{Int64}(rep);
 num_play = 100;
 init_probs = [
 p_n=0.01,
-p_a=0.01,
+p_a=0.1,
 p_m=0.001,
 p_i= 1 - sum([p_n,p_m,p_a]) #Ignore with 1 - pr(sum(other))
 ]
@@ -22,28 +22,36 @@ a_thresh=0.0;
 n_thresh=0.01;
 CA = (Array{Float64,1})[];
 CAI = (Array{Float64,1})[];
+CID = (Array{Int64,1})[];
 int_m, sp_m, t_m, tp_m, tind_m = build_template_degrees(num_play,init_probs);
 for i=1:rep
   tout = 0;
+  c_t = (Array{Char,1})[];
+  c_tp = (Array{Int64,1})[];
+  c_tind = (Array{Int64,1})[];
+  cid = (Array{Int64,1})[];
+  while tout==0
+    tout, c_t, c_tp, c_tind, cid = anime_sims_func(int_m,tp_m,tind_m,a_thresh,n_thresh);
+  end
   Cassem = Array{Float64}(tout);
   Cassemind = Array{Float64}(tout);
-  while tout==0
-    tout, c_t, c_tp, c_tind = anime_sims_func(int_m,tp_m,tind_m,a_thresh,n_thresh);
-
-
-    for t=1:tout
-      S = length(find(x->x=='n',diag(c_t[:,:,t])));
-      Cassem[t] = (sum(c_tp[:,:,t])/2)/(S^2);
-      Cassemind[t] = (sum(c_tind[:,:,t])/2)/(S^2);
-    end
-
+  for t=1:tout
+    S = length(find(x->x=='n',diag(c_t[:,:,t])));
+    Cassem[t] = (sum(c_tp[:,:,t])/2)/(S^2);
+    Cassemind[t] = (sum(c_tind[:,:,t])/2)/(S^2);
   end
   # plot(x=collect(1:tout),y=Cassem,Scale.y_log10,Geom.point,Theme(default_color=colorant"black",default_point_size=1pt, highlight_width = 0pt))
   # plot(x=collect(1:tout),y=Cassemind,Scale.y_log10,Geom.point,Theme(default_color=colorant"black",default_point_size=1pt, highlight_width = 0pt))
-  CA[i] = copy(Cassem);
-  CAI[i] = copy(Cassemind);
-  
+  push!(CA,copy(Cassem));
+  push!(CAI,copy(Cassemind));
+  push!(CID,copy(cid));
+
   tend[i] = copy(tout);
   print("Rep= ",i)
 end
 plot(x=tend,Geom.histogram)
+
+#Visualize the assembly process
+plot(
+[layer(y=cumsum(CID[j]),x=collect(1:length(CID[j])), Geom.line, Theme(default_color=colorant"black")) for j in 1:50]...,
+Guide.xlabel("Steps"),Guide.ylabel("Species ID"))

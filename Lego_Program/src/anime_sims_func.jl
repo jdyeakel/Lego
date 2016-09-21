@@ -238,6 +238,6 @@ function anime_sims_func(int_m,tp_m,tind_m,a_thresh,n_thresh)
 
   end #end time loop
 
-  return(time_tic, c_t, c_tp, c_tind)
+  return(time_tic, c_t, c_tp, c_tind, cid)
 
 end
