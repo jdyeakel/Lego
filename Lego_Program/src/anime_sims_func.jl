@@ -16,7 +16,7 @@ function anime_sims_func(int_m,tp_m,tind_m,a_thresh,n_thresh,tmax)
   # #Setting thresholds
   # n_thresh = 0.2;
   # a_thresh = 0.0;
-  num_plays = length(int_m[1,:]);
+  num_play = length(int_m[1,:]);
 
   Slist = find(x->x=='n',diag(int_m));
   lS = length(Slist);
@@ -45,14 +45,15 @@ function anime_sims_func(int_m,tp_m,tind_m,a_thresh,n_thresh,tmax)
   cid = [id;idm];
 
   #Initialize the community matrix
-  new_play = 1+length(idm);
-  c_m = Array{Char}(1+length(idm),num_play);
-  crev_m = Array{Char}(num_play,1+length(idm));
+  #New players include the seed and its objects
+  new_play = length(cid);
+  c_m = Array{Char}(new_play,num_play);
+  crev_m = Array{Char}(num_play,new_play);
   c_m[1,:] = seed;
   crev_m[:,1] = seedrev;
   for i=2:new_play
-    c_m[i,:] = seedm;
-    crev_m[:,i] = seedmrev;
+    c_m[i,:] = seedm[i-1,:];
+    crev_m[:,i] = seedmrev[:,i-1];
   end
 
   #Store assembling community as a sparse matrix?
@@ -67,6 +68,7 @@ function anime_sims_func(int_m,tp_m,tind_m,a_thresh,n_thresh,tmax)
   #The +1 accounts for the fact that the sun is included in species-only matrices (but not species-only list)
   spid = find(x->x==id,Slist)+1;
   #Update direct and indirect trophic interaction matrices
+  #Dimensions: number of species + the sun (1)
   com_tp = Array{Int64}(lS+1,lS+1)*0;
   com_tind = Array{Int64}(lS+1,lS+1)*0;
   #These matrices record species only
@@ -79,7 +81,7 @@ function anime_sims_func(int_m,tp_m,tind_m,a_thresh,n_thresh,tmax)
   c_t = Array{Char}(num_play,num_play,tmax);
   c_tp = Array{Int64}(lS+1,lS+1,tmax);
   c_tind = Array{Int64}(lS+1,lS+1,tmax);
-  tout = Array{Int64}(1);
+  tout = Array{Int64}(1)*0;
 
   time_tic = 0;
   for t=1:tmax
@@ -96,16 +98,17 @@ function anime_sims_func(int_m,tp_m,tind_m,a_thresh,n_thresh,tmax)
       alink = find(x->x=='a',crev_m[:,i]);
       append!(tlink_full,alink);
     end
+    tlink_unique = unique(tlink_full);
     #Eliminate anything that is already there
-    lt = length(tlink_full);
+    lt = length(tlink_unique);
     torm = Array{Int64}(0);
     for i=1:lt
-      if in(tlink_full[i],cidold)
+      if in(tlink_unique[i],cidold)
         push!(torm,i);
       end
     end
-    deleteat!(tlink_full,torm);
-    tlink_unique = unique(tlink_full);
+    deleteat!(tlink_unique,torm);
+
 
     #Randomize the list
     tlink = sample(tlink_unique,length(tlink_unique),replace=false);
@@ -121,17 +124,16 @@ function anime_sims_func(int_m,tp_m,tind_m,a_thresh,n_thresh,tmax)
     #If it fails, find another primary producer
     keepgoing = true;
     check = true;
-    tic = 0;
+    tictoc = 0;
     if length(tlink) > 0
       while check == true
-        tic = tic + 1;
+        tictoc = tictoc + 1;
 
         ncheck = true;
         acheck = true;
 
         #randomly select from the list
-        did = Array{Int64}(1);
-        did[1] = tlink[tic];
+        did = tlink[tictoc];
 
         dseed = int_m[did,:];
         dseedrev = int_m[:,did];
@@ -147,6 +149,8 @@ function anime_sims_func(int_m,tp_m,tind_m,a_thresh,n_thresh,tmax)
           #Are needs fulfilled to threshold?
           nperc = sum([in(dn[i],cid) for i=1:ldn])/ldn;
           if nperc >= n_thresh
+            #Needed things are in the community
+            #Pass this test (false = pass)
             ncheck = false;
           end
         else
@@ -163,14 +167,20 @@ function anime_sims_func(int_m,tp_m,tind_m,a_thresh,n_thresh,tmax)
         aperc = Array{Float64}(1);
         if lda>0
           #Are needs fulfilled to threshold?
-          aperc = sum([in(da[i],cid) for i=1:lda])/lda;
-          if aperc >= a_thresh
+          #Add sun as a 'consumable' within the community
+          #This will allow true primary producers to colonize
+          cid_wsun = cat(1,1,cid);
+          aperc = sum([in(da[i],cid_wsun) for i=1:lda])/lda;
+          # '>' because there MUST be at least one 'a' interaction
+          if aperc > a_thresh
+            #Assimilated things are in the community
+            #Pass this test (false = pass)
             acheck = false;
           end
         else
           #This shouldn't happen based on constraints for tlink
-          #But just for completeness
-          acheck = false;
+          #But just for completeness - if you have no (a) links, then you do not pass this test
+          acheck = true;
         end
 
         #If needs and assimilates are above thresholds, then stop while loop
@@ -179,22 +189,22 @@ function anime_sims_func(int_m,tp_m,tind_m,a_thresh,n_thresh,tmax)
         end
 
         #Nothing can colonize?
-        if check == true && tic == length(tlink)
+        if check == true && tictoc == length(tlink)
           #to stop the while loop
           check = false;
           keepgoing = false;
         end
 
-      end
+      end #End while loop
 
     else
-      # print("Community is full at t=", t)
+      # println("Community is trophically disconnected at t=", t)
       break
     end
 
     #When nothing can colonize
     if keepgoing == false
-      # print("Community is uninvadible at t=", t)
+      # println("Community is uninvadible at t=", t)
       break
     end
 
@@ -202,7 +212,7 @@ function anime_sims_func(int_m,tp_m,tind_m,a_thresh,n_thresh,tmax)
 
     #Location on the species-only list?
     #The +1 accounts for the fact that the sun is included in species-only matrices (but not species-only list)
-    spdid = find(x->x==did[1],Slist)+1;
+    spdid = find(x->x==did,Slist)+1;
     #Direct trophic interactions
     com_tp[spdid,:] = copy(tp_m[spdid,:]);
     com_tp[:,spdid] = copy(tp_m[:,spdid]);
@@ -215,12 +225,24 @@ function anime_sims_func(int_m,tp_m,tind_m,a_thresh,n_thresh,tmax)
     didm = find(x->x=='m',dseed);
     dm = int_m[didm,:];
     dmrev = int_m[:,didm];
+    ldm = length(didm);
 
     idnew = cat(1,did,didm);
-    cmnew = vcat(dseed,dm);
-    crevmnew = hcat(dseedrev,dmrev);
+    lnew = length(idnew);
+    #ldm + 1 to account for made things + maker
+    cmnew = Array{Char}(lnew,num_play);
+    crevmnew = Array{Char}(num_play,lnew);
+    cmnew[1,:] = dseed;
+    crevmnew[:,1] = dseedrev;
+    for i=2:lnew
+      cmnew[i,:] = dm[i-1,:];
+      crevmnew[:,i] = dmrev[:,i-1];
+    end
+    # cmnew = vcat(dseed,dm);
+    # crevmnew = hcat(dseedrev,dmrev);
+
     #Update the sparse and trophic matrices
-    for i=1:length(idnew);
+    for i=1:lnew;
       com_sparse[idnew[i],:] = copy(cmnew[i,:]);
       com_sparse[:,idnew[i]] = copy(crevmnew[:,i]);
     end

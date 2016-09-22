@@ -13,7 +13,7 @@ tend = Array{Int64}(rep);
 
 num_play = 1000;
 init_probs = [
-p_n=0.01,
+p_n=0.001,
 p_a=0.01,
 p_m=0.001,
 p_i= 1 - sum([p_n,p_m,p_a]) #Ignore with 1 - pr(sum(other))
@@ -22,7 +22,7 @@ int_m, sp_m, t_m, tp_m, tind_m = build_template_degrees(num_play,init_probs);
 
 tmax = num_play;
 a_thresh=0.0;
-n_thresh=0.1;
+n_thresh=0.5;
 CA = (Array{Float64,1})[];
 CAI = (Array{Float64,1})[];
 CID = (Array{Int64,1})[];
@@ -49,15 +49,20 @@ for i=1:rep
   push!(CID,copy(cid));
 
   tend[i] = copy(tout);
-  print(" Rep= ",i)
+  println(" T= ",tout)
 end
-plot(x=tend,Geom.histogram)
+vcat(CID[1:rep])
+
 
 #Visualize the assembly process
 plot(
 [layer(y=cumsum(CID[j]),x=collect(1:length(CID[j])), Geom.line, Theme(default_color=colorant"black")) for j in 6:8]...,
 Guide.xlabel("Steps"),Guide.ylabel("Species ID"))
 
+#Connectance of each community trajectory
 plot(
-[layer(x=collect(1:length(CA[j])),y=CA[j], Geom.line, Theme(default_color=colorant"black")) for j in 1:rep]...,Scale.y_log10,
+[layer(x=collect(1:length(CA[j])),y=CA[j], Geom.line, Theme(default_color=colorant"black")) for j in 1:rep]...,Scale.y_log10,Scale.x_log10,
 Guide.xlabel("Steps"),Guide.ylabel("Species ID"))
+
+#Difference
+plot(x=collect(1:length(CID[1])),y=cumsum(CID[1])-cumsum(CID[2]),Geom.line)
