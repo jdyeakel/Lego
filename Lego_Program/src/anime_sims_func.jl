@@ -28,9 +28,9 @@ function anime_sims_func(int_m,tp_m,tind_m,a_thresh,n_thresh,tmax)
   #update primary producer list
   deleteat!(prim_prod,find(x->x==id,prim_prod));
   #interactions of the seed species
-  seed = int_m[id,:];
+  seed = copy(int_m[id,:]);
   #reverse interactions of the seed species
-  seedrev = int_m[:,id];
+  seedrev = copy(int_m[:,id]);
   #What things does the seed species make?
   idm = find(x->x=='m',seed);
   #What things does the seed species need?
@@ -45,8 +45,15 @@ function anime_sims_func(int_m,tp_m,tind_m,a_thresh,n_thresh,tmax)
   cid = [id;idm];
 
   #Initialize the community matrix
-  c_m = vcat(seed,seedm);
-  crev_m = hcat(seedrev,seedmrev);
+  new_play = 1+length(idm);
+  c_m = Array{Char}(1+length(idm),num_play);
+  crev_m = Array{Char}(num_play,1+length(idm));
+  c_m[1,:] = seed;
+  crev_m[:,1] = seedrev;
+  for i=2:new_play
+    c_m[i,:] = seedm;
+    crev_m[:,i] = seedmrev;
+  end
 
   #Store assembling community as a sparse matrix?
   com_sparse = Array{Char}(num_play,num_play);
@@ -123,7 +130,8 @@ function anime_sims_func(int_m,tp_m,tind_m,a_thresh,n_thresh,tmax)
         acheck = true;
 
         #randomly select from the list
-        did = tlink[tic];
+        did = Array{Int64}(1);
+        did[1] = tlink[tic];
 
         dseed = int_m[did,:];
         dseedrev = int_m[:,did];
@@ -194,7 +202,7 @@ function anime_sims_func(int_m,tp_m,tind_m,a_thresh,n_thresh,tmax)
 
     #Location on the species-only list?
     #The +1 accounts for the fact that the sun is included in species-only matrices (but not species-only list)
-    spdid = find(x->x==did,Slist)+1;
+    spdid = find(x->x==did[1],Slist)+1;
     #Direct trophic interactions
     com_tp[spdid,:] = copy(tp_m[spdid,:]);
     com_tp[:,spdid] = copy(tp_m[:,spdid]);
