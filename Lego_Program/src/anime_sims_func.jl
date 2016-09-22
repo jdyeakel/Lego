@@ -1,4 +1,4 @@
-function anime_sims_func(int_m,tp_m,tind_m,a_thresh,n_thresh)
+function anime_sims_func(int_m,tp_m,tind_m,a_thresh,n_thresh,tmax)
 
 
 
@@ -47,8 +47,6 @@ function anime_sims_func(int_m,tp_m,tind_m,a_thresh,n_thresh)
   #Initialize the community matrix
   c_m = vcat(seed,seedm);
   crev_m = hcat(seedrev,seedmrev);
-
-  tmax = num_play;
 
   #Store assembling community as a sparse matrix?
   com_sparse = Array{Char}(num_play,num_play);
