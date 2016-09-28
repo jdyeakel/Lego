@@ -5,14 +5,16 @@ include("$(homedir())/Dropbox/PostDoc/2014_Lego/Lego_Program/src/build_template_
 include("$(homedir())/Dropbox/PostDoc/2014_Lego/Lego_Program/src/anime_sims_func.jl")
 
 
-
+#######################################
+# This is the full community simulation
+#######################################
 
 
 #How long does a community take to fill
-rep=100;
+rep=10;
 tend = Array{Int64}(rep);
 
-num_play = 25;
+num_play = 100;
 init_probs = [
 p_n=0.5/num_play,
 p_a=0.01,
@@ -23,7 +25,7 @@ int_m, sp_m, t_m, tp_m, tind_m = build_template_degrees(num_play,init_probs);
 
 tmax = num_play;
 a_thresh=0.0;
-n_thresh=0.2;
+n_thresh=0.8;
 CA = (Array{Float64,1})[];
 CAI = (Array{Float64,1})[];
 CID = (Array{Int64,1})[];
@@ -33,8 +35,14 @@ for i=1:rep
   c_tp = (Array{Int64,1})[];
   c_tind = (Array{Int64,1})[];
   cid = (Array{Int64,1})[];
+  tictoc = 0;
   while tout==0
+    tictoc = tictoc + 1;
     tout, c_t, c_tp, c_tind, cid = anime_sims_func(int_m,tp_m,tind_m,a_thresh,n_thresh,tmax);
+    #Halt runaway processes
+    if tictoc > 100
+      break
+    end
   end
   Cassem = Array{Float64}(tout);
   Cassemind = Array{Float64}(tout);

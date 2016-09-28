@@ -33,6 +33,8 @@ function anime_sims_func(int_m,tp_m,tind_m,a_thresh,n_thresh,tmax)
   seedrev = copy(int_m[:,id]);
   #What things does the seed species make?
   idm = find(x->x=='m',seed);
+
+  #NOTE: Currently ignoring things that the initial colonizer 'needs'!
   #What things does the seed species need?
   idn = find(x->x=='n',seed);
 

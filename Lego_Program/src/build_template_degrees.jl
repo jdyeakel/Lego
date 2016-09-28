@@ -65,16 +65,20 @@ function build_template_degrees(num_play, probs)
 
     #Assigning initial trophic interactions
     #We could add an additional vector of 1s to weight towards the basal resource
+    #if we use a weighted vector, say 1/3 of species will be primary producers
+    pvec = Array{Int64}(Int64(round(num_play/3)))*0+1;
     vec = collect(1:num_play);
     #Remove ith element
     deleteat!(vec,i);
+    #weighted vec
+    wvec = [pvec;vec];
     #What is the degree of player i?
     k = degrees[i]
     #Randomly choose the identities of prey without replacement
     if prim_prod[i] == 0
-      resource = sample(vec,k,replace=false)
+      resource = sample(wvec,k,replace=false)
     else
-      resource_wop = sample(vec,k-1,replace=false)
+      resource_wop = sample(wvec,k-1,replace=false)
       resource = [resource_wop;1]
     end
 
