@@ -5,7 +5,7 @@ include("$(homedir())/Dropbox/PostDoc/2014_Lego/Lego_Program/src/build_template_
 include("$(homedir())/Dropbox/PostDoc/2014_Lego/Lego_Program/src/initiate_comm_func.jl")
 include("$(homedir())/Dropbox/PostDoc/2014_Lego/Lego_Program/src/colonize_func.jl")
 include("$(homedir())/Dropbox/PostDoc/2014_Lego/Lego_Program/src/extinct_func.jl")
-
+include("$(homedir())/Dropbox/PostDoc/2014_Lego/Lego_Program/src/sim_func.jl")
 
 #Establish community template
 num_play = 100;
