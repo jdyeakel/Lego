@@ -8,7 +8,7 @@ include("$(homedir())/Dropbox/PostDoc/2014_Lego/Lego_Program/src/extinct_func.jl
 include("$(homedir())/Dropbox/PostDoc/2014_Lego/Lego_Program/src/sim_func.jl")
 
 #Establish community template
-num_play = 100;
+num_play = 15;
 init_probs = [
 p_n=0.5/num_play,
 p_a=0.01,
