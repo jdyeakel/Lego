@@ -43,6 +43,8 @@ for i=1:rep
   push!(csum,cumsum(CID[i]));
 end
 #Visualize the assembly process
-plot(
+assembplot = plot(
 [layer(y=csum[j],x=collect(1:length(csum[j])), Geom.line, Theme(default_color=colorant"black")) for j in 1:rep]...,
-Guide.xlabel("Steps"),Guide.ylabel("Species ID"))
+Guide.xlabel("Steps"),Guide.ylabel("Summed species ID"));
+
+draw(PDF("$(homedir())/Dropbox/PostDoc/2014_Lego/Lego_Program/figures/fig_fullassemb.pdf", 5inch, 4inch), assembplot)
