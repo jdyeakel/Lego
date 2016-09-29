@@ -79,6 +79,62 @@ function extinct_func(cid,c_m,crev_m,com_sparse,com_tp,com_tind)
   end
 
   #Check ASSIMILATION AND NEED THRESHOLDS after esp has been eliminated
-  
+  check = true;
+  while check == true
+    #CHECKING NEEDS
+    #What things does this species need?
+    dseedneed = copy(dseed);
+    dseedneed[did] = '0';
+    dn = find(x->x=='n',dseedneed);
+    ldn=length(dn);
+    nperc = Array{Float64}(1);
+    if ldn>0
+      #Are needs fulfilled to threshold?
+      nperc = sum([in(dn[i],cid) for i=1:ldn])/ldn;
+      if nperc >= n_thresh
+        #Needed things are in the community
+        #Pass this test (false = pass)
+        ncheck = false;
+      end
+    else
+      #Chosen immigrant needs nothing
+      #Move on to next step (false = pass)
+      ncheck = false;
+    end
+
+    #CHECKING ASSIMILATES
+    #What things does this species Assimilate?
+    dseedass = copy(dseed);
+    da = find(x->x=='a',dseedass);
+    lda=length(da);
+    aperc = Array{Float64}(1);
+    if lda>0
+      #Are needs fulfilled to threshold?
+      #Add sun as a 'consumable' within the community
+      #This will allow true primary producers to colonize
+      cid_wsun = cat(1,1,cid);
+      aperc = sum([in(da[i],cid_wsun) for i=1:lda])/lda;
+      # '>' because there MUST be at least one 'a' interaction
+      if aperc > a_thresh
+        #Assimilated things are in the community
+        #Pass this test (false = pass)
+        acheck = false;
+      end
+    else
+      #This shouldn't happen based on constraints for tlink
+      #But just for completeness - if you have no (a) links, then you do not pass this test
+      acheck = true;
+    end
+
+    #If needs and assimilates are above thresholds, then stop while loop
+    if ncheck == false && acheck == false
+      check = false;
+    end
+
+  end
+
+
+
+
 
 end
