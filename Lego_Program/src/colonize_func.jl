@@ -161,16 +161,19 @@ function colonize_func(a_thresh,n_thresh,cid,c_m,crev_m,com_sparse,com_tp,com_ti
       #What other things make this?
       makers = find(x->x=='m',int_m[:,made]);
       #Delete the one that is to be added to the community
-      delete!(makers,did);
+      deleteat!(makers,find(x->x==did,makers));
       #Are any of the other makers in the community?
       #If so, delete the made object, as its being added is a duplication
       for j=1:length(makers)
         if in(makers[j],cid)
-          append!(maderm,made);
+          append!(maderm,i);
         end
       end
     end
     deleteat!(didm,maderm);
+
+    #Recalculate ldm
+    ldm = length(didm);
 
     dm = int_m[didm,:];
     dmrev = int_m[:,didm];
