@@ -67,12 +67,15 @@ function extinct_func(cid,c_m,crev_m,com_sparse,com_tp,com_tind)
   #Record the species-only eliminations
   esponly = copy(esp);
 
-  #1) What does it make? eliminate those things too
-  for i=1:lesp
-    made = find(x->x=='m',int_m[esp[i],:]);
-    append!(esp,made);
-    for j=1:length(made)
-      append!(esploc,find(x->x==made[j],cid));
+  #Only do this if there is anything made
+  if length(cid) != length(spcid)
+    #1) What does it make? eliminate those things too
+    for i=1:lesp
+      made = find(x->x=='m',int_m[esp[i],:]);
+      append!(esp,made);
+      for j=1:length(made)
+        append!(esploc,find(x->x==made[j],cid));
+      end
     end
   end
 
@@ -182,7 +185,8 @@ function extinct_func(cid,c_m,crev_m,com_sparse,com_tp,com_tind)
     if all(i->i==false,ancheck)
       check = false; #this will break the while loop
     end
-      #Find & impliment secondary xtinctions
+
+    #Find & impliment secondary xtinctions
     find(x->x==true,ancheck)
 
 

@@ -21,7 +21,10 @@ function colonize_func(a_thresh,n_thresh,cid,c_m,crev_m,com_sparse,com_tp,com_ti
     alink = find(x->x=='a',crev_m[:,i]);
     append!(tlink_full,alink);
   end
+
+  #Get rid of duplicate
   tlink_unique = unique(tlink_full);
+
   #Eliminate anything that is already there
   lt = length(tlink_unique);
   torm = Array{Int64}(0);
@@ -148,9 +151,30 @@ function colonize_func(a_thresh,n_thresh,cid,c_m,crev_m,com_sparse,com_tp,com_ti
     #What does this species make?
     #Made things come along too!
     didm = find(x->x=='m',dseed);
+
+    ldm = length(didm);
+
+    #Only add on made things that aren't already made by something else in the community
+    maderm = Array{Int64}(0);
+    for i=1:ldm
+      made = copy(didm[i]);
+      #What other things make this?
+      makers = find(x->x=='m',int_m[:,made]);
+      #Delete the one that is to be added to the community
+      delete!(makers,did);
+      #Are any of the other makers in the community?
+      #If so, delete the made object, as its being added is a duplication
+      for j=1:length(makers)
+        if in(makers[j],cid)
+          append!(maderm,made);
+        end
+      end
+    end
+    deleteat!(didm,maderm);
+
     dm = int_m[didm,:];
     dmrev = int_m[:,didm];
-    ldm = length(didm);
+
 
     idnew = cat(1,did,didm);
     lnew = length(idnew);

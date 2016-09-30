@@ -8,7 +8,7 @@ include("$(homedir())/Dropbox/PostDoc/2014_Lego/Lego_Program/src/extinct_func.jl
 include("$(homedir())/Dropbox/PostDoc/2014_Lego/Lego_Program/src/sim_func.jl")
 
 #Establish community template
-num_play = 15;
+num_play = 1000;
 init_probs = [
 p_n=0.5/num_play,
 p_a=0.01,
@@ -29,11 +29,14 @@ rep = 100;
 CID = (Array{Int64,1})[];
 for r = 1:rep
   #The add-until-full simulation
+  #Creating a new int_m each time
+  int_m, sp_m, t_m, tp_m, tind_m = build_template_degrees(num_play,init_probs);
   cid, c_m, crev_m, com_sparse, com_tp, com_tind = initiate_comm_func(int_m);
   status = "open";
   while status == "open"
     status, cid, c_m, crev_m, com_sparse, com_tp, com_tind = colonize_func(a_thresh,n_thresh,cid,c_m,crev_m,com_sparse,com_tp,com_tind);
   end
+  length(unique(cid))-length(cid)
   rich = length(cid);
   println("Richness = ",rich)
   push!(CID,copy(cid));
