@@ -170,14 +170,14 @@ function colonize_func(a_thresh,n_thresh,cid,c_m,crev_m,com_sparse,com_tp,com_ti
         end
       end
     end
-    deleteat!(didm,maderm);
+    maderm_unique = unique(maderm);
+    deleteat!(didm,sort(maderm_unique));
 
     #Recalculate ldm
     ldm = length(didm);
 
     dm = int_m[didm,:];
     dmrev = int_m[:,didm];
-
 
     idnew = cat(1,did,didm);
     lnew = length(idnew);
