@@ -27,6 +27,7 @@ n_thresh = 0.4;
 
 rep = 1000;
 CID = (Array{Int64,1})[];
+rich = Array{Int64}(rep);
 for r = 1:rep
   #The add-until-full simulation
   #Creating a new int_m each time
@@ -37,8 +38,8 @@ for r = 1:rep
     status, cid, c_m, crev_m, com_sparse, com_tp, com_tind = colonize_func(a_thresh,n_thresh,cid,c_m,crev_m,com_sparse,com_tp,com_tind);
   end
   length(unique(cid))-length(cid)
-  rich = length(cid);
-  println("Richness = ",rich)
+  rich[r] = length(cid);
+  println("Richness = ",rich[r])
   push!(CID,copy(cid));
 end
 csum = (Array{Int64,1})[];

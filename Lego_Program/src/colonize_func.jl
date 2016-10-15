@@ -135,8 +135,10 @@ function colonize_func(a_thresh,n_thresh,cid,c_m,crev_m,com_sparse,com_tp,com_ti
     #println("Community is uninvadible at t=", t)
     return(status,cid,c_m,crev_m,com_sparse,com_tp,com_tind);
   else
-    status = "open";
+
     #If we get here, the choice has 'passed' threshold analysis
+    status = "open";
+
 
     #Location on the species-only list?
     #The +1 accounts for the fact that the sun is included in species-only matrices (but not species-only list)
