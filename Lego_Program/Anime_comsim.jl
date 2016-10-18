@@ -8,7 +8,7 @@ include("$(homedir())/Dropbox/PostDoc/2014_Lego/Lego_Program/src/extinct_func.jl
 include("$(homedir())/Dropbox/PostDoc/2014_Lego/Lego_Program/src/sim_func.jl")
 
 #Establish community template
-num_play = 100;
+num_play = 20;
 init_probs = [
 p_n=1/num_play,
 p_a=0.01,
@@ -37,7 +37,7 @@ for r = 1:rep
   while status == "open"
     status, cid, c_m, crev_m, com_sparse, com_tp, com_tind = colonize_func(a_thresh,n_thresh,cid,c_m,crev_m,com_sparse,com_tp,com_tind);
   end
-  length(unique(cid))-length(cid)
+  # length(unique(cid))-length(cid)
   rich[r] = length(cid);
   println("Richness = ",rich[r])
   push!(CID,copy(cid));

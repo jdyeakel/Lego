@@ -5,18 +5,23 @@ function extinct_func(cid,c_m,crev_m,com_sparse,com_tp,com_tind)
   c_mold = copy(c_m);
   crev_mold = copy(crev_m);
 
+  #Number of links and species of prior community structure
   num_com = length(cid);
   L = (sum(com_tp)/2);
   Slist = find(x->x=='n',diag(int_m));
   lS = length(Slist);
 
   #Which cid-members are species?
-  spcid = Array{Int64}(0);
-  for i=1:num_com
-    if in(cid[i],Slist) == true
-      append!(spcid,cid[i]);
-    end
-  end
+  # spcid = Array{Int64}(0);
+  # for i=1:num_com
+  #   if in(cid[i],Slist) == true
+  #     append!(spcid,cid[i]);
+  #   end
+  # end
+  # num_comsp = length(spcid);
+
+  #This is also encoded in the com_sparse matrix
+  spcid = find(x->x=='n',diag(com_sparse));
   num_comsp = length(spcid);
 
   ########################
@@ -24,15 +29,21 @@ function extinct_func(cid,c_m,crev_m,com_sparse,com_tp,com_tind)
   ########################
 
   #Determine the Predation and Competition Load for each species
-  pred_vec = Array{Float64}(num_com);
-  vuln_vec = Array{Float64}(num_com);
-  comp_vec = Array{Float64}(num_com);
+  pred_vec = zeros(num_com);
+  vuln_vec = zeros(num_com);
+  comp_vec = zeros(num_com);
   for i=1:num_comsp
-    intrev = int_m[:,spcid[i]];
+
+    #Vector (species i interactions)
     inti = int_m[spcid[i],:];
+    #Reverse vector (those interacting with species i)
+    intrev = int_m[:,spcid[i]];
+
     #How many things ASSIMILATE it?
+    #Found in the reverse vector
     pred_vec[i] = length(find(x->x=='a',intrev));
     vuln_vec[i] = (1/(L/lS))*pred_vec[i]
+
     #What is the max similarity?
     comp_load = Array{Float64}(num_comsp);
     for j=1:num_comsp
@@ -41,37 +52,40 @@ function extinct_func(cid,c_m,crev_m,com_sparse,com_tp,com_tind)
       seq2 = copy(intj);
       comp_load[j] = sim_func(seq1,seq2);
     end
+
     #set itself to zero
     comp_load[i] = 0.0;
     comp_vec[i] = maximum(comp_load);
   end
   #vulnscaled_vec = vuln_vec ./ maximum(vuln_vec);
 
-  #Calculate the probability of extinction
+  #Calculate the probability of extinction based on predation load and competitive load
   prext_pred = (1./(1.+exp(-0.2.*(pred_vec.-(L/lS)))));
   prext_comp = (1./(1.+exp(-10.*(comp_vec.-0.5))));
   prext = prext_pred.*prext_comp;
 
-  #Determine extinction with a binomial draw
+  #Determine extinction with a binomial draw based on the probability of extinction calculated above
   binext = Array{Int64}(num_comsp);
   for i = 1:num_comsp
     binext[i] = rand(Binomial(1,prext[i]));
   end
 
-  #Randomly select the species to eliminate
+  #Select the species to eliminate
   esploc = find(x->x==1,binext);
   esp = spcid[esploc];
   lesp = length(esp);
   #Eliminate those species from the spcid list
-  deleteat!(spcid,sort(esploc));
+  #Note: esploc must be sorted for the deleteat! function
+  #deleteat!(spcid,sort(esploc));
+
   #Record the species-only eliminations
+  #i.e. this EXCLUDES made things for updating trophic nets
   esponly = copy(esp);
 
-  #Only do this if there is anything made
-  if length(cid) != length(spcid)
-    #1) What does it make? eliminate those things too
-    for i=1:lesp
-      made = find(x->x=='m',int_m[esp[i],:]);
+  #1) What does it make? eliminate those things too
+  for i=1:lesp
+    made = find(x->x=='m',int_m[esp[i],:]);
+    if length(made) > 0
       append!(esp,made);
       for j=1:length(made)
         append!(esploc,find(x->x==made[j],cid));
@@ -79,27 +93,40 @@ function extinct_func(cid,c_m,crev_m,com_sparse,com_tp,com_tind)
     end
   end
 
+  #recalculate length of esp
+  lesp = length(esp);
+
   #UPDATING
   #Update CID by eliminating esp
-  for i=1:length(esp)
+  for i=1:lesp
     del_loc = find(x->x==esp[i],cid);
     deleteat!(cid,del_loc);
   end
 
   #Update c_m, crev_m,
+  #Species interactions
   c_m = copy(int_m[cid,:]);
+  #Interactions ON each species
   crev_m = copy(int_m[:,cid]);
 
   #Update interaction matrices from the esponly vector
   #This is the vector of species-only deletions
-  # com_sparse[esp,:] = Array{Int64}(num_play)*0;
-  # com_sparse[:,esp] = Array{Int64}(num_play)*0;
+
   for i=1:length(esponly)
-    com_tp[esponly[i],:] = Array{Int64}(lS+1)*0;
-    com_tp[:,esponly[i]] = Array{Int64}(lS+1)*0;
-    com_tind[esponly[i],:] = Array{Int64}(lS+1)*0;
-    com_tind[:,esponly[i]] = Array{Int64}(lS+1)*0;
+    com_tp[esponly[i],:] = zeros(Int64,(lS+1));
+    com_tp[:,esponly[i]] = zeros(Int64,(lS+1));
+    com_tind[esponly[i],:] = zeros(Int64,(lS+1));
+    com_tind[:,esponly[i]] = zeros(Int64,(lS+1));
   end
+
+  #Update com_sparse?
+  com_sparse[esp,:] = '0';
+  com_sparse[:,esp] = '0';
+  #Replace diagonal of com_sparse to original from int_m
+  #NOTE: THIS PART DOESNT WORK YET
+  diag(com_sparse) = copy(diag(int_m));
+  #NOTE: to keep it consistent, change 'i' to '0' though I don't know why we have to do that
+  diag(com_sparse)[find(x->x=='i')]='0';
 
   #Update the number of species in the community
   num_com = length(cid);
