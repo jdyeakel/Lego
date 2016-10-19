@@ -29,9 +29,9 @@ function extinct_func(cid,c_m,crev_m,com_sparse,com_tp,com_tind)
   ########################
 
   #Determine the Predation and Competition Load for each species
-  pred_vec = zeros(num_com);
-  vuln_vec = zeros(num_com);
-  comp_vec = zeros(num_com);
+  pred_vec = zeros(num_comsp);
+  vuln_vec = zeros(num_comsp);
+  comp_vec = zeros(num_comsp);
   for i=1:num_comsp
 
     #Vector (species i interactions)
@@ -82,13 +82,33 @@ function extinct_func(cid,c_m,crev_m,com_sparse,com_tp,com_tind)
   #i.e. this EXCLUDES made things for updating trophic nets
   esponly = copy(esp);
 
-  #1) What does it make? eliminate those things too
+  #1) What does it make? eliminate those things IF nothing else present makes them either
   for i=1:lesp
-    made = find(x->x=='m',int_m[esp[i],:]);
-    if length(made) > 0
-      append!(esp,made);
-      for j=1:length(made)
-        append!(esploc,find(x->x==made[j],cid));
+    #The made objects
+    madeobjects = find(x->x=='m',int_m[esp[i],:]);
+    #Iterate across each thing that is MADE
+    #what things make this?
+    for k=1:length(madeobjects)
+      made = madeobjects[k];
+      makers = find(x->x=='n',int_m[made,:]);
+      if length(made) > 0
+        #Is there anything that makes this in the community that is NOT going extinct during this timestep?
+        checkmade = Array{Bool}(length(makers));
+        for j=1:length(makers)
+          if in(makers[j],cid) && in(makers[j],esponly)==false
+            #There is something else that makes it
+            checkmade[j] = true;
+          else
+            #There is NOT something else that makes it
+            checkmade[j] = false;
+          end
+        end
+        #If there are NO makers in the community that are remaining
+        #then add the made thing to the eliminate list
+        if all(x->x==false,checkmade)
+          append!(esp,made[j]);
+          append!(esploc,find(x->x==made[j],cid));
+        end
       end
     end
   end
