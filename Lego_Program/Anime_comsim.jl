@@ -12,7 +12,7 @@ num_play = 20;
 init_probs = [
 p_n=1/num_play,
 p_a=0.01,
-p_m=0.1/num_play,
+p_m=0.1, #0.1/num_play,
 p_i= 1 - sum([p_n,p_m,p_a]) #Ignore with 1 - pr(sum(other))
 ]
 int_m, sp_m, t_m, tp_m, tind_m = build_template_degrees(num_play,init_probs);

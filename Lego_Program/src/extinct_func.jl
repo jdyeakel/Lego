@@ -84,14 +84,15 @@ function extinct_func(cid,c_m,crev_m,com_sparse,com_tp,com_tind)
 
   #1) What does it make? eliminate those things IF nothing else present makes them either
   for i=1:lesp
-    #The made objects
+    #The made objects of the species being deleted
     madeobjects = find(x->x=='m',int_m[esp[i],:]);
-    #Iterate across each thing that is MADE
-    #what things make this?
-    for k=1:length(madeobjects)
-      made = madeobjects[k];
-      makers = find(x->x=='n',int_m[made,:]);
-      if length(made) > 0
+    #Only do this loop if things are made
+    if length(madeobjects) > 0
+      #Iterate across each thing that is MADE
+      #what things make this?
+      for k=1:length(madeobjects)
+        made = madeobjects[k];
+        makers = find(x->x=='n',int_m[made,:]);
         #Is there anything that makes this in the community that is NOT going extinct during this timestep?
         checkmade = Array{Bool}(length(makers));
         for j=1:length(makers)
@@ -106,15 +107,12 @@ function extinct_func(cid,c_m,crev_m,com_sparse,com_tp,com_tind)
         #If there are NO makers in the community that are remaining
         #then add the made thing to the eliminate list
         if all(x->x==false,checkmade)
-          append!(esp,made[j]);
-          append!(esploc,find(x->x==made[j],cid));
+          append!(esp,made);
+          append!(esploc,find(x->x==made,cid));
         end
       end
     end
   end
-
-  #recalculate length of esp
-  lesp = length(esp);
 
   #UPDATING
   #Update CID by eliminating esp
@@ -132,6 +130,7 @@ function extinct_func(cid,c_m,crev_m,com_sparse,com_tp,com_tind)
   #Update interaction matrices from the esponly vector
   #This is the vector of species-only deletions
 
+  #NOTE: This doesn't work bc species id doesn't correlate with the row/columns of the trophic matrices
   for i=1:length(esponly)
     com_tp[esponly[i],:] = zeros(Int64,(lS+1));
     com_tp[:,esponly[i]] = zeros(Int64,(lS+1));
