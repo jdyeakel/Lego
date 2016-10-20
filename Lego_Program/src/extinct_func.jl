@@ -11,24 +11,24 @@ function extinct_func(cid,c_m,crev_m,com_sparse,com_tp,com_tind)
   Slist = find(x->x=='n',diag(int_m));
   lS = length(Slist);
 
-  # # Which cid-members are species?
-  # spcid = Array{Int64}(0);
-  # for i=1:num_com
-  #   if in(cid[i],Slist) == true
-  #     append!(spcid,cid[i]);
-  #   end
-  # end
-  # num_comsp = length(spcid);
-
-  #This is also encoded in the com_sparse matrix
-  spcid = find(x->x=='n',diag(com_sparse));
+  # Which cid-members are species?
+  spcid = Array{Int64}(0);
+  for i=1:num_com
+    if in(cid[i],Slist) == true
+      append!(spcid,cid[i]);
+    end
+  end
   num_comsp = length(spcid);
+
+  # #This is also encoded in the com_sparse matrix
+  # spcid = find(x->x=='n',diag(com_sparse));
+  # num_comsp = length(spcid);
 
   ########################
   # PRIMARY EXTINCTIONS
   ########################
 
-  #NOTE that we are using the spcid to locate and initiate the primary extinctions
+  #NOTE that we are using the SPCID to locate and initiate the primary extinctions
 
   #Determine the Predation and Competition Load for each species
   pred_vec = zeros(num_comsp);
@@ -89,7 +89,13 @@ function extinct_func(cid,c_m,crev_m,com_sparse,com_tp,com_tind)
     #Record the species-only eliminations
     #i.e. this EXCLUDES made things for updating trophic nets for later use
     esponly = copy(esp);
-    esponly_loc = copy(esploc);
+    esponly_loc = copy(esploc)
+    #This will be used to locate the correct species on trophic matrices
+    #+1 because the 1st row/column of the trophic matrices is the sun
+    t_loc = zeros(Int64,lesp);
+    for i=1:lesp
+      t_loc[i] = find(x->x==esp[i],Slist)[1] + 1;
+    end
 
     #NOTE this next section appears to WORK very well 10/10/16
     #1) What does it make? eliminate those things IF nothing else present makes them either
@@ -124,12 +130,16 @@ function extinct_func(cid,c_m,crev_m,com_sparse,com_tp,com_tind)
       end
     end
 
+    #Redefine lesp to account for eliminated made objects
+    lesp = length(esp);
 
-    #Update CID by eliminating esp
+    #Update CID & SPCID by eliminating esp
     for i=1:lesp
       del_loc = find(x->x==esp[i],cid);
       deleteat!(cid,del_loc);
     end
+    #Update SPCID by eliminating esponly
+    deleteat!(spcid,sort(esponly_loc));
 
     #Update c_m, crev_m,
     #Species interactions
@@ -142,21 +152,21 @@ function extinct_func(cid,c_m,crev_m,com_sparse,com_tp,com_tind)
 
     #The +1 is to account for the fact that the first row/column in com_tp and com_tind is the sun
     for i=1:length(esponly)
-      deleteloc=esponly_loc[i]+1;
-      com_tp[deleteloc,:] = zeros(Int64,(lS+1));
-      com_tp[:,deleteloc] = zeros(Int64,(lS+1));
-      com_tind[deleteloc,:] = zeros(Int64,(lS+1));
-      com_tind[:,deleteloc] = zeros(Int64,(lS+1));
+      com_tp[t_loc[i],:] = zeros(Int64,(lS+1));
+      com_tp[:,t_loc[i]] = zeros(Int64,(lS+1));
+      com_tind[t_loc[i],:] = zeros(Int64,(lS+1));
+      com_tind[:,t_loc[i]] = zeros(Int64,(lS+1));
     end
 
-    #Update com_sparse?
-    com_sparse[esp,:] = '0';
-    com_sparse[:,esp] = '0';
-    #Replace diagonal of com_sparse to original from int_m
-    #NOTE: THIS PART DOESNT WORK YET
-    diag(com_sparse) = copy(diag(int_m));
-    #NOTE: to keep it consistent, change 'i' to '0' though I don't know why we have to do that
-    diag(com_sparse)[find(x->x=='i')]='0';
+    # NOTE: not convinced that I need to use/update com_sparse
+    # #Update com_sparse?
+    # com_sparse[esp,:] = '0';
+    # com_sparse[:,esp] = '0';
+    # #Replace diagonal of com_sparse to original from int_m
+    # #NOTE: THIS PART DOESNT WORK YET
+    # diag(com_sparse) = copy(diag(int_m));
+    # #NOTE: to keep it consistent, change 'i' to '0' though I don't know why we have to do that
+    # diag(com_sparse)[find(x->x=='i')]='0';
 
     #Update the number of species in the community
     num_com = length(cid);
