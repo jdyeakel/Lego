@@ -86,17 +86,22 @@ function extinct_func(cid,c_m,crev_m,com_tp,com_tind)
   if sum(binext) > 0
 
     #Select the species to eliminate
-    esploc = find(x->x==1,binext);
-    esp = spcid[esploc];
+    esp = spcid[find(x->x==1,binext)]
     lesp = length(esp);
-    #Eliminate those species from the spcid list
-    #Note: esploc must be sorted for the deleteat! function
-    #deleteat!(spcid,sort(esploc));
 
     #Record the species-only eliminations
     #i.e. this EXCLUDES made things for updating trophic nets for later use
     esponly = copy(esp);
-    esponly_loc = copy(esploc)
+
+    esploc = zeros(Int64,lesp);
+    esponly_loc = zeros(Int64,lesp);
+    for i=1:lesp
+      #Location of eliminated species within CID
+      esploc[i] = find(x->x==esp[i],cid)[1];
+      #Location of eliminated species within SPCID
+      esponly_loc[i] = find(x->x==esp[i],spcid)[1];
+    end
+
     #This will be used to locate the correct species on trophic matrices
     #+1 because the 1st row/column of the trophic matrices is the sun
     t_loc = zeros(Int64,lesp);
@@ -141,11 +146,12 @@ function extinct_func(cid,c_m,crev_m,com_tp,com_tind)
     lesp = length(esp);
 
     #Update CID & SPCID by eliminating esp
-    for i=1:lesp
-      del_loc = find(x->x==esp[i],cid);
-      deleteat!(cid,del_loc);
-    end
+    # for i=1:lesp
+    #   del_loc = find(x->x==esp[i],cid);
+    #   deleteat!(cid,del_loc);
+    # end
     #Update SPCID by eliminating esponly
+    deleteat!(cid,sort(esploc));
     deleteat!(spcid,sort(esponly_loc));
 
     #Update c_m, crev_m,
