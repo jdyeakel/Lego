@@ -32,10 +32,10 @@ for r = 1:rep
   #The add-until-full simulation
   #Creating a new int_m each time
   int_m, sp_m, t_m, tp_m, tind_m = build_template_degrees(num_play,init_probs);
-  cid, c_m, crev_m, com_sparse, com_tp, com_tind = initiate_comm_func(int_m);
+  cid, c_m, crev_m, com_tp, com_tind = initiate_comm_func(int_m);
   status = "open";
   while status == "open"
-    status, cid, c_m, crev_m, com_sparse, com_tp, com_tind = colonize_func(a_thresh,n_thresh,cid,c_m,crev_m,com_sparse,com_tp,com_tind);
+    status, cid, c_m, crev_m, com_tp, com_tind = colonize_func(a_thresh,n_thresh,cid,c_m,crev_m,com_tp,com_tind);
   end
   # length(unique(cid))-length(cid)
   rich[r] = length(cid);

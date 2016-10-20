@@ -1,4 +1,6 @@
-function extinct_func(cid,c_m,crev_m,com_sparse,com_tp,com_tind)
+function extinct_func(cid,c_m,crev_m,com_tp,com_tind)
+
+  status = "open";
 
   #Prior community structure
   cidold = copy(cid);
@@ -72,6 +74,11 @@ function extinct_func(cid,c_m,crev_m,com_sparse,com_tp,com_tind)
     binext[i] = rand(Binomial(1,prext[i]));
   end
 
+  #######################################
+  #######################################
+  #IF EXTINCTIONS OCCUR AT ALL
+  #######################################
+  #######################################
 
 
   #UPDATING NOTE: only do the rest if there are any extinctions on this round!
@@ -97,7 +104,7 @@ function extinct_func(cid,c_m,crev_m,com_sparse,com_tp,com_tind)
       t_loc[i] = find(x->x==esp[i],Slist)[1] + 1;
     end
 
-    #NOTE this next section appears to WORK very well 10/10/16
+    #NOTE this next section appears to WORK well 10/10/16
     #1) What does it make? eliminate those things IF nothing else present makes them either
     for i=1:lesp
       #The made objects of the species being deleted
@@ -168,17 +175,22 @@ function extinct_func(cid,c_m,crev_m,com_sparse,com_tp,com_tind)
     # #NOTE: to keep it consistent, change 'i' to '0' though I don't know why we have to do that
     # diag(com_sparse)[find(x->x=='i')]='0';
 
-    #Update the number of species in the community
-    num_com = length(cid);
-    num_comsp = length(spcid);
 
-    ########################
-    # SECONDARY EXTINCTIONS
-    ########################
+    #######################################
+    #######################################
+    #CHECK FOR SECONDARY EXTINCTIONS
+    #######################################
+    #######################################
 
     #Check ASSIMILATION AND NEED THRESHOLDS after esp has been eliminated
     check = true;
     while check == true
+
+      #Update the number of species in the community
+      #Which changes every time a species extinction occurs
+      num_com = length(cid);
+      num_comsp = length(spcid);
+
       ncheck = trues(num_comsp);
       acheck = trues(num_comsp);
       ancheck = trues(num_comsp);
@@ -251,8 +263,11 @@ function extinct_func(cid,c_m,crev_m,com_sparse,com_tp,com_tind)
 
       if all(i->i==false,ancheck)
         check = false; #this will break the while loop
+        status = "Primary extinctions only";
       else
         #This part only runs if check = true
+
+        status = "Primary and secondary extinctions";
 
         #Find & impliment secondary extinctions
         #This will involve everything after the binext step
@@ -343,13 +358,20 @@ function extinct_func(cid,c_m,crev_m,com_sparse,com_tp,com_tind)
         end
 
 
-      end
+      end #End of secondary extinction (else) loop
+
 
 
     end #End while loop
 
 
-  end #If loop (do only if there are any primary extinctions)
+  else #If loop (do only if there are any primary extinctions)
+
+    status = "No extinctions";
+
+  end
+
+  return(status,cid,c_m,crev_m,com_tp,com_tind);
 
 
 end #End function

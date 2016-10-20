@@ -42,13 +42,13 @@ function initiate_comm_func(int_m)
     crev_m[:,i] = seedmrev[:,i-1];
   end
 
-  #Store assembling community as a sparse matrix?
-  com_sparse = Array{Char}(num_play,num_play);
-  com_sparse[1:num_play^2]='0';
-  for i=1:length(cid);
-    com_sparse[cid[i],:] = c_m[i,:];
-    com_sparse[:,cid[i]] = crev_m[:,i];
-  end
+  # #Store assembling community as a sparse matrix?
+  # com_sparse = Array{Char}(num_play,num_play);
+  # com_sparse[1:num_play^2]='0';
+  # for i=1:length(cid);
+  #   com_sparse[cid[i],:] = c_m[i,:];
+  #   com_sparse[:,cid[i]] = crev_m[:,i];
+  # end
 
   #Location on the species-only list?
   #The +1 accounts for the fact that the sun is included in species-only matrices (but not species-only list)
@@ -63,6 +63,6 @@ function initiate_comm_func(int_m)
   com_tind[spid,:] = tind_m[spid,:];
   com_tind[:,spid] = tind_m[:,spid];
 
-  return(cid, c_m, crev_m, com_sparse, com_tp, com_tind)
+  return(cid, c_m, crev_m, com_tp, com_tind)
 
 end

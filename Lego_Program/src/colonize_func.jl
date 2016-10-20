@@ -1,4 +1,4 @@
-function colonize_func(a_thresh,n_thresh,cid,c_m,crev_m,com_sparse,com_tp,com_tind)
+function colonize_func(a_thresh,n_thresh,cid,c_m,crev_m,com_tp,com_tind)
 
   status = "open";
 
@@ -126,14 +126,14 @@ function colonize_func(a_thresh,n_thresh,cid,c_m,crev_m,com_sparse,com_tp,com_ti
   else
     status = "full";
     #println("Community is trophically disconnected at t=", t)
-    return(status,cid,c_m,crev_m,com_sparse,com_tp,com_tind);
+    return(status,cid,c_m,crev_m,com_tp,com_tind);
   end
 
   #When nothing can colonize
   if keepgoing == false
     status = "full";
     #println("Community is uninvadible at t=", t)
-    return(status,cid,c_m,crev_m,com_sparse,com_tp,com_tind);
+    return(status,cid,c_m,crev_m,com_tp,com_tind);
   else
 
     #If we get here, the choice has 'passed' threshold analysis
@@ -195,11 +195,11 @@ function colonize_func(a_thresh,n_thresh,cid,c_m,crev_m,com_sparse,com_tp,com_ti
     # cmnew = vcat(dseed,dm);
     # crevmnew = hcat(dseedrev,dmrev);
 
-    #Update the sparse and trophic matrices
-    for i=1:lnew;
-      com_sparse[idnew[i],:] = copy(cmnew[i,:]);
-      com_sparse[:,idnew[i]] = copy(crevmnew[:,i]);
-    end
+    # #Update the sparse matrices
+    # for i=1:lnew;
+    #   com_sparse[idnew[i],:] = copy(cmnew[i,:]);
+    #   com_sparse[:,idnew[i]] = copy(crevmnew[:,i]);
+    # end
 
     #Update the community
     cid_update = cat(1,cidold,idnew);
@@ -211,7 +211,7 @@ function colonize_func(a_thresh,n_thresh,cid,c_m,crev_m,com_sparse,com_tp,com_ti
     c_m = copy(c_m_update);
     crev_m = copy(crev_m_update);
 
-    return(status,cid,c_m,crev_m,com_sparse,com_tp,com_tind);
+    return(status,cid,c_m,crev_m,com_tp,com_tind);
   end
 
 end
