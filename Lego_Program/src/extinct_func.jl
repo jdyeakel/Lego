@@ -251,11 +251,99 @@ function extinct_func(cid,c_m,crev_m,com_sparse,com_tp,com_tind)
 
       if all(i->i==false,ancheck)
         check = false; #this will break the while loop
+      else
+        #This part only runs if check = true
+
+        #Find & impliment secondary extinctions
+        #This will involve everything after the binext step
+        #1) find things the new esp made, determine if anything else makes them
+        #2) Add species + made objects to esp
+        #3) delete esp
+        #4) update
+        #5) rerun secondary extinctions until no more extinctions occur
+
+        #Select the species to eliminate
+        esploc = find(x->x==true,ancheck);
+        esp = spcid[esploc];
+        lesp = length(esp);
+        #Eliminate those species from the spcid list
+        #Note: esploc must be sorted for the deleteat! function
+        #deleteat!(spcid,sort(esploc));
+
+        #Record the species-only eliminations
+        #i.e. this EXCLUDES made things for updating trophic nets for later use
+        esponly = copy(esp);
+        esponly_loc = copy(esploc)
+        #This will be used to locate the correct species on trophic matrices
+        #+1 because the 1st row/column of the trophic matrices is the sun
+        t_loc = zeros(Int64,lesp);
+        for i=1:lesp
+          t_loc[i] = find(x->x==esp[i],Slist)[1] + 1;
+        end
+
+        #NOTE this next section appears to WORK very well 10/10/16
+        #1) What does it make? eliminate those things IF nothing else present makes them either
+        for i=1:lesp
+          #The made objects of the species being deleted
+          madeobjects = find(x->x=='m',int_m[esp[i],:]);
+          #Only do this loop if things are made
+          if length(madeobjects) > 0
+            #Iterate across each thing that is MADE
+            #what things make this?
+            for k=1:length(madeobjects)
+              made = madeobjects[k];
+              makers = find(x->x=='n',int_m[made,:]);
+              #Is there anything that makes this in the community that is NOT going extinct during this timestep?
+              checkmade = Array{Bool}(length(makers));
+              for j=1:length(makers)
+                if in(makers[j],cid) && in(makers[j],esponly)==false
+                  #There is something else that makes it that isn't going to be eliminated on this iteration
+                  checkmade[j] = true;
+                else
+                  #There is NOT something else that makes it
+                  checkmade[j] = false;
+                end
+              end
+              #If there are NO makers in the community that are remaining
+              #then add the made thing to the eliminate list
+              if all(x->x==false,checkmade)
+                append!(esp,made);
+                append!(esploc,find(x->x==made,cid));
+              end
+            end
+          end
+        end
+
+        #Redefine lesp to account for eliminated made objects
+        lesp = length(esp);
+
+        #Update CID & SPCID by eliminating esp
+        for i=1:lesp
+          del_loc = find(x->x==esp[i],cid);
+          deleteat!(cid,del_loc);
+        end
+        #Update SPCID by eliminating esponly
+        deleteat!(spcid,sort(esponly_loc));
+
+        #Update c_m, crev_m,
+        #Species interactions
+        c_m = copy(int_m[cid,:]);
+        #Interactions ON each species
+        crev_m = copy(int_m[:,cid]);
+
+        #Update interaction matrices from the esponly vector
+        #This is the vector of species-only deletions
+
+        #The +1 is to account for the fact that the first row/column in com_tp and com_tind is the sun
+        for i=1:length(esponly)
+          com_tp[t_loc[i],:] = zeros(Int64,(lS+1));
+          com_tp[:,t_loc[i]] = zeros(Int64,(lS+1));
+          com_tind[t_loc[i],:] = zeros(Int64,(lS+1));
+          com_tind[:,t_loc[i]] = zeros(Int64,(lS+1));
+        end
+
+
       end
-
-      #Find & impliment secondary xtinctions
-      find(x->x==true,ancheck)
-
 
 
     end #End while loop
