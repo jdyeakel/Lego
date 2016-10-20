@@ -1,6 +1,6 @@
 function extinct_func(cid,c_m,crev_m,com_tp,com_tind)
 
-  status = "open";
+  # status = "open";
 
   #Prior community structure
   cidold = copy(cid);
@@ -9,6 +9,7 @@ function extinct_func(cid,c_m,crev_m,com_tp,com_tind)
 
   #Number of links and species of prior community structure
   num_com = length(cid);
+  initialsize = num_com;
   L = (sum(com_tp)/2);
   Slist = find(x->x=='n',diag(int_m));
   lS = length(Slist);
@@ -265,15 +266,15 @@ function extinct_func(cid,c_m,crev_m,com_tp,com_tind)
           ancheck[i] = false;
         end
 
-      end #End for loop
+      end #End for loop over species
 
       if all(i->i==false,ancheck)
         check = false; #this will break the while loop
-        status = "Primary extinctions only";
+        # status = "Primary extinctions only";
       else
         #This part only runs if check = true
 
-        status = "Primary and secondary extinctions";
+        # status = "Primary and secondary extinctions";
 
         #Find & impliment secondary extinctions
         #This will involve everything after the binext step
@@ -284,17 +285,19 @@ function extinct_func(cid,c_m,crev_m,com_tp,com_tind)
         #5) rerun secondary extinctions until no more extinctions occur
 
         #Select the species to eliminate
-        esploc = find(x->x==true,ancheck);
-        esp = spcid[esploc];
-        lesp = length(esp);
-        #Eliminate those species from the spcid list
-        #Note: esploc must be sorted for the deleteat! function
-        #deleteat!(spcid,sort(esploc));
 
-        #Record the species-only eliminations
-        #i.e. this EXCLUDES made things for updating trophic nets for later use
+        esp = spcid[find(x->x==true,ancheck)];
         esponly = copy(esp);
-        esponly_loc = copy(esploc)
+        lesp = length(esp);
+        esploc = zeros(Int64,lesp);
+        esponly_loc = zeros(Int64,lesp);
+        for i=1:lesp
+          #Location of eliminated species within CID
+          esploc[i] = find(x->x==esp[i],cid)[1];
+          #Location of eliminated species within SPCID
+          esponly_loc[i] = find(x->x==esp[i],spcid)[1];
+        end
+
         #This will be used to locate the correct species on trophic matrices
         #+1 because the 1st row/column of the trophic matrices is the sun
         t_loc = zeros(Int64,lesp);
@@ -339,11 +342,12 @@ function extinct_func(cid,c_m,crev_m,com_tp,com_tind)
         lesp = length(esp);
 
         #Update CID & SPCID by eliminating esp
-        for i=1:lesp
-          del_loc = find(x->x==esp[i],cid);
-          deleteat!(cid,del_loc);
-        end
+        # for i=1:lesp
+        #   del_loc = find(x->x==esp[i],cid);
+        #   deleteat!(cid,del_loc);
+        # end
         #Update SPCID by eliminating esponly
+        deleteat!(cid,sort(esploc));
         deleteat!(spcid,sort(esponly_loc));
 
         #Update c_m, crev_m,
@@ -368,15 +372,18 @@ function extinct_func(cid,c_m,crev_m,com_tp,com_tind)
 
 
 
-    end #End while loop
+    end #End while loop == while loop breaks when check==false
 
 
   else #If loop (do only if there are any primary extinctions)
 
-    status = "No extinctions";
+    # status = "No extinctions";
 
   end
 
+  finalsize = length(cid);
+  totaleliminations = initialsize - finalsize;
+  status = string(totaleliminations," extinctions")
   return(status,cid,c_m,crev_m,com_tp,com_tind);
 
 
