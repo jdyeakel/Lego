@@ -1,4 +1,6 @@
-function colonize_func(a_thresh,n_thresh,cid,c_m,crev_m,com_tp,com_tind)
+function colonize_func(int_m,tp_m,tind_m,a_thresh,n_thresh,cid,c_m,crev_m,com_tp,com_tind)
+
+  num_play = length(int_m[1,:]);
 
   status = "open";
 

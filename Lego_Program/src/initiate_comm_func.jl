@@ -1,4 +1,6 @@
-function initiate_comm_func(int_m)
+function initiate_comm_func(int_m,tp_m,tind_m)
+
+  num_play = length(int_m[1,:]);
 
   #Species-only list
   Slist = find(x->x=='n',diag(int_m));

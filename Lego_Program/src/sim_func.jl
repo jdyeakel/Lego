@@ -1,4 +1,4 @@
-function sim_func(seq1,seq2)
+function sim_func(seq1,seq2,num_play)
 
   #determine where both seq1 and seq1 have i,i & delete those interactions
   todelete = Array{Int64}(0);

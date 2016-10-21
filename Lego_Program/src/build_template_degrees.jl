@@ -1,6 +1,9 @@
 function build_template_degrees(num_play, probs)
 
-
+  p_n=probs[1];
+  p_a=probs[2];
+  p_m=probs[3];
+  p_i=probs[4]; #Ignore with 1 - pr(sum(other))
   #Defining paiwise probabilities
   #These are probabilities of pairwise interactions within the whole universe of possible interactions (15)
   #THIS IS PROBABLY RIGHT
