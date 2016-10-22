@@ -1,4 +1,4 @@
-function build_template_degrees(num_play, probs)
+function build_template_degrees(num_play, probs, sim)
 
   p_n=probs[1];
   p_a=probs[2];
@@ -298,6 +298,28 @@ function build_template_degrees(num_play, probs)
   Lnew = sum(t_m)/2;
   Cnew = Lnew/(Snew^2);
 
-return(int_m, sp_m, t_m, tp_m, tind_m)
+
+  #Optional code to build similarity matrix
+  simvalue = zeros(num_play,num_play);
+  if sim == true
+    for i = 1:num_play
+      for j = 1:num_play
+        if j > i
+          seq1 = copy(int_m[i,:]);
+          seq2 = copy(int_m[j,:]);
+          similarity = sim_func(seq1,seq2,num_play);
+          simvalue[i,j] = similarity;
+          simvalue[j,i] = similarity;
+        end
+        if j == i
+          simvalue[i,j] = 1.0;
+        end
+      end
+    end
+  end
+
+
+
+return(int_m, sp_m, t_m, tp_m, tind_m, simvalue)
 
 end

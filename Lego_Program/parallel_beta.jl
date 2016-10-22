@@ -20,6 +20,7 @@ tmax = 1000;
 reps=50;
 
 #Shared variables
+sprich = SharedArray{Int64}(tmax,reps);
 rich = SharedArray{Int64}(tmax,reps);
 conn = SharedArray{Float64}(tmax,reps);
 
@@ -43,21 +44,24 @@ conn = SharedArray{Float64}(tmax,reps);
     end
     #Always run extinction code because probabilities are assessed within
     status,cid,spcid,c_m,crev_m,com_tp,com_tind = extinct_func(int_m,a_thresh,n_thresh,cid,c_m,crev_m,com_tp,com_tind);
-    S = length(spcid);
+    sprich[t,r] = length(spcid);
     # length(unique(cid))-length(cid)
-    conn[t,r] = (sum(com_tp)/2)/(S^2);
+    conn[t,r] = (sum(com_tp)/2)/(sprich[t,r]^2);
     rich[t,r] = length(cid);
   end
 end
 
-#Visualize the assembly process
+#Visualize richness over time
 richplot = plot(
-[layer(y=rich[:,j],x=collect(1:tmax), Geom.line, Theme(default_color=colorant"gray")) for j in 1:reps]...,
-Guide.xlabel("Time"),Guide.ylabel("Richness"),Scale.x_log10);
+[layer(y=sprich[:,j],x=collect(1:tmax), Geom.line, Theme(default_color=colorant"gray")) for j in 1:reps]...,
+Guide.xlabel("Time"),Guide.ylabel("Richness"),Scale.y_log10);
+draw(PDF("$(homedir())/Dropbox/PostDoc/2014_Lego/Lego_Program/figures/fig_diversity.pdf", 5inch, 4inch), richplot)
 
-draw(PDF("$(homedir())/Dropbox/PostDoc/2014_Lego/Lego_Program/figures/fig_fullassemb.pdf", 5inch, 4inch), assembplot)
-
-
+#Connectance Plot
+connplot = plot(
+[layer(y=conn[:,j],x=collect(1:tmax), Geom.line, Theme(default_color=colorant"gray")) for j in 1:reps]...,
+Guide.xlabel("Time"),Guide.ylabel("Richness"),Scale.x_log10,Scale.y_log10);
+draw(PDF("$(homedir())/Dropbox/PostDoc/2014_Lego/Lego_Program/figures/fig_connectance.pdf", 5inch, 4inch), connplot)
 
 
 

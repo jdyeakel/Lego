@@ -1,6 +1,11 @@
-function extinct_func(int_m,a_thresh,n_thresh,cid,c_m,crev_m,com_tp,com_tind)
+function extinct_func(int_m,a_thresh,n_thresh,cid,c_m,crev_m,com_tp,com_tind,simvalue)
 
   num_play = length(int_m[1,:]);
+
+  sim = false;
+  if sum(simvalue) > 0
+    sim = true;
+  end
 
   # status = "open";
 
@@ -60,12 +65,17 @@ function extinct_func(int_m,a_thresh,n_thresh,cid,c_m,crev_m,com_tp,com_tind)
       #What is the max similarity?
       comp_load = Array{Float64}(num_comsp);
       for j=1:num_comsp
-        intj = int_m[spcid[j],:];
-        seq1 = copy(inti);
-        seq2 = copy(intj);
-        comp_load[j] = sim_func(seq1,seq2,num_play);
+        if sim == true
+          #NOTE USE THIS IF SIMS ARE CALCULATED A PRIORI
+          comp_load[j] = simvalue[spcid[i],spcid[j]];
+        else
+          #NOTE USE THIS IF SIMS ARE NOT CALCULATED A PRIORI
+          intj = int_m[spcid[j],:];
+          seq1 = copy(inti);
+          seq2 = copy(intj);
+          comp_load[j] = sim_func(seq1,seq2,num_play);
+        end
       end
-
       #set itself to zero
       comp_load[i] = 0.0;
       comp_vec[i] = maximum(comp_load);
