@@ -1,9 +1,9 @@
-function build_template_degrees(num_play, probs, sim)
+function build_template_degrees(num_play, probs, ppweight, sim)
 
-  p_n=probs[1];
-  p_a=probs[2];
-  p_m=probs[3];
-  p_i=probs[4]; #Ignore with 1 - pr(sum(other))
+  p_n=copy(probs[1]);
+  p_a=copy(probs[2]);
+  p_m=copy(probs[3]);
+  p_i=copy(probs[4]); #Ignore with 1 - pr(sum(other))
   #Defining paiwise probabilities
   #These are probabilities of pairwise interactions within the whole universe of possible interactions (15)
   #THIS IS PROBABLY RIGHT
@@ -40,7 +40,7 @@ function build_template_degrees(num_play, probs, sim)
   centerv = zeros(num_play);
   nmin = zeros(num_play);
   nmax = zeros(num_play);
-  degrees = Array{Int64}(num_play)*0;
+  degrees = zeros(Int64,num_play);
   for i=1:num_play
     ud = Uniform(rangev[i]/2,nichev[i]);
     centerv[i] = rand(ud);
@@ -56,7 +56,11 @@ function build_template_degrees(num_play, probs, sim)
 
   #Create an empty character array with dimensions equal to the number of players
   int_m = Array(Char,num_play,num_play);
-  t_m = Array{Int64}(num_play,num_play)*0;
+  #Matrix of trophic-only interactions
+  t_m = zeros(Int64,num_play,num_play);
+  #Matrix of mutualistic interactions
+  m_m = zeros(Int64,num_play,num_play);
+
   #Set array equal to zero
   int_m[1:(num_play*num_play)] = '0';
 
@@ -64,12 +68,14 @@ function build_template_degrees(num_play, probs, sim)
   #The first true species (row/col 2) is always a primary producer
   prim_prod[2] = 1;
 
+
+  #Assigning trophic interactions to species in the net
   for i = 2:num_play
 
     #Assigning initial trophic interactions
     #We could add an additional vector of 1s to weight towards the basal resource
     #if we use a weighted vector, say 1/3 of species will be primary producers
-    pvec = Array{Int64}(Int64(round(num_play/3)))*0+1;
+    pvec = Array{Int64}(Int64(round(num_play*(ppweight))))*0+1;
     vec = collect(1:num_play);
     #Remove ith element
     deleteat!(vec,i);
@@ -81,6 +87,7 @@ function build_template_degrees(num_play, probs, sim)
     if prim_prod[i] == 0
       resource = sample(wvec,k,replace=false)
     else
+      #If you are a primary producer, at least 1 thing you conusume must be row/column 1
       resource_wop = sample(wvec,k-1,replace=false)
       resource = [resource_wop;1]
     end
@@ -89,7 +96,8 @@ function build_template_degrees(num_play, probs, sim)
     #Establish these prey in the interaction matrix
     int_m[i,collect(resource)] = 'a'
     t_m[i,collect(resource)] = 1;
-    t_m[collect(resource),i] = 1;
+    #t_m[collect(resource),i] = 0;
+
     #Note: to vectorize a row from int_m (so that it is an Array{Char,1}), we would write v = int_m[i,:][:]
 
     #Assigning complimentary interactions
@@ -114,9 +122,14 @@ function build_template_degrees(num_play, probs, sim)
     #Asymmetric predation
     res_i = resource[find(x->x==1,bin_draw)]
     int_m[collect(res_i),i] = 'i' #assigning n's according to random draw
+
     #Faculatative mutualism
     res_n = resource[find(x->x==0,bin_draw)]
     int_m[collect(res_n),i] = 'n' #assigning i's according to random draw
+
+    #Record mutualistic interaction in m_m matrix
+    m_m[collect(res_n),i] = 1;
+    m_m[i,collect(res_n)] = 1;
 
   end
 
@@ -140,7 +153,7 @@ function build_template_degrees(num_play, probs, sim)
 
 
 
-  prob_line = cumsum(pw_prob_new) #Why did I sort this???
+  prob_line = cumsum(pw_prob_new);
 
 
 
@@ -152,13 +165,16 @@ function build_template_degrees(num_play, probs, sim)
 
         r_draw = rand()
 
-        #N:N
+        #N:N - symmetric mutualism
         if r_draw < prob_line[1]
           int_m[i,j] = 'n'
           int_m[j,i] = 'n'
+          #Update mutualistic network
+          m_m[i,j] = 1;
+          m_m[j,i] = 1;
         end
 
-        #N:I
+        #N:I - commensalism
         if r_draw > prob_line[1] && r_draw < prob_line[2]
           index = 2 #find(x -> x == "ni",new_int_labels)
           mij = Array(Char,2)
@@ -172,7 +188,7 @@ function build_template_degrees(num_play, probs, sim)
         end
 
 
-        #N:M
+        #N:M - ecosystem engineering
         if r_draw > prob_line[2] && r_draw < prob_line[3]
           index = 3 #find(x -> x == "nm",new_int_labels)
           mij = Array(Char,2)
@@ -184,6 +200,7 @@ function build_template_degrees(num_play, probs, sim)
           int_m[i,j] = mij[1]
           int_m[j,i] = mij[2]
           #Ensure nothing 'makes' the forced primary producer
+          #Not sure if I need this 10/24/16
           if j == 2
             int_m[i,j] = 'n'
             int_m[j,i] = 'm'
@@ -191,7 +208,7 @@ function build_template_degrees(num_play, probs, sim)
         end
 
 
-        #I:I
+        #I:I - neutral interaction
         if r_draw > prob_line[3] && r_draw < prob_line[4]
           int_m[i,j] = 'i'
           int_m[j,i] = 'i'
@@ -218,7 +235,13 @@ function build_template_degrees(num_play, probs, sim)
   force_ignore=find(x->x!='a',int_m[:,1]);
   int_m[force_ignore,1] = 'i';
 
+  #due to the above forcing, there are no mutualistic interactions with the sun
+  #The only 'a' interactions with the sun are 'a-i', not 'a-n'
+  m_m[1,:] = 0;
+  m_m[:,1] = 0;
+
   #Basal primary producer doesn't need anything
+  #Not sure this needs to exist 10/24/16
   int_m[2,find(x->x=='n',int_m[2,3:num_play])] = 'i';
 
   #Connectance before excluding 'made' things
@@ -255,10 +278,14 @@ function build_template_degrees(num_play, probs, sim)
         t_m[:,made[k]] = 0;
         tall_m[made[k],:] = 0;
         tall_m[:,made[k]] = 0;
+        m_m[made[k],:] = 0;
+        m_m[:,made[k]] = 0;
+
         #What species EAT the made things?
         ind_cons = find(x->x=='a',int_m[:,made[k]]);
+
         #The consumers of the thing that species i makes indirectly consume species i
-        tall_m[i,ind_cons] = 1;
+        #tall_m[i,ind_cons] = 1;
         tall_m[ind_cons,i] = 1;
 
         #NOTE: if we want, here we could force 'made' things only to be needed and not assimlated... right now, there is no restriction
@@ -282,17 +309,27 @@ function build_template_degrees(num_play, probs, sim)
   sprc = find(x->x=='n',diag(int_m));
   num_sp=length(sprc);
   sp_m = Array{Char}(num_sp+1,num_sp+1);
-  tp_m = Array{Int64}(num_sp+1,num_sp+1)*0;
-  tind_m = Array{Int64}(num_sp+1,num_sp+1)*0;
+  tp_m = zeros(Int64,num_sp+1,num_sp+1);
+  tind_m = zeros(Int64,num_sp+1,num_sp+1);
+  mp_m = zeros(Int64,num_sp+1,num_sp+1);
+  #ensure the 1st row/column in species interaction matrices is the sun (basal resource)
+  #This means the 1st row is 'i' for sp_m, or 0 for tp_m, tind_m, mp_m
+  #This means the 1st column is
   sp_m[1,:] = cat(1,'i',int_m[1,sprc]);
   sp_m[:,1] = cat(1,'i',int_m[sprc,1]);
   tp_m[1,:] = cat(1,0,t_m[1,sprc]);
   tp_m[:,1] = cat(1,0,t_m[sprc,1]);
   tind_m[1,:] = cat(1,0,t_m[1,sprc]);
   tind_m[:,1] = cat(1,0,t_m[sprc,1]);
+  mp_m[1,:] = cat(1,0,m_m[1,sprc]);
+  mp_m[:,1] = cat(1,0,m_m[sprc,1]);
+
+  #The rest of the matrices (2:num_sp+1 - the +1 is due to the fact that we have placed the basal resource in row/column 1) will be filled in with the species only part of the full matrices
   sp_m[collect(2:num_sp+1),collect(2:num_sp+1)] = int_m[sprc,sprc];
   tp_m[collect(2:num_sp+1),collect(2:num_sp+1)] = t_m[sprc,sprc];
   tind_m[collect(2:num_sp+1),collect(2:num_sp+1)] = tall_m[sprc,sprc];
+  mp_m[collect(2:num_sp+1),collect(2:num_sp+1)] = m_m[sprc,sprc];
+
   #How many 'made things?'
   Snew = length(find(x->x=='n',diag(int_m)));
   Lnew = sum(t_m)/2;
@@ -320,6 +357,6 @@ function build_template_degrees(num_play, probs, sim)
 
 
 
-return(int_m, sp_m, t_m, tp_m, tind_m, simvalue)
+return(int_m, sp_m, t_m, tp_m, tind_m, mp_m, simvalue)
 
 end
