@@ -9,14 +9,28 @@ function initiate_comm_func(int_m,tp_m,tind_m)
   #Founding species
   #primary species
   prim_prod = find(x->x=='a',int_m[:,1]);
-  id = rand(prim_prod);
 
-  #update primary producer list
-  deleteat!(prim_prod,find(x->x==id,prim_prod));
+  #How many things do the primary producers need?
+  for i=1:length(prim_prod)
+    pp_need[i] = length(find(x->x=='n',int_m[prim_prod[i],:]));
+  end
+
+  #Which primary producers are indendent?
+  #Note: Currently species 2 is built as being independent, so there should always be at least one capable species
+  prim_prod_indep = prim_prod[find(x->x<2,pp_need)];
+
+
+  id = rand(prim_prod_indep);
+
+  # #update primary producer list
+  # deleteat!(prim_prod_indep,find(x->x==id,prim_prod_indep));
+
   #interactions of the seed species
   seed = copy(int_m[id,:]);
+
   #reverse interactions of the seed species
   seedrev = copy(int_m[:,id]);
+
   #What things does the seed species make?
   idm = find(x->x=='m',seed);
 
