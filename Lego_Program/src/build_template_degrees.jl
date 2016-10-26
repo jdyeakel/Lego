@@ -242,7 +242,8 @@ function build_template_degrees(num_play, probs, ppweight, sim)
 
   #Basal primary producer doesn't need anything
   #Not sure this needs to exist 10/24/16
-  int_m[2,find(x->x=='n',int_m[2,3:num_play])] = 'i';
+  colonizer_n=find(x->x=='n',int_m[2,:]);
+  int_m[2,colonizer_n[2:length(colonizer_n)]] = 'i';
 
   #Connectance before excluding 'made' things
   Sorig = length(find(x->x=='n',diag(int_m)));
