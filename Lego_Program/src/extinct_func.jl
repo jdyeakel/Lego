@@ -16,11 +16,11 @@ function extinct_func(int_m,a_thresh,n_thresh,cid,c_m,crev_m,com_tp,com_tind,sim
 
   #Number of links and species of prior community structure
   num_com = length(cid);
-  initialsize = num_com;
+  initialsize = copy(num_com);
 
 
 
-  L = (sum(com_tp)/2);
+  L = sum(com_tp);
   Slist = find(x->x=='n',diag(int_m));
   lS = length(Slist);
 
@@ -53,13 +53,15 @@ function extinct_func(int_m,a_thresh,n_thresh,cid,c_m,crev_m,com_tp,com_tind,sim
     for i=1:num_comsp
 
       #Vector (species i interactions)
-      inti = int_m[spcid[i],:];
+      inti = copy(int_m[spcid[i],:]);
       #Reverse vector (those interacting with species i)
-      intrev = int_m[:,spcid[i]];
+      intrev = copy(int_m[:,spcid[i]]);
 
       #How many things ASSIMILATE it?
       #Found in the reverse vector
       pred_vec[i] = length(find(x->x=='a',intrev));
+
+      #NOTE: Not using vulnerability right now
       vuln_vec[i] = (1/(L/lS))*pred_vec[i]
 
       #What is the max similarity?
@@ -70,20 +72,20 @@ function extinct_func(int_m,a_thresh,n_thresh,cid,c_m,crev_m,com_tp,com_tind,sim
           comp_load[j] = simvalue[spcid[i],spcid[j]];
         else
           #NOTE USE THIS IF SIMS ARE NOT CALCULATED A PRIORI
-          intj = int_m[spcid[j],:];
+          intj = copy(int_m[spcid[j],:]);
           seq1 = copy(inti);
           seq2 = copy(intj);
           comp_load[j] = sim_func(seq1,seq2,num_play);
         end
       end
-      #set itself to zero
+      #set itself to zero - otherwise it will be max
       comp_load[i] = 0.0;
       comp_vec[i] = maximum(comp_load);
     end
     #vulnscaled_vec = vuln_vec ./ maximum(vuln_vec);
 
     #Calculate the probability of extinction based on predation load and competitive load
-    prext_pred = (1./(1.+exp(-0.2.*(pred_vec.-(L/lS)))));
+    prext_pred = (1./(1.+exp(-0.5.*(pred_vec.-(L/lS)))));
     prext_comp = (1./(1.+exp(-10.*(comp_vec.-0.5))));
     prext = prext_pred.*prext_comp;
 
@@ -105,7 +107,7 @@ function extinct_func(int_m,a_thresh,n_thresh,cid,c_m,crev_m,com_tp,com_tind,sim
     if sum(binext) > 0
 
       #Select the species to eliminate
-      esp = spcid[find(x->x==1,binext)]
+      esp = copy(spcid[find(x->x==1,binext)]);
       lesp = length(esp);
 
       #Record the species-only eliminations
@@ -138,7 +140,7 @@ function extinct_func(int_m,a_thresh,n_thresh,cid,c_m,crev_m,com_tp,com_tind,sim
           #Iterate across each thing that is MADE
           #what things make this?
           for k=1:length(madeobjects)
-            made = madeobjects[k];
+            made = copy(madeobjects[k]);
             makers = find(x->x=='n',int_m[made,:]);
             #Is there anything that makes this in the community that is NOT going extinct during this timestep?
             checkmade = Array{Bool}(length(makers));
@@ -181,8 +183,8 @@ function extinct_func(int_m,a_thresh,n_thresh,cid,c_m,crev_m,com_tp,com_tind,sim
 
       #Update interaction matrices from the esponly vector
       #This is the vector of species-only deletions
-
-      #The +1 is to account for the fact that the first row/column in com_tp and com_tind is the sun
+      #Set interactions of deleted species = 0
+      #NOTE The +1 is to account for the fact that the first row/column in com_tp and com_tind is the sun, so vectors have to be lS+1 elements long
       for i=1:length(esponly)
         com_tp[t_loc[i],:] = zeros(Int64,(lS+1));
         com_tp[:,t_loc[i]] = zeros(Int64,(lS+1));
@@ -222,8 +224,8 @@ function extinct_func(int_m,a_thresh,n_thresh,cid,c_m,crev_m,com_tp,com_tind,sim
         #Cycle through the SPECIES in the community (not made things)
         for i=1:num_comsp
           #What species?
-          did = spcid[i];
-          dseed = int_m[did,:];
+          did = copy(spcid[i]);
+          dseed = copy(int_m[did,:]);
           #CHECKING NEEDS
           #What things does this species need?
           dseedneed = copy(dseed);

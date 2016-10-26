@@ -9,15 +9,16 @@ function initiate_comm_func(int_m,tp_m,tind_m)
   #Founding species
   #primary species
   prim_prod = find(x->x=='a',int_m[:,1]);
-
+  lprim = length(prim_prod);
   #How many things do the primary producers need?
-  for i=1:length(prim_prod)
-    pp_need[i] = length(find(x->x=='n',int_m[prim_prod[i],:]));
+  pp_need = Array{Bool}(lprim);
+  for i=1:lprim
+    pp_need[i] = length(find(x->x=='n',int_m[prim_prod[i],:])) <2;
   end
 
   #Which primary producers are indendent?
   #Note: Currently species 2 is built as being independent, so there should always be at least one capable species
-  prim_prod_indep = prim_prod[find(x->x<2,pp_need)];
+  prim_prod_indep = prim_prod[find(x->x==true,pp_need)];
 
 
   id = rand(prim_prod_indep);
@@ -33,10 +34,6 @@ function initiate_comm_func(int_m,tp_m,tind_m)
 
   #What things does the seed species make?
   idm = find(x->x=='m',seed);
-
-  #NOTE: Currently ignoring things that the initial colonizer 'needs'!
-  #What things does the seed species need?
-  idn = find(x->x=='n',seed);
 
   #Interactions of idseed
   seedm = int_m[idm,:];

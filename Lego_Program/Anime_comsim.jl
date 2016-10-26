@@ -8,9 +8,9 @@ include("$(homedir())/Dropbox/PostDoc/2014_Lego/Lego_Program/src/extinct_func.jl
 include("$(homedir())/Dropbox/PostDoc/2014_Lego/Lego_Program/src/sim_func.jl")
 
 #Establish community template
-num_play = 20;
+num_play = 500;
 init_probs = [
-p_n=5/num_play,
+p_n=0.1/num_play,
 p_a=0.01,
 p_m=0.1/num_play,
 p_i= 1 - sum([p_n,p_m,p_a]) #Ignore with 1 - pr(sum(other))
@@ -35,11 +35,11 @@ for r = 1:rep
   #Creating a new int_m each time
   sim=true;
   ppweight=1/3;
-  int_m, sp_m, t_m, tp_m, tind_m, mp_m simvalue = build_template_degrees(num_play,init_probs,ppweight,sim);
-  cid, c_m, crev_m, com_tp, com_tind = initiate_comm_func(int_m);
+  int_m, sp_m, t_m, tp_m, tind_m, mp_m, simvalue = build_template_degrees(num_play,init_probs,ppweight,sim);
+  cid, c_m, crev_m, com_tp, com_tind = initiate_comm_func(int_m,tp_m,tind_m);
   status = "open";
   while status == "open"
-    status,cid,c_m,crev_m,com_tp,com_tind = colonize_func(a_thresh,n_thresh,cid,c_m,crev_m,com_tp,com_tind);
+    status,cid,c_m,crev_m,com_tp,com_tind = colonize_func(int_m,tp_m,tind_m,a_thresh,n_thresh,cid,c_m,crev_m,com_tp,com_tind);
   end
   # length(unique(cid))-length(cid)
   rich[r] = length(cid);
