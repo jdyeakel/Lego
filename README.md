@@ -6,11 +6,11 @@ Community assembly and evolution via discrete interaction rules
 This is a work in progress. (check)
 
 ```S
-A: avoid
+A: assimilate
 N: need
 I: ignore
 M: make
-E: eat
+E: exclude
 ```
 
 Initial matrix seeding rules
