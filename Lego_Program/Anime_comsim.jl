@@ -1,6 +1,6 @@
 using Distributions
 using Gadfly
-using PyCall
+#using PyCall
 include("$(homedir())/Dropbox/PostDoc/2014_Lego/Lego_Program/src/build_template_degrees.jl")
 include("$(homedir())/Dropbox/PostDoc/2014_Lego/Lego_Program/src/initiate_comm_func.jl")
 include("$(homedir())/Dropbox/PostDoc/2014_Lego/Lego_Program/src/colonize_func.jl")
@@ -8,7 +8,7 @@ include("$(homedir())/Dropbox/PostDoc/2014_Lego/Lego_Program/src/extinct_func.jl
 include("$(homedir())/Dropbox/PostDoc/2014_Lego/Lego_Program/src/sim_func.jl")
 
 #Establish community template
-num_play = 500;
+num_play = 100;
 init_probs = [
 p_n=0.1/num_play,
 p_a=0.01,
