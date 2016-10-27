@@ -67,7 +67,7 @@ draw(PDF("$(homedir())/Dropbox/PostDoc/2014_Lego/Lego_Program/figures/fig_fullas
 
 
 #Establish community template
-num_play = 1000;
+num_play = 20;
 init_probs = [
 p_n=0.1/num_play,
 p_a=0.01,
@@ -174,6 +174,7 @@ p_i= 1 - sum([p_n,p_m,p_a]) #Ignore with 1 - pr(sum(other))
 ppweight = 1/3;
 sim=true;
 int_m, sp_m, t_m, tp_m, tind_m, mp_m, simvalue = build_template_degrees(num_play,init_probs,ppweight,sim);
+
 @sync @parallel for r=1:reps
   #Establish community template
   cid, c_m, crev_m, com_tp, com_tind = initiate_comm_func(int_m,tp_m,tind_m);
@@ -194,6 +195,26 @@ int_m, sp_m, t_m, tp_m, tind_m, mp_m, simvalue = build_template_degrees(num_play
   end
 end
 
+#Similarity posthoc analysis
+jacc = Array{Float64}(reps,reps,tmax);
+meansim = Array{Float64}(reps,tmax);
+for t=1:tmax
+  commat = copy(comgen[:,:,t]);
+  for i=1:reps
+    x = copy(commat[i,:]);
+    for j=1:reps
+      y = copy(commat[j,:]);
+      if j >= i
+        # sim = dot(mati,matj)/mag(i)
+        jacc[i,j,t] = 1 - sum(min(x, y)) / sum(max(x, y));
+        jacc[j,i,t] = copy(jacc[i,j,t]);
+      end
+    end
+    meansim[i,t] = mean(1-jacc[i,:,t]);
+  end
+  print(t)
+end
+
 for t=1:tmax
   namespace = string("/Users/justinyeakel/Dropbox/PostDoc/2014_Lego/Lego_Program/data/comgen_t",t,".csv");
   writedlm(namespace,comgen[:,:,t]);
@@ -212,6 +233,7 @@ connplot = plot(
 Guide.xlabel("Time"),Guide.ylabel("Connectance"),Scale.x_log10,Scale.y_log10);
 draw(PDF("$(homedir())/Dropbox/PostDoc/2014_Lego/Lego_Program/figures/fig_connectance.pdf", 5inch, 4inch), connplot)
 
-#Write community files
-depositloc = ["/Users/justinyeakel/Dropbox/PostDoc/2014_Lego/Lego_Program/data/",]
-writedlm("/Users/justinyeakel/Dropbox/PostDoc/2014_Lego/Lego_Program/data/comgen.csv",comgen);
+#Similarity plot
+simplot = plot(
+[layer(y=meansim[j,:],x=collect(1:tmax), Geom.line, Theme(default_color=colorant"gray")) for j in 1:reps]...,
+Guide.xlabel("Time"),Guide.ylabel("Similarity"),Scale.x_log10)
