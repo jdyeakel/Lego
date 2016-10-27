@@ -85,6 +85,7 @@ tmax = 1000;
 CID = (Array{Int64,1})[];
 rich = Array{Int64}(tmax);
 conn = Array{Float64}(tmax);
+comgen =zeros(Int64,tmax,num_play);
 ppweight = 1/3;
 sim=true;
 int_m, sp_m, t_m, tp_m, tind_m, mp_m, simvalue = build_template_degrees(num_play,init_probs, ppweight, sim);
@@ -106,7 +107,11 @@ cid, c_m, crev_m, com_tp, com_tind = initiate_comm_func(int_m,tp_m,tind_m);
   rich[t] = length(cid);
   println("Richness = ",rich[t])
   push!(CID,copy(cid));
+  comgen[t,cid] = 1;
 end
+writedlm("/Users/justinyeakel/Dropbox/PostDoc/2014_Lego/Lego_Program/data/comgen.csv",comgen);
+
+
 csum = (Array{Int64,1})[];
 for i=1:rep
   push!(csum,cumsum(CID[i]));
