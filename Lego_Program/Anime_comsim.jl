@@ -67,9 +67,9 @@ draw(PDF("$(homedir())/Dropbox/PostDoc/2014_Lego/Lego_Program/figures/fig_fullas
 
 
 #Establish community template
-num_play = 500;
+num_play = 1000;
 init_probs = [
-p_n=1/num_play,
+p_n=0.1/num_play,
 p_a=0.01,
 p_m=0.1/num_play,
 p_i= 1 - sum([p_n,p_m,p_a]) #Ignore with 1 - pr(sum(other))
@@ -137,9 +137,11 @@ plot(x=rich,y=conn,Geom.line,Scale.x_log10,Scale.y_log10,Geom.point)
 ####################################
 ####################################
 
+using Distributions
+using Gadfly
+
 @everywhere using Distributions
 @everywhere using Gadfly
-@everywhere using PyCall
 
 @everywhere include("$(homedir())/Dropbox/PostDoc/2014_Lego/Lego_Program/src/build_template_degrees.jl")
 @everywhere include("$(homedir())/Dropbox/PostDoc/2014_Lego/Lego_Program/src/initiate_comm_func.jl")
@@ -154,25 +156,26 @@ rate_col = 1;
 a_thresh = 0;
 n_thresh = 0.2;
 tmax = 1000;
-reps=50;
+reps=100;
 
+num_play = 500;
 #Shared variables
 sprich = SharedArray{Int64}(tmax,reps);
 rich = SharedArray{Int64}(tmax,reps);
 conn = SharedArray{Float64}(tmax,reps);
+comgen = SharedArray{Int64}(reps,num_play,tmax);
 
+init_probs = [
+p_n=1/num_play,
+p_a=0.01,
+p_m=0.1/num_play,
+p_i= 1 - sum([p_n,p_m,p_a]) #Ignore with 1 - pr(sum(other))
+]
+ppweight = 1/3;
+sim=true;
+int_m, sp_m, t_m, tp_m, tind_m, mp_m, simvalue = build_template_degrees(num_play,init_probs,ppweight,sim);
 @sync @parallel for r=1:reps
   #Establish community template
-  num_play = 500;
-  init_probs = [
-  p_n=1/num_play,
-  p_a=0.01,
-  p_m=0.1/num_play,
-  p_i= 1 - sum([p_n,p_m,p_a]) #Ignore with 1 - pr(sum(other))
-  ]
-  ppweight = 1/3;
-  sim=true;
-  int_m, sp_m, t_m, tp_m, tind_m, mp_m, simvalue = build_template_degrees(num_play,init_probs,ppweight,sim);
   cid, c_m, crev_m, com_tp, com_tind = initiate_comm_func(int_m,tp_m,tind_m);
   for t=1:tmax
     status = "open";
@@ -187,7 +190,13 @@ conn = SharedArray{Float64}(tmax,reps);
     # length(unique(cid))-length(cid)
     conn[t,r] = (sum(com_tp)/2)/(sprich[t,r]^2);
     rich[t,r] = length(cid);
+    comgen[r,cid,t] = 1;
   end
+end
+
+for t=1:tmax
+  namespace = string("/Users/justinyeakel/Dropbox/PostDoc/2014_Lego/Lego_Program/data/comgen_t",t,".csv");
+  writedlm(namespace,comgen[:,:,t]);
 end
 
 #Visualize richness over time
@@ -202,3 +211,7 @@ connplot = plot(
 [layer(y=conn[:,j],x=collect(1:tmax), Geom.line, Theme(default_color=colorant"gray")) for j in 1:reps]...,
 Guide.xlabel("Time"),Guide.ylabel("Connectance"),Scale.x_log10,Scale.y_log10);
 draw(PDF("$(homedir())/Dropbox/PostDoc/2014_Lego/Lego_Program/figures/fig_connectance.pdf", 5inch, 4inch), connplot)
+
+#Write community files
+depositloc = ["/Users/justinyeakel/Dropbox/PostDoc/2014_Lego/Lego_Program/data/",]
+writedlm("/Users/justinyeakel/Dropbox/PostDoc/2014_Lego/Lego_Program/data/comgen.csv",comgen);
