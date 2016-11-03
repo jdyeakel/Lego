@@ -7,7 +7,7 @@ function initiate_comm_func(int_m,tp_m,tind_m)
   lS = length(Slist);
 
   #Founding species
-  #primary species
+  #Find which species are primary producers
   prim_prod = find(x->x=='a',int_m[:,1]);
   lprim = length(prim_prod);
   #How many things do the primary producers need?
@@ -20,7 +20,7 @@ function initiate_comm_func(int_m,tp_m,tind_m)
   #Note: Currently species 2 is built as being independent, so there should always be at least one capable species
   prim_prod_indep = prim_prod[find(x->x==true,pp_need)];
 
-
+  #Randomly choose a primary producer to seed the community
   id = rand(prim_prod_indep);
 
   # #update primary producer list
@@ -35,7 +35,7 @@ function initiate_comm_func(int_m,tp_m,tind_m)
   #What things does the seed species make?
   idm = find(x->x=='m',seed);
 
-  #Interactions of idseed
+  #Interactions of things made by seed
   seedm = int_m[idm,:];
   #reverse interactions of seedmake
   seedmrev = int_m[:,idm];

@@ -1,5 +1,6 @@
 using Distributions
 using Gadfly
+using RCall
 #using PyCall
 include("$(homedir())/Dropbox/PostDoc/2014_Lego/Lego_Program/src/build_template_degrees.jl")
 include("$(homedir())/Dropbox/PostDoc/2014_Lego/Lego_Program/src/initiate_comm_func.jl")
@@ -144,9 +145,11 @@ plot(x=rich,y=conn,Geom.line,Scale.x_log10,Scale.y_log10,Geom.point)
 
 using Distributions
 using Gadfly
+using RCall
 
 @everywhere using Distributions
 @everywhere using Gadfly
+@everywhere using RCall
 
 @everywhere include("$(homedir())/Dropbox/PostDoc/2014_Lego/Lego_Program/src/build_template_degrees.jl")
 @everywhere include("$(homedir())/Dropbox/PostDoc/2014_Lego/Lego_Program/src/initiate_comm_func.jl")
@@ -160,7 +163,7 @@ rate_col = 1;
 #Establish thresholds
 a_thresh = 0;
 n_thresh = 0.2;
-tmax = 1000;
+tmax = 500;
 reps=200;
 
 num_play = 500;
@@ -238,7 +241,7 @@ end
 ##########
 
 #Visualize richness over time
-tmax = 1000
+tmax = 500
 richplot = plot(
 [layer(y=sprich[1:tmax,j],x=collect(1:tmax), Geom.line, Theme(default_color=colorant"gray")) for j in 1:reps]...,
 Guide.xlabel("Time"),Guide.ylabel("Richness"));
@@ -252,7 +255,7 @@ draw(PDF("$(homedir())/Dropbox/PostDoc/2014_Lego/Lego_Program/figures/fig_connec
 
 #Similarity plot
 simplot = plot(
-[layer(y=meansim[j,:],x=collect(1:tmax), Geom.line, Theme(default_color=colorant"gray")) for j in 1:reps]...,
+[layer(y=maxsim[j,:],x=collect(1:tmax), Geom.line, Theme(default_color=colorant"gray")) for j in 1:reps]...,
 Guide.xlabel("Time"),Guide.ylabel("Similarity"),Scale.x_log10)
 
 
@@ -289,6 +292,6 @@ for i=1:maximum(sprich)
   randsamp = sample(collect(1:lnumsp),100,replace=true)
   mext[i] = mean(ext_sec[numsp][randsamp]+ext_prim[numsp][randsamp]);
 end
-richextplot = plot(x=collect(1:maximum(sprich)),y=mext, Geom.point, Theme(default_color=colorant"black",default_point_size=1pt, highlight_width = 0pt),
+richextplot = plot(x=collect(1:maximum(sprich)),y=mext, Geom.point, Theme(default_color=colorant"black",default_point_size=2pt, highlight_width = 0pt),
 Guide.xlabel("Species richness"),Guide.ylabel("Mean total extinctions"));
 draw(PDF("$(homedir())/Dropbox/PostDoc/2014_Lego/Lego_Program/figures/fig_richext.pdf", 5inch, 4inch), richextplot)
