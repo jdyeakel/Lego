@@ -85,6 +85,8 @@ tmax = 1000;
 CID = (Array{Int64,1})[];
 rich = Array{Int64}(tmax);
 conn = Array{Float64}(tmax);
+ext_prim = Array{Int64}(tmax);
+ext_sec = Array{Int64}(tmax);
 comgen =zeros(Int64,tmax,num_play);
 ppweight = 1/3;
 sim=true;
@@ -100,7 +102,10 @@ cid, c_m, crev_m, com_tp, com_tind = initiate_comm_func(int_m,tp_m,tind_m);
     status,cid,c_m,crev_m,com_tp,com_tind = colonize_func(int_m,tp_m,tind_m,a_thresh,n_thresh,cid,c_m,crev_m,com_tp,com_tind);
   end
   #Always run extinction code because probabilities are assessed within
-  status,cid,spcid,c_m,crev_m,com_tp,com_tind = extinct_func(int_m,a_thresh,n_thresh,cid,c_m,crev_m,com_tp,com_tind,simvalue);
+  status,cid,spcid,c_m,crev_m,com_tp,com_tind,extinctions = extinct_func(int_m,a_thresh,n_thresh,cid,c_m,crev_m,com_tp,com_tind,simvalue);
+	#Save primary and secondary extinction information
+	ext_prim[t] = extinctions[1];
+	ext_sec[t] = extinctions[2];
   S = length(spcid);
   # length(unique(cid))-length(cid)
   conn[t] = (sum(com_tp))/(S^2);
@@ -156,7 +161,7 @@ rate_col = 1;
 a_thresh = 0;
 n_thresh = 0.2;
 tmax = 1000;
-reps=100;
+reps=200;
 
 num_play = 500;
 #Shared variables
@@ -164,6 +169,8 @@ sprich = SharedArray{Int64}(tmax,reps);
 rich = SharedArray{Int64}(tmax,reps);
 conn = SharedArray{Float64}(tmax,reps);
 comgen = SharedArray{Int64}(reps,num_play,tmax);
+ext_prim = SharedArray{Int64}(tmax,reps);
+ext_sec = SharedArray{Int64}(tmax,reps);
 
 init_probs = [
 p_n=1/num_play,
@@ -186,7 +193,10 @@ int_m, sp_m, t_m, tp_m, tind_m, mp_m, simvalue = build_template_degrees(num_play
       status,cid,c_m,crev_m,com_tp,com_tind = colonize_func(int_m,tp_m,tind_m,a_thresh,n_thresh,cid,c_m,crev_m,com_tp,com_tind);
     end
     #Always run extinction code because probabilities are assessed within
-    status,cid,spcid,c_m,crev_m,com_tp,com_tind = extinct_func(int_m,a_thresh,n_thresh,cid,c_m,crev_m,com_tp,com_tind,simvalue);
+    status,cid,spcid,c_m,crev_m,com_tp,com_tind,extinctions = extinct_func(int_m,a_thresh,n_thresh,cid,c_m,crev_m,com_tp,com_tind,simvalue);
+    #Save primary and secondary extinction information
+  	ext_prim[t,r] = extinctions[1];
+  	ext_sec[t,r] = extinctions[2];
     sprich[t,r] = length(spcid);
     # length(unique(cid))-length(cid)
     conn[t,r] = (sum(com_tp)/2)/(sprich[t,r]^2);
@@ -198,6 +208,7 @@ end
 #Similarity posthoc analysis
 jacc = Array{Float64}(reps,reps,tmax);
 meansim = Array{Float64}(reps,tmax);
+maxsim = Array{Float64}(reps,tmax);
 for t=1:tmax
   commat = copy(comgen[:,:,t]);
   for i=1:reps
@@ -211,14 +222,20 @@ for t=1:tmax
       end
     end
     meansim[i,t] = mean(1-jacc[i,:,t]);
+    maxsim[i,t] = sort(1-jacc[i,:,t],rev=true)[2];
   end
   print(t)
 end
 
+#Save the data
 for t=1:tmax
   namespace = string("/Users/justinyeakel/Dropbox/PostDoc/2014_Lego/Lego_Program/data/comgen_t",t,".csv");
   writedlm(namespace,comgen[:,:,t]);
 end
+
+##########
+#ANALYSIS#
+##########
 
 #Visualize richness over time
 tmax = 1000
@@ -237,3 +254,41 @@ draw(PDF("$(homedir())/Dropbox/PostDoc/2014_Lego/Lego_Program/figures/fig_connec
 simplot = plot(
 [layer(y=meansim[j,:],x=collect(1:tmax), Geom.line, Theme(default_color=colorant"gray")) for j in 1:reps]...,
 Guide.xlabel("Time"),Guide.ylabel("Similarity"),Scale.x_log10)
+
+
+#Similarity plot
+simmaxplot = plot(
+[layer(y=meansim[j,:],x=maxsim[j,:], Geom.point, Theme(default_color=colorant"black",default_point_size=1pt, highlight_width = 0pt)) for j in 1:reps]...,
+Guide.xlabel("Maximum similarity"),Guide.ylabel("Mean similarity"));
+draw(PDF("$(homedir())/Dropbox/PostDoc/2014_Lego/Lego_Program/figures/fig_simmax.pdf", 5inch, 4inch), simmaxplot)
+
+#Extinction plot with jitter
+extplot =  plot(x=vec(ext_prim).+rand(collect(0:0.001:0.4),tmax*reps),y=vec(ext_sec).+rand(collect(0:0.001:0.4),tmax*reps), Geom.point, Theme(default_color=colorant"black",default_point_size=0.5pt, highlight_width = 0pt),
+Guide.xlabel("Num primary extinctions"),Guide.ylabel("Num secondary extinctions"))
+draw(PDF("$(homedir())/Dropbox/PostDoc/2014_Lego/Lego_Program/figures/fig_ext.pdf", 5inch, 4inch), extplot)
+
+maxprim = maximum(ext_prim);
+msec = zeros(maxprim+1)
+sdsec = zeros(maxprim+1)
+for i=0:maxprim
+  msec[i+1] = mean(ext_sec[find(x->x==i,ext_prim)]);
+  sdsec[i+1] = var(ext_sec[find(x->x==i,ext_prim)]);
+end
+plot(x=collect(0:maxprim),y=sdsec)
+
+plot(x=msec,y=sdsec)
+
+plot(x=vec(sprich).+rand(collect(0:0.001:0.4),tmax*reps),y=(vec(ext_prim).+vec(ext_sec)).+rand(collect(0:0.001:0.4),tmax*reps), Geom.point, Theme(default_color=colorant"black",default_point_size=0.5pt, highlight_width = 0pt))
+
+
+#Number of extinctions for a community of a given species richness
+mext = zeros(maximum(sprich));
+for i=1:maximum(sprich)
+  numsp=find(x->x==i,sprich);
+  lnumsp = length(numsp);
+  randsamp = sample(collect(1:lnumsp),100,replace=true)
+  mext[i] = mean(ext_sec[numsp][randsamp]+ext_prim[numsp][randsamp]);
+end
+richextplot = plot(x=collect(1:maximum(sprich)),y=mext, Geom.point, Theme(default_color=colorant"black",default_point_size=1pt, highlight_width = 0pt),
+Guide.xlabel("Species richness"),Guide.ylabel("Mean total extinctions"));
+draw(PDF("$(homedir())/Dropbox/PostDoc/2014_Lego/Lego_Program/figures/fig_richext.pdf", 5inch, 4inch), richextplot)

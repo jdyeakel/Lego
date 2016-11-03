@@ -8,6 +8,7 @@ function extinct_func(int_m,a_thresh,n_thresh,cid,c_m,crev_m,com_tp,com_tind,sim
   end
 
   # status = "open";
+	extinctions = Array{Int64}(2);
 
   #Prior community structure
   cidold = copy(cid);
@@ -94,6 +95,9 @@ function extinct_func(int_m,a_thresh,n_thresh,cid,c_m,crev_m,com_tp,com_tind,sim
     for i = 1:num_comsp
       binext[i] = rand(Binomial(1,prext[i]));
     end
+		
+		#Record number of primary extinctions
+		extinctions[1] = sum(binext);
 
     #######################################
     #######################################
@@ -405,6 +409,8 @@ function extinct_func(int_m,a_thresh,n_thresh,cid,c_m,crev_m,com_tp,com_tind,sim
 
   finalsize = length(cid);
   totaleliminations = initialsize - finalsize;
+	#How many secondary extinctions?
+	extinctions[2] = totaleliminations - extinctions[1];
   #status = string(totaleliminations," extinctions")
 
   #The state of the system after primary + secondary extinctions
@@ -416,7 +422,7 @@ function extinct_func(int_m,a_thresh,n_thresh,cid,c_m,crev_m,com_tp,com_tind,sim
     status = "full"
   end
 
-  return(status,cid,spcid,c_m,crev_m,com_tp,com_tind);
+  return(status,cid,spcid,c_m,crev_m,com_tp,com_tind,extinctions);
 
 
 end #End function
