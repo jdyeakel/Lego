@@ -68,8 +68,8 @@ function initiate_comm_func(int_m,tp_m,tind_m)
   spid = find(x->x==id,Slist)+1;
   #Update direct and indirect trophic interaction matrices
   #Dimensions: number of species + the sun (1)
-  com_tp = Array{Int64}(lS+1,lS+1)*0;
-  com_tind = Array{Int64}(lS+1,lS+1)*0;
+  com_tp = zeros(Int64,lS+1,lS+1);
+  com_tind = zeros(Int64,lS+1,lS+1);
   #These matrices record species only
   com_tp[spid,:] = tp_m[spid,:];
   com_tp[:,spid] = tp_m[:,spid];
