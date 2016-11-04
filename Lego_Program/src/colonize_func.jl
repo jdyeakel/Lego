@@ -46,9 +46,9 @@ function colonize_func(int_m,tp_m,tind_m,mp_m,a_thresh,n_thresh,cid,c_m,crev_m,c
   tlink = sample(tlink_unique,length(tlink_unique),replace=false);
 
 
-  # did = Array{Char}(0);
-  # dseed = Array{Char}(0,num_play);
-  # dseedrev = Array{Char}(num_play,0);
+  did = Array{Char}(0);
+  dseed = Array{Char}(0,num_play);
+  dseedrev = Array{Char}(num_play,0);
 
   #Run this look IF tlink has elements
   #Threshold check
@@ -136,14 +136,14 @@ function colonize_func(int_m,tp_m,tind_m,mp_m,a_thresh,n_thresh,cid,c_m,crev_m,c
     #If nothing in the template eats anything in the community, then the community is full and we stop the module
     status = "full";
     #println("Community is trophically disconnected at t=", t)
-    return(status,cid,c_m,crev_m,com_tp,com_tind);
+    return(status,cid,c_m,crev_m,com_tp,com_tind,com_mp);
   end
 
   #If we have reached the end of the list of potential colonizers and nothing passes the need or assimilate tests, the community is full and we stop the module
   if keepgoing == false
     status = "full";
     #println("Community is uninvadible at t=", t)
-    return(status,cid,c_m,crev_m,com_tp,com_tind);
+    return(status,cid,c_m,crev_m,com_tp,com_tind,com_mp);
   else
     #If we get here, the choice has 'passed' threshold analysis
     #The community is still open, and we must now update the community to reflect the new added colonizers and the things that they make

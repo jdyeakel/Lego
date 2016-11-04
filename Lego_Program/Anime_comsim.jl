@@ -96,7 +96,7 @@ cid, c_m, crev_m, com_tp, com_tind, com_mp = initiate_comm_func(int_m,tp_m,tind_
 @time for t = 1:tmax
   #The add-until-full simulation
   #Creating a new int_m each time
-  #status = "open"; #I don't think we need this now
+  status = "open"; #I don't think we need this now
   #Colonize with some probability
   rcol = rand();
   if rcol < rate_col #&& status == "open"
