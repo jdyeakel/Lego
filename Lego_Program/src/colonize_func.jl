@@ -16,7 +16,7 @@ function colonize_func(int_m,tp_m,tind_m,a_thresh,n_thresh,cid,c_m,crev_m,com_tp
   #List of primary producers
   prim_prod = find(x->x=='a',int_m[:,1]);
 
-  #build a sublist of species that are trophically linked to anything in the community
+  #build a sublist of species that are trophically linked to anything in the community - this will involve only species
   #Start with the primary producers
   tlink_full = copy(prim_prod);
   for i=1:length(cidold)
@@ -24,27 +24,31 @@ function colonize_func(int_m,tp_m,tind_m,a_thresh,n_thresh,cid,c_m,crev_m,com_tp
     append!(tlink_full,alink);
   end
 
-  #Get rid of duplicate
+  #Get rid of duplicates
   tlink_unique = unique(tlink_full);
 
   #Eliminate anything that is already there
+  #1) Build a to-delete list
   lt = length(tlink_unique);
   torm = Array{Int64}(0);
   for i=1:lt
     if in(tlink_unique[i],cidold)
+      #The positions of things to delete
       push!(torm,i);
     end
   end
+  #2) delete those already there
   deleteat!(tlink_unique,torm);
 
 
   #Randomize the list
+  #We will walk through the list to find a potential colonizer, however we don't want the order to bias selection.
   tlink = sample(tlink_unique,length(tlink_unique),replace=false);
 
 
-  did = Array{Char}(0);
-  dseed = Array{Char}(0,num_play);
-  dseedrev = Array{Char}(num_play,0);
+  # did = Array{Char}(0);
+  # dseed = Array{Char}(0,num_play);
+  # dseedrev = Array{Char}(num_play,0);
 
   #Run this look IF tlink has elements
   #Threshold check
@@ -61,10 +65,10 @@ function colonize_func(int_m,tp_m,tind_m,a_thresh,n_thresh,cid,c_m,crev_m,com_tp
       acheck = true;
 
       #randomly select from the list
-      did = tlink[tictoc];
+      did = copy(tlink[tictoc]);
 
-      dseed = int_m[did,:];
-      dseedrev = int_m[:,did];
+      dseed = copy(int_m[did,:]);
+      dseedrev = copy(int_m[:,did]);
 
       #CHECKING NEEDS
       #What things does this species need?
@@ -72,7 +76,7 @@ function colonize_func(int_m,tp_m,tind_m,a_thresh,n_thresh,cid,c_m,crev_m,com_tp
       dseedneed[did] = '0';
       dn = find(x->x=='n',dseedneed);
       ldn=length(dn);
-      nperc = Array{Float64}(1);
+      nperc = zeros(Float64,1);
       if ldn>0
         #Are needs fulfilled to threshold?
         nperc = sum([in(dn[i],cid) for i=1:ldn])/ldn;
@@ -92,7 +96,7 @@ function colonize_func(int_m,tp_m,tind_m,a_thresh,n_thresh,cid,c_m,crev_m,com_tp
       dseedass = copy(dseed);
       da = find(x->x=='a',dseedass);
       lda=length(da);
-      aperc = Array{Float64}(1);
+      aperc = zeros(Float64,1);
       if lda>0
         #Are needs fulfilled to threshold?
         #Add sun as a 'consumable' within the community
@@ -111,38 +115,44 @@ function colonize_func(int_m,tp_m,tind_m,a_thresh,n_thresh,cid,c_m,crev_m,com_tp
         acheck = true;
       end
 
-      #If needs and assimilates are above thresholds, then stop while loop
+      #If needs and assimilates are above thresholds, then the colonizer passes and we can stop while loop
+      #False = pass
       if ncheck == false && acheck == false
         check = false;
       end
 
       #Nothing can colonize?
+      #I.e. check is true (so there was a fail in the need or assimilate test) and we have reached the end of the list
       if check == true && tictoc == length(tlink)
-        #to stop the while loop
+        #To stop the while loop
         check = false;
+        #To stop the colonization module
         keepgoing = false;
       end
 
     end #End while loop
 
   else
+    #If nothing in the template eats anything in the community, then the community is full and we stop the module
     status = "full";
     #println("Community is trophically disconnected at t=", t)
     return(status,cid,c_m,crev_m,com_tp,com_tind);
   end
 
-  #When nothing can colonize
+  #If we have reached the end of the list of potential colonizers and nothing passes the need or assimilate tests, the community is full and we stop the module
   if keepgoing == false
     status = "full";
     #println("Community is uninvadible at t=", t)
     return(status,cid,c_m,crev_m,com_tp,com_tind);
   else
-
     #If we get here, the choice has 'passed' threshold analysis
+    #The community is still open, and we must now update the community to reflect the new added colonizers and the things that they make
+
     status = "open";
 
+    #NOTE: I think there is an error in updating the trophic (direct and indirect) matrices
 
-    #Location on the species-only list?
+    #Updating the community trophic matrices
     #The +1 accounts for the fact that the sun is included in species-only matrices (but not species-only list)
     spdid = find(x->x==did,Slist)+1;
     #Direct trophic interactions

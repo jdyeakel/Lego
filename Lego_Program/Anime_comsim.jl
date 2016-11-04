@@ -28,7 +28,7 @@ rate_ext = 0.1;
 a_thresh = 0.2;
 n_thresh = 0.4;
 
-rep = 1000;
+rep = 100;
 CID = (Array{Int64,1})[];
 rich = Array{Int64}(rep);
 for r = 1:rep
@@ -96,10 +96,10 @@ cid, c_m, crev_m, com_tp, com_tind = initiate_comm_func(int_m,tp_m,tind_m);
 @time for t = 1:tmax
   #The add-until-full simulation
   #Creating a new int_m each time
-  status = "open";
+  #status = "open"; #I don't think we need this now
   #Colonize with some probability
   rcol = rand();
-  if rcol < rate_col && status == "open"
+  if rcol < rate_col #&& status == "open"
     status,cid,c_m,crev_m,com_tp,com_tind = colonize_func(int_m,tp_m,tind_m,a_thresh,n_thresh,cid,c_m,crev_m,com_tp,com_tind);
   end
   #Always run extinction code because probabilities are assessed within
