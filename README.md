@@ -1,6 +1,6 @@
 # Anime description 11/03/2016
 Current contributors:  
-JD Yeakel, T Gross, MM Pires, MAM de Aguiar, J O'Donnell  
+JD Yeakel, T Gross, MM Pires, MAM de Aguiar, PR Guimaraes Jr, J O'Donnell  
 
 
 
