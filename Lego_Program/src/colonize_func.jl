@@ -1,4 +1,4 @@
-function colonize_func(int_m,tp_m,tind_m,a_thresh,n_thresh,cid,c_m,crev_m,com_tp,com_tind)
+function colonize_func(int_m,tp_m,tind_m,mp_m,a_thresh,n_thresh,cid,c_m,crev_m,com_tp,com_tind,com_mp)
 
   num_play = length(int_m[1,:]);
 
@@ -150,18 +150,6 @@ function colonize_func(int_m,tp_m,tind_m,a_thresh,n_thresh,cid,c_m,crev_m,com_tp
 
     status = "open";
 
-    #BUG: There is an error in updating the trophic (direct and indirect) matrices
-
-    #Updating the community trophic matrices
-    #The +1 accounts for the fact that the sun is included in species-only matrices (but not species-only list)
-    spdid = find(x->x==did,Slist)+1;
-    #Direct trophic interactions
-    com_tp[spdid,:] = copy(tp_m[spdid,:]);
-    com_tp[:,spdid] = copy(tp_m[:,spdid]);
-    #Indirect trophic interactions
-    com_tind[spdid,:] = copy(tind_m[spdid,:]);
-    com_tind[:,spdid] = copy(tind_m[:,spdid]);
-
     #What does this species make?
     #Made things come along too!
     didm = find(x->x=='m',dseed);
@@ -223,7 +211,38 @@ function colonize_func(int_m,tp_m,tind_m,a_thresh,n_thresh,cid,c_m,crev_m,com_tp
     c_m = copy(c_m_update);
     crev_m = copy(crev_m_update);
 
-    return(status,cid,c_m,crev_m,com_tp,com_tind);
+    #BUG: There is an error in updating the trophic (direct and indirect) matrices
+    #Updating the community trophic matrices
+    #The +1 accounts for the fact that the sun is included in species-only matrices (but not species-only list)
+    #make a list of species in community
+    sponly = copy(cid);
+    dl = Array{Int64}(0);
+    for i=1:length(cid)
+      if int_m[sponly[i],sponly[i]] == 'i'
+        push!(dl,i);
+      end
+    end
+    deleteat!(sponly,dl);
+    lsp = length(sponly);
+    #Location of species on trophic matrix
+    #This will be used to locate the correct species on trophic matrices
+    #+1 because the 1st row/column of the trophic matrices is the sun
+    t_loc = zeros(Int64,lsp);
+    for i=1:lsp
+      t_loc[i] = find(x->x==sponly[i],Slist)[1] + 1;
+    end
+
+    #Attach the primary producer
+    t_loc = copy([1;t_loc]);
+
+    #Direct trophic interactions
+    com_tp[t_loc,t_loc] = copy(tp_m[t_loc,t_loc]);
+    #Indirect trophic interactions
+    com_tind[t_loc,t_loc] = copy(tind_m[t_loc,t_loc]);
+    #Mutualistic interactions
+    com_mp[t_loc,t_loc] = copy(mp_m[t_loc,t_loc]);
+
+    return(status,cid,c_m,crev_m,com_tp,com_tind,com_mp);
   end
 
 end

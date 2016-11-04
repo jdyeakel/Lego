@@ -37,10 +37,10 @@ for r = 1:rep
   sim=true;
   ppweight=1/3;
   int_m, sp_m, t_m, tp_m, tind_m, mp_m, simvalue = build_template_degrees(num_play,init_probs,ppweight,sim);
-  cid, c_m, crev_m, com_tp, com_tind = initiate_comm_func(int_m,tp_m,tind_m);
+  cid, c_m, crev_m, com_tp, com_tind, com_mp = initiate_comm_func(int_m,tp_m,tind_m,mp_m);
   status = "open";
   while status == "open"
-    status,cid,c_m,crev_m,com_tp,com_tind = colonize_func(int_m,tp_m,tind_m,a_thresh,n_thresh,cid,c_m,crev_m,com_tp,com_tind);
+    status,cid,c_m,crev_m,com_tp,com_tind,com_mp = colonize_func(int_m,tp_m,tind_m,mp_m,a_thresh,n_thresh,cid,c_m,crev_m,com_tp,com_tind,com_mp);
   end
   # length(unique(cid))-length(cid)
   rich[r] = length(cid);
@@ -89,10 +89,10 @@ conn = Array{Float64}(tmax);
 ext_prim = Array{Int64}(tmax);
 ext_sec = Array{Int64}(tmax);
 comgen =zeros(Int64,tmax,num_play);
-ppweight = 1/3;
+ppweight = 1/4;
 sim=true;
 int_m, sp_m, t_m, tp_m, tind_m, mp_m, simvalue = build_template_degrees(num_play,init_probs, ppweight, sim);
-cid, c_m, crev_m, com_tp, com_tind = initiate_comm_func(int_m,tp_m,tind_m);
+cid, c_m, crev_m, com_tp, com_tind, com_mp = initiate_comm_func(int_m,tp_m,tind_m,mp_m);
 @time for t = 1:tmax
   #The add-until-full simulation
   #Creating a new int_m each time
@@ -100,10 +100,10 @@ cid, c_m, crev_m, com_tp, com_tind = initiate_comm_func(int_m,tp_m,tind_m);
   #Colonize with some probability
   rcol = rand();
   if rcol < rate_col #&& status == "open"
-    status,cid,c_m,crev_m,com_tp,com_tind = colonize_func(int_m,tp_m,tind_m,a_thresh,n_thresh,cid,c_m,crev_m,com_tp,com_tind);
+    status,cid,c_m,crev_m,com_tp,com_tind,com_mp = colonize_func(int_m,tp_m,tind_m,mp_m,a_thresh,n_thresh,cid,c_m,crev_m,com_tp,com_tind,com_mp);
   end
   #Always run extinction code because probabilities are assessed within
-  status,cid,spcid,c_m,crev_m,com_tp,com_tind,extinctions = extinct_func(int_m,a_thresh,n_thresh,cid,c_m,crev_m,com_tp,com_tind,simvalue);
+  status,cid,spcid,c_m,crev_m,com_tp,com_tind,com_mp,extinctions = extinct_func(int_m,a_thresh,n_thresh,cid,c_m,crev_m,com_tp,com_tind,com_mp,simvalue);
 	#Save primary and secondary extinction information
 	ext_prim[t] = extinctions[1];
 	ext_sec[t] = extinctions[2];
@@ -187,16 +187,16 @@ int_m, sp_m, t_m, tp_m, tind_m, mp_m, simvalue = build_template_degrees(num_play
 
 @sync @parallel for r=1:reps
   #Establish community template
-  cid, c_m, crev_m, com_tp, com_tind = initiate_comm_func(int_m,tp_m,tind_m);
+  cid, c_m, crev_m, com_tp, com_tind, com_mp = initiate_comm_func(int_m,tp_m,tind_m,tp_m);
   for t=1:tmax
     status = "open";
     #Colonize with some probability
     rcol = rand();
     if rcol < rate_col && status == "open"
-      status,cid,c_m,crev_m,com_tp,com_tind = colonize_func(int_m,tp_m,tind_m,a_thresh,n_thresh,cid,c_m,crev_m,com_tp,com_tind);
+      status,cid,c_m,crev_m,com_tp,com_tind,com_mp = colonize_func(int_m,tp_m,tind_m,mp_m,a_thresh,n_thresh,cid,c_m,crev_m,com_tp,com_tind,com_mp);
     end
     #Always run extinction code because probabilities are assessed within
-    status,cid,spcid,c_m,crev_m,com_tp,com_tind,extinctions = extinct_func(int_m,a_thresh,n_thresh,cid,c_m,crev_m,com_tp,com_tind,simvalue);
+    status,cid,spcid,c_m,crev_m,com_tp,com_tind,com_mp,extinctions = extinct_func(int_m,a_thresh,n_thresh,cid,c_m,crev_m,com_tp,com_tind,com_mp,simvalue);
     #Save primary and secondary extinction information
   	ext_prim[t,r] = extinctions[1];
   	ext_sec[t,r] = extinctions[2];

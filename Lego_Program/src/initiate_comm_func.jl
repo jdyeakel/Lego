@@ -1,4 +1,4 @@
-function initiate_comm_func(int_m,tp_m,tind_m)
+function initiate_comm_func(int_m,tp_m,tind_m,mp_m)
 
   num_play = length(int_m[1,:]);
 
@@ -68,17 +68,26 @@ function initiate_comm_func(int_m,tp_m,tind_m)
   spid = find(x->x==id,Slist)+1;
 
   #BUG: There is an error in updating the trophic (direct and indirect) matrices
+  #NOTE: fixed but untested.
+
+  #Location of trophic interactions that includes that primary producer
+  t_loc = [1;spid];
 
   #Update direct and indirect trophic interaction matrices
   #Dimensions: number of species + the sun (1)
   com_tp = zeros(Int64,lS+1,lS+1);
   com_tind = zeros(Int64,lS+1,lS+1);
-  #These matrices record species only
-  com_tp[spid,:] = tp_m[spid,:];
-  com_tp[:,spid] = tp_m[:,spid];
-  com_tind[spid,:] = tind_m[spid,:];
-  com_tind[:,spid] = tind_m[:,spid];
+  com_mp = zeros(Int64,lS+1,lS+1);
 
-  return(cid, c_m, crev_m, com_tp, com_tind)
+  #These matrices record species only
+  #Direct trophic interactions
+  com_tp[t_loc,t_loc] = copy(tp_m[t_loc,t_loc]);
+  #Indirect trophic interactions
+  com_tind[t_loc,t_loc] = copy(tind_m[t_loc,t_loc]);
+  #Mutualistic interactions
+  com_mp[t_loc,t_loc] = copy(mp_m[t_loc,t_loc]);
+
+
+  return(cid, c_m, crev_m, com_tp, com_tind, com_mp)
 
 end

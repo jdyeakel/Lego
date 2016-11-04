@@ -32,7 +32,4 @@
 ### Notes/Problems
 * How to account for the number of timesteps that the system spends in a certain state and the potential for autocorrelation? Bootstrapping?
 * **BUG 11/4/16** The way that I am updating the trophic direct and indirect matrices is wrong, because it brings in interactions with species that aren't yet in the community. I need to think of a more efficient way to trim interactions with species that aren't there yet AND add those interactions if that missing species later on arrives. I think we will need to rebuild the whole direct/indirect matrix at every step that a species gets added/deleted?
-
-
-
- 
+* **Possible Solution** use directed edge list rather than an adjacency matrix? the matrix can be efficiently filled from the DE list if needbe.

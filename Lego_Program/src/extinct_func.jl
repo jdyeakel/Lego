@@ -1,4 +1,4 @@
-function extinct_func(int_m,a_thresh,n_thresh,cid,c_m,crev_m,com_tp,com_tind,simvalue)
+function extinct_func(int_m,a_thresh,n_thresh,cid,c_m,crev_m,com_tp,com_tind,com_mp,simvalue)
 
   num_play = length(int_m[1,:]);
 
@@ -185,8 +185,6 @@ function extinct_func(int_m,a_thresh,n_thresh,cid,c_m,crev_m,com_tp,com_tind,sim
       #Interactions ON each species
       crev_m = copy(int_m[:,cid]);
 
-      #BUG!: There is an error in updating the trophic (direct and indirect) matrices
-
       #Update interaction matrices from the esponly vector
       #This is the vector of species-only deletions
       #Set interactions of deleted species = 0
@@ -196,6 +194,8 @@ function extinct_func(int_m,a_thresh,n_thresh,cid,c_m,crev_m,com_tp,com_tind,sim
         com_tp[:,t_loc[i]] = zeros(Int64,(lS+1));
         com_tind[t_loc[i],:] = zeros(Int64,(lS+1));
         com_tind[:,t_loc[i]] = zeros(Int64,(lS+1));
+        com_mp[t_loc[i],:] = zeros(Int64,(lS+1));
+        com_mp[:,t_loc[i]] = zeros(Int64,(lS+1));
       end
 
       # NOTE: not convinced that I need to use/update com_sparse
@@ -391,6 +391,8 @@ function extinct_func(int_m,a_thresh,n_thresh,cid,c_m,crev_m,com_tp,com_tind,sim
             com_tp[:,t_loc[i]] = zeros(Int64,(lS+1));
             com_tind[t_loc[i],:] = zeros(Int64,(lS+1));
             com_tind[:,t_loc[i]] = zeros(Int64,(lS+1));
+            com_mp[t_loc[i],:] = zeros(Int64,(lS+1));
+            com_mp[:,t_loc[i]] = zeros(Int64,(lS+1));
           end
 
 
@@ -424,7 +426,7 @@ function extinct_func(int_m,a_thresh,n_thresh,cid,c_m,crev_m,com_tp,com_tind,sim
     status = "full"
   end
 
-  return(status,cid,spcid,c_m,crev_m,com_tp,com_tind,extinctions);
+  return(status,cid,spcid,c_m,crev_m,com_tp,com_tind,com_mp,extinctions);
 
 
 end #End function
