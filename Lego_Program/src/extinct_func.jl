@@ -95,7 +95,7 @@ function extinct_func(int_m,a_thresh,n_thresh,cid,c_m,crev_m,com_tp,com_tind,sim
     for i = 1:num_comsp
       binext[i] = rand(Binomial(1,prext[i]));
     end
-		
+
 		#Record number of primary extinctions
 		extinctions[1] = sum(binext);
 
@@ -184,6 +184,8 @@ function extinct_func(int_m,a_thresh,n_thresh,cid,c_m,crev_m,com_tp,com_tind,sim
       c_m = copy(int_m[cid,:]);
       #Interactions ON each species
       crev_m = copy(int_m[:,cid]);
+
+      #BUG!: There is an error in updating the trophic (direct and indirect) matrices
 
       #Update interaction matrices from the esponly vector
       #This is the vector of species-only deletions

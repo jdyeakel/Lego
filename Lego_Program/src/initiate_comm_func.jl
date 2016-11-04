@@ -66,6 +66,9 @@ function initiate_comm_func(int_m,tp_m,tind_m)
   #Location on the species-only list?
   #The +1 accounts for the fact that the sun is included in species-only matrices (but not species-only list)
   spid = find(x->x==id,Slist)+1;
+
+  #BUG: There is an error in updating the trophic (direct and indirect) matrices
+
   #Update direct and indirect trophic interaction matrices
   #Dimensions: number of species + the sun (1)
   com_tp = zeros(Int64,lS+1,lS+1);

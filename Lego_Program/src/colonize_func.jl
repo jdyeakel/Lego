@@ -150,7 +150,7 @@ function colonize_func(int_m,tp_m,tind_m,a_thresh,n_thresh,cid,c_m,crev_m,com_tp
 
     status = "open";
 
-    #NOTE: I think there is an error in updating the trophic (direct and indirect) matrices
+    #BUG: There is an error in updating the trophic (direct and indirect) matrices
 
     #Updating the community trophic matrices
     #The +1 accounts for the fact that the sun is included in species-only matrices (but not species-only list)
