@@ -384,6 +384,7 @@ function extinct_func(int_m,a_thresh,n_thresh,cid,c_m,crev_m,com_tp,com_tind,com
 
           #Update interaction matrices from the esponly vector
           #This is the vector of species-only deletions
+          #We are deleting all species-interactions for extinct species. This is simply done by making the rows/columns that match each species going extinct zero.
 
           #The +1 is to account for the fact that the first row/column in com_tp and com_tind is the sun
           for i=1:length(esponly)

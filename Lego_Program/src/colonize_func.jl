@@ -214,7 +214,8 @@ function colonize_func(int_m,tp_m,tind_m,mp_m,a_thresh,n_thresh,cid,c_m,crev_m,c
     #BUG: There is an error in updating the trophic (direct and indirect) matrices
     #Updating the community trophic matrices
     #The +1 accounts for the fact that the sun is included in species-only matrices (but not species-only list)
-    #make a list of species in community
+
+    #1) make a list of species-only in community
     sponly = copy(cid);
     dl = Array{Int64}(0);
     for i=1:length(cid)
@@ -224,7 +225,8 @@ function colonize_func(int_m,tp_m,tind_m,mp_m,a_thresh,n_thresh,cid,c_m,crev_m,c
     end
     deleteat!(sponly,dl);
     lsp = length(sponly);
-    #Location of species on trophic matrix
+
+    #2) Find the location of species on trophic matrix
     #This will be used to locate the correct species on trophic matrices
     #+1 because the 1st row/column of the trophic matrices is the sun
     t_loc = zeros(Int64,lsp);
@@ -235,6 +237,7 @@ function colonize_func(int_m,tp_m,tind_m,mp_m,a_thresh,n_thresh,cid,c_m,crev_m,c
     #Attach the primary producer
     t_loc = copy([1;t_loc]);
 
+    #3) Sync the community trophic matrix with the template trophic matrix FOR ONLY SPECIES/INTERACTIONS THAT ARE PRESENT
     #Direct trophic interactions
     com_tp[t_loc,t_loc] = copy(tp_m[t_loc,t_loc]);
     #Indirect trophic interactions

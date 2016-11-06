@@ -57,6 +57,7 @@ function build_template_degrees(num_play, probs, ppweight, sim)
   #Create an empty character array with dimensions equal to the number of players
   int_m = Array(Char,num_play,num_play);
   #Matrix of trophic-only interactions
+  #The number of species in the trophic and mutualistic matrices will all start out the sames size as int_m, however, the objects will be trimmed later
   t_m = zeros(Int64,num_play,num_play);
   #Matrix of mutualistic interactions
   m_m = zeros(Int64,num_play,num_play);
@@ -95,6 +96,7 @@ function build_template_degrees(num_play, probs, ppweight, sim)
 
     #Establish these prey in the interaction matrix
     int_m[i,collect(resource)] = 'a'
+    #Initially, the resources are all species. Those that get turned into objects after 'm' interactions are deteremined will be trimmed from the trophic matrix (because only interactions with species are allowed)
     t_m[i,collect(resource)] = 1;
     #t_m[collect(resource),i] = 0;
 
@@ -237,17 +239,20 @@ function build_template_degrees(num_play, probs, ppweight, sim)
 
   #due to the above forcing, there are no mutualistic interactions with the sun
   #The only 'a' interactions with the sun are 'a-i', not 'a-n'
-  m_m[1,:] = 0;
+  m_m[1,:] = 0; #this probably isn't needed.
   m_m[:,1] = 0;
 
-  #Basal primary producer doesn't need anything
-  #Not sure this needs to exist 10/24/16
+  #A matrix for Direct + Indirect mutualistic interactions
+  mall_m = copy(m_m);
+
+
+  #Basal primary producer (Row/Col 2) doesn't need anything
   colonizer_n=find(x->x=='n',int_m[2,:]);
   int_m[2,colonizer_n[2:length(colonizer_n)]] = 'i';
 
   #Connectance before excluding 'made' things
   Sorig = length(find(x->x=='n',diag(int_m)));
-  Lorig = sum(t_m)/2;
+  Lorig = sum(t_m);
   Corig = Lorig/(Sorig^2);
 
   #2: if player A contains an "m" with player B, player B is "i" with everything
@@ -268,12 +273,14 @@ function build_template_degrees(num_play, probs, ppweight, sim)
         #The made thing ignores everything... including diag
         int_m[made[k],:] = 'i'
 
-        #what thing(s) make it?
-        makers = find(x->x=='m',int_m[:,made[k]])
-        int_m[made[k],makers] = 'n' #Except the thing that makes it
+        #what thing(s) make it? ~ Restablishes the m-n interaction
+        makers = find(x->x=='m',int_m[:,made[k]]);
+        int_m[made[k],makers] = 'n'; #Except the thing that makes it
 
-        #Update trophic matrix:
-        #the made thing eats nothing
+        #Update trophic matrix: all made rows/columns are set to zero
+        #They will be deleted from the matrix later
+
+        #For the trophic matrices, which include only species interactions, the made object interacts with nothing except the species that makes it
         #It is not a living thing, so nothing 'eats' it
         t_m[made[k],:] = 0;
         t_m[:,made[k]] = 0;
@@ -282,19 +289,36 @@ function build_template_degrees(num_play, probs, ppweight, sim)
         m_m[made[k],:] = 0;
         m_m[:,made[k]] = 0;
 
-        #What species EAT the made things?
-        ind_cons = find(x->x=='a',int_m[:,made[k]]);
-
-        #The consumers of the thing that species i makes indirectly consume species i
-        #tall_m[i,ind_cons] = 1;
-        tall_m[ind_cons,i] = 1;
-
-        #NOTE: if we want, here we could force 'made' things only to be needed and not assimlated... right now, there is no restriction
-
       end
     end
   end
 
+  #Documenting indirect trophic and mutualistic interactions
+  #We want to do this outside of the maker loop because we want all species/objects correctly accounted for before we try to count the indirect interactions
+
+  obrc = find(x->x=='i',diag(int_m))
+  for i=2:length(obrc) #Start at 2 because nothing makes the basal resource
+    made = obrc[i]
+    makers = find(x->x=='m',int_m[:,made]);
+    #NOTE: If a species eats a made object, it is indirectly 'eating' the species that made the object. We count this as an indirect interaction and record it in tall_m, and this gets trimmed to tind_m.
+    #The consumers of the thing that species i makes indirectly consume species i
+    #What species EAT the made things?
+    ind_cons = find(x->x=='a',int_m[:,made]);
+    tall_m[ind_cons,makers] = 1;
+
+    #NOTE: Should we count indirect MUTUALISTIC interactions?
+    #We would have to check
+    #1) If species 2 eat/needs an object that species 1 makes
+    #2) If species 1 needs/eats species 2
+    #I would suspect that this would be rare.
+    ind_need = find(x->x=='n',int_m[:,made]);
+    for j=1:length(ind_need)
+      #Do not count commensalisms
+      if int_m[made,ind_need[j]] != 'i'
+        mall_m[ind_need[j],makers] = 1;
+      end
+    end
+  end
 
   # #MANY I-I rows/columns? nope
   # itestrc = Array{Bool}(num_play);
@@ -306,9 +330,11 @@ function build_template_degrees(num_play, probs, ppweight, sim)
   #   itestrc[i] = (itestr[i]== true && itestc[i]==true);
   # end
 
-  #Which rows/columns are not animate objects?
+  #Which rows/columns are species?
   sprc = find(x->x=='n',diag(int_m));
   num_sp=length(sprc);
+  #Build empty matrices to store species-only direct/indirect trophic/mutualistic interactions
+  #The +1 is due to adding Row/Col 1 for the basal resource
   sp_m = Array{Char}(num_sp+1,num_sp+1);
   tp_m = zeros(Int64,num_sp+1,num_sp+1);
   tind_m = zeros(Int64,num_sp+1,num_sp+1);
