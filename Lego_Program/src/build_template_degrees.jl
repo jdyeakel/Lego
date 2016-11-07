@@ -307,7 +307,9 @@ function build_template_degrees(num_play, probs, ppweight, sim)
     tall_m[ind_cons,makers] = 1;
 
     #NOTE: Should we count indirect MUTUALISTIC interactions?
-    #We would have to check
+    #NOTE: These are very UNLIKELY interactions
+
+    #We have to check
     #1) If species 2 eat/needs an object that species 1 makes
     #2) If species 1 needs/eats species 2
     #I would suspect that this would be rare.
@@ -339,6 +341,7 @@ function build_template_degrees(num_play, probs, ppweight, sim)
   tp_m = zeros(Int64,num_sp+1,num_sp+1);
   tind_m = zeros(Int64,num_sp+1,num_sp+1);
   mp_m = zeros(Int64,num_sp+1,num_sp+1);
+  mind_m = zeros(Int64,num_sp+1,num_sp+1);
   #ensure the 1st row/column in species interaction matrices is the sun (basal resource)
   #This means the 1st row is 'i' for sp_m, or 0 for tp_m, tind_m, mp_m
   #This means the 1st column is
@@ -350,12 +353,15 @@ function build_template_degrees(num_play, probs, ppweight, sim)
   tind_m[:,1] = cat(1,0,t_m[sprc,1]);
   mp_m[1,:] = cat(1,0,m_m[1,sprc]);
   mp_m[:,1] = cat(1,0,m_m[sprc,1]);
+  mind_m[1,:] = cat(1,0,m_m[1,sprc]);
+  mind_m[:,1] = cat(1,0,m_m[sprc,1]);
 
   #The rest of the matrices (2:num_sp+1 - the +1 is due to the fact that we have placed the basal resource in row/column 1) will be filled in with the species only part of the full matrices
   sp_m[collect(2:num_sp+1),collect(2:num_sp+1)] = int_m[sprc,sprc];
   tp_m[collect(2:num_sp+1),collect(2:num_sp+1)] = t_m[sprc,sprc];
   tind_m[collect(2:num_sp+1),collect(2:num_sp+1)] = tall_m[sprc,sprc];
   mp_m[collect(2:num_sp+1),collect(2:num_sp+1)] = m_m[sprc,sprc];
+  mind_m[collect(2:num_sp+1),collect(2:num_sp+1)] = mall_m[sprc,sprc];
 
   #How many 'made things?'
   Snew = length(find(x->x=='n',diag(int_m)));
@@ -384,6 +390,6 @@ function build_template_degrees(num_play, probs, ppweight, sim)
 
 
 
-return(int_m, sp_m, t_m, tp_m, tind_m, mp_m, simvalue)
+return(int_m, sp_m, t_m, tp_m, tind_m, mp_m, mind_m, simvalue)
 
 end
