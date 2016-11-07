@@ -1,4 +1,4 @@
-function build_template_degrees(num_play, probs, ppweight, sim)
+function build_template_degrees(num_play, probs, ppweight, sim, sync)
 
   p_n=copy(probs[1]);
   p_a=copy(probs[2]);
@@ -251,9 +251,9 @@ function build_template_degrees(num_play, probs, ppweight, sim)
   int_m[2,colonizer_n[2:length(colonizer_n)]] = 'i';
 
   #Connectance before excluding 'made' things
-  Sorig = length(find(x->x=='n',diag(int_m)));
-  Lorig = sum(t_m);
-  Corig = Lorig/(Sorig^2);
+  # Sorig = length(find(x->x=='n',diag(int_m)));
+  # Lorig = sum(t_m);
+  # Corig = Lorig/(Sorig^2);
 
   #2: if player A contains an "m" with player B, player B is "i" with everything
   # except if it is "n" with player A
@@ -277,9 +277,6 @@ function build_template_degrees(num_play, probs, ppweight, sim)
         makers = find(x->x=='m',int_m[:,made[k]]);
         int_m[made[k],makers] = 'n'; #Except the thing that makes it
 
-        #Update trophic matrix: all made rows/columns are set to zero
-        #They will be deleted from the matrix later
-
         #For the trophic matrices, which include only species interactions, the made object interacts with nothing except the species that makes it
         #It is not a living thing, so nothing 'eats' it
         t_m[made[k],:] = 0;
@@ -294,9 +291,9 @@ function build_template_degrees(num_play, probs, ppweight, sim)
   end
 
   #Documenting indirect trophic and mutualistic interactions
-  #We want to do this outside of the maker loop because we want all species/objects correctly accounted for before we try to count the indirect interactions
+  #We want to do this outside of the above maker loop because we want all species/objects correctly accounted for before we try to count the indirect interactions
 
-  obrc = find(x->x=='i',diag(int_m))
+  obrc = find(x->x=='i',diag(int_m));
   for i=2:length(obrc) #Start at 2 because nothing makes the basal resource
     made = obrc[i]
     makers = find(x->x=='m',int_m[:,made]);
@@ -345,16 +342,18 @@ function build_template_degrees(num_play, probs, ppweight, sim)
   #ensure the 1st row/column in species interaction matrices is the sun (basal resource)
   #This means the 1st row is 'i' for sp_m, or 0 for tp_m, tind_m, mp_m
   #This means the 1st column is
-  sp_m[1,:] = cat(1,'i',int_m[1,sprc]);
-  sp_m[:,1] = cat(1,'i',int_m[sprc,1]);
-  tp_m[1,:] = cat(1,0,t_m[1,sprc]);
-  tp_m[:,1] = cat(1,0,t_m[sprc,1]);
-  tind_m[1,:] = cat(1,0,t_m[1,sprc]);
-  tind_m[:,1] = cat(1,0,t_m[sprc,1]);
-  mp_m[1,:] = cat(1,0,m_m[1,sprc]);
-  mp_m[:,1] = cat(1,0,m_m[sprc,1]);
-  mind_m[1,:] = cat(1,0,m_m[1,sprc]);
-  mind_m[:,1] = cat(1,0,m_m[sprc,1]);
+
+  sp_m[1,:] = ['i';int_m[1,sprc]];
+  sp_m[:,1] = ['i';int_m[sprc,1]];
+  tp_m[1,:] = [0;t_m[1,sprc]];
+  tp_m[:,1] = [0;t_m[sprc,1]];
+  tind_m[1,:] = [0;t_m[1,sprc]];
+  tind_m[:,1] = [0;t_m[sprc,1]];
+  mp_m[1,:] = [0;m_m[1,sprc]];
+  mp_m[:,1] = [0;m_m[sprc,1]];
+  mind_m[1,:] = [0;m_m[1,sprc]];
+  mind_m[:,1] = [0;m_m[sprc,1]];
+
 
   #The rest of the matrices (2:num_sp+1 - the +1 is due to the fact that we have placed the basal resource in row/column 1) will be filled in with the species only part of the full matrices
   sp_m[collect(2:num_sp+1),collect(2:num_sp+1)] = int_m[sprc,sprc];
@@ -363,26 +362,57 @@ function build_template_degrees(num_play, probs, ppweight, sim)
   mp_m[collect(2:num_sp+1),collect(2:num_sp+1)] = m_m[sprc,sprc];
   mind_m[collect(2:num_sp+1),collect(2:num_sp+1)] = mall_m[sprc,sprc];
 
-  #How many 'made things?'
-  Snew = length(find(x->x=='n',diag(int_m)));
-  Lnew = sum(t_m)/2;
-  Cnew = Lnew/(Snew^2);
+  # #How many 'made things?'
+  # Snew = length(find(x->x=='n',diag(int_m)));
+  # Lnew = sum(t_m)/2;
+  # Cnew = Lnew/(Snew^2);
 
 
+  #NOTE: This takes a long time
+  #NOTE: if par is true, it will calculate similarity in parallel; if 2000 species/objects are in the matrix, it shaves off 100 seconds
+  #NOTE: I could make this much faster if I only calculate similarity between species (not objects). I'm currently doing it for both. This could cut it by half.
+  
   #Optional code to build similarity matrix
-  simvalue = zeros(num_play,num_play);
-  if sim == true
-    for i = 1:num_play
-      for j = 1:num_play
-        if j > i
-          seq1 = copy(int_m[i,:]);
-          seq2 = copy(int_m[j,:]);
-          similarity = sim_func(seq1,seq2,num_play);
-          simvalue[i,j] = similarity;
-          simvalue[j,i] = similarity;
+  #simvalue = zeros(num_play,num_play);
+  
+  #We need simvalue to be declared before the if loop.
+  simvalue = 0;
+  
+  if par == true
+    simvalue = SharedArray{Float64}(num_play,num_play);
+    if sim == true
+      @sync @parallel for i = 1:num_sp
+        for j = 1:num_sp
+          if j > i
+            seq1 = copy(int_m[sprc[i],:]);
+            seq2 = copy(int_m[sprc[j],:]);
+            similarity = sim_func(seq1,seq2,num_play);
+            #The 0.00001 is to ensure a nonzero value for any species
+            simvalue[sprc[i],sprc[j]] = similarity+0.00001;
+            simvalue[sprc[j],sprc[i]] = similarity+0.00001;
+          end
+          if j == i
+            simvalue[sprc[i],sprc[j]] = 1.0;
+          end
         end
-        if j == i
-          simvalue[i,j] = 1.0;
+      end
+    end
+  else
+    simvalue = zeros(num_play,num_play);
+    if sim == true
+      for i = 1:num_sp
+        for j = 1:num_sp
+          if j > i
+            seq1 = copy(int_m[sprc[i],:]);
+            seq2 = copy(int_m[sprc[j],:]);
+            similarity = sim_func(seq1,seq2,num_play);
+            #The 0.00001 is to ensure a nonzero value for any species
+            simvalue[sprc[i],sprc[j]] = similarity+0.00001;
+            simvalue[sprc[j],sprc[i]] = similarity+0.00001;
+          end
+          if j == i
+            simvalue[sprc[i],sprc[j]] = 1.0;
+          end
         end
       end
     end

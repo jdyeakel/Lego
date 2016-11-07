@@ -68,7 +68,7 @@ draw(PDF("$(homedir())/Dropbox/PostDoc/2014_Lego/Lego_Program/figures/fig_fullas
 
 
 #Establish community template
-num_play = 5000;
+num_play = 2000;
 probs = [
 p_n=5/num_play,
 p_a=0.01,
@@ -91,7 +91,8 @@ ext_sec = Array{Int64}(tmax);
 comgen =zeros(Int64,tmax,num_play);
 ppweight = 1/4;
 sim=true;
-int_m, sp_m, t_m, tp_m, tind_m, mp_m, mind_m, simvalue = build_template_degrees(num_play,probs, ppweight, sim);
+par=true;
+int_m, sp_m, t_m, tp_m, tind_m, mp_m, mind_m, simvalue = build_template_degrees(num_play,probs, ppweight, sim, par);
 cid, c_m, crev_m, com_tp, com_tind, com_mp = initiate_comm_func(int_m,tp_m,tind_m,mp_m);
 @time for t = 1:tmax
   #The add-until-full simulation
@@ -175,15 +176,18 @@ comgen = SharedArray{Int64}(reps,num_play,tmax);
 ext_prim = SharedArray{Int64}(tmax,reps);
 ext_sec = SharedArray{Int64}(tmax,reps);
 
+#Establish community template
 probs = [
-p_n=1/num_play,
+p_n=5/num_play,
 p_a=0.01,
-p_m=0.1/num_play,
+p_m=1/num_play,
 p_i= 1 - sum([p_n,p_m,p_a]) #Ignore with 1 - pr(sum(other))
 ]
 ppweight = 1/4;
 sim=true;
-int_m, sp_m, t_m, tp_m, tind_m, mp_m, simvalue = build_template_degrees(num_play,probs,ppweight,sim);
+par=true;
+
+@time int_m, sp_m, t_m, tp_m, tind_m, mp_m, mind_m, simvalue = build_template_degrees(num_play,probs,ppweight,sim,par);
 
 @sync @parallel for r=1:reps
   #Establish community template
