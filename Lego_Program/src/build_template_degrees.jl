@@ -295,26 +295,55 @@ function build_template_degrees(num_play, probs, ppweight, sim, sync)
 
   obrc = find(x->x=='i',diag(int_m));
   for i=2:length(obrc) #Start at 2 because nothing makes the basal resource
+    
+    #Define the made object
     made = obrc[i]
+    #Define all species that make the object
     makers = find(x->x=='m',int_m[:,made]);
+    
+    #Indirect trophic interactions
+    
     #NOTE: If a species eats a made object, it is indirectly 'eating' the species that made the object. We count this as an indirect interaction and record it in tall_m, and this gets trimmed to tind_m.
     #The consumers of the thing that species i makes indirectly consume species i
     #What species EAT the made things?
     ind_cons = find(x->x=='a',int_m[:,made]);
     tall_m[ind_cons,makers] = 1;
 
-    #NOTE: Should we count indirect MUTUALISTIC interactions?
-    #NOTE: These are very UNLIKELY interactions
+    #Indirect mutualistic interactions
 
     #We have to check
     #1) If species 2 eat/needs an object that species 1 makes
     #2) If species 1 needs/eats species 2
     #I would suspect that this would be rare.
-    ind_need = find(x->x=='n',int_m[:,made]);
+    ind_need = find(x->x=='n'||x=='a',int_m[:,made]);
     for j=1:length(ind_need)
-      #Do not count commensalisms
-      if int_m[made,ind_need[j]] != 'i'
-        mall_m[ind_need[j],makers] = 1;
+      #Cycle through each thing that makes object to assess different indirect interactions
+      for j=1:length(makers)
+        
+        #If Species 2 (ind_need[j]) NEEDS Object (made)
+        #AND Speces 1 (makers[k]) EATS Species 2 (ind_need[j])
+        #Then we establish a mutualistic interaction between Species 1 (makers [k]) and Species 2 (ind_need[j])
+        if int_m[ind_need[j],made] == 'n' && int_m[makers[k],ind_need[j]] == 'a' 
+          mall_m[ind_need[j],makers[k]] = 1;
+          mall_m[makers[k],ind_need[j]] = 1;
+        end
+        
+        #If Species 2 (ind_need[j]) EATS Object (made)
+        #AND Speces 1 (makers[k]) NEEDS Species 2 (ind_need[j])
+        #Then we establish a mutualistic interaction between Species 1 (makers [k]) and Species 2 (ind_need[j])
+        if int_m[ind_need[j],made] == 'a' && int_m[makers[k],ind_need[j]] == 'n' 
+          mall_m[ind_need[j],makers[k]] = 1;
+          mall_m[makers[k],ind_need[j]] = 1;
+        end
+        
+        #If Species 2 (ind_need[j]) NEEDS Object (made)
+        #AND Speces 1 (makers[k]) NEEDS Species 2 (ind_need[j])
+        #Then we establish a mutualistic interaction between Species 1 (makers [k]) and Species 2 (ind_need[j])
+        if int_m[ind_need[j],made] == 'n' && int_m[makers[k],ind_need[j]] == 'n' 
+          mall_m[ind_need[j],makers[k]] = 1;
+          mall_m[makers[k],ind_need[j]] = 1;
+        end
+        
       end
     end
   end
@@ -347,20 +376,20 @@ function build_template_degrees(num_play, probs, ppweight, sim, sync)
   sp_m[:,1] = ['i';int_m[sprc,1]];
   tp_m[1,:] = [0;t_m[1,sprc]];
   tp_m[:,1] = [0;t_m[sprc,1]];
-  tind_m[1,:] = [0;t_m[1,sprc]];
-  tind_m[:,1] = [0;t_m[sprc,1]];
+  tind_m[1,:] = [0;tall_m[1,sprc]];
+  tind_m[:,1] = [0;tall_m[sprc,1]];
   mp_m[1,:] = [0;m_m[1,sprc]];
   mp_m[:,1] = [0;m_m[sprc,1]];
-  mind_m[1,:] = [0;m_m[1,sprc]];
-  mind_m[:,1] = [0;m_m[sprc,1]];
+  mind_m[1,:] = [0;mall_m[1,sprc]];
+  mind_m[:,1] = [0;mall_m[sprc,1]];
 
 
   #The rest of the matrices (2:num_sp+1 - the +1 is due to the fact that we have placed the basal resource in row/column 1) will be filled in with the species only part of the full matrices
-  sp_m[collect(2:num_sp+1),collect(2:num_sp+1)] = int_m[sprc,sprc];
-  tp_m[collect(2:num_sp+1),collect(2:num_sp+1)] = t_m[sprc,sprc];
-  tind_m[collect(2:num_sp+1),collect(2:num_sp+1)] = tall_m[sprc,sprc];
-  mp_m[collect(2:num_sp+1),collect(2:num_sp+1)] = m_m[sprc,sprc];
-  mind_m[collect(2:num_sp+1),collect(2:num_sp+1)] = mall_m[sprc,sprc];
+  sp_m[collect(2:num_sp+1),collect(2:num_sp+1)] = copy(int_m[sprc,sprc]);
+  tp_m[collect(2:num_sp+1),collect(2:num_sp+1)] = copy(t_m[sprc,sprc]);
+  tind_m[collect(2:num_sp+1),collect(2:num_sp+1)] = copy(tall_m[sprc,sprc]);
+  mp_m[collect(2:num_sp+1),collect(2:num_sp+1)] = copy(m_m[sprc,sprc]);
+  mind_m[collect(2:num_sp+1),collect(2:num_sp+1)] = copy(mall_m[sprc,sprc]);
 
   # #How many 'made things?'
   # Snew = length(find(x->x=='n',diag(int_m)));
@@ -376,6 +405,7 @@ function build_template_degrees(num_play, probs, ppweight, sim, sync)
   #simvalue = zeros(num_play,num_play);
   
   #We need simvalue to be declared before the if loop.
+  #It is redefined as an Array or SharedArray in the loop
   simvalue = 0;
   
   if par == true
@@ -388,8 +418,8 @@ function build_template_degrees(num_play, probs, ppweight, sim, sync)
             seq2 = copy(int_m[sprc[j],:]);
             similarity = sim_func(seq1,seq2,num_play);
             #The 0.00001 is to ensure a nonzero value for any species
-            simvalue[sprc[i],sprc[j]] = similarity+0.00001;
-            simvalue[sprc[j],sprc[i]] = similarity+0.00001;
+            simvalue[sprc[i],sprc[j]] = copy(similarity)+0.00001;
+            simvalue[sprc[j],sprc[i]] = copy(similarity)+0.00001;
           end
           if j == i
             simvalue[sprc[i],sprc[j]] = 1.0;
