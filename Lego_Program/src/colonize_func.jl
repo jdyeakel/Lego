@@ -1,4 +1,4 @@
-function colonize_func(int_m,tp_m,tind_m,mp_m,a_thresh,n_thresh,cid,c_m,crev_m,com_tp,com_tind,com_mp)
+function colonize_func(int_m,tp_m,tind_m,mp_m,mind_m,a_thresh,n_thresh,cid,c_m,crev_m,com_tp,com_tind,com_mp,com_mind)
 
   num_play = length(int_m[1,:]);
 
@@ -136,14 +136,14 @@ function colonize_func(int_m,tp_m,tind_m,mp_m,a_thresh,n_thresh,cid,c_m,crev_m,c
     #If nothing in the template eats anything in the community, then the community is full and we stop the module
     status = "full";
     #println("Community is trophically disconnected at t=", t)
-    return(status,cid,c_m,crev_m,com_tp,com_tind,com_mp);
+    return(status,cid,c_m,crev_m,com_tp,com_tind,com_mp,com_mind);
   end
 
   #If we have reached the end of the list of potential colonizers and nothing passes the need or assimilate tests, the community is full and we stop the module
   if keepgoing == false
     status = "full";
     #println("Community is uninvadible at t=", t)
-    return(status,cid,c_m,crev_m,com_tp,com_tind,com_mp);
+    return(status,cid,c_m,crev_m,com_tp,com_tind,com_mp,com_mind);
   else
     #If we get here, the choice has 'passed' threshold analysis
     #The community is still open, and we must now update the community to reflect the new added colonizers and the things that they make
@@ -244,8 +244,10 @@ function colonize_func(int_m,tp_m,tind_m,mp_m,a_thresh,n_thresh,cid,c_m,crev_m,c
     com_tind[t_loc,t_loc] = copy(tind_m[t_loc,t_loc]);
     #Mutualistic interactions
     com_mp[t_loc,t_loc] = copy(mp_m[t_loc,t_loc]);
+    #Indirect mutualistic interactions
+    com_mind[t_loc,t_loc] = copy(mind_m[t_loc,t_loc]);
 
-    return(status,cid,c_m,crev_m,com_tp,com_tind,com_mp);
+    return(status,cid,c_m,crev_m,com_tp,com_tind,com_mp,com_mind);
   end
 
 end

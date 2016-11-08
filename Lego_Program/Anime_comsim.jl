@@ -77,9 +77,9 @@ include("$(homedir())/Dropbox/PostDoc/2014_Lego/Lego_Program/src/sim_func.jl")
 
 
 #Establish community template
-num_play = 500;
+num_play = 20;
 probs = [
-p_n=5/num_play,
+p_n=1/num_play,
 p_a=0.01,
 p_m=1/num_play,
 p_i= 1 - sum([p_n,p_m,p_a]) #Ignore with 1 - pr(sum(other))
@@ -102,18 +102,18 @@ ppweight = 1/4;
 sim=true;
 par=true;
 @time int_m, sp_m, t_m, tp_m, tind_m, mp_m, mind_m, simvalue = build_template_degrees(num_play,probs,ppweight,sim,par);
-cid, c_m, crev_m, com_tp, com_tind, com_mp = initiate_comm_func(int_m,tp_m,tind_m,mp_m);
+cid, c_m, crev_m, com_tp, com_tind, com_mp, com_mind = initiate_comm_func(int_m,tp_m,tind_m,mp_m,mind_m);
 @time for t = 1:tmax
   #The add-until-full simulation
   #Creating a new int_m each time
   status = "open"; #I don't think we need this now
   #Colonize with some probability
   rcol = rand();
-  if rcol < rate_col #&& status == "open"
-    status,cid,c_m,crev_m,com_tp,com_tind,com_mp = colonize_func(int_m,tp_m,tind_m,mp_m,a_thresh,n_thresh,cid,c_m,crev_m,com_tp,com_tind,com_mp);
+  if rcol < rate_col && status == "open"
+    status,cid,c_m,crev_m,com_tp,com_tind,com_mp,com_mind = colonize_func(int_m,tp_m,tind_m,mp_m,mind_m,a_thresh,n_thresh,cid,c_m,crev_m,com_tp,com_tind,com_mp,com_mind);
   end
   #Always run extinction code because probabilities are assessed within
-  status,cid,spcid,c_m,crev_m,com_tp,com_tind,com_mp,extinctions = extinct_func(int_m,a_thresh,n_thresh,cid,c_m,crev_m,com_tp,com_tind,com_mp,simvalue);
+  status,cid,spcid,c_m,crev_m,com_tp,com_tind,com_mp,com_mind,extinctions = extinct_func(int_m,a_thresh,n_thresh,cid,c_m,crev_m,com_tp,com_tind,com_mp,com_mind,simvalue);
 	#Save primary and secondary extinction information
 	ext_prim[t] = extinctions[1];
 	ext_sec[t] = extinctions[2];

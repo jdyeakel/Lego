@@ -1,4 +1,4 @@
-function extinct_func(int_m,a_thresh,n_thresh,cid,c_m,crev_m,com_tp,com_tind,com_mp,simvalue)
+function extinct_func(int_m,a_thresh,n_thresh,cid,c_m,crev_m,com_tp,com_tind,com_mp,com_mind,simvalue)
 
   num_play = length(int_m[1,:]);
 
@@ -39,7 +39,7 @@ function extinct_func(int_m,a_thresh,n_thresh,cid,c_m,crev_m,com_tp,com_tind,com
   # num_comsp = length(spcid);
 
     #Extinctions are only relevant if there is anyone in the community
-    if num_com > 1
+  if num_com > 1
 
     ########################
     # PRIMARY EXTINCTIONS
@@ -166,6 +166,11 @@ function extinct_func(int_m,a_thresh,n_thresh,cid,c_m,crev_m,com_tp,com_tind,com
           end
         end
       end
+      
+      #NOTE: There can be duplications if the species being deleted 'make' the same object
+      #Both of these vectors will have duplications in the same places
+      esp = copy(unique(esp));
+      esploc = copy(unique(esploc));
 
       #Redefine lesp to account for eliminated made objects
       lesp = length(esp);
@@ -196,6 +201,8 @@ function extinct_func(int_m,a_thresh,n_thresh,cid,c_m,crev_m,com_tp,com_tind,com
         com_tind[:,t_loc[i]] = zeros(Int64,(lS+1));
         com_mp[t_loc[i],:] = zeros(Int64,(lS+1));
         com_mp[:,t_loc[i]] = zeros(Int64,(lS+1));
+        com_mind[t_loc[i],:] = zeros(Int64,(lS+1));
+        com_mind[:,t_loc[i]] = zeros(Int64,(lS+1));
       end
 
       # NOTE: not convinced that I need to use/update com_sparse
@@ -227,6 +234,8 @@ function extinct_func(int_m,a_thresh,n_thresh,cid,c_m,crev_m,com_tp,com_tind,com
         ncheck = trues(num_comsp);
         acheck = trues(num_comsp);
         ancheck = trues(num_comsp);
+        
+        
         #Cycle through the SPECIES in the community (not made things)
         for i=1:num_comsp
           #What species?
@@ -394,6 +403,8 @@ function extinct_func(int_m,a_thresh,n_thresh,cid,c_m,crev_m,com_tp,com_tind,com
             com_tind[:,t_loc[i]] = zeros(Int64,(lS+1));
             com_mp[t_loc[i],:] = zeros(Int64,(lS+1));
             com_mp[:,t_loc[i]] = zeros(Int64,(lS+1));
+            com_mind[t_loc[i],:] = zeros(Int64,(lS+1));
+            com_mind[:,t_loc[i]] = zeros(Int64,(lS+1));
           end
 
 
@@ -427,7 +438,7 @@ function extinct_func(int_m,a_thresh,n_thresh,cid,c_m,crev_m,com_tp,com_tind,com
     status = "full"
   end
 
-  return(status,cid,spcid,c_m,crev_m,com_tp,com_tind,com_mp,extinctions);
+  return(status,cid,spcid,c_m,crev_m,com_tp,com_tind,com_mp,com_mind,extinctions);
 
 
 end #End function

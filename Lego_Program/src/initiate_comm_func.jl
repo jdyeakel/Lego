@@ -1,4 +1,4 @@
-function initiate_comm_func(int_m,tp_m,tind_m,mp_m)
+function initiate_comm_func(int_m,tp_m,tind_m,mp_m,mind_m)
 
   num_play = length(int_m[1,:]);
 
@@ -78,6 +78,7 @@ function initiate_comm_func(int_m,tp_m,tind_m,mp_m)
   com_tp = zeros(Int64,lS+1,lS+1);
   com_tind = zeros(Int64,lS+1,lS+1);
   com_mp = zeros(Int64,lS+1,lS+1);
+  com_mind = zeros(Int64,lS+1,lS+1);
 
   #These matrices record species only
   #Direct trophic interactions
@@ -86,8 +87,10 @@ function initiate_comm_func(int_m,tp_m,tind_m,mp_m)
   com_tind[t_loc,t_loc] = copy(tind_m[t_loc,t_loc]);
   #Mutualistic interactions
   com_mp[t_loc,t_loc] = copy(mp_m[t_loc,t_loc]);
+  #Mutualistic interactions
+  com_mind[t_loc,t_loc] = copy(mind_m[t_loc,t_loc]);
 
 
-  return(cid, c_m, crev_m, com_tp, com_tind, com_mp)
+  return(cid, c_m, crev_m, com_tp, com_tind, com_mp, com_mind)
 
 end
