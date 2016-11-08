@@ -372,7 +372,12 @@ function extinct_func(int_m,a_thresh,n_thresh,cid,c_m,crev_m,com_tp,com_tind,com
               end
             end
           end
-
+          
+          #NOTE: There can be duplications if the species being deleted 'make' the same object
+          #Both of these vectors will have duplications in the same places
+          esp = copy(unique(esp));
+          esploc = copy(unique(esploc));
+          
           #Redefine lesp to account for eliminated made objects
           lesp = length(esp);
 
