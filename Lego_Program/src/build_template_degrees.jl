@@ -275,7 +275,7 @@ function build_template_degrees(num_play, probs, ppweight, sim, sync)
 
         #what thing(s) make it? ~ Restablishes the m-n interaction
         makers = find(x->x=='m',int_m[:,made[k]]);
-        int_m[made[k],makers] = 'n'; #Except the thing that makes it
+        int_m[made[k],makers] = 'n'; #Except the thing(s) that makes it
 
         #For the trophic matrices, which include only species interactions, the made object interacts with nothing except the species that makes it
         #It is not a living thing, so nothing 'eats' it
@@ -318,7 +318,7 @@ function build_template_degrees(num_play, probs, ppweight, sim, sync)
     ind_need = find(x->x=='n'||x=='a',int_m[:,made]);
     for j=1:length(ind_need)
       #Cycle through each thing that makes object to assess different indirect interactions
-      for j=1:length(makers)
+      for k=1:length(makers)
         
         #If Species 2 (ind_need[j]) NEEDS Object (made)
         #AND Speces 1 (makers[k]) EATS Species 2 (ind_need[j])
@@ -372,16 +372,17 @@ function build_template_degrees(num_play, probs, ppweight, sim, sync)
   #This means the 1st row is 'i' for sp_m, or 0 for tp_m, tind_m, mp_m
   #This means the 1st column is
 
+  #NOTE: I'm not sure why, but this vec() is important. It's an Array splicing issue I think.
   sp_m[1,:] = ['i';int_m[1,sprc]];
   sp_m[:,1] = ['i';int_m[sprc,1]];
-  tp_m[1,:] = [0;t_m[1,sprc]];
-  tp_m[:,1] = [0;t_m[sprc,1]];
-  tind_m[1,:] = [0;tall_m[1,sprc]];
-  tind_m[:,1] = [0;tall_m[sprc,1]];
-  mp_m[1,:] = [0;m_m[1,sprc]];
-  mp_m[:,1] = [0;m_m[sprc,1]];
-  mind_m[1,:] = [0;mall_m[1,sprc]];
-  mind_m[:,1] = [0;mall_m[sprc,1]];
+  tp_m[1,:] = [0;vec(t_m[1,sprc])];
+  tp_m[:,1] = [0;vec(t_m[sprc,1])];
+  tind_m[1,:] = [0;vec(tall_m[1,sprc])];
+  tind_m[:,1] = [0;vec(tall_m[sprc,1])];
+  mp_m[1,:] = [0;vec(m_m[1,sprc])];
+  mp_m[:,1] = [0;vec(m_m[sprc,1])];
+  mind_m[1,:] = [0;vec(mall_m[1,sprc])];
+  mind_m[:,1] = [0;vec(mall_m[sprc,1])];
 
 
   #The rest of the matrices (2:num_sp+1 - the +1 is due to the fact that we have placed the basal resource in row/column 1) will be filled in with the species only part of the full matrices

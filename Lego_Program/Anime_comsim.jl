@@ -65,10 +65,19 @@ draw(PDF("$(homedir())/Dropbox/PostDoc/2014_Lego/Lego_Program/figures/fig_fullas
 # COLONIZATION + EXTINCTION
 ############################
 ############################
+using Distributions
+using Gadfly
+using RCall
+#using PyCall
+include("$(homedir())/Dropbox/PostDoc/2014_Lego/Lego_Program/src/build_template_degrees.jl")
+include("$(homedir())/Dropbox/PostDoc/2014_Lego/Lego_Program/src/initiate_comm_func.jl")
+include("$(homedir())/Dropbox/PostDoc/2014_Lego/Lego_Program/src/colonize_func.jl")
+include("$(homedir())/Dropbox/PostDoc/2014_Lego/Lego_Program/src/extinct_func.jl")
+include("$(homedir())/Dropbox/PostDoc/2014_Lego/Lego_Program/src/sim_func.jl")
 
 
 #Establish community template
-num_play = 2000;
+num_play = 500;
 probs = [
 p_n=5/num_play,
 p_a=0.01,
@@ -92,7 +101,7 @@ comgen =zeros(Int64,tmax,num_play);
 ppweight = 1/4;
 sim=true;
 par=true;
-int_m, sp_m, t_m, tp_m, tind_m, mp_m, mind_m, simvalue = build_template_degrees(num_play,probs, ppweight, sim, par);
+@time int_m, sp_m, t_m, tp_m, tind_m, mp_m, mind_m, simvalue = build_template_degrees(num_play,probs,ppweight,sim,par);
 cid, c_m, crev_m, com_tp, com_tind, com_mp = initiate_comm_func(int_m,tp_m,tind_m,mp_m);
 @time for t = 1:tmax
   #The add-until-full simulation
@@ -124,7 +133,7 @@ for i=1:rep
   push!(csum,cumsum(CID[i]));
 end
 #Diversity through time
-divplot = plot(y=rich,x=collect(1:tmax), Geom.line, Scale.x_log10, Theme(default_color=colorant"black"),
+divplot = plot(y=rich,x=collect(1:tmax), Geom.line, Theme(default_color=colorant"black"),
 Guide.xlabel("Time"),Guide.ylabel("Species richness"));
 draw(PDF("$(homedir())/Dropbox/PostDoc/2014_Lego/Lego_Program/figures/fig_diversity.pdf", 5inch, 4inch), divplot)
 
@@ -167,7 +176,7 @@ n_thresh = 0.2;
 tmax = 500;
 reps=200;
 
-num_play = 500;
+num_play = 1000;
 #Shared variables
 sprich = SharedArray{Int64}(tmax,reps);
 rich = SharedArray{Int64}(tmax,reps);
@@ -234,6 +243,7 @@ for t=1:tmax
   print(t)
 end
 
+
 #Save the data
 for t=1:tmax
   namespace = string("/Users/justinyeakel/Dropbox/PostDoc/2014_Lego/Lego_Program/data/comgen_t",t,".csv");
@@ -247,7 +257,7 @@ end
 #NOTE: rewrite plots in R?
 
 #Visualize richness over time
-tmax = 500
+# tmax = 500
 richplot = plot(
 [layer(y=sprich[1:tmax,j],x=collect(1:tmax), Geom.line, Theme(default_color=colorant"gray")) for j in 1:reps]...,
 Guide.xlabel("Time"),Guide.ylabel("Richness"));
