@@ -174,7 +174,7 @@ rate_col = 1;
 a_thresh = 0;
 n_thresh = 0.2;
 tmax = 500;
-reps=200;
+reps=100;
 
 num_play = 1000;
 #Shared variables
@@ -187,7 +187,7 @@ ext_sec = SharedArray{Int64}(tmax,reps);
 
 #Establish community template
 probs = [
-p_n=5/num_play,
+p_n=1/num_play,
 p_a=0.01,
 p_m=1/num_play,
 p_i= 1 - sum([p_n,p_m,p_a]) #Ignore with 1 - pr(sum(other))
@@ -222,10 +222,10 @@ par=true;
 end
 
 #Similarity posthoc analysis
-jacc = Array{Float64}(reps,reps,tmax);
-meansim = Array{Float64}(reps,tmax);
-maxsim = Array{Float64}(reps,tmax);
-for t=1:tmax
+jacc = SharedArray{Float64}(reps,reps,tmax);
+meansim = SharedArray{Float64}(reps,tmax);
+maxsim = SharedArray{Float64}(reps,tmax);
+@sync @parallel for t=1:tmax
   commat = copy(comgen[:,:,t]);
   for i=1:reps
     x = copy(commat[i,:]);
