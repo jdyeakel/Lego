@@ -25,10 +25,10 @@ rate_col = 1;
 #Establish thresholds
 a_thresh = 0;
 n_thresh = 0.2;
-tmax = 1000;
-reps=100;
+tmax = 800;
+reps=500;
 
-needvec = collect(0.5:0.5:5);
+needvec = collect(0.5:1.0:5.5);
 ln = length(needvec);
 
 SPARSECG = Array(Array{Float64},ln);
@@ -51,18 +51,18 @@ for i=1:ln
   ext_prim = SharedArray{Int64}(tmax,reps);
   ext_sec = SharedArray{Int64}(tmax,reps);
 
-  
+
   #Establish community template
   probs = [
-  p_n=needvec[i]/num_play,
+  p_n=0.003,
   p_a=0.01,
-  p_m=1/num_play,  #needvec[i]/num_play, #1/num_play,
+  p_m=needvec[i]/num_play,  #needvec[i]/num_play, #1/num_play,
   p_i= 1 - sum([p_n,p_m,p_a]) #Ignore with 1 - pr(sum(other))
   ]
 
-  
+
   @time int_m, sp_m, t_m, tp_m, tind_m, mp_m, mind_m, simvalue = build_template_degrees(num_play,probs,ppweight,sim,par);
-  
+
   @sync @parallel for r=1:reps
     #Establish community template
     cid, c_m, crev_m, com_tp, com_tind, com_mp, com_mind = initiate_comm_func(int_m,tp_m,tind_m,mp_m,mind_m);
@@ -87,7 +87,7 @@ for i=1:ln
   end #end repetition loop
   COMGEN[i] = comgen;
   INT[i] = int_m;
-    
+
   #Number of extinctions for a community of a given species richness
   mext = zeros(maximum(sprich),2);
   sdext = zeros(maximum(sprich),2);
@@ -107,6 +107,12 @@ end
 
 
 
+
+
+################
+# SAVING
+################
+
 #SAVE DATA FOR NEED SIMULATIONS
 #Compression and storage of COMGEN
 for i=1:ln
@@ -119,9 +125,6 @@ end
 #The rest of the data
 save("/Users/justinyeakel/Dropbox/PostDoc/2014_Lego/Lego_Program/data/comsim_ext/overn.jld","INT",INT,"rve",RvsE,"rvesd",RvsEsd,"rich",rich_ss);
 
-################
-# SAVING
-################
 
 #SAVE DATA FOR MAKE SIMULATIONS
 #Compression and storage of COMGEN
@@ -133,8 +136,14 @@ for i=1:ln
   end
 end
 #Save Data
-save("/Users/justinyeakel/Dropbox/PostDoc/2014_Lego/Lego_Program/data/comsim_ext/overm.jld","rve",RvsE,"rvesd",RvsEsd,"rich",rich_ss,"comgen",COMGEN);
+save("/Users/justinyeakel/Dropbox/PostDoc/2014_Lego/Lego_Program/data/comsim_ext/overm.jld","INT",INT,"rve",RvsE,"rvesd",RvsEsd,"rich",rich_ss);
 
+
+
+
+################
+# LOADING
+################
 
 #LOAD NEED DATA
 COMGEN = Array(Array{Int64},ln);
@@ -152,10 +161,6 @@ d = load("/Users/justinyeakel/Dropbox/PostDoc/2014_Lego/Lego_Program/data/comsim
 RvsE = d["rve"];
 rich_ss = d["rich"];
 
-
-################
-# LOADING
-################
 
 #LOAD MAKE DATA
 COMGEN = Array(Array{Int64},ln);
@@ -181,7 +186,7 @@ rich_ss = d["rich"];
 
 
 ################
-# PLOTTING
+# PLOTTING NEED DATA
 ################
 
 
@@ -191,7 +196,64 @@ library(RColorBrewer);
 cols <- brewer.pal(10,'Spectral');
 x=$(RvsE[1][:,1]);
 y=$(RvsE[1][:,2]);
-pdf('/Users/justinyeakel/Dropbox/PostDoc/2014_Lego/Lego_Program/figures/fig_rveM.pdf',width=5,height=4)
+pdf('/Users/justinyeakel/Dropbox/PostDoc/2014_Lego/Lego_Program/figures/fig_rve.pdf',width=5,height=4)
+plot(x,y,type='l',ylim=c(0,10),xlim=c(0,70),col=cols[1],lwd=2,
+  xlab="Species richness",ylab="Mean number of extinctions");
+points($(rich_ss[1]),0,pch=16,col=cols[1]);
+segments(x0=$(rich_ss[1]),y0=0,x1=$(rich_ss[1]),y1=-1,col=cols[1]);
+legvec = seq(0.5,5,0.5)/500;
+legend(x=60,y=10,legend=legvec,col=cols,pch=16,title='Prob(need)',cex=0.5,bty='n');
+"""
+for i=2:10
+  x=(RvsE[i][:,1]);
+  y=(RvsE[i][:,2]);
+  richss=rich_ss[i];
+  R"lines($x,$y,col=cols[$i],lwd=2);
+  points($richss,0,pch=16,col=cols[$i]);
+  segments(x0=$richss,y0=0,x1=$richss,y1=-1,col=cols[$i]);
+  "
+end
+R"dev.off()"
+
+#Plot Extinctions vs. Richness Normalized to 1
+R"""
+library(RColorBrewer);
+cols <- brewer.pal(10,'Spectral');
+x=$(RvsE[1][:,1]);
+y=$(RvsE[1][:,2])/max($(RvsE[1][:,2]));
+pdf('/Users/justinyeakel/Dropbox/PostDoc/2014_Lego/Lego_Program/figures/fig_rvenorm.pdf',width=5,height=4)
+plot(x,y,type='l',ylim=c(0,1),xlim=c(0,80),col=cols[1],lwd=2,
+  xlab="Species richness",ylab="Normalized mean number of extinctions");
+points($(rich_ss[1]),0,pch=16,col=cols[1]);
+segments(x0=$(rich_ss[1]),y0=0,x1=$(rich_ss[1]),y1=-1,col=cols[1]);
+legvec = seq(0.5,5,0.5)/500;
+legend(x=70,y=1,legend=legvec,col=cols,pch=16,title='Prob(need)',cex=0.5,bty='n');
+"""
+for i=2:10
+  x=(RvsE[i][:,1]);
+  y=(RvsE[i][:,2])/maximum((RvsE[i][:,2]));
+  richss=rich_ss[i];
+  R"lines($x,$y,col=cols[$i],lwd=2);
+  points($richss,0,pch=16,col=cols[$i]);
+  segments(x0=$richss,y0=0,x1=$richss,y1=-1,col=cols[$i]);
+  "
+end
+R"dev.off()"
+
+
+
+################
+# PLOTTING MAKE DATA
+################
+
+
+#Plot Extinctions vs. Richness
+R"""
+library(RColorBrewer);
+cols <- brewer.pal(10,'Spectral');
+x=$(RvsE[1][:,1]);
+y=$(RvsE[1][:,2]);
+#pdf('/Users/justinyeakel/Dropbox/PostDoc/2014_Lego/Lego_Program/figures/fig_rveM.pdf',width=5,height=4)
 plot(x,y,type='l',ylim=c(0,10),xlim=c(0,100),col=cols[1],lwd=2,
   xlab="Species richness",ylab="Mean number of extinctions");
 points($(rich_ss[1]),0,pch=16,col=cols[1]);
