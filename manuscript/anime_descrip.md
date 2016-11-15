@@ -150,5 +150,12 @@ I have some very basic analysis code to look at results of simulations, but I've
 
 
 ## Todo list  
+> How does pr_n vs. threshold_n alter 1) steady state; 2) variance?, 3) CV
 > Chain of spatial relationships  
 > Priority effect - what qualities of earliest organisms lead to maximum species richness  
+
+
+
+## Dom's model  
+> Speciation rate max @ low richness (species packing)  
+> 
