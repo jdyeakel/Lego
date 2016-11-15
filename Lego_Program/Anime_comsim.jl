@@ -66,7 +66,7 @@ draw(PDF("$(homedir())/Dropbox/PostDoc/2014_Lego/Lego_Program/figures/fig_fullas
 ############################
 ############################
 using Distributions
-using Gadfly
+#using Gadfly
 using RCall
 #using PyCall
 include("$(homedir())/Dropbox/PostDoc/2014_Lego/Lego_Program/src/build_template_degrees.jl")
@@ -93,12 +93,15 @@ a_thresh = 0.0;
 n_thresh = 0.2;
 tmax = 1000;
 CID = (Array{Int64,1})[];
+fwt = Array(Array{Int64},tmax);
+com_probs = Array{Float64}(tmax,4);
 rich = Array{Int64}(tmax);
+sprich = Array{Int64}(tmax);
 conn = Array{Float64}(tmax);
 ext_prim = Array{Int64}(tmax);
 ext_sec = Array{Int64}(tmax);
 comgen =zeros(Int64,tmax,num_play);
-ppweight = 1/4;
+ppweight = 1/3;
 sim=true;
 par=true;
 @time int_m, sp_m, t_m, tp_m, tind_m, mp_m, mind_m, simvalue = build_template_degrees(num_play,probs,ppweight,sim,par);
@@ -121,11 +124,78 @@ cid, c_m, crev_m, com_tp, com_tind, com_mp, com_mind = initiate_comm_func(int_m,
   # length(unique(cid))-length(cid)
   conn[t] = (sum(com_tp))/(S^2);
   rich[t] = length(cid);
-  println("Richness = ",rich[t])
+  sprich[t] = length(spcid);
+  
+  #println("Richness = ",rich[t])
+  
   push!(CID,copy(cid));
   comgen[t,cid] = 1;
+  fwt[t] = com_tind;
+  
+  int_mc = copy(int_m);
+  # for i=1:num_play
+  #   int_mc[i,i]='0';
+  # end
+  #Counting probabilities of a, n, i, m, e within simulated communities
+  com_int = sum(vec(int_mc[cid,cid]).==vec(['a', 'n', 'i', 'm'])',1)./(length(cid)^2);
+  temp_int = sum(vec(int_mc).==vec(['a', 'n', 'i', 'm'])',1)./(length(int_mc));
+  com_probs[t,:] = (com_int./temp_int) #/ sum((com_int./temp_int));
+  
 end
-writedlm("/Users/justinyeakel/Dropbox/PostDoc/2014_Lego/Lego_Program/data/comgen.csv",comgen);
+#writedlm("/Users/justinyeakel/Dropbox/PostDoc/2014_Lego/Lego_Program/data/comgen.csv",comgen);
+
+
+
+
+R"""
+plot($sprich,type='l',xlab='Time',ylab='Species diversity',ylim=c(0,60))
+lines($rich,type='l',lty=2)
+"""
+
+R"""
+plot($conn,type='l',log='xy',ylab='Trophic connectance')
+"""
+
+R"""
+plot(($rich-$sprich),$conn,xlab='Number of objects',ylab='Connectance')
+"""
+
+R"""
+plot(($rich-$sprich),$sprich,xlab='Number of objects',ylab='Species richness')
+"""
+
+R"""
+plot($ext_prim,$ext_sec)
+"""
+
+R"""
+plot($(com_probs[:,1]),type='l',col='red',ylim=c(0,15))
+lines($(com_probs[:,2]),col='blue')
+lines($(com_probs[:,3]),col='black')
+lines($(com_probs[:,4]),col='purple')
+"""
+
+R"""
+library(igraph)
+library(RColorBrewer)
+pal <- brewer.pal(3,"Set1")
+fw <- as.matrix($tp_m)
+#Eliminate zeros
+todel<-which((apply(fw,2,sum)*apply(fw,1,sum))==0)
+fw <- fw[-todel,-todel];
+fw_g <- graph.adjacency(as.matrix(fw))
+basal_pos <- 1
+num_play = dim(fw)[1]
+trophic <- sapply(1:vcount(fw_g),function(x){mean(shortest.paths(fw_g,basal_pos,which(fw[x,]==1)))+0})
+#trophic[which(trophic==Inf)] <- 0
+trophic[which(trophic=="NaN")] <- 0
+coords <- cbind(runif(vcount(fw_g)),trophic); coords[basal_pos,] <- c(0.5,trophic[basal_pos])
+par(mar=c(1,1,1,1))
+plot(fw_g,layout=coords,vertex.size=5,edge.arrow.size=0.5,
+     main=ecount(fw_g)/(num_play^2),vertex.label=NA,
+     vertex.color=pal[2]) #,layout=coords
+"""
+
 
 
 csum = (Array{Int64,1})[];

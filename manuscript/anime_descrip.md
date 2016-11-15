@@ -62,13 +62,13 @@ Maybe these probability are scaled to `N`.
 
 We can then calculate the probabilities of pairwise interactions:
 
-> `pr_na = p_n*(p_a/(p_a+p_n+p_i+p_m)) + p_a*(p_n/(p_a+p_i+p_n))`
-> `pr_nn = p_n*(p_n/(p_a+p_n+p_i+p_m))`
-> `pr_ni = p_n*(p_i/(p_a+p_n+p_i+p_m)) + p_i*(p_n/(p_a+p_n+p_i))`
-> `pr_nm = p_n*(p_m/(p_a+p_n+p_i+p_m)) + p_m`
-> `pr_ia = p_i*(p_a/(p_a+p_n+p_i)) + p_a*(p_i/(p_a+p_i+p_n))`
-> `pr_ii = p_i*(p_i/(p_a+p_n+p_i))`
-> `pr_aa = p_a*(p_a/(p_i+p_n+p_a))`
+> `pr_na = p_n*(p_a/(p_a+p_n+p_i+p_m)) + p_a*(p_n/(p_a+p_i+p_n))`  
+> `pr_nn = p_n*(p_n/(p_a+p_n+p_i+p_m))`  
+> `pr_ni = p_n*(p_i/(p_a+p_n+p_i+p_m)) + p_i*(p_n/(p_a+p_n+p_i))`  
+> `pr_nm = p_n*(p_m/(p_a+p_n+p_i+p_m)) + p_m`  
+> `pr_ia = p_i*(p_a/(p_a+p_n+p_i)) + p_a*(p_i/(p_a+p_i+p_n))`  
+> `pr_ii = p_i*(p_i/(p_a+p_n+p_i))`  
+> `pr_aa = p_a*(p_a/(p_i+p_n+p_a))`  
 
 **Trophic interactions:** The core of the `a: assimilate` (trophic) interactions is determined by the niche model (the number of interactions per species rather than the structure of interactions).
 First we make an estimate of the number of living species that will be in the system by discounting objects, which are made by species, where `S = N - (pr_nm*N)`.
@@ -142,8 +142,13 @@ I have some very basic analysis code to look at results of simulations, but I've
 
 
 ## Where to go next
-Lots of ideas... one primary one is to build multiple communities on a spatial network, where species can migrate to/from nearby communities. We can then see if biomes form by looking at community similarity over space (pattern formation), look at the effects of large perturbations (untargeted/targeted extinction events), etc.
+**Spatial community interactions:** Multiple communities on a spatial network, where species can migrate to/from nearby communities. We can then see if biomes form by looking at community similarity over space (pattern formation), look at the effects of large perturbations (untargeted/targeted extinction events), etc.
 
-Another idea is to incorporate the idea of macro-evolution, where an evolutionary event would alter the interactions between species in the *master interaction matrix* over time.
+**Macroevolution:** Another idea is to incorporate the idea of macro-evolution, where an evolutionary event would alter the interactions between species in the *master interaction matrix* over time.  
 
-Other stuff.
+**Adaptive interactions & behavioral plasticity:**  
+
+
+## Todo list  
+> Chain of spatial relationships  
+> Priority effect - what qualities of earliest organisms lead to maximum species richness  
