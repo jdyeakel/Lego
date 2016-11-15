@@ -58,7 +58,7 @@ for i=1:ln
     p_i= 1 - sum([p_n,p_m,p_a]) #Ignore with 1 - pr(sum(other))
     ]
     
-    sprich, rich, conn, comgen, ext_prim, ext_sec = repsim(num_play,reps,tmax,a_thresh,n_thresh,rate_col,probs,ppweight,sim,par);
+    int_m, sprich, rich, conn, comgen, ext_prim, ext_sec = repsim(num_play,reps,tmax,a_thresh,n_thresh,rate_col,probs,ppweight,sim,par);
     
     SPRICH[i,j] = sprich;
     RICH[i,j] = rich;
@@ -67,13 +67,13 @@ for i=1:ln
   end #end ltn
 end #end ln
 
-save("/Users/justinyeakel/Dropbox/PostDoc/2014_Lego/Lego_Program/data/comsim_divstats/rich.jld","SPRICH",SPRICH,"RICH",RICH);
+save("$(homedir())/Dropbox/PostDoc/2014_Lego/Lego_Program/data/comsim_divstats/rich.jld","SPRICH",SPRICH,"RICH",RICH);
 
 
 #Load library
-d = load("/Users/justinyeakel/Dropbox/PostDoc/2014_Lego/Lego_Program/data/comsim_divstats/rich.jld");
-SPRICH = d("SPRICH");
-RICH = d("RICH");
+d = load("$(homedir())/Dropbox/PostDoc/2014_Lego/Lego_Program/data/comsim_divstats/rich.jld");
+SPRICH = d["SPRICH"];
+RICH = d["RICH"];
   
 richss = Array{Float64}(ln,ltn);
 richsd = Array{Float64}(ln,ltn);
@@ -98,21 +98,22 @@ end
 
 #Plotting the steady state mean
 R"""
+#pdf("$(homedir())/Dropbox/PostDoc/2014_Lego/Lego_Program/figures/
 library(RColorBrewer)
 cols <- brewer.pal(10,'Spectral'); 
-filled.contour(x=($needvec/$num_play),y=$n_thresh_vec,z=$richss,color.palette = colorRampPalette(cols, space = "Lab",bias=1),nlevels=20)
+filled.contour(x=($needvec/$num_play),y=$n_thresh_vec,z=$richss,color.palette = colorRampPalette(cols, space = "Lab",bias=1),nlevels=50)
 """
 
 #Plotting steady state variance (SD)
 R"""
 library(RColorBrewer)
 cols <- brewer.pal(10,'Spectral'); 
-filled.contour(x=($needvec/$num_play),y=$n_thresh_vec,z=$richsd,color.palette = colorRampPalette(cols, space = "Lab",bias=1),nlevels=20)
+filled.contour(x=($needvec/$num_play),y=$n_thresh_vec,z=$richsd,color.palette = colorRampPalette(cols, space = "Lab",bias=1),nlevels=50)
 """
 
 #Plotting steady state CV
 R"""
 library(RColorBrewer)
 cols <- brewer.pal(10,'Spectral'); 
-filled.contour(x=($needvec/$num_play),y=$n_thresh_vec,z=$richcv,color.palette = colorRampPalette(cols, space = "Lab",bias=1),nlevels=20)
+filled.contour(x=($needvec/$num_play),y=$n_thresh_vec,z=$richcv,xlab='Pr(need)',ylab='',color.palette = colorRampPalette(cols, space = "Lab",bias=1),nlevels=50)
 """

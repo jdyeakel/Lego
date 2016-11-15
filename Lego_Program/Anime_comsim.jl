@@ -79,7 +79,7 @@ include("$(homedir())/Dropbox/PostDoc/2014_Lego/Lego_Program/src/sim_func.jl")
 #Establish community template
 num_play = 500;
 probs = [
-p_n=5/num_play,
+p_n=1/num_play,
 p_a=0.01,
 p_m=1/num_play,
 p_i= 1 - sum([p_n,p_m,p_a]) #Ignore with 1 - pr(sum(other))
@@ -149,7 +149,7 @@ end
 
 R"""
 plot($sprich,type='l',xlab='Time',ylab='Species diversity',ylim=c(0,60))
-lines($rich,type='l',lty=2)
+lines($rich,type='l',lty=2,cex.lab=1.5,cex.axis=1.3)
 """
 
 R"""

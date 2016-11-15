@@ -159,3 +159,17 @@ I have some very basic analysis code to look at results of simulations, but I've
 ## Dom's model  
 > Speciation rate max @ low richness (species packing)  
 > 
+
+
+> Try without competitive load   
+> If one thing 'needs' something else it is no longer useful  
+> Succession vs. colonization  
+> Co-occurrance patterns - mechanistic - check out Cazelles et al. Ecography 2016 & Theoretical Ecology 2015 & Gravel Plos One 2011  
+
+
+
+## Outline of first paper  
+* Describe pairwise directed interaction paradigm  
+* Species packing with only trophic interaction and how the 'n' 'm'  
+  * Variance in time and variance over runs for the same interaction matrix  
+* Colonization + extinction and how ss and sd depend on threshold and pr(n), pr(m)

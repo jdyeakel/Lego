@@ -36,6 +36,7 @@ function repsim(num_play,reps,tmax,a_thresh,n_thresh,rate_col,probs,ppweight,sim
   
   
   return(
+  int_m,
   sprich,
   rich,
   conn,
