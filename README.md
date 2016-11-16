@@ -1,13 +1,13 @@
 # Anime description 11/03/2016
-Current contributors:  
-JD Yeakel, T Gross, MM Pires, MAM de Aguiar, PR Guimaraes Jr, J O'Donnell  
+Current contributors:
+JD Yeakel, T Gross, MM Pires, MAM de Aguiar, PR Guimaraes, J O'Donnell  
 
 
 
 **Note:** all of the code is written in `julia` and can be found and accessed publicly via github at:
-`https://github.com/jdyeakel/Lego`  
-Required packages include `Distributions` for statistical functions and `Gadfly` for basic plotting. Eventually, I will likely use the package `RCall` to plot results from the simulations in `R`, as plotting things in `julia` is a real pain. The `Lego` thing is a bit of an historical artifact, as the project is now referred to as the `ANIME` project.  
-**Importantly** this code works for `julia 0.5` or above, and does not work for earlier versions, as they changed how arrays are created/stored in v0.5. That was fun to discover (not)  
+`https://github.com/jdyeakel/Lego`
+Required packages include `Distributions` for statistical functions and `Gadfly` for basic plotting. Eventually, I will likely use the package `RCall` to plot results from the simulations in `R`, as plotting things in `julia` is a real pain. The `Lego` thing is a bit of an historical artifact, as the project is now referred to as the `ANIME` project.
+**Importantly** this code works for `julia 0.5` or above, and does not work for earlier versions, as they changed how arrays are created/stored in v0.5. That was fun to discover (not)
 
 
 
@@ -15,10 +15,10 @@ Required packages include `Distributions` for statistical functions and `Gadfly`
 
 The directed interactions come in five flavors:
 
-> `a`: assimilate  
-> `n`: need  
-> `i`: ignore  
-> `m`: make  
+> `a`: assimilate
+> `n`: need
+> `i`: ignore
+> `m`: make
 > `e`: exclude (emergent property)
 
 Combinations of these interactions form specific ecological pairwise interactions
@@ -42,7 +42,7 @@ For example, the `{n,a}` pairwise interaction represents a trophic mutualism, wh
 The `{n,n}` interaction is another form of mutualism where biomass is not passed from one species to the other.
 The `{n,i}` interaction is a commensal interaction - for example, a bird might `n: need` a tree (to build a nest), but the tree effectively `i: ignores` the bird.
 
-It is also important to note that this interaction matrix is composed of elements that may be living species, but may also be objects that are created and used by living species. 
+It is also important to note that this interaction matrix is composed of elements that may be living species, but may also be objects that are created and used by living species.
 Thus, we can disentangle both direct interactions between species as well as the indirect interactions.
 
 For community assembly, we assume that species that coexist do so at some stable steady state. Accordingly, asymmetric predation involves an `a` interaction in one direction (predator eats the prey) and an `i` interaction in the other. These seems strange at first glance, but essentially says that the prey views the existence of the predator simply as an additional mortality source, effectively ignoring it from the predator's perspective. This perspective on species interactions thus operates with respect to species presence/absence in the system rather than with respect to their population densities. As I'll mention in detail below, we can still account - in some way - for the numerical response of species by using the interaction combinations to generate extinction probabilities.
@@ -54,7 +54,7 @@ For community assembly, we assume that species that coexist do so at some stable
 First, a *master interaction matrix* is constructed, which defines how each species/object interacts with every other species/object.
 The *master interaction matrix* is built in `Lego_Program/src/build_template_degrees.jl`
 
-**System Size N:** The size of the system, which is composed of **species** and the **objects** that are made by species is `N`. An species makes an object through interaction `m`. An object needs the species that makes it with interaction `n`.  
+**System Size N:** The size of the system, which is composed of **species** and the **objects** that are made by species is `N`. An species makes an object through interaction `m`. An object needs the species that makes it with interaction `n`.
 
 I currently have it set up so that the input is the probability that each interaction type is drawn (except `e: exclude`, which is an emergent property and described in more detail below).
 E.g. pr_a = 0.01, pr_n = 0.005, pr_m = 0.005, pr_i = 1 - (pr_a) + pr_n + pr_m), and it is assumed that most directed interactions between species are `ignore`.
@@ -68,7 +68,7 @@ We can then calculate the probabilities of pairwise interactions:
 > `pr_nm = p_n*(p_m/(p_a+p_n+p_i+p_m)) + p_m`  
 > `pr_ia = p_i*(p_a/(p_a+p_n+p_i)) + p_a*(p_i/(p_a+p_i+p_n))`  
 > `pr_ii = p_i*(p_i/(p_a+p_n+p_i))`  
-> `pr_aa = p_a*(p_a/(p_i+p_n+p_a))`
+> `pr_aa = p_a*(p_a/(p_i+p_n+p_a))`  
 
 **Trophic interactions:** The core of the `a: assimilate` (trophic) interactions is determined by the niche model (the number of interactions per species rather than the structure of interactions).
 First we make an estimate of the number of living species that will be in the system by discounting objects, which are made by species, where `S = N - (pr_nm*N)`.
@@ -82,7 +82,7 @@ For each `a` interaction determined from the above steps, the opposing interacti
 
 **Non-trophic interactions:** For non-trophic interactions, we draw from the remaining possible interactions with probability `pr_nn, pr_ni, pr_nm, pr_ii`.
 
-**Fine-tuning**  
+**Fine-tuning**
 ***Basal resource:*** We assume that row/column 1 of the interaction matrix is always the basal resource of the system. So anything that `a: assimilates` it is a primary producer.
 We assume that it ignores everything, such that row 1 = `i`, and does not make objects (it essentially serves as a passive resource).
 
@@ -108,9 +108,9 @@ The need threshold `n_thresh` is a higher threshold that needs to be passed for 
 
 The colonization function, which is found in `Lego_Program/src/colonize_func.jl` works as follows:
 
-> 1) Randomly choose a species that is not present in the community, but has at least one trophic interaction with something that is present (or is a primary producer)  
-> 2) Does the number of realized trophic interactions pass `a_thresh`? So if `a_thresh=0.1`, then at least 10% of the colonizer's prey (from the master interaction matrix) must be present in the assembling community for colonization to be successful.  
-> 3) Does the number of needed species/objects pass `n_thresh`? So if `n_thresh=0.5`, then at least 50% of the species/objects that the colonizer needs (from the master interaction matrix) must be present in the assembling community for colonization to be successful.  
+> 1) Randomly choose a species that is not present in the community, but has at least one trophic interaction with something that is present (or is a primary producer)
+> 2) Does the number of realized trophic interactions pass `a_thresh`? So if `a_thresh=0.1`, then at least 10% of the colonizer's prey (from the master interaction matrix) must be present in the assembling community for colonization to be successful.
+> 3) Does the number of needed species/objects pass `n_thresh`? So if `n_thresh=0.5`, then at least 50% of the species/objects that the colonizer needs (from the master interaction matrix) must be present in the assembling community for colonization to be successful.
 > 4) If the randomly chosen colonizer passes these two tests, it is allowed to enter the community.
 
 In the assembly simulation, the colonization function is run at each timestep with a set probability.
@@ -121,8 +121,8 @@ In the assembly simulation, the colonization function is run at each timestep wi
 The extinction function is found at `Lego_Program/src/extinct_func.jl`
 Currently, I am calculating the probability of extinction based on two characteristics for each species in the assembling community:
 
-> 1) Predation load: extinction probability increases with the number of predators consuming a given species  
-> 2) Competetive load: extinction probability increases with the maximum similarity between a given species and all of the rest in the assembling community. Similarity is calculated as the proportion of non-ignore interactions that are the same between each species pair.  
+> 1) Predation load: extinction probability increases with the number of predators consuming a given species
+> 2) Competetive load: extinction probability increases with the maximum similarity between a given species and all of the rest in the assembling community. Similarity is calculated as the proportion of non-ignore interactions that are the same between each species pair.
 
 The probability of extinction `prext` is determined for each species in the system at each time step. Then extinction is determined by drawing from a binomial distribution independently for each species. These are the primary extinctions. Given that the probability of extinction increases as predative and competitive loads increase, it naturally serves to regulate the size of the community as it assembles.
 
@@ -132,9 +132,9 @@ This dynamic allows for extinction cascades that are internally initiated by pre
 
 
 ## Community assembly simulations
-The community assembly process, which combines colonizations and extinctions over time are at `Lego_Program/Anime_comsim.jl`  
+The community assembly process, which combines colonizations and extinctions over time are at `Lego_Program/Anime_comsim.jl`
 There are 3 versions of the assembly process:
-> 1) Only colonizations are considered and the community grows until no other species 'fit'  
+> 1) Only colonizations are considered and the community grows until no other species 'fit'
 > 2) Where both colonizations and extinctions occur over time
 > 3) A parallelized version of the colonization/extinction dynamic with repetitions. The repetitions are parallelized, and to use `n` cores on a given machine, `julia` must be opened from the terminal as `julia -p n`
 
@@ -142,8 +142,31 @@ I have some very basic analysis code to look at results of simulations, but I've
 
 
 ## Where to go next
-Lots of ideas... one primary one is to build multiple communities on a spatial network, where species can migrate to/from nearby communities. We can then see if biomes form by looking at community similarity over space (pattern formation), look at the effects of large perturbations (untargeted/targeted extinction events), etc.
+**Spatial community interactions:** Multiple communities on a spatial network, where species can migrate to/from nearby communities. We can then see if biomes form by looking at community similarity over space (pattern formation), look at the effects of large perturbations (untargeted/targeted extinction events), etc.
 
-Another idea is to incorporate the idea of macro-evolution, where an evolutionary event would alter the interactions between species in the *master interaction matrix* over time.
+**Macroevolution:** Another idea is to incorporate the idea of macro-evolution, where an evolutionary event would alter the interactions between species in the *master interaction matrix* over time.  
 
-Other stuff.
+**Adaptive interactions & behavioral plasticity:**  
+
+
+## Todo list  
+> How does pr_n vs. threshold_n alter 1) steady state; 2) variance?, 3) CV  
+> Chain of spatial relationships  
+> Priority effect - what qualities of earliest organisms lead to maximum species richness  
+> Try without competitive load  
+> New variable: trophic load, which will change sensitivity of extinctions   
+> If one thing 'needs' something else it is no longer useful  
+> Succession vs. colonization  
+> Co-occurrance patterns - mechanistic - check out Cazelles et al. Ecography 2016 & Theoretical Ecology 2015 & Gravel Plos One 2011  
+
+
+
+## Outline of first paper  
+* Describe pairwise directed interaction paradigm  
+* Species packing with only trophic interaction and how the 'n' 'm'  
+  * Variance in time and variance over runs for the same interaction matrix  
+  * Distribution of pairwise similarities compared to a) random draws from template or b) system with trophic interactions only  
+  * Priority effects  
+* Colonization + extinction and how ss and sd depend on threshold and pr(n), pr(m)  
+  * Can we pull out a) extinction rate (per richness) and b) colonization rate (per richness) and predict the equilibrium?  
+  * We can hold pr(n) constant in a regime where there is rich behavior and modify both pr(m) vs n_thresh vs trophic load  

@@ -150,18 +150,11 @@ I have some very basic analysis code to look at results of simulations, but I've
 
 
 ## Todo list  
-> How does pr_n vs. threshold_n alter 1) steady state; 2) variance?, 3) CV
+> How does pr_n vs. threshold_n alter 1) steady state; 2) variance?, 3) CV  
 > Chain of spatial relationships  
 > Priority effect - what qualities of earliest organisms lead to maximum species richness  
-
-
-
-## Dom's model  
-> Speciation rate max @ low richness (species packing)  
-> 
-
-
-> Try without competitive load   
+> Try without competitive load  
+> New variable: trophic load, which will change sensitivity of extinctions   
 > If one thing 'needs' something else it is no longer useful  
 > Succession vs. colonization  
 > Co-occurrance patterns - mechanistic - check out Cazelles et al. Ecography 2016 & Theoretical Ecology 2015 & Gravel Plos One 2011  
@@ -172,4 +165,8 @@ I have some very basic analysis code to look at results of simulations, but I've
 * Describe pairwise directed interaction paradigm  
 * Species packing with only trophic interaction and how the 'n' 'm'  
   * Variance in time and variance over runs for the same interaction matrix  
-* Colonization + extinction and how ss and sd depend on threshold and pr(n), pr(m)
+  * Distribution of pairwise similarities compared to a) random draws from template or b) system with trophic interactions only  
+  * Priority effects  
+* Colonization + extinction and how ss and sd depend on threshold and pr(n), pr(m)  
+  * Can we pull out a) extinction rate (per richness) and b) colonization rate (per richness) and predict the equilibrium?  
+  * We can hold pr(n) constant in a regime where there is rich behavior and modify both pr(m) vs n_thresh vs trophic load  
