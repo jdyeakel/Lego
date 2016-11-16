@@ -158,11 +158,25 @@ I have some very basic analysis code to look at results of simulations, but I've
 > If one thing 'needs' something else it is no longer useful  
 > Succession vs. colonization  
 > Co-occurrance patterns - mechanistic - check out Cazelles et al. Ecography 2016 & Theoretical Ecology 2015 & Gravel Plos One 2011  
+> Take-home message with a few key figures(!!!)   
 
 
 
 ## Outline of first paper  
 * Describe pairwise directed interaction paradigm  
+  * Hypergraphs + multi-layer graph  
+  * Launch from what is done - what does this bring to the table?  
+  * Biogeography models where species interactions are ignored - here we consider them  
+  * This is community assembly + ecosystem development (through objects)  
+* Example interactions for all types  
+* Empirical Networks  
+  * Translating multi-layer ecological networks to the ANIMe paradigm  
+  * Examples  
+    * Kefi intertidal  
+    * Bats (Mathias)  
+    * Mason Porter's review  
+    * Paulo has one (ant-plant multilayer nets)  
+    * Jeff Ollerton 2006 book by Waser about Pollination (mutualism examples)  
 * Species packing with only trophic interaction and how the 'n' 'm'  
   * Variance in time and variance over runs for the same interaction matrix  
   * Distribution of pairwise similarities compared to a) random draws from template or b) system with trophic interactions only  
@@ -170,3 +184,4 @@ I have some very basic analysis code to look at results of simulations, but I've
 * Colonization + extinction and how ss and sd depend on threshold and pr(n), pr(m)  
   * Can we pull out a) extinction rate (per richness) and b) colonization rate (per richness) and predict the equilibrium?  
   * We can hold pr(n) constant in a regime where there is rich behavior and modify both pr(m) vs n_thresh vs trophic load  
+  * Biomass flow & abundance through thresholds   

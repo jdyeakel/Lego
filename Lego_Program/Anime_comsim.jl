@@ -72,7 +72,7 @@ using RCall
 include("$(homedir())/Dropbox/PostDoc/2014_Lego/Lego_Program/src/build_template_degrees.jl")
 include("$(homedir())/Dropbox/PostDoc/2014_Lego/Lego_Program/src/initiate_comm_func.jl")
 include("$(homedir())/Dropbox/PostDoc/2014_Lego/Lego_Program/src/colonize_func.jl")
-include("$(homedir())/Dropbox/PostDoc/2014_Lego/Lego_Program/src/extinct_func.jl")
+include("$(homedir())/Dropbox/PostDoc/2014_Lego/Lego_Program/src/extinct_func2.jl")
 include("$(homedir())/Dropbox/PostDoc/2014_Lego/Lego_Program/src/sim_func.jl")
 
 
@@ -90,8 +90,9 @@ p_i= 1 - sum([p_n,p_m,p_a]) #Ignore with 1 - pr(sum(other))
 rate_col = 1;
 #Establish thresholds
 a_thresh = 0.0;
-n_thresh = 0.2;
-tmax = 1000;
+n_thresh = 0.3;
+trophicload = 3;
+tmax = 2000;
 CID = (Array{Int64,1})[];
 fwt = Array(Array{Int64},tmax);
 com_probs = Array{Float64}(tmax,4);
@@ -116,7 +117,8 @@ cid, c_m, crev_m, com_tp, com_tind, com_mp, com_mind = initiate_comm_func(int_m,
     status,cid,c_m,crev_m,com_tp,com_tind,com_mp,com_mind = colonize_func(int_m,tp_m,tind_m,mp_m,mind_m,a_thresh,n_thresh,cid,c_m,crev_m,com_tp,com_tind,com_mp,com_mind);
   end
   #Always run extinction code because probabilities are assessed within
-  status,cid,spcid,c_m,crev_m,com_tp,com_tind,com_mp,com_mind,extinctions = extinct_func(int_m,a_thresh,n_thresh,cid,c_m,crev_m,com_tp,com_tind,com_mp,com_mind,simvalue);
+  status,cid,spcid,c_m,crev_m,com_tp,com_tind,com_mp,com_mind,extinctions = extinct_func2(int_m,tp_m,a_thresh,n_thresh,trophicload,cid,c_m,crev_m,com_tp,com_tind,com_mp,com_mind);
+  #status,cid,spcid,c_m,crev_m,com_tp,com_tind,com_mp,com_mind,extinctions = extinct_func(int_m,a_thresh,n_thresh,cid,c_m,crev_m,com_tp,com_tind,com_mp,com_mind,simvalue);
 	#Save primary and secondary extinction information
 	ext_prim[t] = extinctions[1];
 	ext_sec[t] = extinctions[2];
@@ -136,11 +138,14 @@ cid, c_m, crev_m, com_tp, com_tind, com_mp, com_mind = initiate_comm_func(int_m,
   # for i=1:num_play
   #   int_mc[i,i]='0';
   # end
-  #Counting probabilities of a, n, i, m, e within simulated communities
-  com_int = sum(vec(int_mc[cid,cid]).==vec(['a', 'n', 'i', 'm'])',1)./(length(cid)^2);
-  temp_int = sum(vec(int_mc).==vec(['a', 'n', 'i', 'm'])',1)./(length(int_mc));
-  com_probs[t,:] = (com_int./temp_int) #/ sum((com_int./temp_int));
   
+  
+  
+  # #Counting probabilities of a, n, i, m, e within simulated communities
+  # com_int = sum(vec(int_mc[cid,cid]).==vec(['a', 'n', 'i', 'm'])',1)./(length(cid)^2);
+  # temp_int = sum(vec(int_mc).==vec(['a', 'n', 'i', 'm'])',1)./(length(int_mc));
+  # com_probs[t,:] = (com_int./temp_int) #/ sum((com_int./temp_int));
+  # 
 end
 #writedlm("/Users/justinyeakel/Dropbox/PostDoc/2014_Lego/Lego_Program/data/comgen.csv",comgen);
 
@@ -148,7 +153,8 @@ end
 
 
 R"""
-plot($sprich,type='l',xlab='Time',ylab='Species diversity',ylim=c(0,60))
+maxsp = max($rich);
+plot($sprich,type='l',xlab='Time',ylab='Species diversity',ylim=c(0,maxsp))
 lines($rich,type='l',lty=2,cex.lab=1.5,cex.axis=1.3)
 """
 

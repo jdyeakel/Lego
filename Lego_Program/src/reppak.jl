@@ -16,13 +16,28 @@ function repsim(num_play,reps,tmax,a_thresh,n_thresh,trophicload,rate_col,probs,
     cid, c_m, crev_m, com_tp, com_tind, com_mp, com_mind = initiate_comm_func(int_m,tp_m,tind_m,mp_m,mind_m);
     status = "open";
     
+    comid = (Array{Int64,1})[];
+    push!(comid,cid);
+    rich = Array{Int64}(1);
+    rich[1] = length(comid);
+    
     while status = "open"
       
       #Colonize with some probability
       rcol = rand();
       if rcol < rate_col && status == "open"
         status,cid,c_m,crev_m,com_tp,com_tind,com_mp,com_mind = colonize_func(int_m,tp_m,tind_m,mp_m,mind_m,a_thresh,n_thresh,cid,c_m,crev_m,com_tp,com_tind,com_mp,com_mind);
+        #Update community evolution
+        push!(comid,cid);
+        #Update count of richness
+        push!(rich,length(cid));
       end
+      
+      
+      
+      
+      
+      
       sprich[t,r] = length(spcid);
       # length(unique(cid))-length(cid)
       conn[t,r] = (sum(com_tp))/(sprich[t,r]^2);
