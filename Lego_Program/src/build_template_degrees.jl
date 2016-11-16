@@ -260,7 +260,10 @@ function build_template_degrees(num_play, probs, ppweight, sim, sync)
 
   #NOTE: multiple A,B,C can make the same D
   #NOTE: Should 'made' things only be needed and not assimilated, which implies biomass flow? i.e. trophic int?
-
+  
+  #BUG: There are 'objects' that need other objects...
+  # REASON: if a high R/C species (10) makes an object lower on the list (5), and a species intermediate (8) makes (10), then, object 5 needs species 10, but then species 10 get turned into an object... so the object needs an object!
+  
   madev = Array{Int64}(0);
   for i = 2:num_play
     int_v = copy(int_m[i,:]);
@@ -270,6 +273,10 @@ function build_template_degrees(num_play, probs, ppweight, sim, sync)
       for k = 1:l_made
         #Compile list of made things
         push!(madev,made[k])
+        
+        #If the made thing 'makes' anything, the reverse 'need' interactions must be turned to 'ignore'
+        unmade = find(x->x=='m',int_m[made[k],:]);
+        int_m[unmade,made[k]] = 'i'
         #The made thing ignores everything... including diag
         int_m[made[k],:] = 'i'
 

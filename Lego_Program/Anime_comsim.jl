@@ -91,8 +91,8 @@ rate_col = 1;
 #Establish thresholds
 a_thresh = 0.0;
 n_thresh = 0.3;
-trophicload = 3;
-tmax = 2000;
+trophicload = 5;
+tmax = 30000;
 CID = (Array{Int64,1})[];
 fwt = Array(Array{Int64},tmax);
 com_probs = Array{Float64}(tmax,4);
@@ -107,24 +107,29 @@ sim=true;
 par=true;
 @time int_m, sp_m, t_m, tp_m, tind_m, mp_m, mind_m, simvalue = build_template_degrees(num_play,probs,ppweight,sim,par);
 cid, c_m, crev_m, com_tp, com_tind, com_mp, com_mind = initiate_comm_func(int_m,tp_m,tind_m,mp_m,mind_m);
+status = "open"; #I don't think we need this now
 @time for t = 1:tmax
   #The add-until-full simulation
   #Creating a new int_m each time
-  status = "open"; #I don't think we need this now
+  
   #Colonize with some probability
   rcol = rand();
   if rcol < rate_col && status == "open"
-    status,cid,c_m,crev_m,com_tp,com_tind,com_mp,com_mind = colonize_func(int_m,tp_m,tind_m,mp_m,mind_m,a_thresh,n_thresh,cid,c_m,crev_m,com_tp,com_tind,com_mp,com_mind);
+    status,cid,spcid,c_m,crev_m,com_tp,com_tind,com_mp,com_mind = colonize_func(int_m,tp_m,tind_m,mp_m,mind_m,a_thresh,n_thresh,cid,c_m,crev_m,com_tp,com_tind,com_mp,com_mind);
   end
+  
   #Always run extinction code because probabilities are assessed within
   status,cid,spcid,c_m,crev_m,com_tp,com_tind,com_mp,com_mind,extinctions = extinct_func2(int_m,tp_m,a_thresh,n_thresh,trophicload,cid,c_m,crev_m,com_tp,com_tind,com_mp,com_mind);
   #status,cid,spcid,c_m,crev_m,com_tp,com_tind,com_mp,com_mind,extinctions = extinct_func(int_m,a_thresh,n_thresh,cid,c_m,crev_m,com_tp,com_tind,com_mp,com_mind,simvalue);
 	#Save primary and secondary extinction information
-	ext_prim[t] = extinctions[1];
+	
+  ext_prim[t] = extinctions[1];
 	ext_sec[t] = extinctions[2];
   S = length(spcid);
   # length(unique(cid))-length(cid)
   conn[t] = (sum(com_tp))/(S^2);
+  
+  
   rich[t] = length(cid);
   sprich[t] = length(spcid);
   
@@ -134,7 +139,7 @@ cid, c_m, crev_m, com_tp, com_tind, com_mp, com_mind = initiate_comm_func(int_m,
   comgen[t,cid] = 1;
   fwt[t] = com_tind;
   
-  int_mc = copy(int_m);
+  # int_mc = copy(int_m);
   # for i=1:num_play
   #   int_mc[i,i]='0';
   # end
@@ -157,6 +162,19 @@ maxsp = max($rich);
 plot($sprich,type='l',xlab='Time',ylab='Species diversity',ylim=c(0,maxsp))
 lines($rich,type='l',lty=2,cex.lab=1.5,cex.axis=1.3)
 """
+
+c=sort(CID[tmax]);
+dups = Array{Int64}(0);
+for i=2:length(c)
+  if c[i]-c[i-1]==0
+    push!(dups,c[i])
+  end
+end
+
+
+
+
+
 
 R"""
 plot($conn,type='l',log='xy',ylab='Trophic connectance')
