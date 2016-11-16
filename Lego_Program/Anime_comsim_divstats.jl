@@ -33,7 +33,7 @@ rate_col = 1;
 a_thresh = 0;
 
 tmax = 500;
-reps=20;
+reps=100;
 
 needvec = collect(0.5:0.5:5.0);
 n_thresh_vec = collect(0.0:0.05:0.5);
