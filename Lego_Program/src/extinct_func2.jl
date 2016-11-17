@@ -24,17 +24,17 @@ function extinct_func2(int_m,tp_m,a_thresh,n_thresh,trophicload,cid,c_m,crev_m,c
   #Local
   # Which cid-members are species?
   #NOTE: We can probably simplify many calculations with intcom
-  intcom = int_m[cid,cid];
-  spcid = find(x->x=='n',diag(intcom));
-  num_comsp = length(spcid);
-  
-  # spcid = Array{Int64}(0);
-  # for i=1:num_com
-  #   if in(cid[i],Slist) == true
-  #     append!(spcid,cid[i]);
-  #   end
-  # end
+  # intcom = int_m[cid,cid];
+  # spcid = find(x->x=='n',diag(intcom));
   # num_comsp = length(spcid);
+  
+  spcid = Array{Int64}(0);
+  for i=1:num_com
+    if in(cid[i],Slist) == true
+      append!(spcid,cid[i]);
+    end
+  end
+  num_comsp = length(spcid);
 
 
     #Extinctions are only relevant if there is anyone in the community
@@ -57,9 +57,10 @@ function extinct_func2(int_m,tp_m,a_thresh,n_thresh,trophicload,cid,c_m,crev_m,c
       #Reverse vector (those interacting with species i)
       intrev = copy(int_m[:,spcid[i]]);
 
+      #BUG: Only count assimilate interactions for members of local COMMUNITY
       #How many things ASSIMILATE it?
       #Found in the reverse vector
-      pred_vec[i] = length(find(x->x=='a',intrev));
+      pred_vec[i] = length(find(x->x=='a',intrev[cid]));
 
       #NOTE: Not using vulnerability right now
       # vuln_vec[i] = (1/(L/lS))*pred_vec[i]
@@ -123,8 +124,10 @@ function extinct_func2(int_m,tp_m,a_thresh,n_thresh,trophicload,cid,c_m,crev_m,c
       #Record the species-only eliminations
       #i.e. this EXCLUDES made things for updating trophic nets for later use
       esponly = copy(esp);
-
+      
+      #Where are the cid list are the eliminated species located?
       esploc = zeros(Int64,lesp);
+      #Where on the spcid list are the eliminated species located?
       esponly_loc = zeros(Int64,lesp);
       for i=1:lesp
         #Location of eliminated species within CID

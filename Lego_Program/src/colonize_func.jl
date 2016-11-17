@@ -13,21 +13,22 @@ function colonize_func(int_m,tp_m,tind_m,mp_m,mind_m,a_thresh,n_thresh,cid,c_m,c
   c_mold = copy(c_m);
   crev_mold = copy(crev_m);
   
-  # Make a list of species-only in community
-  intcom = int_m[cid,cid];
-  spcid = find(x->x=='n',diag(intcom));
-  # 
-  # sponly = copy(cid);
-  # dl = Array{Int64}(0);
-  # for i=1:length(cid)
-  #   if int_m[sponly[i],sponly[i]] == 'i'
-  #     push!(dl,i);
-  #   end
-  # end
-  # deleteat!(sponly,dl);
-  # lsp = length(sponly);
-  # spcid = copy(sponly);
-  # 
+  # # Make a list of species-only in community
+  # intcom = int_m[cid,cid];
+  # spcid = find(x->x=='n',diag(intcom));
+  
+  
+  sponly = copy(cid);
+  dl = Array{Int64}(0);
+  for i=1:length(cid)
+    if int_m[sponly[i],sponly[i]] == 'i'
+      push!(dl,i);
+    end
+  end
+  deleteat!(sponly,dl);
+  lsp = length(sponly);
+  spcid = copy(sponly);
+  
   
   #List of primary producers
   prim_prod = find(x->x=='a',int_m[:,1]);
