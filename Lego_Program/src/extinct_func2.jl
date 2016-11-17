@@ -15,25 +15,27 @@ function extinct_func2(int_m,tp_m,a_thresh,n_thresh,trophicload,cid,c_m,crev_m,c
   #Number of links and species of prior community structure
   num_com = length(cid);
   initialsize = copy(num_com);
-
-
-
+  
+  #Global
   L = sum(com_tp);
   Slist = find(x->x=='n',diag(int_m));
   lS = length(Slist);
-
+  
+  #Local
   # Which cid-members are species?
-  spcid = Array{Int64}(0);
-  for i=1:num_com
-    if in(cid[i],Slist) == true
-      append!(spcid,cid[i]);
-    end
-  end
+  #NOTE: We can probably simplify many calculations with intcom
+  intcom = int_m[cid,cid];
+  spcid = find(x->x=='n',diag(intcom));
   num_comsp = length(spcid);
-
-  # #This is also encoded in the com_sparse matrix
-  # spcid = find(x->x=='n',diag(com_sparse));
+  
+  # spcid = Array{Int64}(0);
+  # for i=1:num_com
+  #   if in(cid[i],Slist) == true
+  #     append!(spcid,cid[i]);
+  #   end
+  # end
   # num_comsp = length(spcid);
+
 
     #Extinctions are only relevant if there is anyone in the community
   if num_com > 1
@@ -46,8 +48,8 @@ function extinct_func2(int_m,tp_m,a_thresh,n_thresh,trophicload,cid,c_m,crev_m,c
 
     #Determine the Predation and Competition Load for each species
     pred_vec = zeros(num_comsp);
-    vuln_vec = zeros(num_comsp);
-    comp_vec = zeros(num_comsp);
+    # vuln_vec = zeros(num_comsp);
+    # comp_vec = zeros(num_comsp);
     for i=1:num_comsp
 
       #Vector (species i interactions)
@@ -60,7 +62,7 @@ function extinct_func2(int_m,tp_m,a_thresh,n_thresh,trophicload,cid,c_m,crev_m,c
       pred_vec[i] = length(find(x->x=='a',intrev));
 
       #NOTE: Not using vulnerability right now
-      vuln_vec[i] = (1/(L/lS))*pred_vec[i]
+      # vuln_vec[i] = (1/(L/lS))*pred_vec[i]
 
       #NOTE: in this version, only trophic load is being calculated!
       

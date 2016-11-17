@@ -104,29 +104,29 @@ end
 #Plotting the steady state mean
 namespace = "$(homedir())/Dropbox/PostDoc/2014_Lego/Lego_Program/figures/"
 R"""
-#pdf(paste($namespace,'fig_sen_prn_nt_mean.pdf',sep=''),width=8,height=6)
+pdf(paste($namespace,'fig_sen_prn_nt_mean.pdf',sep=''),width=8,height=6)
 library(RColorBrewer)
 cols <- rev(brewer.pal(10,'Spectral')); 
 filled.contour(x=($needvec/$num_play),y=$n_thresh_vec,z=$richss,xlab='Pr(need)',ylab='n_thresh',key.title=title(main = 'mean'),color.palette = colorRampPalette(cols, space = "Lab",bias=1),nlevels=50)
-#dev.off()
+dev.off()
 """
 
 #Plotting steady state variance (SD)
 R"""
-#pdf(paste($namespace,'fig_sen_prn_nt_sd.pdf',sep=''),width=8,height=6)
+pdf(paste($namespace,'fig_sen_prn_nt_sd.pdf',sep=''),width=8,height=6)
 library(RColorBrewer)
 cols <- rev(brewer.pal(10,'Spectral')); 
 filled.contour(x=($needvec/$num_play),y=$n_thresh_vec,z=$richsd,xlab='Pr(need)',ylab='n_thresh',key.title=title(main = 'sd'),color.palette = colorRampPalette(cols, space = "Lab",bias=1),nlevels=50)
-#dev.off()
+dev.off()
 """
 
 #Plotting steady state CV
 R"""
-#pdf(paste($namespace,'fig_sen_prn_nt_cv.pdf',sep=''),width=8,height=6)
+pdf(paste($namespace,'fig_sen_prn_nt_cv.pdf',sep=''),width=8,height=6)
 library(RColorBrewer)
 cols <- rev(brewer.pal(10,'Spectral')); 
 filled.contour(x=($needvec/$num_play),y=$n_thresh_vec,z=$richcv,xlab='Pr(need)',ylab='n_thresh',key.title=title(main = 'cv'),color.palette = colorRampPalette(cols, space = "Lab",bias=1),nlevels=50)
-#dev.off()
+dev.off()
 """
 
 
@@ -166,7 +166,7 @@ rate_col = 1;
 a_thresh = 0;
 
 tmax = 500;
-reps=20;
+reps=100;
 
 makevec = collect(0.5:0.5:5.0);
 n_thresh_vec = collect(0.0:0.05:0.5);
@@ -186,7 +186,8 @@ for i=1:ln
   for j=1:ltn
     
     n_thresh = n_thresh_vec[j]
-
+    trophicload = 2;
+    
     #Establish community template
     probs = [
     p_n=0.008, #This is chosen because there is rich behavior here over n_thresh
@@ -195,7 +196,7 @@ for i=1:ln
     p_i= 1 - sum([p_n,p_m,p_a]) #Ignore with 1 - pr(sum(other))
     ]
     
-    int_m, sprich, rich, conn, comgen, ext_prim, ext_sec = repsim(num_play,reps,tmax,a_thresh,n_thresh,rate_col,probs,ppweight,sim,par);
+    int_m, sprich, rich, conn, comgen, ext_prim, ext_sec = repsim(num_play,reps,tmax,a_thresh,n_thresh,trophicload,rate_col,probs,ppweight,sim,par);
     
     SPRICH[i,j] = sprich;
     RICH[i,j] = rich;
