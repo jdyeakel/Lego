@@ -79,7 +79,7 @@ include("$(homedir())/Dropbox/PostDoc/2014_Lego/Lego_Program/src/sim_func.jl")
 #Establish community template
 num_play = 500;
 probs = [
-p_n=1/num_play,
+p_n=0.008,
 p_a=0.01,
 p_m=1/num_play,
 p_i= 1 - sum([p_n,p_m,p_a]) #Ignore with 1 - pr(sum(other))
@@ -90,9 +90,9 @@ p_i= 1 - sum([p_n,p_m,p_a]) #Ignore with 1 - pr(sum(other))
 rate_col = 1;
 #Establish thresholds
 a_thresh = 0.0;
-n_thresh = 0.3;
-trophicload = 1;
-tmax = 5000;
+n_thresh = 0.1;
+trophicload = 2;
+tmax = 1000;
 CID = (Array{Int64,1})[];
 fwt = Array(Array{Int64},tmax);
 com_probs = Array{Float64}(tmax,4);
@@ -102,9 +102,18 @@ conn = Array{Float64}(tmax);
 ext_prim = Array{Int64}(tmax);
 ext_sec = Array{Int64}(tmax);
 comgen =zeros(Int64,tmax,num_play);
-ppweight = 1/3;
+ppweight = 1/4;
 sim=false;
 par=false;
+
+window = 20;
+mrich = zeros(0);
+colrate = zeros(0);
+extrate = zeros(0);
+tictoc=0;
+sumcol=0;
+sumext=0;
+
 @time int_m, sp_m, t_m, tp_m, tind_m, mp_m, mind_m, simvalue = build_template_degrees(num_play,probs,ppweight,sim,par);
 cid, c_m, crev_m, com_tp, com_tind, com_mp, com_mind = initiate_comm_func(int_m,tp_m,tind_m,mp_m,mind_m);
 status = "open"; #I don't think we need this now
@@ -116,6 +125,9 @@ status = "open"; #I don't think we need this now
   rcol = rand();
   if rcol < rate_col && status == "open"
     status,cid,spcid,c_m,crev_m,com_tp,com_tind,com_mp,com_mind = colonize_func(int_m,tp_m,tind_m,mp_m,mind_m,a_thresh,n_thresh,cid,c_m,crev_m,com_tp,com_tind,com_mp,com_mind);
+    if status == "open"
+      sumcol=sumcol+1;
+    end
   end
   
   #Always run extinction code because probabilities are assessed within
@@ -125,6 +137,8 @@ status = "open"; #I don't think we need this now
 	
   ext_prim[t] = extinctions[1];
 	ext_sec[t] = extinctions[2];
+  sumext = sumext + sum(extinctions);
+  
   S = length(spcid);
   # length(unique(cid))-length(cid)
   conn[t] = (sum(com_tp))/(S^2);
@@ -145,6 +159,18 @@ status = "open"; #I don't think we need this now
   # end
   
   
+  if mod(t,window)==0
+    tictoc=tictoc+1;
+    mt = mean(sprich[(t-window+1):t]);
+    append!(mrich,mt);
+    append!(colrate,sumcol/mt);
+    append!(extrate,sumext/mt);
+    #Reset
+    sumcol=0;
+    sumext=0;
+  end
+    
+  
   
   # #Counting probabilities of a, n, i, m, e within simulated communities
   # com_int = sum(vec(int_mc[cid,cid]).==vec(['a', 'n', 'i', 'm'])',1)./(length(cid)^2);
@@ -155,6 +181,7 @@ end
 #writedlm("/Users/justinyeakel/Dropbox/PostDoc/2014_Lego/Lego_Program/data/comgen.csv",comgen);
 
 
+#namespace = "$(homedir())/Dropbox/PostDoc/2014_Lego/Lego_Program/figures/"
 
 
 R"""
@@ -163,6 +190,20 @@ plot($sprich,type='l',xlab='Time',ylab='Species diversity',ylim=c(0,maxsp))
 lines($rich,type='l',lty=2,cex.lab=1.5,cex.axis=1.3)
 """
 
+
+
+R"""
+#pdf(paste($namespace,"fig_colextrates.pdf",sep=""),width=6,height=5)
+library(RColorBrewer)
+cols <- brewer.pal(3,"Set1");
+plot($mrich,$colrate,pch=16,type='o',cex=0.5,col=cols[1],xlab='Species richness',ylab='Rate',ylim=c(0,2))
+points($mrich,$extrate,pch=16,type='o',cex=0.5,col=cols[2])
+meansprich=mean($(sprich[Int(round(tmax/2)):tmax]));
+segments(x0=meansprich,y0=-1,x1=meansprich,y1=3,lty=2)
+#dev.off()
+"""
+
+
 c=sort(CID[tmax]);
 dups = Array{Int64}(0);
 for i=2:length(c)
@@ -170,9 +211,6 @@ for i=2:length(c)
     push!(dups,c[i])
   end
 end
-
-
-
 
 
 
