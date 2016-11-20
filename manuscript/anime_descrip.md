@@ -1,6 +1,6 @@
 # Anime description 11/03/2016
 Current contributors:
-JD Yeakel, T Gross, MM Pires, MAM de Aguiar, PR Guimaraes, J O'Donnell  
+JD Yeakel, T Gross, MM Pires, MAM de Aguiar, PR Guimaraes, J O'Donnell
 
 
 
@@ -62,13 +62,13 @@ Maybe these probability are scaled to `N`.
 
 We can then calculate the probabilities of pairwise interactions:
 
-> `pr_na = p_n*(p_a/(p_a+p_n+p_i+p_m)) + p_a*(p_n/(p_a+p_i+p_n))`  
-> `pr_nn = p_n*(p_n/(p_a+p_n+p_i+p_m))`  
-> `pr_ni = p_n*(p_i/(p_a+p_n+p_i+p_m)) + p_i*(p_n/(p_a+p_n+p_i))`  
-> `pr_nm = p_n*(p_m/(p_a+p_n+p_i+p_m)) + p_m`  
-> `pr_ia = p_i*(p_a/(p_a+p_n+p_i)) + p_a*(p_i/(p_a+p_i+p_n))`  
-> `pr_ii = p_i*(p_i/(p_a+p_n+p_i))`  
-> `pr_aa = p_a*(p_a/(p_i+p_n+p_a))`  
+> `pr_na = p_n*(p_a/(p_a+p_n+p_i+p_m)) + p_a*(p_n/(p_a+p_i+p_n))`
+> `pr_nn = p_n*(p_n/(p_a+p_n+p_i+p_m))`
+> `pr_ni = p_n*(p_i/(p_a+p_n+p_i+p_m)) + p_i*(p_n/(p_a+p_n+p_i))`
+> `pr_nm = p_n*(p_m/(p_a+p_n+p_i+p_m)) + p_m`
+> `pr_ia = p_i*(p_a/(p_a+p_n+p_i)) + p_a*(p_i/(p_a+p_i+p_n))`
+> `pr_ii = p_i*(p_i/(p_a+p_n+p_i))`
+> `pr_aa = p_a*(p_a/(p_i+p_n+p_a))`
 
 **Trophic interactions:** The core of the `a: assimilate` (trophic) interactions is determined by the niche model (the number of interactions per species rather than the structure of interactions).
 First we make an estimate of the number of living species that will be in the system by discounting objects, which are made by species, where `S = N - (pr_nm*N)`.
@@ -144,44 +144,40 @@ I have some very basic analysis code to look at results of simulations, but I've
 ## Where to go next
 **Spatial community interactions:** Multiple communities on a spatial network, where species can migrate to/from nearby communities. We can then see if biomes form by looking at community similarity over space (pattern formation), look at the effects of large perturbations (untargeted/targeted extinction events), etc.
 
-**Macroevolution:** Another idea is to incorporate the idea of macro-evolution, where an evolutionary event would alter the interactions between species in the *master interaction matrix* over time.  
+**Macroevolution:** Another idea is to incorporate the idea of macro-evolution, where an evolutionary event would alter the interactions between species in the *master interaction matrix* over time.
 
-**Adaptive interactions & behavioral plasticity:**  
-
-
-## Todo list  
-> How does pr_n vs. threshold_n alter 1) steady state; 2) variance?, 3) CV  
-> Chain of spatial relationships  
-> Priority effect - what qualities of earliest organisms lead to maximum species richness  
-> Try without competitive load  
-> New variable: trophic load, which will change sensitivity of extinctions   
-> If one thing 'needs' something else it is no longer useful  
-> Succession vs. colonization  
-> Co-occurrance patterns - mechanistic - check out Cazelles et al. Ecography 2016 & Theoretical Ecology 2015 & Gravel Plos One 2011  
-> Take-home message with a few key figures(!!!)   
+**Adaptive interactions & behavioral plasticity:**
 
 
+## Todo list
+> Chain of spatial relationships
+> Priority effect - what qualities of earliest organisms lead to maximum species richness
+> Succession vs. colonization
+> Co-occurrance patterns - mechanistic - check out Cazelles et al. Ecography 2016 & Theoretical Ecology 2015 & Gravel Plos One 2011
+> Statistical distribution of cascades (compare with Wilmers)
+> species-specifc need and assimialte? thresholds, and then we can keep values constant or use a distribution of values
 
-## Outline of first paper  
-* Describe pairwise directed interaction paradigm  
-  * Hypergraphs + multi-layer graph  
-  * Launch from what is done - what does this bring to the table?  
-  * Biogeography models where species interactions are ignored - here we consider them  
-  * This is community assembly + ecosystem development (through objects)  
-* Example interactions for all types  
-* Empirical Networks  
-  * Translating multi-layer ecological networks to the ANIMe paradigm  
-  * Examples  
-    * Kefi intertidal  
-    * Bats (Mathias)  
-    * Mason Porter's review  
-    * Paulo has one (ant-plant multilayer nets)  
-    * Jeff Ollerton 2006 book by Waser about Pollination (mutualism examples)  
-* Species packing with only trophic interaction and how the 'n' 'm'  
-  * Variance in time and variance over runs for the same interaction matrix  
-  * Distribution of pairwise similarities compared to a) random draws from template or b) system with trophic interactions only  
-  * Priority effects  
-* Colonization + extinction and how ss and sd depend on threshold and pr(n), pr(m)  
-  * Can we pull out a) extinction rate (per richness) and b) colonization rate (per richness) and predict the equilibrium?  
-  * We can hold pr(n) constant in a regime where there is rich behavior and modify both pr(m) vs n_thresh vs trophic load  
-  * Biomass flow & abundance through thresholds   
+
+## Outline of first paper
+* Describe pairwise directed interaction paradigm
+  * Hypergraphs + multi-layer graph
+  * Launch from what is done - what does this bring to the table?
+  * Biogeography models where species interactions are ignored - here we consider them
+  * This is community assembly + ecosystem development (through objects)
+* Example interactions for all types
+* Empirical Networks
+  * Translating multi-layer ecological networks to the ANIMe paradigm
+  * Examples
+    * Kefi intertidal
+    * Bats (Mathias)
+    * Mason Porter's review
+    * Paulo has one (ant-plant multilayer nets)
+    * Jeff Ollerton 2006 book by Waser about Pollination (mutualism examples)
+* Species packing with only trophic interaction and how the 'n' 'm'
+  * Variance in time and variance over runs for the same interaction matrix
+  * Distribution of pairwise similarities compared to a) random draws from template or b) system with trophic interactions only
+  * Priority effects
+* Colonization + extinction and how ss and sd depend on threshold and pr(n), pr(m)
+  * Can we pull out a) extinction rate (per richness) and b) colonization rate (per richness) and predict the equilibrium?
+  * We can hold pr(n) constant in a regime where there is rich behavior and modify both pr(m) vs n_thresh vs trophic load
+  * Biomass flow & abundance through thresholds

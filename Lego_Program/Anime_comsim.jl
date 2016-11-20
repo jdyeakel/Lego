@@ -79,7 +79,7 @@ include("$(homedir())/Dropbox/PostDoc/2014_Lego/Lego_Program/src/sim_func.jl")
 #Establish community template
 num_play = 500;
 probs = [
-p_n=0.008,
+p_n=0.010,
 p_a=0.01,
 p_m=1/num_play,
 p_i= 1 - sum([p_n,p_m,p_a]) #Ignore with 1 - pr(sum(other))
@@ -92,7 +92,7 @@ rate_col = 1;
 a_thresh = 0.0;
 n_thresh = 0.1;
 trophicload = 2;
-tmax = 1000;
+tmax = 3000;
 CID = (Array{Int64,1})[];
 fwt = Array(Array{Int64},tmax);
 com_probs = Array{Float64}(tmax,4);
@@ -120,7 +120,7 @@ status = "open"; #I don't think we need this now
 @time for t = 1:tmax
   #The add-until-full simulation
   #Creating a new int_m each time
-  
+
   #Colonize with some probability
   rcol = rand();
   if rcol < rate_col && status == "open"
@@ -129,36 +129,36 @@ status = "open"; #I don't think we need this now
       sumcol=sumcol+1;
     end
   end
-  
+
   #Always run extinction code because probabilities are assessed within
   status,cid,spcid,c_m,crev_m,com_tp,com_tind,com_mp,com_mind,extinctions = extinct_func2(int_m,tp_m,a_thresh,n_thresh,trophicload,cid,c_m,crev_m,com_tp,com_tind,com_mp,com_mind);
   #status,cid,spcid,c_m,crev_m,com_tp,com_tind,com_mp,com_mind,extinctions = extinct_func(int_m,a_thresh,n_thresh,cid,c_m,crev_m,com_tp,com_tind,com_mp,com_mind,simvalue);
 	#Save primary and secondary extinction information
-	
+
   ext_prim[t] = extinctions[1];
 	ext_sec[t] = extinctions[2];
   sumext = sumext + sum(extinctions);
-  
+
   S = length(spcid);
   # length(unique(cid))-length(cid)
   conn[t] = (sum(com_tp))/(S^2);
-  
-  
+
+
   rich[t] = length(cid);
   sprich[t] = length(spcid);
-  
+
   #println("Richness = ",rich[t])
-  
+
   push!(CID,copy(cid));
   comgen[t,cid] = 1;
   fwt[t] = com_tind;
-  
+
   # int_mc = copy(int_m);
   # for i=1:num_play
   #   int_mc[i,i]='0';
   # end
-  
-  
+
+
   if mod(t,window)==0
     tictoc=tictoc+1;
     mt = mean(sprich[(t-window+1):t]);
@@ -169,14 +169,14 @@ status = "open"; #I don't think we need this now
     sumcol=0;
     sumext=0;
   end
-    
-  
-  
+
+
+
   # #Counting probabilities of a, n, i, m, e within simulated communities
   # com_int = sum(vec(int_mc[cid,cid]).==vec(['a', 'n', 'i', 'm'])',1)./(length(cid)^2);
   # temp_int = sum(vec(int_mc).==vec(['a', 'n', 'i', 'm'])',1)./(length(int_mc));
   # com_probs[t,:] = (com_int./temp_int) #/ sum((com_int./temp_int));
-  # 
+  #
 end
 #writedlm("/Users/justinyeakel/Dropbox/PostDoc/2014_Lego/Lego_Program/data/comgen.csv",comgen);
 
@@ -188,6 +188,8 @@ R"""
 maxsp = max($rich);
 plot($sprich,type='l',xlab='Time',ylab='Species diversity',ylim=c(0,maxsp))
 lines($rich,type='l',lty=2,cex.lab=1.5,cex.axis=1.3)
+recol=$(find(x->x==0,sprich));
+points(recol,rep(0,length(recol)))
 """
 
 
@@ -196,26 +198,27 @@ R"""
 #pdf(paste($namespace,"fig_colextrates.pdf",sep=""),width=6,height=5)
 library(RColorBrewer)
 cols <- brewer.pal(3,"Set1");
-plot($mrich,$colrate,pch=16,type='o',cex=0.5,col=cols[1],xlab='Species richness',ylab='Rate',ylim=c(0,2))
+maxvalue = max(c($colrate,$extrate))
+plot($mrich,$colrate,pch=16,type='o',cex=0.5,col=cols[1],xlab='Species richness',ylab='Rate',ylim=c(0,maxvalue))
 points($mrich,$extrate,pch=16,type='o',cex=0.5,col=cols[2])
 meansprich=mean($(sprich[Int(round(tmax/2)):tmax]));
-segments(x0=meansprich,y0=-1,x1=meansprich,y1=3,lty=2)
+segments(x0=meansprich,y0=-1,x1=meansprich,y1=maxvalue+1,lty=2)
 #dev.off()
 """
 
-
-c=sort(CID[tmax]);
-dups = Array{Int64}(0);
-for i=2:length(c)
-  if c[i]-c[i-1]==0
-    push!(dups,c[i])
-  end
-end
+# 
+# c=sort(CID[tmax]);
+# dups = Array{Int64}(0);
+# for i=2:length(c)
+#   if c[i]-c[i-1]==0
+#     push!(dups,c[i])
+#   end
+# end
 
 
 
 R"""
-plot($conn,type='l',log='xy',ylab='Trophic connectance')
+plot($conn,type='l',log='y',ylab='Trophic connectance')
 """
 
 R"""
