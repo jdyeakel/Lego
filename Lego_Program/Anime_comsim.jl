@@ -90,9 +90,9 @@ p_i= 1 - sum([p_n,p_m,p_a]) #Ignore with 1 - pr(sum(other))
 rate_col = 1;
 #Establish thresholds
 a_thresh = 0.0;
-n_thresh = 0.1;
+n_thresh = 0.2;
 trophicload = 2;
-tmax = 3000;
+tmax = 5000;
 CID = (Array{Int64,1})[];
 fwt = Array(Array{Int64},tmax);
 com_probs = Array{Float64}(tmax,4);
@@ -204,6 +204,29 @@ points($mrich,$extrate,pch=16,type='o',cex=0.5,col=cols[2])
 meansprich=mean($(sprich[Int(round(tmax/2)):tmax]));
 segments(x0=meansprich,y0=-1,x1=meansprich,y1=maxvalue+1,lty=2)
 #dev.off()
+"""
+
+#How many cascades > a given size?
+twindow = 1;
+maxloss = 50;
+cumext = zeros(maxloss);
+for i=1:maxloss
+  steps = Int(floor(tmax/twindow));
+  tloss = zeros(steps);
+  for t=1:steps-1
+    tvec = sprich[Int(t*twindow):Int(t*twindow+twindow)]
+    loss = first(tvec) - last(tvec);
+    if loss < 0
+      tloss[t] = 0;
+    else
+      tloss[t] = loss;
+    end
+  end
+  cumext[i] = length(find(x->x>i-1,tloss));
+end
+
+R"""
+plot($cumext,xlab='Extinction size',ylab='Number of extinctions',log='xy',pch=16)
 """
 
 # 
