@@ -1,4 +1,4 @@
-function build_template_degrees(num_play, probs, ppweight, sim, sync)
+function build_template_degrees(num_play, probs, ppweight)
 
   p_n=copy(probs[1]);
   p_a=copy(probs[2]);
@@ -414,48 +414,50 @@ function build_template_degrees(num_play, probs, ppweight, sim, sync)
   
   #We need simvalue to be declared before the if loop.
   #It is redefined as an Array or SharedArray in the loop
-  simvalue = 0;
   
-  if par == true
-    simvalue = SharedArray{Float64}(num_play,num_play);
-    if sim == true
-      @sync @parallel for i = 1:num_sp
-        for j = 1:num_sp
-          if j > i
-            seq1 = copy(int_m[sprc[i],:]);
-            seq2 = copy(int_m[sprc[j],:]);
-            similarity = sim_func(seq1,seq2,num_play);
-            #The 0.00001 is to ensure a nonzero value for any species
-            simvalue[sprc[i],sprc[j]] = copy(similarity)+0.00001;
-            simvalue[sprc[j],sprc[i]] = copy(similarity)+0.00001;
-          end
-          if j == i
-            simvalue[sprc[i],sprc[j]] = 1.0;
-          end
-        end
-      end
-    end
-  else
-    simvalue = zeros(num_play,num_play);
-    if sim == true
-      for i = 1:num_sp
-        for j = 1:num_sp
-          if j > i
-            seq1 = copy(int_m[sprc[i],:]);
-            seq2 = copy(int_m[sprc[j],:]);
-            similarity = sim_func(seq1,seq2,num_play);
-            #The 0.00001 is to ensure a nonzero value for any species
-            simvalue[sprc[i],sprc[j]] = similarity+0.00001;
-            simvalue[sprc[j],sprc[i]] = similarity+0.00001;
-          end
-          if j == i
-            simvalue[sprc[i],sprc[j]] = 1.0;
-          end
-        end
-      end
-    end
-  end
-
+  simvalue = Array{Float64}(num_play,num_play);
+  # simvalue = 0;
+  # 
+  # if par == true
+  #   simvalue = SharedArray{Float64}(num_play,num_play);
+  #   if sim == true
+  #     @sync @parallel for i = 1:num_sp
+  #       for j = 1:num_sp
+  #         if j > i
+  #           seq1 = copy(int_m[sprc[i],:]);
+  #           seq2 = copy(int_m[sprc[j],:]);
+  #           similarity = sim_func(seq1,seq2,num_play);
+  #           #The 0.00001 is to ensure a nonzero value for any species
+  #           simvalue[sprc[i],sprc[j]] = copy(similarity)+0.00001;
+  #           simvalue[sprc[j],sprc[i]] = copy(similarity)+0.00001;
+  #         end
+  #         if j == i
+  #           simvalue[sprc[i],sprc[j]] = 1.0;
+  #         end
+  #       end
+  #     end
+  #   end
+  # else
+  #   simvalue = zeros(num_play,num_play);
+  #   if sim == true
+  #     for i = 1:num_sp
+  #       for j = 1:num_sp
+  #         if j > i
+  #           seq1 = copy(int_m[sprc[i],:]);
+  #           seq2 = copy(int_m[sprc[j],:]);
+  #           similarity = sim_func(seq1,seq2,num_play);
+  #           #The 0.00001 is to ensure a nonzero value for any species
+  #           simvalue[sprc[i],sprc[j]] = similarity+0.00001;
+  #           simvalue[sprc[j],sprc[i]] = similarity+0.00001;
+  #         end
+  #         if j == i
+  #           simvalue[sprc[i],sprc[j]] = 1.0;
+  #         end
+  #       end
+  #     end
+  #   end
+  # end
+  # 
 
 
 return(int_m, sp_m, t_m, tp_m, tind_m, mp_m, mind_m, simvalue)

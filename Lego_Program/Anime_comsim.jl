@@ -90,7 +90,7 @@ p_i= 1 - sum([p_n,p_m,p_a]) #Ignore with 1 - pr(sum(other))
 rate_col = 1;
 #Establish thresholds
 a_thresh = 0.0;
-n_thresh = 0.2;
+n_thresh = 0.05;
 trophicload = 2;
 tmax = 5000;
 CID = (Array{Int64,1})[];
@@ -208,7 +208,7 @@ segments(x0=meansprich,y0=-1,x1=meansprich,y1=maxvalue+1,lty=2)
 
 #How many cascades > a given size?
 twindow = 1;
-maxloss = 50;
+maxloss = 100;
 cumext = zeros(maxloss);
 for i=1:maxloss
   steps = Int(floor(tmax/twindow));
