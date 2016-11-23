@@ -7,6 +7,7 @@ function repsimint(num_play,reps,tmax,a_thresh,n_thresh,trophicload,rate_col,pro
   comgen = SharedArray{Int64}(reps,num_play,tmax);
   ext_prim = SharedArray{Int64}(tmax,reps);
   ext_sec = SharedArray{Int64}(tmax,reps);
+  int_mv = SharedArray{Char}(num_play*reps,num_play);
   
   par = false;
   @sync @parallel for r=1:reps
@@ -35,8 +36,10 @@ function repsimint(num_play,reps,tmax,a_thresh,n_thresh,trophicload,rate_col,pro
       rich[t,r] = length(cid);
       comgen[r,cid,t] = 1;
     end #end time loop
+    int_mv[1+(r-1)*num_play:num_play*r,1:num_play] = int_m;
   end #end repetition loop
   
+
   
   return(
   int_m,
