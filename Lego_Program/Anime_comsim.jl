@@ -79,7 +79,7 @@ include("$(homedir())/Dropbox/PostDoc/2014_Lego/Lego_Program/src/sim_func.jl")
 #Establish community template
 num_play = 500;
 probs = [
-p_n=0.01,
+p_n=0.006,
 p_a=0.01,
 p_m=0.002,
 p_i= 1 - sum([p_n,p_m,p_a]) #Ignore with 1 - pr(sum(other))
@@ -90,9 +90,9 @@ p_i= 1 - sum([p_n,p_m,p_a]) #Ignore with 1 - pr(sum(other))
 rate_col = 1;
 #Establish thresholds
 a_thresh = 0.0;
-n_thresh = 0.1;
+n_thresh = 0.2;
 trophicload = 2;
-tmax = 1000;
+tmax = 2000;
 CID = (Array{Int64,1})[];
 fwt = Array(Array{Int64},tmax);
 com_probs = Array{Float64}(tmax,4);
@@ -208,10 +208,45 @@ segments(x0=meansprich,y0=-1,x1=meansprich,y1=maxvalue+1,lty=2)
 """
 
 #Number of objects vs. number of extinctions at the NEXT time step
-tb=5;
+R"par(mfrow=c(1,2))"
+tb=1;
+start=500;
 R"""
-plot($(obrich[1:tmax-tb]),$(ext_sec[tb+1:tmax]+ext_prim[tb+1:tmax]),pch=16,xlab='Object richness',ylab='Number of extinctions')
+plot($(obrich[start:tmax-tb]./sprich[start:tmax-tb]),$(sprich[tb+start:tmax]),pch=16,xlab='Objects per species',ylab='Number of species')
+plot($(obrich[start:tmax-tb]./sprich[start:tmax-tb]),$(ext_sec[tb+start:tmax].+ext_prim[tb+start:tmax]),pch=16,xlab='Objects per species',ylab='Number of extinctions')
 """
+
+#Ratio of objects to species vs. Richness & extincitons
+R"par(mfrow=c(1,2))"
+tb=1;
+start=300;
+rdsample = sample(collect(start:tmax-1),500,replace=false)
+R"""
+plot($(obrich[rdsample]./sprich[rdsample]),$(sprich[rdsample+1]),pch=16,xlab='Objects per species',ylab='Number of species')
+plot($(obrich[rdsample]./sprich[rdsample]),$(ext_sec[rdsample+1].+ext_prim[rdsample+1]+1),log='y',pch=16,xlab='Objects per species',ylab='Number of extinctions')
+"""
+
+#Without Zero-inflated
+R"par(mfrow=c(1,2))"
+tb=1;
+start=1;
+n=1000;
+rdsample = sample(collect(start:tmax-1),n,replace=false)
+R"""
+obj_ratio <- $(obrich[rdsample]./sprich[rdsample]);
+sprich <- $(sprich[rdsample+1]);
+ext_ratio <- $(((ext_sec[rdsample+1].+ext_prim[rdsample+1])./sprich[rdsample]));
+nonzeros <- which(ext_ratio!=0);
+n = length(nonzeros);
+lm_rich = lm(sprich[nonzeros] ~ obj_ratio[nonzeros]);
+lm_ext = lm(ext_ratio[nonzeros] ~ obj_ratio[nonzeros]);
+plot(obj_ratio[nonzeros],sprich[nonzeros],pch=16,xlab='Objects per species',ylab='Number of species')
+abline(lm_rich)
+plot(obj_ratio[nonzeros],ext_ratio[nonzeros],pch=16,xlab='Objects per species',ylab='Extinctions per species')
+abline(lm_ext)
+"""
+
+
 
 #How many cascades > a given size?
 twindow = 1;
