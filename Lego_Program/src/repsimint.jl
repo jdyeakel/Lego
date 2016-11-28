@@ -8,15 +8,14 @@ function repsimint(num_play,reps,tmax,a_thresh,n_thresh,trophicload,rate_col,pro
   ext_prim = SharedArray{Int64}(tmax,reps);
   ext_sec = SharedArray{Int64}(tmax,reps);
   int_mv = SharedArray{Char}(num_play*reps,num_play);
-  
-  par = false;
+
   @sync @parallel for r=1:reps
-    
+
     int_m, sp_m, t_m, tp_m, tind_m, mp_m, mind_m, simvalue = build_template_degrees(num_play,probs,ppweight);
-    
+
     #Establish community template
     cid, c_m, crev_m, com_tp, com_tind, com_mp, com_mind = initiate_comm_func(int_m,tp_m,tind_m,mp_m,mind_m);
-    
+
     for t=1:tmax
       status = "open";
       #Colonize with some probability
@@ -38,11 +37,11 @@ function repsimint(num_play,reps,tmax,a_thresh,n_thresh,trophicload,rate_col,pro
     end #end time loop
     int_mv[1+(r-1)*num_play:num_play*r,1:num_play] = int_m;
   end #end repetition loop
-  
 
-  
+
+
   return(
-  int_m,
+  int_mv,
   sprich,
   rich,
   conn,
@@ -50,5 +49,5 @@ function repsimint(num_play,reps,tmax,a_thresh,n_thresh,trophicload,rate_col,pro
   ext_prim,
   ext_sec
   )
-  
+
 end

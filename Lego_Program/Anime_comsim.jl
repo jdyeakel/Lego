@@ -79,9 +79,9 @@ include("$(homedir())/Dropbox/PostDoc/2014_Lego/Lego_Program/src/sim_func.jl")
 #Establish community template
 num_play = 500;
 probs = [
-p_n=0.010,
+p_n=0.01,
 p_a=0.01,
-p_m=1/num_play,
+p_m=0.002,
 p_i= 1 - sum([p_n,p_m,p_a]) #Ignore with 1 - pr(sum(other))
 ]
 #int_m, sp_m, t_m, tp_m, tind_m = build_template_degrees(num_play,probs);
@@ -90,15 +90,16 @@ p_i= 1 - sum([p_n,p_m,p_a]) #Ignore with 1 - pr(sum(other))
 rate_col = 1;
 #Establish thresholds
 a_thresh = 0.0;
-n_thresh = 0.05;
+n_thresh = 0.1;
 trophicload = 2;
-tmax = 5000;
+tmax = 1000;
 CID = (Array{Int64,1})[];
 fwt = Array(Array{Int64},tmax);
 com_probs = Array{Float64}(tmax,4);
 rich = Array{Int64}(tmax);
 sprich = Array{Int64}(tmax);
 conn = Array{Float64}(tmax);
+connind = Array{Float64}(tmax);
 ext_prim = Array{Int64}(tmax);
 ext_sec = Array{Int64}(tmax);
 comgen =zeros(Int64,tmax,num_play);
@@ -114,7 +115,7 @@ tictoc=0;
 sumcol=0;
 sumext=0;
 
-@time int_m, sp_m, t_m, tp_m, tind_m, mp_m, mind_m, simvalue = build_template_degrees(num_play,probs,ppweight,sim,par);
+@time int_m, sp_m, t_m, tp_m, tind_m, mp_m, mind_m, simvalue = build_template_degrees(num_play,probs,ppweight);
 cid, c_m, crev_m, com_tp, com_tind, com_mp, com_mind = initiate_comm_func(int_m,tp_m,tind_m,mp_m,mind_m);
 status = "open"; #I don't think we need this now
 @time for t = 1:tmax
@@ -142,7 +143,7 @@ status = "open"; #I don't think we need this now
   S = length(spcid);
   # length(unique(cid))-length(cid)
   conn[t] = (sum(com_tp))/(S^2);
-
+  connind[t] = (sum(com_tind))/(S^2);
 
   rich[t] = length(cid);
   sprich[t] = length(spcid);
@@ -179,7 +180,7 @@ status = "open"; #I don't think we need this now
   #
 end
 #writedlm("/Users/justinyeakel/Dropbox/PostDoc/2014_Lego/Lego_Program/data/comgen.csv",comgen);
-
+obrich = rich.-sprich;
 
 #namespace = "$(homedir())/Dropbox/PostDoc/2014_Lego/Lego_Program/figures/"
 
@@ -204,6 +205,12 @@ points($mrich,$extrate,pch=16,type='o',cex=0.5,col=cols[2])
 meansprich=mean($(sprich[Int(round(tmax/2)):tmax]));
 segments(x0=meansprich,y0=-1,x1=meansprich,y1=maxvalue+1,lty=2)
 #dev.off()
+"""
+
+#Number of objects vs. number of extinctions at the NEXT time step
+tb=5;
+R"""
+plot($(obrich[1:tmax-tb]),$(ext_sec[tb+1:tmax]+ext_prim[tb+1:tmax]),pch=16,xlab='Object richness',ylab='Number of extinctions')
 """
 
 #How many cascades > a given size?
@@ -242,6 +249,7 @@ plot($cumext,xlab='Extinction size',ylab='Number of extinctions',log='xy',pch=16
 
 R"""
 plot($conn,type='l',log='y',ylab='Trophic connectance')
+lines($connind,lty=2)
 """
 
 R"""
