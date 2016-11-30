@@ -32,8 +32,8 @@ rate_col = 1;
 a_thresh = 0;
 n_thresh = 0.2;
 
-tmax = 2000;
-reps=20;
+tmax = 5000;
+reps=100;
 
 num_play = 500;
 ppweight = 1/4;
@@ -68,79 +68,79 @@ for i=1:lm
 end
 
 save("$(homedir())/Dropbox/PostDoc/2014_Lego/Lego_Program/data/comsim_make/rich_prm.jld","SPRICH",SPRICH,"RICH",RICH,"EXTINCTIONS_PRIM",EXTINCTIONS_PRIM,"EXTINCTIONS_SEC",EXTINCTIONS_SEC);
-
-#Load library
-d = load("$(homedir())/Dropbox/PostDoc/2014_Lego/Lego_Program/data/comsim_make/rich_prm.jld");
-SPRICH = d["SPRICH"];
-RICH = d["RICH"];
-EXTINCTIONS = d["EXTINCTIONS"];
-
-
-
-startpt = 100;
-n=800;
-lm = length(SPRICH);
-reps = length(SPRICH[1][1,:]);
-r2rich = Array{Float64}(lm,reps);
-r2ext = Array{Float64}(lm,reps);
-corrich = Array{Float64}(lm,reps);
-corext = Array{Float64}(lm,reps);
-#Analysis
-for i=1:lm
-  sprich_i = SPRICH[i];
-  rich_i = RICH[i];
-  extprim_i = EXTINCTIONS_PRIM[i];
-  extsec_i = EXTINCTIONS_SEC[i];
-  for r=1:reps
-    sprich=sprich_i[:,r];
-    rich = rich_i[:,r];
-    obrich = rich.-sprich;
-    extprim = extprim_i[:,r];
-    extsec = extsec_i[:,r];
-    #find nonzero randomized elements
-    tmax = length(sprich);
-    rdsample = sample(collect(startpt:tmax-1),n,replace=false);
-    obj_ratio = obrich[rdsample]./sprich[rdsample];
-    sprich_r = sprich[rdsample+1]; #./ rich[rdsample+1];
-    ext_ratio = (extprim[rdsample+1]+extsec[rdsample+1])./ sprich[rdsample];
-    nonzero = find(x->x!=0,ext_ratio);
-    nz = length(nonzero);
-    R"lmrich=lm($(sprich_r[nonzero]) ~ $(obj_ratio[nonzero])); 
-    r2r = summary(lmrich)$adj.r.squared";
-    r2rich[i,r] = @rget r2r;
-    corrich[i,r] = cor(obj_ratio[nonzero],sprich_r[nonzero]);
-    corext[i,r] = cor(obj_ratio[nonzero],ext_ratio[nonzero]);
-    R"lmext=lm($(ext_ratio[nonzero]) ~ $(obj_ratio[nonzero])); 
-    r2e = summary(lmext)$adj.r.squared";
-    r2ext[i,r] = @rget r2e;
-  end
-end
-
-#Correlation
-R"""
-par(mfrow=c(1,2))
-boxplot(t($corrich))
-boxplot(t($corext))
-"""
-
-#RSquared
-R"""
-par(mfrow=c(1,2))
-r2rich = $(r2rich);
-boxplot(t(r2rich))
-r2ext = $(r2ext);
-boxplot(t(r2ext))
-"""
-
-
-#Plotting individual scenarios
-R"""
-par(mfrow=c(1,2))
-plot($(obj_ratio[nonzero]),$(sprich_r[nonzero]))
-abline(lmrich)
-plot($(obj_ratio[nonzero]),$(ext_ratio[nonzero]))
-abline(lmext)
-"""
-
-R"plot($sprich,type='l',ylim=c(0,max($rich)));
-lines($rich,lty=3)"
+# 
+# #Load library
+# d = load("$(homedir())/Dropbox/PostDoc/2014_Lego/Lego_Program/data/comsim_make/rich_prm.jld");
+# SPRICH = d["SPRICH"];
+# RICH = d["RICH"];
+# EXTINCTIONS = d["EXTINCTIONS"];
+# 
+# 
+# 
+# startpt = 100;
+# n=800;
+# lm = length(SPRICH);
+# reps = length(SPRICH[1][1,:]);
+# r2rich = Array{Float64}(lm,reps);
+# r2ext = Array{Float64}(lm,reps);
+# corrich = Array{Float64}(lm,reps);
+# corext = Array{Float64}(lm,reps);
+# #Analysis
+# for i=1:lm
+#   sprich_i = SPRICH[i];
+#   rich_i = RICH[i];
+#   extprim_i = EXTINCTIONS_PRIM[i];
+#   extsec_i = EXTINCTIONS_SEC[i];
+#   for r=1:reps
+#     sprich=sprich_i[:,r];
+#     rich = rich_i[:,r];
+#     obrich = rich.-sprich;
+#     extprim = extprim_i[:,r];
+#     extsec = extsec_i[:,r];
+#     #find nonzero randomized elements
+#     tmax = length(sprich);
+#     rdsample = sample(collect(startpt:tmax-1),n,replace=false);
+#     obj_ratio = obrich[rdsample]./sprich[rdsample];
+#     sprich_r = sprich[rdsample+1]; #./ rich[rdsample+1];
+#     ext_ratio = (extprim[rdsample+1]+extsec[rdsample+1])./ sprich[rdsample];
+#     nonzero = find(x->x!=-1,ext_ratio);
+#     nz = length(nonzero);
+#     R"lmrich=lm($(sprich_r[nonzero]) ~ $(obj_ratio[nonzero])); 
+#     r2r = summary(lmrich)$adj.r.squared";
+#     r2rich[i,r] = @rget r2r;
+#     corrich[i,r] = cor(obj_ratio[nonzero],sprich_r[nonzero]);
+#     corext[i,r] = cor(obj_ratio[nonzero],ext_ratio[nonzero]);
+#     R"lmext=lm($(ext_ratio[nonzero]) ~ $(obj_ratio[nonzero])); 
+#     r2e = summary(lmext)$adj.r.squared";
+#     r2ext[i,r] = @rget r2e;
+#   end
+# end
+# 
+# #Correlation
+# R"""
+# par(mfrow=c(1,2))
+# boxplot(t($corrich),names=$makevec,boxwex=0.5)
+# boxplot(t($corext),names=$makevec,boxwex=0.5)
+# """
+# 
+# #RSquared
+# R"""
+# par(mfrow=c(1,2))
+# r2rich = $(r2rich);
+# boxplot(t(r2rich))
+# r2ext = $(r2ext);
+# boxplot(t(r2ext))
+# """
+# 
+# 
+# #Plotting individual scenarios
+# R"""
+# par(mfrow=c(1,2))
+# plot($(obj_ratio[nonzero]),$(sprich_r[nonzero]))
+# abline(lmrich)
+# plot($(obj_ratio[nonzero]),$(ext_ratio[nonzero]))
+# abline(lmext)
+# """
+# 
+# R"plot($sprich,type='l',ylim=c(0,max($rich)));
+# lines($rich,lty=3)"
