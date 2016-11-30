@@ -79,7 +79,7 @@ include("$(homedir())/Dropbox/PostDoc/2014_Lego/Lego_Program/src/sim_func.jl")
 #Establish community template
 num_play = 500;
 probs = [
-p_n=0.006,
+p_n=0.01,
 p_a=0.01,
 p_m=0.002,
 p_i= 1 - sum([p_n,p_m,p_a]) #Ignore with 1 - pr(sum(other))
