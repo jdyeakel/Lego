@@ -72,18 +72,17 @@ using RCall
 include("$(homedir())/Dropbox/PostDoc/2014_Lego/Lego_Program/src/build_template_degrees.jl")
 include("$(homedir())/Dropbox/PostDoc/2014_Lego/Lego_Program/src/initiate_comm_func.jl")
 include("$(homedir())/Dropbox/PostDoc/2014_Lego/Lego_Program/src/colonize_func.jl")
-include("$(homedir())/Dropbox/PostDoc/2014_Lego/Lego_Program/src/colonizeall_func.jl")
 
 include("$(homedir())/Dropbox/PostDoc/2014_Lego/Lego_Program/src/extinct_func2.jl")
 include("$(homedir())/Dropbox/PostDoc/2014_Lego/Lego_Program/src/sim_func.jl")
 
 
 #Establish community template
-num_play = 20;
+num_play = 500;
 probs = [
-p_n=0.01,
+p_n=0.004,
 p_a=0.01,
-p_m=0.01,
+p_m=0.002,
 p_i= 1 - sum([p_n,p_m,p_a]) #Ignore with 1 - pr(sum(other))
 ]
 #int_m, sp_m, t_m, tp_m, tind_m = build_template_degrees(num_play,probs);
@@ -92,7 +91,7 @@ p_i= 1 - sum([p_n,p_m,p_a]) #Ignore with 1 - pr(sum(other))
 rate_col = 1;
 #Establish thresholds
 a_thresh = 0.0;
-n_thresh = 0.1;
+n_thresh = 0.2;
 trophicload = 2;
 tmax = 2000;
 CID = (Array{Int64,1})[];
@@ -127,7 +126,7 @@ status = "open"; #I don't think we need this now
   #Colonize with some probability
   rcol = rand();
   if rcol < rate_col && status == "open"
-    @time status,cid,spcid,c_m,crev_m,com_tp,com_tind,com_mp,com_mind,potcol = colonize_func(int_m,tp_m,tind_m,mp_m,mind_m,a_thresh,n_thresh,cid,c_m,crev_m,com_tp,com_tind,com_mp,com_mind);
+    status,cid,spcid,c_m,crev_m,com_tp,com_tind,com_mp,com_mind,potcol = colonize_func(int_m,tp_m,tind_m,mp_m,mind_m,a_thresh,n_thresh,cid,c_m,crev_m,com_tp,com_tind,com_mp,com_mind);
     if status == "open"
       sumcol=sumcol+1;
     end
