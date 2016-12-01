@@ -60,7 +60,7 @@ for i=1:lm
   p_i= 1 - sum([p_n,p_m,p_a]) #Ignore with 1 - pr(sum(other))
   ]
 
-  int_mv, sprich, rich, conn, comgen, ext_prim, ext_sec = repsimint(num_play,reps,tmax,a_thresh,n_thresh,trophicload,rate_col,probs,ppweight);
+  int_mv, sprich, rich, conn, comgen, ext_prim, ext_sec, pot_col = repsimint(num_play,reps,tmax,a_thresh,n_thresh,trophicload,rate_col,probs,ppweight);
 
   SPRICH[i] = sprich;
   RICH[i] = rich;
