@@ -7,6 +7,7 @@ function repsimint(num_play,reps,tmax,a_thresh,n_thresh,trophicload,rate_col,pro
   comgen = SharedArray{Int64}(reps,num_play,tmax);
   ext_prim = SharedArray{Int64}(tmax,reps);
   ext_sec = SharedArray{Int64}(tmax,reps);
+  pot_col = SharedArray{Int64}(tmax,reps);
   int_mv = SharedArray{Char}(num_play*reps,num_play);
 
   @sync @parallel for r=1:reps
@@ -29,6 +30,7 @@ function repsimint(num_play,reps,tmax,a_thresh,n_thresh,trophicload,rate_col,pro
       #Save primary and secondary extinction information
       ext_prim[t,r] = extinctions[1];
       ext_sec[t,r] = extinctions[2];
+      pot_col[t,r] = potcol;
       sprich[t,r] = length(spcid);
       # length(unique(cid))-length(cid)
       conn[t,r] = (sum(com_tp))/(sprich[t,r]^2);
@@ -47,7 +49,8 @@ function repsimint(num_play,reps,tmax,a_thresh,n_thresh,trophicload,rate_col,pro
   conn,
   comgen,
   ext_prim,
-  ext_sec
+  ext_sec,
+  pot_col
   )
 
 end

@@ -33,11 +33,11 @@ a_thresh = 0;
 n_thresh = 0.2;
 
 tmax = 5000;
-reps=100;
+reps=50;
 
 num_play = 500;
 ppweight = 1/4;
-trophicload=1;
+trophicload=2;
 
 #Search over pr_m
 makevec = collect(0:0.005:0.03);
@@ -47,6 +47,7 @@ SPRICH = Array(Array{Int64},lm);
 RICH =  Array(Array{Int64},lm);
 EXTINCTIONS_PRIM = Array(Array{Int64},lm);
 EXTINCTIONS_SEC = Array(Array{Int64},lm);
+POT_COL = Array(Array{Int64},lm);
 
 
 for i=1:lm
@@ -65,10 +66,11 @@ for i=1:lm
   RICH[i] = rich;
   EXTINCTIONS_PRIM[i] = ext_prim;
   EXTINCTIONS_SEC[i] = ext_sec;
+  POT_COL[i] = pot_col;
 end
 
 namespace = string("$(homedir())/Dropbox/PostDoc/2014_Lego/Lego_Program/data/comsim_make/rich_prm_tl",trophicload,".jld");
-save(namespace,"makevec",makevec,"SPRICH",SPRICH,"RICH",RICH,"EXTINCTIONS_PRIM",EXTINCTIONS_PRIM,"EXTINCTIONS_SEC",EXTINCTIONS_SEC);
+save(namespace,"makevec",makevec,"SPRICH",SPRICH,"RICH",RICH,"EXTINCTIONS_PRIM",EXTINCTIONS_PRIM,"EXTINCTIONS_SEC",EXTINCTIONS_SEC,"POT_COL",POT_COL);
 
 quit();
 
