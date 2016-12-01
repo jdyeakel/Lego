@@ -26,7 +26,7 @@ function repsim(num_play,reps,tmax,a_thresh,n_thresh,trophicload,rate_col,probs,
       #Colonize with some probability
       rcol = rand();
       if rcol < rate_col && status == "open"
-        status,cid,c_m,crev_m,com_tp,com_tind,com_mp,com_mind = colonize_func(int_m,tp_m,tind_m,mp_m,mind_m,a_thresh,n_thresh,cid,c_m,crev_m,com_tp,com_tind,com_mp,com_mind);
+        status,cid,c_m,crev_m,com_tp,com_tind,com_mp,com_mind,potcol = colonize_func(int_m,tp_m,tind_m,mp_m,mind_m,a_thresh,n_thresh,cid,c_m,crev_m,com_tp,com_tind,com_mp,com_mind);
         #Update community evolution
         push!(comid,cid);
         #Update count of richness

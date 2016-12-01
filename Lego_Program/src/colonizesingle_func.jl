@@ -71,20 +71,18 @@ function colonize_func(int_m,tp_m,tind_m,mp_m,mind_m,a_thresh,n_thresh,cid,c_m,c
   #Threshold check
   #run a while loop to find the next 'colonizer'
   #If it fails, find another primary producer
-  
-  #potcol only records the potential colonization of species (not objects)
-  potcol = Array{Int64}(0);
-  
+  keepgoing = true;
+  check = true;
+  tictoc = 0;
   if length(tlink) > 0
-    for i=1:length(tlink)
-    #while check == true
-      #tictoc = tictoc + 1;
+    while check == true
+      tictoc = tictoc + 1;
 
       ncheck = true;
       acheck = true;
 
       #randomly select from the list
-      did = copy(tlink[i]);
+      did = copy(tlink[tictoc]);
 
       dseed = copy(int_m[did,:]);
       dseedrev = copy(int_m[:,did]);
@@ -137,53 +135,45 @@ function colonize_func(int_m,tp_m,tind_m,mp_m,mind_m,a_thresh,n_thresh,cid,c_m,c
       #If needs and assimilates are above thresholds, then the colonizer passes and we can stop while loop
       #False = pass
       if ncheck == false && acheck == false
-        #check = false;
-        #Colonizer _did CAN fit into the community, so add it to potcol list
-        append!(potcol,did)
+        check = false;
       end
 
       #Nothing can colonize?
       #I.e. check is true (so there was a fail in the need or assimilate test) and we have reached the end of the list
-      # if check == true && tictoc == length(tlink)
-      #   #To stop the while loop
-      #   check = false;
-      #   #To stop the colonization module
-      #   keepgoing = false;
-      # end
+      if check == true && tictoc == length(tlink)
+        #To stop the while loop
+        check = false;
+        #To stop the colonization module
+        keepgoing = false;
+      end
 
-    end #End for loop
+    end #End while loop
 
   else
     #If nothing in the template eats anything in the community, then the community is full and we stop the module
     status = "full";
     #println("Community is trophically disconnected at t=", t)
-    return(status,cid,spcid,c_m,crev_m,com_tp,com_tind,com_mp,com_mind,potcol);
+    return(status,cid,spcid,c_m,crev_m,com_tp,com_tind,com_mp,com_mind);
   end
-  
-  
-  #If there are no colonizers that PASS, end the colonization function
-  if length(potcol) == 0
+
+  #If we have reached the end of the list of potential colonizers and nothing passes the need or assimilate tests, the community is full and we stop the module
+  if keepgoing == false
     status = "full";
     #println("Community is uninvadible at t=", t)
-    return(status,cid,spcid,c_m,crev_m,com_tp,com_tind,com_mp,com_mind,potcol);
+    return(status,cid,spcid,c_m,crev_m,com_tp,com_tind,com_mp,com_mind);
   else
     #If we get here, the choice has 'passed' threshold analysis
     #The community is still open, and we must now update the community to reflect the new added colonizers and the things that they make
 
     status = "open";
-    
-    #Choose the colonizer from the list of potcol
-    #Restablish its list of interactions
-    did = rand(potcol);
-    dseed = copy(int_m[did,:]);
-    dseedrev = copy(int_m[:,did]);
-    
+
     #What does this species make?
     #Made things come along too!
     didm = find(x->x=='m',dseed);
 
     ldm = length(didm);
     
+    #BUG - occasionally, duplicate made things are added
     #Only add on made things that aren't already made by something else in the community
     maderm = Array{Int64}(0);
     for i=1:ldm
@@ -276,7 +266,7 @@ function colonize_func(int_m,tp_m,tind_m,mp_m,mind_m,a_thresh,n_thresh,cid,c_m,c
     #Indirect mutualistic interactions
     com_mind[t_loc,t_loc] = copy(mind_m[t_loc,t_loc]);
 
-    return(status,cid,spcid,c_m,crev_m,com_tp,com_tind,com_mp,com_mind,potcol);
+    return(status,cid,spcid,c_m,crev_m,com_tp,com_tind,com_mp,com_mind);
   end
 
 end

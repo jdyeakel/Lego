@@ -277,6 +277,7 @@ function build_template_degrees(num_play, probs, ppweight)
         #If the made thing 'makes' anything, the reverse 'need' interactions must be turned to 'ignore'
         unmade = find(x->x=='m',int_m[made[k],:]);
         int_m[unmade,made[k]] = 'i'
+        
         #The made thing ignores everything... including diag
         int_m[made[k],:] = 'i'
 

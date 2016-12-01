@@ -37,7 +37,7 @@ reps=100;
 
 num_play = 500;
 ppweight = 1/4;
-trophicload=2;
+trophicload=1;
 
 #Search over pr_m
 makevec = collect(0:0.005:0.03);
@@ -68,7 +68,8 @@ for i=1:lm
 end
 
 namespace = string("$(homedir())/Dropbox/PostDoc/2014_Lego/Lego_Program/data/comsim_make/rich_prm_tl",trophicload,".jld");
-save(namespace,"SPRICH",SPRICH,"RICH",RICH,"EXTINCTIONS_PRIM",EXTINCTIONS_PRIM,"EXTINCTIONS_SEC",EXTINCTIONS_SEC);
+save(namespace,"makevec",makevec,"SPRICH",SPRICH,"RICH",RICH,"EXTINCTIONS_PRIM",EXTINCTIONS_PRIM,"EXTINCTIONS_SEC",EXTINCTIONS_SEC);
+
 quit();
 
 
@@ -84,20 +85,25 @@ using JLD
 trophicload = 2;
 namespace = string("$(homedir())/Dropbox/PostDoc/2014_Lego/Lego_Program/data/comsim_make/rich_prm_tl",trophicload,".jld");
 d = load(namespace);
+#makevec = d["makevec"];
 SPRICH = d["SPRICH"];
 RICH = d["RICH"];
 EXTINCTIONS_PRIM = d["EXTINCTIONS_PRIM"];
 EXTINCTIONS_SEC = d["EXTINCTIONS_SEC"];
 
 
-startpt = 300;
-n=3000;
+startpt = 500;
+n=1000;
 lm = length(SPRICH);
 reps = length(SPRICH[1][1,:]);
 r2rich = Array{Float64}(lm,reps);
 r2ext = Array{Float64}(lm,reps);
 corrich = Array{Float64}(lm,reps);
 corext = Array{Float64}(lm,reps);
+cordiff = Array{Float64}(lm,reps);
+cordiffbin = Array{Float64}(lm,reps);
+makevec = collect(0:0.005:0.03);
+
 #Analysis
 for i=1:lm
   sprich_i = SPRICH[i];
@@ -110,31 +116,60 @@ for i=1:lm
     obrich = rich.-sprich;
     extprim = extprim_i[:,r];
     extsec = extsec_i[:,r];
-    #find nonzero randomized elements
     tmax = length(sprich);
-    rdsample = sample(collect(startpt:tmax-1),n,replace=false);
-    obj_ratio = obrich[rdsample]./sprich[rdsample];
-    sprich_r = sprich[rdsample+1]; #./ rich[rdsample+1];
-    ext_ratio = (extprim[rdsample+1]+extsec[rdsample+1])./ sprich[rdsample];
-    nonzero = find(x->x!=0,ext_ratio);
-    nz = length(nonzero);
-    R"lmrich=lm($(sprich_r[nonzero]) ~ $(obj_ratio[nonzero]));
-    r2r = summary(lmrich)$adj.r.squared";
-    r2rich[i,r] = @rget r2r;
-    corrich[i,r] = cor(obj_ratio[nonzero],sprich_r[nonzero]);
-    corext[i,r] = cor(obj_ratio[nonzero],ext_ratio[nonzero]);
-    R"lmext=lm($(ext_ratio[nonzero]) ~ $(obj_ratio[nonzero]));
+    #Grab random time points across the trajectory
+    #Such that rdsample = t, and rdsample+1 = t+1
+    wipeout = find(x->x==0,rich);
+    timesample = collect(startpt:tmax-1);
+    ts_exist = zeros(Int64,0);
+    for j=1:length(timesample)
+      if in(timesample[j],wipeout)==false
+        append!(ts_exist,timesample[j]);
+      end
+    end
+    rdsample = sample(ts_exist,n,replace=false);
+    #Objects per Total Richness at time t
+    obj_ratio = obrich[rdsample] #./ rich[rdsample];
+    #Species per Total Richness at time t+1
+    sprich_r = sprich[rdsample+1] ./ rich[rdsample+1];
+    #Number of extinctions at time t+1 per Species at time t
+    ext_ratio = (extprim[rdsample+1]+extsec[rdsample+1]) #./ rich[rdsample];
+    #Change in species from t to t+1 per Total richness at time t
+    spdiff = (sprich[rdsample+1]-sprich[rdsample]) #./ rich[rdsample];
+    nonext = find(x->x!=0,ext_ratio);
+    nondiff = find(x->x!=0,spdiff);
+    #nz = length(nonzero);
+    #R"lmrich=lm($(sprich_r[nonzero]) ~ $(obj_ratio[nonzero]));
+    #r2r = summary(lmrich)$adj.r.squared";
+    #r2rich[i,r] = @rget r2r;
+    #corrich[i,r] = cor(obj_ratio[nonzero],sprich_r[nonzero]);
+    corext[i,r] = cor(obj_ratio[nonext],ext_ratio[nonext]);
+    cordiff[i,r] = cor(obj_ratio[nondiff],spdiff[nondiff]);
+    R"lmext=lm($(ext_ratio[nonext]) ~ $(obj_ratio[nonext]));
     r2e = summary(lmext)$adj.r.squared";
+    R"lmdiff=lm($(spdiff[nondiff]) ~ $(obj_ratio[nondiff]));
+    r2e = summary(lmdiff)$adj.r.squared";
     r2ext[i,r] = @rget r2e;
   end
 end
+#
+
+#boxplot(t($corrich),names=$makevec,boxwex=0.5,xlab='pr(m)',ylab='Corr Ob(t)/R(t) vs Sp(t+1)/R(t+1)',col=cols[2])
 
 #Correlation
+namespace = string("$(homedir())/Dropbox/PostDoc/2014_Lego/Lego_Program/figures/fig_spobcorr_tl",trophicload,".pdf");
 R"""
-par(mfrow=c(1,2))
-boxplot(t($corrich),names=$makevec,boxwex=0.5)
-boxplot(t($corext),names=$makevec,boxwex=0.5)
+library(RColorBrewer)
+cols <- brewer.pal(3,'Set1')
+#pdf($namespace,height=6,width=8)
+par(mfrow=c(1,1))
+boxplot(t($corext),names=$makevec,boxwex=0.5,xlab='pr(m)',ylab='Corr Ob(t) vs Ext(t+1)',col=cols[2])
+lines(seq(0,10,length.out=5),seq(0,0,length.out=5),lty=3)
+#boxplot(t($cordiff),names=$makevec,boxwex=0.5,xlab='pr(m)',ylab='Corr Ob(t)/R(t) vs Sp(t+1)-Sp(t)/R(t)',col=cols[2])
+lines(seq(0,10,length.out=5),seq(0,0,length.out=5),lty=3)
+#dev.off()
 """
+
 
 #RSquared
 R"""
@@ -149,10 +184,10 @@ boxplot(t(r2ext))
 #Plotting individual scenarios
 R"""
 par(mfrow=c(1,2))
-plot($(obj_ratio[nonzero]),$(sprich_r[nonzero]))
-abline(lmrich)
-plot($(obj_ratio[nonzero]),$(ext_ratio[nonzero]))
+plot($(obj_ratio[nonext]),$(ext_ratio[nonext]))
 abline(lmext)
+plot($(obj_ratio[nondiff]),$(spdiff[nondiff]))
+abline(lmdiff)
 """
 
 R"plot($sprich,type='l',ylim=c(0,max($rich)));
