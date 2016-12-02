@@ -50,7 +50,7 @@ EXTINCTIONS_SEC = Array(Array{Int64},lm);
 POT_COL = Array(Array{Int64},lm);
 
 
-for i=1:lm
+for i=3:3
   println("i=",i)
   #Establish community template
   probs = [
@@ -92,7 +92,7 @@ SPRICH = d["SPRICH"];
 RICH = d["RICH"];
 EXTINCTIONS_PRIM = d["EXTINCTIONS_PRIM"];
 EXTINCTIONS_SEC = d["EXTINCTIONS_SEC"];
-
+POT_COL = d["POT_COL"];
 
 startpt = 500;
 n=1000;
@@ -104,6 +104,7 @@ corrich = Array{Float64}(lm,reps);
 corext = Array{Float64}(lm,reps);
 cordiff = Array{Float64}(lm,reps);
 cordiffbin = Array{Float64}(lm,reps);
+corcol = Array{Float64}(lm,reps);
 makevec = collect(0:0.005:0.03);
 
 #Analysis
@@ -112,12 +113,14 @@ for i=1:lm
   rich_i = RICH[i];
   extprim_i = EXTINCTIONS_PRIM[i];
   extsec_i = EXTINCTIONS_SEC[i];
+  potcol_i = POT_COL[i];
   for r=1:reps
     sprich=sprich_i[:,r];
     rich = rich_i[:,r];
     obrich = rich.-sprich;
     extprim = extprim_i[:,r];
     extsec = extsec_i[:,r];
+    potcol_traj = potcol_i[:,r];
     tmax = length(sprich);
     #Grab random time points across the trajectory
     #Such that rdsample = t, and rdsample+1 = t+1
@@ -138,6 +141,9 @@ for i=1:lm
     ext_ratio = (extprim[rdsample+1]+extsec[rdsample+1]) #./ rich[rdsample];
     #Change in species from t to t+1 per Total richness at time t
     spdiff = (sprich[rdsample+1]-sprich[rdsample]) #./ rich[rdsample];
+    #Potential colonizers at timestep t
+    potcol = potcol_traj[rdsample+1];
+    
     nonext = find(x->x!=0,ext_ratio);
     nondiff = find(x->x!=0,spdiff);
     #nz = length(nonzero);
@@ -147,10 +153,12 @@ for i=1:lm
     #corrich[i,r] = cor(obj_ratio[nonzero],sprich_r[nonzero]);
     corext[i,r] = cor(obj_ratio[nonext],ext_ratio[nonext]);
     cordiff[i,r] = cor(obj_ratio[nondiff],spdiff[nondiff]);
+    corcol[i,r] = cor(obj_ratio,potcol);
     R"lmext=lm($(ext_ratio[nonext]) ~ $(obj_ratio[nonext]));
     r2e = summary(lmext)$adj.r.squared";
     R"lmdiff=lm($(spdiff[nondiff]) ~ $(obj_ratio[nondiff]));
     r2e = summary(lmdiff)$adj.r.squared";
+    R"lmcol = lm($(potcol) ~ $(obj_ratio))";
     r2ext[i,r] = @rget r2e;
   end
 end
@@ -163,11 +171,11 @@ namespace = string("$(homedir())/Dropbox/PostDoc/2014_Lego/Lego_Program/figures/
 R"""
 library(RColorBrewer)
 cols <- brewer.pal(3,'Set1')
-pdf($namespace,height=6,width=8)
-par(mfrow=c(1,1))
+pdf($namespace,height=6,width=12)
+par(mfrow=c(1,2))
 boxplot(t($corext),names=$makevec,boxwex=0.5,xlab='pr(m)',ylab='Corr Ob(t) vs Ext(t+1)',col=cols[2])
 lines(seq(0,10,length.out=5),seq(0,0,length.out=5),lty=3)
-#boxplot(t($cordiff),names=$makevec,boxwex=0.5,xlab='pr(m)',ylab='Corr Ob(t)/R(t) vs Sp(t+1)-Sp(t)/R(t)',col=cols[2])
+boxplot(t($corcol),names=$makevec,boxwex=0.5,xlab='pr(m)',ylab='Corr Ob(t) vs Col(t+1)',col=cols[2])
 lines(seq(0,10,length.out=5),seq(0,0,length.out=5),lty=3)
 dev.off()
 """
@@ -188,8 +196,8 @@ R"""
 par(mfrow=c(1,2))
 plot($(obj_ratio[nonext]),$(ext_ratio[nonext]))
 abline(lmext)
-plot($(obj_ratio[nondiff]),$(spdiff[nondiff]))
-abline(lmdiff)
+plot($(obj_ratio),$(potcol))
+abline(lmcol)
 """
 
 R"plot($sprich,type='l',ylim=c(0,max($rich)));

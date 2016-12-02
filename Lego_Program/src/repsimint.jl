@@ -16,8 +16,10 @@ function repsimint(num_play,reps,tmax,a_thresh,n_thresh,trophicload,rate_col,pro
 
     #Establish community template
     cid, c_m, crev_m, com_tp, com_tind, com_mp, com_mind = initiate_comm_func(int_m,tp_m,tind_m,mp_m,mind_m);
-
+    
+    timetic=0;
     for t=1:tmax
+      timetic = timetic+1;
       status = "open";
       #Colonize with some probability
       rcol = rand();

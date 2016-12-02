@@ -220,6 +220,9 @@ function build_template_degrees(num_play, probs, ppweight)
     end #j
   end #i
 
+  #NOTE: is this necessary??? Could make all 'n' and the objects get turned into 'i's below.
+  #(and I think that everything should have at least one 'a')
+  
   #Filling in the diagonal
   #Determine which are active players and which aren't
   for i = 1:num_play
@@ -261,42 +264,96 @@ function build_template_degrees(num_play, probs, ppweight)
   #NOTE: multiple A,B,C can make the same D
   #NOTE: Should 'made' things only be needed and not assimilated, which implies biomass flow? i.e. trophic int?
   
-  #BUG: There are 'objects' that need other objects...
-  # REASON: if a high R/C species (10) makes an object lower on the list (5), and a species intermediate (8) makes (10), then, object 5 needs species 10, but then species 10 get turned into an object... so the object needs an object!
+  #1) compile list of objects (v species)
+  #2) Object rows = i
+  #3) Each engineer (m) puts a need (n) interaction on the object
   
-  madev = Array{Int64}(0);
+  
+  #NOTE: New Engineering module (12/2/16)
+  
   for i = 2:num_play
-    int_v = copy(int_m[i,:]);
-    made = find(x->x=='m',int_v);
-    l_made = length(made);
-    if l_made > 0
-      for k = 1:l_made
-        #Compile list of made things
-        push!(madev,made[k])
-        
-        #If the made thing 'makes' anything, the reverse 'need' interactions must be turned to 'ignore'
-        unmade = find(x->x=='m',int_m[made[k],:]);
-        int_m[unmade,made[k]] = 'i'
-        
-        #The made thing ignores everything... including diag
-        int_m[made[k],:] = 'i'
-
-        #what thing(s) make it? ~ Restablishes the m-n interaction
-        makers = find(x->x=='m',int_m[:,made[k]]);
-        int_m[made[k],makers] = 'n'; #Except the thing(s) that makes it
-
-        #For the trophic matrices, which include only species interactions, the made object interacts with nothing except the species that makes it
-        #It is not a living thing, so nothing 'eats' it
-        t_m[made[k],:] = 0;
-        t_m[:,made[k]] = 0;
-        tall_m[made[k],:] = 0;
-        tall_m[:,made[k]] = 0;
-        m_m[made[k],:] = 0;
-        m_m[:,made[k]] = 0;
-
-      end
+    if in('m',int_m[:,i])==true
+      #The made thing ignores everything
+      int_m[i,:] = 'i';
     end
   end
+  made = find(x->x=='i',diag(int_m));
+  species = find(x->x=='n',diag(int_m));
+  for i=2:length(made)
+    object = made[i];
+    makers = find(x->x=='m',int_m[:,made[i]]);
+    #If there is a species that already makes this object, establish m-n
+    if length(makers) > 0
+      #Reset m-n interactions
+      int_m[object,makers] = 'n';
+    else 
+      #Sometimes an object was made by an object, but this gets deleted in the first step. So choose a new species to link the adrift object to.
+      #find a species to link it to (i-i to m-n)
+      iispecies_all = find(x->x=='i',int_m[:,object]);
+      #Take out row 1 and row 'object'... these cannot 'make'
+      iispecies = filter(x->x!=1&&x!=object,iispecies_all);
+      newmaker = rand(iispecies);
+      int_m[object,newmaker] = 'n';
+      int_m[newmaker,object] = 'm';
+    end
+    
+    t_m[object,:] = 0;
+    t_m[:,object] = 0;
+    tall_m[object,:] = 0;
+    tall_m[:,object] = 0;
+    m_m[object,:] = 0;
+    m_m[:,object] = 0;
+    
+  end
+  
+  
+  # madev = Array{Int64}(0);
+  # for i = 2:num_play
+  #   int_v = copy(int_m[i,:]);
+  #   made = find(x->x=='m',int_v);
+  #   l_made = length(made);
+  #   if l_made > 0
+  #     for k = 1:l_made
+  #       #Compile list of made things
+  #       push!(madev,made[k])
+  #       
+  #       #If the made thing 'makes' anything, the reverse 'need' interactions must be turned to 'ignore'
+  #       unmade = find(x->x=='m',int_m[made[k],:]);
+  #       
+  #       for l=1:length(unmade)
+  #         #unmade things become pure objects
+  #         # int_m[unmade[l],made[k]] = 'i'
+  #         int_m[unmade[l],:] = 'i';
+  #         #: Or we can say that the secondary made thing is ALSO made by the original maker. We need to place a symmetric 'need' interaction on the new object as well.
+  #         #: It looks like this works pretty well. No more objects without makers.
+  #         int_m[i,unmade[l]] = 'm';
+  #         int_m[unmade[l],i] = 'n';
+  #       end
+  #       
+  #       
+  #       #The made thing ignores everything... including diag
+  #       int_m[made[k],:] = 'i'
+  # 
+  #       #what thing(s) make it? ~ Restablishes the m-n interaction
+  #       makers = find(x->x=='m',int_m[:,made[k]]);
+  #       int_m[made[k],makers] = 'n'; #Except the thing(s) that makes it
+  # 
+  #       #For the trophic matrices, which include only species interactions, the made object interacts with nothing except the species that makes it
+  #       #It is not a living thing, so nothing 'eats' it
+  #       t_m[made[k],:] = 0;
+  #       t_m[:,made[k]] = 0;
+  #       tall_m[made[k],:] = 0;
+  #       tall_m[:,made[k]] = 0;
+  #       m_m[made[k],:] = 0;
+  #       m_m[:,made[k]] = 0;
+  # 
+  #     end
+  #   end
+  # end
+
+
+
+
 
   #Documenting indirect trophic and mutualistic interactions
   #We want to do this outside of the above maker loop because we want all species/objects correctly accounted for before we try to count the indirect interactions

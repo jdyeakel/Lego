@@ -60,7 +60,8 @@ function extinct_func2(int_m,tp_m,a_thresh,n_thresh,trophicload,cid,c_m,crev_m,c
       #BUG: Only count assimilate interactions for members of local COMMUNITY
       #How many things ASSIMILATE it?
       #Found in the reverse vector
-      pred_vec[i] = length(find(x->x=='a',intrev[cid]));
+      #Adding the '1' adds in the basal resource
+      pred_vec[i] = length(find(x->x=='a',intrev[[1;cid]]));
 
       #NOTE: Not using vulnerability right now
       # vuln_vec[i] = (1/(L/lS))*pred_vec[i]
@@ -351,7 +352,7 @@ function extinct_func2(int_m,tp_m,a_thresh,n_thresh,trophicload,cid,c_m,crev_m,c
             t_loc[i] = find(x->x==esp[i],Slist)[1] + 1;
           end
 
-          #NOTE this next section appears to WORK very well 10/10/16
+          #NOTE this next section appears to WORK 10/10/16
           #1) What does it make? eliminate those things IF nothing else present makes them either
           for i=1:lesp
             #The made objects of the species being deleted
@@ -398,6 +399,11 @@ function extinct_func2(int_m,tp_m,a_thresh,n_thresh,trophicload,cid,c_m,crev_m,c
           #   deleteat!(cid,del_loc);
           # end
           #Update SPCID by eliminating esponly
+          
+          # global cid_g = copy(cid);
+          # global esp_g = copy(esp);
+          # global esploc_g = copy(esploc);
+          
           deleteat!(cid,sort(esploc));
           deleteat!(spcid,sort(esponly_loc));
 

@@ -1,5 +1,4 @@
 using Distributions
-using Gadfly
 using RCall
 #using PyCall
 include("$(homedir())/Dropbox/PostDoc/2014_Lego/Lego_Program/src/build_template_degrees.jl")
@@ -8,17 +7,54 @@ include("$(homedir())/Dropbox/PostDoc/2014_Lego/Lego_Program/src/colonize_func.j
 include("$(homedir())/Dropbox/PostDoc/2014_Lego/Lego_Program/src/extinct_func.jl")
 include("$(homedir())/Dropbox/PostDoc/2014_Lego/Lego_Program/src/sim_func.jl")
 
-#Establish community template
-num_play = 500;
-probs = [
-p_n=0.1/num_play,
-p_a=0.01,
-p_m=0.1/num_play,
-p_i= 1 - sum([p_n,p_m,p_a]) #Ignore with 1 - pr(sum(other))
-]
-sim=true;
-ppweight=1/3;
-int_m, sp_m, t_m, tp_m, tind_m, mp_m, simvalue = build_template_degrees(num_play,probs,ppweight);
+
+makevec = [0.002 0.02];
+rmakers = Array(Array{Int64},length(makevec));
+rnumneed = Array(Array{Int64},length(makevec));
+rnumassim = Array(Array{Int64},length(makevec));
+rengineering = Array(Array{Int64},length(makevec));
+for r=1:2
+  #Establish community template
+  num_play = 500;
+  probs = [
+  p_n=0.004,
+  p_a=0.01,
+  p_m=makevec[r],
+  p_i= 1 - sum([p_n,p_m,p_a]) #Ignore with 1 - pr(sum(other))
+  ]
+  sim=true;
+  ppweight=1/3;
+  @time int_m, sp_m, t_m, tp_m, tind_m, mp_m, mind_m, simvalue = build_template_degrees(num_play,probs,ppweight);
+  obs=find(x->x=='i',diag(int_m));
+  makers=zeros(length(obs));
+  numneed=zeros(length(obs));
+  numassim=zeros(length(obs));
+  for i=1:length(obs)
+    makers[i] = length(find(x->x=='m',int_m[:,obs[i]])); #should be >=1
+    numneed[i] = length(find(x->x=='n',int_m[obs[i],:])); #should be >=1
+    numassim[i] = length(find(x->x=='a',int_m[obs[i],:])); #should be 0
+  end
+  species = find(x->x=='n',diag(int_m));
+  engineering = zeros(length(species));
+  for i=1:length(species)
+    engineering[i] = length(find(x->x=='m',int_m[species[i],:]));
+  end
+  rmakers[r] = makers;
+  rnumneed[r] = numneed;
+  rnumassim[r] = numassim;
+  rengineering[r] = engineering;
+end
+
+namespace = string("$(homedir())/Dropbox/PostDoc/2014_Lego/Lego_Program/figures/fig_engineers.pdf");
+R"""
+library(RColorBrewer)
+cols = brewer.pal(3,'Set1')
+pdf($namespace,height=6,width=12); 
+par(mfrow=c(1,2))
+hist($(rengineering[1]),pch=16,xlab=paste('Objects per engineer, pr(m)=', $makevec[1],sep=''),main='',col=cols[2])
+hist($(rengineering[2]),pch=16,xlab=paste('Objects per engineer, pr(m)=', $makevec[2],sep=''),main='',col=cols[2])
+dev.off()
+"""
 
 #Establish colonization and extinction rates
 rate_col = 0.2;
@@ -36,7 +72,7 @@ for r = 1:rep
   #Creating a new int_m each time
   sim=true;
   ppweight=1/3;
-  int_m, sp_m, t_m, tp_m, tind_m, mp_m, simvalue = build_template_degrees(num_play,probs,ppweight,sim);
+  @time int_m, sp_m, t_m, tp_m, tind_m, mp_m, mind_m, simvalue = build_template_degrees(num_play,probs,ppweight);
   cid, c_m, crev_m, com_tp, com_tind, com_mp = initiate_comm_func(int_m,tp_m,tind_m,mp_m);
   status = "open";
   while status == "open"
@@ -92,8 +128,8 @@ rate_col = 1;
 #Establish thresholds
 a_thresh = 0.0;
 n_thresh = 0.2;
-trophicload = 2;
-tmax = 2000;
+trophicload = 6;
+tmax = 10000;
 CID = (Array{Int64,1})[];
 fwt = Array(Array{Int64},tmax);
 com_probs = Array{Float64}(tmax,4);
@@ -121,6 +157,9 @@ sumext=0;
 cid, c_m, crev_m, com_tp, com_tind, com_mp, com_mind = initiate_comm_func(int_m,tp_m,tind_m,mp_m,mind_m);
 status = "open"; #I don't think we need this now
 @time for t = 1:tmax
+  if mod(t,1000)==0
+    println(string("t=",t));
+  end
   #The add-until-full simulation
   #Creating a new int_m each time
 
@@ -185,7 +224,10 @@ end
 obrich = rich.-sprich;
 
 #namespace = "$(homedir())/Dropbox/PostDoc/2014_Lego/Lego_Program/figures/"
-
+lpotcol=zeros(Int64,tmax)
+for i=1:tmax
+  lpotcol[i]=length(pot_col[i])
+end
 
 R"""
 maxsp = max($rich);
