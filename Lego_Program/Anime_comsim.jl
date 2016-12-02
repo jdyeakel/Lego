@@ -103,6 +103,7 @@ conn = Array{Float64}(tmax);
 connind = Array{Float64}(tmax);
 ext_prim = Array{Int64}(tmax);
 ext_sec = Array{Int64}(tmax);
+pot_col = Array(Array{Int64},tmax);
 comgen =zeros(Int64,tmax,num_play);
 ppweight = 1/4;
 sim=false;
@@ -159,7 +160,7 @@ status = "open"; #I don't think we need this now
   # for i=1:num_play
   #   int_mc[i,i]='0';
   # end
-
+  pot_col[t] = potcol;
 
   if mod(t,window)==0
     tictoc=tictoc+1;

@@ -30,7 +30,7 @@ function repsimint(num_play,reps,tmax,a_thresh,n_thresh,trophicload,rate_col,pro
       #Save primary and secondary extinction information
       ext_prim[t,r] = extinctions[1];
       ext_sec[t,r] = extinctions[2];
-      pot_col[t,r] = potcol;
+      pot_col[t,r] = length(potcol);
       sprich[t,r] = length(spcid);
       # length(unique(cid))-length(cid)
       conn[t,r] = (sum(com_tp))/(sprich[t,r]^2);
