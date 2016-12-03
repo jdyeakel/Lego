@@ -32,7 +32,7 @@ rate_col = 1;
 a_thresh = 0;
 n_thresh = 0.2;
 
-tmax = 5000;
+tmax = 4000;
 reps=50;
 
 num_play = 500;
@@ -40,7 +40,7 @@ ppweight = 1/4;
 trophicload=2;
 
 #Search over pr_m
-makevec = collect(0:0.005:0.03);
+makevec = collect(0.001:0.002:0.015);
 lm = length(makevec);
 
 SPRICH = Array(Array{Int64},lm);
@@ -50,7 +50,7 @@ EXTINCTIONS_SEC = Array(Array{Int64},lm);
 POT_COL = Array(Array{Int64},lm);
 
 
-for i=3:3
+for i=1:length(makevec)
   println("i=",i)
   #Establish community template
   probs = [
