@@ -49,7 +49,7 @@ namespace = string("$(homedir())/Dropbox/PostDoc/2014_Lego/Lego_Program/figures/
 R"""
 library(RColorBrewer)
 cols = brewer.pal(3,'Set1')
-pdf($namespace,height=10,width=12); 
+pdf($namespace,height=10,width=12)
 par(mfrow=c(2,2))
 hist($(rengineering[1]),pch=16,xlab=paste('Objects per engineer, pr(m)=', $makevec[1],sep=''),main='',col=cols[2],xlim=c(0,12),breaks=10)
 hist($(rengineering[2]),pch=16,xlab=paste('Objects per engineer, pr(m)=', $makevec[2],sep=''),main='',col=cols[2],xlim=c(0,12),breaks=10)
@@ -120,7 +120,7 @@ num_play = 500;
 probs = [
 p_n=0.004,
 p_a=0.01,
-p_m=0.02,
+p_m=0.002,
 p_i= 1 - sum([p_n,p_m,p_a]) #Ignore with 1 - pr(sum(other))
 ]
 #int_m, sp_m, t_m, tp_m, tind_m = build_template_degrees(num_play,probs);
@@ -131,7 +131,7 @@ rate_col = 1;
 a_thresh = 0.0;
 n_thresh = 0.2;
 trophicload = 2;
-tmax = 1000;
+tmax = 2000;
 CID = (Array{Int64,1})[];
 fwt = Array(Array{Int64},tmax);
 com_probs = Array{Float64}(tmax,4);

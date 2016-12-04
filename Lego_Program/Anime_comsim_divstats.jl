@@ -12,12 +12,12 @@ using JLD
 
 
 @everywhere include("$(homedir())/Dropbox/PostDoc/2014_Lego/Lego_Program/src/repsim.jl")
-@everywhere include("$(homedir())/Dropbox/PostDoc/2014_Lego/Lego_Program/src/repsimint.jl")
+@everywhere include("$(homedir())/Dropbox/PostDoc/2014_Lego/Lego_Program/src/repsimintsingle.jl")
 
 
 @everywhere include("$(homedir())/Dropbox/PostDoc/2014_Lego/Lego_Program/src/build_template_degrees.jl")
 @everywhere include("$(homedir())/Dropbox/PostDoc/2014_Lego/Lego_Program/src/initiate_comm_func.jl")
-@everywhere include("$(homedir())/Dropbox/PostDoc/2014_Lego/Lego_Program/src/colonize_func.jl")
+@everywhere include("$(homedir())/Dropbox/PostDoc/2014_Lego/Lego_Program/src/colonizesingle_func.jl")
 @everywhere include("$(homedir())/Dropbox/PostDoc/2014_Lego/Lego_Program/src/extinct_func.jl")
 @everywhere include("$(homedir())/Dropbox/PostDoc/2014_Lego/Lego_Program/src/extinct_func2.jl")
 @everywhere include("$(homedir())/Dropbox/PostDoc/2014_Lego/Lego_Program/src/sim_func.jl")
@@ -54,7 +54,7 @@ par=true;
 for i=1:ln
   for j=1:ltn
     println("i=",i," j=",j)
-    
+
     n_thresh = n_thresh_vec[j]
     trophicload = 2;
 
@@ -66,11 +66,11 @@ for i=1:ln
     p_i= 1 - sum([p_n,p_m,p_a]) #Ignore with 1 - pr(sum(other))
     ]
 
-    int_mv, sprich, rich, conn, comgen, ext_prim, ext_sec = repsimint(num_play,reps,tmax,a_thresh,n_thresh,trophicload,rate_col,probs,ppweight);
+    sprich, rich, conn, comgen, ext_prim, ext_sec = repsimintsingle(num_play,reps,tmax,a_thresh,n_thresh,trophicload,rate_col,probs,ppweight);
 
     SPRICH[i,j] = sprich;
     RICH[i,j] = rich;
-    
+
   end #end ltn
 end #end ln
 
@@ -198,7 +198,7 @@ for i=1:ln
     p_i= 1 - sum([p_n,p_m,p_a]) #Ignore with 1 - pr(sum(other))
     ]
 
-    int_mv, sprich, rich, conn, comgen, ext_prim, ext_sec = repsimint(num_play,reps,tmax,a_thresh,n_thresh,trophicload,rate_col,probs,ppweight);
+    sprich, rich, conn, comgen, ext_prim, ext_sec = repsimintsingle(num_play,reps,tmax,a_thresh,n_thresh,trophicload,rate_col,probs,ppweight);
 
     SPRICH[i,j] = sprich;
     RICH[i,j] = rich;
@@ -335,7 +335,7 @@ for i=1:ln
     p_i= 1 - sum([p_n,p_m,p_a]) #Ignore with 1 - pr(sum(other))
     ]
 
-    int_mv, sprich, rich, conn, comgen, ext_prim, ext_sec = repsimint(num_play,reps,tmax,a_thresh,n_thresh,trophicload,rate_col,probs,ppweight);
+    sprich, rich, conn, comgen, ext_prim, ext_sec = repsimintsingle(num_play,reps,tmax,a_thresh,n_thresh,trophicload,rate_col,probs,ppweight);
 
     SPRICH[i,j] = sprich;
     RICH[i,j] = rich;

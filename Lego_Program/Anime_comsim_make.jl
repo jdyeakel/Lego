@@ -87,7 +87,7 @@ using JLD
 trophicload = 2;
 namespace = string("$(homedir())/Dropbox/PostDoc/2014_Lego/Lego_Program/data/comsim_make/rich_prm_tl",trophicload,".jld");
 d = load(namespace);
-#makevec = d["makevec"];
+makevec = d["makevec"];
 SPRICH = d["SPRICH"];
 RICH = d["RICH"];
 EXTINCTIONS_PRIM = d["EXTINCTIONS_PRIM"];
@@ -105,7 +105,7 @@ corext = Array{Float64}(lm,reps);
 cordiff = Array{Float64}(lm,reps);
 cordiffbin = Array{Float64}(lm,reps);
 corcol = Array{Float64}(lm,reps);
-makevec = collect(0:0.005:0.03);
+#makevec = collect(0:0.005:0.03);
 
 #Analysis
 for i=1:lm
@@ -173,9 +173,9 @@ library(RColorBrewer)
 cols <- brewer.pal(3,'Set1')
 pdf($namespace,height=6,width=12)
 par(mfrow=c(1,2))
-boxplot(t($corext),names=$makevec,boxwex=0.5,xlab='pr(m)',ylab='Corr Ob(t) vs Ext(t+1)',col=cols[2])
+boxplot(t($corext),names=$makevec,boxwex=0.5,xlab='pr(m)',ylab='Corr Ob(t) vs Ext(t+1)',col=cols[2],ylim=c(-0.1,0.7))
 lines(seq(0,10,length.out=5),seq(0,0,length.out=5),lty=3)
-boxplot(t($corcol),names=$makevec,boxwex=0.5,xlab='pr(m)',ylab='Corr Ob(t) vs Col(t+1)',col=cols[2])
+boxplot(t($corcol),names=$makevec,boxwex=0.5,xlab='pr(m)',ylab='Corr Ob(t) vs Col(t+1)',col=cols[2],ylim=c(-1,1))
 lines(seq(0,10,length.out=5),seq(0,0,length.out=5),lty=3)
 dev.off()
 """
