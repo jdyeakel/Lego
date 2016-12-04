@@ -1,4 +1,4 @@
-function repsim(num_play,reps,tmax,a_thresh,n_thresh,trophicload,rate_col,probs,ppweight,sim,par)
+function reppak(num_play,reps,tmax,a_thresh,n_thresh,trophicload,rate_col,probs,ppweight)
 
   #Shared variables
   sprich = SharedArray{Int64}(tmax,reps);
@@ -9,7 +9,7 @@ function repsim(num_play,reps,tmax,a_thresh,n_thresh,trophicload,rate_col,probs,
   ext_sec = SharedArray{Int64}(tmax,reps);
   pot_col = SharedArray{Int64}(tmax,reps);
   
-  @time int_m, sp_m, t_m, tp_m, tind_m, mp_m, mind_m, simvalue = build_template_degrees(num_play,probs,ppweight,sim,par);
+  @time int_m, sp_m, t_m, tp_m, tind_m, mp_m, mind_m, simvalue = build_template_degrees(num_play,probs,ppweight);
   
   @sync @parallel for r=1:reps
     #Establish community template
@@ -18,11 +18,13 @@ function repsim(num_play,reps,tmax,a_thresh,n_thresh,trophicload,rate_col,probs,
     
     comid = (Array{Int64,1})[];
     push!(comid,cid);
-    rich = Array{Int64}(1);
-    rich[1] = length(comid);
+    #rich = Array{Int64}(1);
+    rich[r,1] = length(comid);
+    sprich[r,1] = 1;
     
-    while status = "open"
-      
+    t=1;
+    while status == "open" && t <= tmax
+      t = t+1;
       #Colonize with some probability
       rcol = rand();
       if rcol < rate_col && status == "open"
@@ -30,7 +32,7 @@ function repsim(num_play,reps,tmax,a_thresh,n_thresh,trophicload,rate_col,probs,
         #Update community evolution
         push!(comid,cid);
         #Update count of richness
-        push!(rich,length(cid));
+        # push!(rich,length(cid));
       end
       
       sprich[t,r] = length(spcid);
