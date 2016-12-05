@@ -9,9 +9,12 @@ function reppak(num_play,reps,tmax,a_thresh,n_thresh,trophicload,rate_col,probs,
   ext_sec = SharedArray{Int64}(tmax,reps);
   pot_col = SharedArray{Int64}(tmax,reps);
   
-  @time int_m, sp_m, t_m, tp_m, tind_m, mp_m, mind_m, simvalue = build_template_degrees(num_play,probs,ppweight);
   
   @sync @parallel for r=1:reps
+    
+    int_m, sp_m, t_m, tp_m, tind_m, mp_m, mind_m, simvalue = build_template_degrees(num_play,probs,ppweight);
+
+    
     #Establish community template
     cid, c_m, crev_m, com_tp, com_tind, com_mp, com_mind = initiate_comm_func(int_m,tp_m,tind_m,mp_m,mind_m);
     status = "open";
@@ -53,7 +56,7 @@ function reppak(num_play,reps,tmax,a_thresh,n_thresh,trophicload,rate_col,probs,
   
   
   return(
-  int_m,
+  #int_m,
   sprich,
   rich,
   conn,
