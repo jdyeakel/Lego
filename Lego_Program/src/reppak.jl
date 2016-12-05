@@ -8,12 +8,13 @@ function reppak(num_play,reps,tmax,a_thresh,n_thresh,trophicload,rate_col,probs,
   ext_prim = SharedArray{Int64}(tmax,reps);
   ext_sec = SharedArray{Int64}(tmax,reps);
   pot_col = SharedArray{Int64}(tmax,reps);
-  
+  num_sp = SharedArray{Int64}(reps);
   
   @sync @parallel for r=1:reps
     
     int_m, sp_m, t_m, tp_m, tind_m, mp_m, mind_m, simvalue = build_template_degrees(num_play,probs,ppweight);
 
+    num_sp[r] = length(find(x->x=='n',diag(int_m)));
     
     #Establish community template
     cid, c_m, crev_m, com_tp, com_tind, com_mp, com_mind = initiate_comm_func(int_m,tp_m,tind_m,mp_m,mind_m);
@@ -48,6 +49,7 @@ function reppak(num_play,reps,tmax,a_thresh,n_thresh,trophicload,rate_col,probs,
       comgen[r,cid,t] = 1;
       
       
+      
     end #end while loop
     
     #Record data important for understanding priority effects
@@ -63,7 +65,8 @@ function reppak(num_play,reps,tmax,a_thresh,n_thresh,trophicload,rate_col,probs,
   comgen,
   ext_prim,
   ext_sec,
-  pot_col
+  pot_col,
+  num_sp
   )
   
 end
