@@ -1,3 +1,9 @@
+using Distributions
+# using Gadfly
+using RCall
+using HDF5
+using JLD
+
 @everywhere using Distributions
 #@everywhere using Gadfly
 @everywhere using RCall
@@ -7,21 +13,23 @@
 
 @everywhere include("$(homedir())/Dropbox/PostDoc/2014_Lego/Lego_Program/src/reppak.jl")
 @everywhere include("$(homedir())/Dropbox/PostDoc/2014_Lego/Lego_Program/src/build_template_degrees.jl")
+@everywhere include("$(homedir())/Dropbox/PostDoc/2014_Lego/Lego_Program/src/build_template_species.jl")
+
 @everywhere include("$(homedir())/Dropbox/PostDoc/2014_Lego/Lego_Program/src/initiate_comm_func.jl")
 @everywhere include("$(homedir())/Dropbox/PostDoc/2014_Lego/Lego_Program/src/colonize_func.jl")
 
 
 
-num_play = 500;
-reps = 50;
-tmax = copy(num_play);
+S = 400;
+reps = 100;
+tmax = 1000;
 
 a_thresh = 0;
 trophicload = 2;
 ppweight = 1/4;
 rate_col = 1;
 
-varvec = [0.001 0.01];
+varvec = [0.0001 0.002];
 numsp = Array(Array{Int64},length(varvec));
 potcol = Array(Array{Int64},length(varvec));
 for i=1:length(varvec)
@@ -41,11 +49,11 @@ for i=1:length(varvec)
   sprich, 
   rich, 
   conn, 
-  comgen, 
+  #comgen, 
   ext_prim, 
   ext_sec, 
   pot_col,
-  num_sp = reppak(num_play,reps,tmax,a_thresh,n_thresh,trophicload,rate_col,probs,ppweight);
+  num_sp = reppak(S,reps,tmax,a_thresh,n_thresh,trophicload,rate_col,probs,ppweight);
 
   potcol[i] = pot_col;
   numsp[i] = num_sp;
@@ -56,12 +64,12 @@ end
 # quit()
 
 
-namespace = "$(homedir())/Dropbox/PostDoc/2014_Lego/Lego_Program/figures/fig_potcol.pdf"
+namespace = "$(homedir())/Dropbox/PostDoc/2014_Lego/Lego_Program/figures/fig_potcolS.pdf"
 R"""
 library(RColorBrewer)
 cols = brewer.pal(max(3,length($varvec)),'Set1')
 for (i in 1:length(cols)) {cols[i] = paste(cols[i],'70',sep='')}
-#pdf($namespace,width=12,height=6);
+pdf($namespace,width=12,height=6);
 par(mfrow=c(1,2));
 pcol = $(potcol[1]);
 plot(seq(1,$tmax)/$(numsp[1][1]),pcol[,1]/$(numsp[1][1]),type='l',xlim=c(0,1),ylim=c(0,0.3),xlab='Proportion filled',ylab='Proportion potential colonizers',col=cols[1])
@@ -85,20 +93,17 @@ R"""
 nichediffs=c($(diff(potcol[1][2:340,:])),$(diff(potcol[2][2:340,:])));
 hist(nichediffs,
 breaks=10,xlim=c(0,max(nichediffs)),col=cols[2],xlab='Niche space expansion',main='')
-#dev.off()
+dev.off()
 """
 
 
 
 
 #Without Normalization
-
-namespace = "$(homedir())/Dropbox/PostDoc/2014_Lego/Lego_Program/figures/fig_potcol.pdf"
 R"""
 library(RColorBrewer)
 cols = brewer.pal(max(3,length($varvec)),'Set1')
 for (i in 1:length(cols)) {cols[i] = paste(cols[i],'70',sep='')}
-#pdf($namespace,width=12,height=6);
 par(mfrow=c(1,2));
 pcol = $(potcol[1]);
 plot(seq(1,$tmax),pcol[,1],type='l',xlim=c(0,500),ylim=c(0,100),xlab='Proportion filled',ylab='Proportion potential colonizers',col=cols[1])
@@ -122,5 +127,4 @@ R"""
 nichediffs=c($(diff(potcol[1][2:340,:])),$(diff(potcol[2][2:340,:])));
 hist(nichediffs,
 breaks=10,xlim=c(0,max(nichediffs)),col=cols[2],xlab='Niche space expansion',main='')
-#dev.off()
 """

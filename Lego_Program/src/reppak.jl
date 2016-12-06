@@ -1,10 +1,10 @@
-function reppak(num_play,reps,tmax,a_thresh,n_thresh,trophicload,rate_col,probs,ppweight)
+function reppak(S,reps,tmax,a_thresh,n_thresh,trophicload,rate_col,probs,ppweight)
 
   #Shared variables
   sprich = SharedArray{Int64}(tmax,reps);
   rich = SharedArray{Int64}(tmax,reps);
   conn = SharedArray{Float64}(tmax,reps);
-  comgen = SharedArray{Int64}(reps,num_play,tmax);
+  #comgen = SharedArray{Int64}(reps,num_play,tmax);
   ext_prim = SharedArray{Int64}(tmax,reps);
   ext_sec = SharedArray{Int64}(tmax,reps);
   pot_col = SharedArray{Int64}(tmax,reps);
@@ -12,8 +12,10 @@ function reppak(num_play,reps,tmax,a_thresh,n_thresh,trophicload,rate_col,probs,
   
   @sync @parallel for r=1:reps
     
-    int_m, sp_m, t_m, tp_m, tind_m, mp_m, mind_m, simvalue = build_template_degrees(num_play,probs,ppweight);
-
+    int_m, sp_m, t_m, tp_m, tind_m, mp_m, mind_m, simvalue = build_template_species(S,probs,ppweight);
+    
+    num_play = length(diag(int_m));
+    
     num_sp[r] = length(find(x->x=='n',diag(int_m)));
     
     #Establish community template
@@ -46,7 +48,7 @@ function reppak(num_play,reps,tmax,a_thresh,n_thresh,trophicload,rate_col,probs,
       
       pot_col[t,r] = length(potcol);
       
-      comgen[r,cid,t] = 1;
+      #comgen[r,cid,t] = 1;
       
       
       
@@ -62,7 +64,7 @@ function reppak(num_play,reps,tmax,a_thresh,n_thresh,trophicload,rate_col,probs,
   sprich,
   rich,
   conn,
-  comgen,
+  #comgen,
   ext_prim,
   ext_sec,
   pot_col,

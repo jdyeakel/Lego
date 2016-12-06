@@ -177,15 +177,15 @@ end
 #boxplot(t($corrich),names=$makevec,boxwex=0.5,xlab='pr(m)',ylab='Corr Ob(t)/R(t) vs Sp(t+1)/R(t+1)',col=cols[2])
 
 #Correlation
-namespace = string("$(homedir())/Dropbox/PostDoc/2014_Lego/Lego_Program/figures/fig_corrobext_tl",trophicload,".pdf");
+namespace = string("$(homedir())/Dropbox/PostDoc/2014_Lego/Lego_Program/figures/fig_corrobext_tl",trophicload,"S.pdf");
 R"""
 library(RColorBrewer)
 cols <- brewer.pal(3,'Set1')
 pdf($namespace,height=6,width=12)
 par(mfrow=c(1,2))
-boxplot(t($corext),names=$makevec,boxwex=0.5,xlab='pr(m)',ylab='Corr Ob(t) vs Ext(t+1)',col=cols[2],ylim=c(-0.1,0.7))
+boxplot(t($corext),names=$makevec,boxwex=0.5,xlab='pr(m)',ylab='Corr Ob(t) vs Ext(t+1)',col=cols[2],ylim=c(-0.2,0.2))
 lines(seq(0,10,length.out=5),seq(0,0,length.out=5),lty=3)
-boxplot(t($corcol),names=$makevec,boxwex=0.5,xlab='pr(m)',ylab='Corr Ob(t) vs Col(t+1)',col=cols[2],ylim=c(-1,1))
+boxplot(t($corcol),names=$makevec,boxwex=0.5,xlab='pr(m)',ylab='Corr Ob(t) vs Col(t+1)',col=cols[2],ylim=c(0,1))
 lines(seq(0,10,length.out=5),seq(0,0,length.out=5),lty=3)
 dev.off()
 """

@@ -25,9 +25,12 @@ function build_template_species(S, probs, ppweight)
   int_m, sp_m, t_m, tp_m, tind_m, mp_m, mind_m, simvalue = build_template_degrees(num_play,probs,ppweight);
 
   S_real = length(find(x->x=='n',diag(int_m)));
-
+  
+  error = 5;
+  S_acceptable = collect(400-error:400+error);
+  
   howlong = 1;
-  while S_real != S
+  while in(S_real,S_acceptable) == false
     howlong = howlong + 1;
     S_diff = S - S_real;
     plusminus = sign(S_diff);

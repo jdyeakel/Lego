@@ -8,14 +8,14 @@ include("$(homedir())/Dropbox/PostDoc/2014_Lego/Lego_Program/src/extinct_func.jl
 include("$(homedir())/Dropbox/PostDoc/2014_Lego/Lego_Program/src/sim_func.jl")
 
 
-makevec = [0.002 0.02];
+makevec = [0.0001 0.003];
 rmakers = Array(Array{Int64},length(makevec));
 rnumneed = Array(Array{Int64},length(makevec));
 rnumassim = Array(Array{Int64},length(makevec));
 rengineering = Array(Array{Int64},length(makevec));
 for r=1:2
   #Establish community template
-  num_play = 500;
+  S = 400;
   probs = [
   p_n=0.004,
   p_a=0.01,
@@ -23,8 +23,9 @@ for r=1:2
   p_i= 1 - sum([p_n,p_m,p_a]) #Ignore with 1 - pr(sum(other))
   ]
   sim=true;
-  ppweight=1/3;
-  @time int_m, sp_m, t_m, tp_m, tind_m, mp_m, mind_m, simvalue = build_template_degrees(num_play,probs,ppweight);
+  ppweight=1/4;
+  @time int_m, sp_m, t_m, tp_m, tind_m, mp_m, mind_m, simvalue = build_template_species(S,probs,ppweight);
+  num_play = length(diag(int_m));
   obs=find(x->x=='i',diag(int_m));
   makers=zeros(length(obs));
   numneed=zeros(length(obs));
@@ -45,7 +46,7 @@ for r=1:2
   rengineering[r] = engineering;
 end
 
-namespace = string("$(homedir())/Dropbox/PostDoc/2014_Lego/Lego_Program/figures/fig_engineers.pdf");
+namespace = string("$(homedir())/Dropbox/PostDoc/2014_Lego/Lego_Program/figures/fig_engineersS.pdf");
 R"""
 library(RColorBrewer)
 cols = brewer.pal(3,'Set1')
