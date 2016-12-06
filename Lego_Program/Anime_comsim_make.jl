@@ -16,6 +16,9 @@ using JLD
 
 
 @everywhere include("$(homedir())/Dropbox/PostDoc/2014_Lego/Lego_Program/src/build_template_degrees.jl")
+@everywhere include("$(homedir())/Dropbox/PostDoc/2014_Lego/Lego_Program/src/build_template_species.jl")
+
+
 @everywhere include("$(homedir())/Dropbox/PostDoc/2014_Lego/Lego_Program/src/initiate_comm_func.jl")
 @everywhere include("$(homedir())/Dropbox/PostDoc/2014_Lego/Lego_Program/src/colonize_func.jl")
 @everywhere include("$(homedir())/Dropbox/PostDoc/2014_Lego/Lego_Program/src/extinct_func.jl")
@@ -33,14 +36,14 @@ a_thresh = 0;
 n_thresh = 0.2;
 
 tmax = 4000;
-reps=50;
+reps=20;
 
-num_play = 500;
+S = 400;
 ppweight = 1/4;
 trophicload=2;
 
 #Search over pr_m
-makevec = collect(0.001:0.002:0.015);
+makevec = collect(0.0001:0.0004:0.002);
 lm = length(makevec);
 
 SPRICH = Array(Array{Int64},lm);
@@ -60,7 +63,14 @@ for i=1:length(makevec)
   p_i= 1 - sum([p_n,p_m,p_a]) #Ignore with 1 - pr(sum(other))
   ]
 
-  int_mv, sprich, rich, conn, comgen, ext_prim, ext_sec, pot_col = repsimint(num_play,reps,tmax,a_thresh,n_thresh,trophicload,rate_col,probs,ppweight);
+  #int_mv,
+  sprich,
+  rich,
+  conn,
+  #comgen,
+  ext_prim,
+  ext_sec,
+  pot_col = repsimint(S,reps,tmax,a_thresh,n_thresh,trophicload,rate_col,probs,ppweight);
 
   SPRICH[i] = sprich;
   RICH[i] = rich;
@@ -69,7 +79,7 @@ for i=1:length(makevec)
   POT_COL[i] = pot_col;
 end
 
-namespace = string("$(homedir())/Dropbox/PostDoc/2014_Lego/Lego_Program/data/comsim_make/rich_prm_tl",trophicload,".jld");
+namespace = string("$(homedir())/Dropbox/PostDoc/2014_Lego/Lego_Program/data/comsim_make/richS_prm_tl",trophicload,".jld");
 save(namespace,"makevec",makevec,"SPRICH",SPRICH,"RICH",RICH,"EXTINCTIONS_PRIM",EXTINCTIONS_PRIM,"EXTINCTIONS_SEC",EXTINCTIONS_SEC,"POT_COL",POT_COL);
 
 quit();
@@ -85,7 +95,7 @@ using JLD
 
 #Load library
 trophicload = 2;
-namespace = string("$(homedir())/Dropbox/PostDoc/2014_Lego/Lego_Program/data/comsim_make/rich_prm_tl",trophicload,".jld");
+namespace = string("$(homedir())/Dropbox/PostDoc/2014_Lego/Lego_Program/data/comsim_make/richS_prm_tl",trophicload,".jld");
 d = load(namespace);
 makevec = d["makevec"];
 SPRICH = d["SPRICH"];
@@ -143,7 +153,7 @@ for i=1:lm
     spdiff = (sprich[rdsample+1]-sprich[rdsample]) #./ rich[rdsample];
     #Potential colonizers at timestep t
     potcol = potcol_traj[rdsample+1];
-    
+
     nonext = find(x->x!=0,ext_ratio);
     nondiff = find(x->x!=0,spdiff);
     #nz = length(nonzero);

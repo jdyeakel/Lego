@@ -108,6 +108,7 @@ using Distributions
 using RCall
 #using PyCall
 include("$(homedir())/Dropbox/PostDoc/2014_Lego/Lego_Program/src/build_template_degrees.jl")
+include("$(homedir())/Dropbox/PostDoc/2014_Lego/Lego_Program/src/build_template_species.jl")
 include("$(homedir())/Dropbox/PostDoc/2014_Lego/Lego_Program/src/initiate_comm_func.jl")
 include("$(homedir())/Dropbox/PostDoc/2014_Lego/Lego_Program/src/colonize_func.jl")
 
@@ -116,7 +117,7 @@ include("$(homedir())/Dropbox/PostDoc/2014_Lego/Lego_Program/src/sim_func.jl")
 
 
 #Establish community template
-num_play = 500;
+S = 400;
 probs = [
 p_n=0.004,
 p_a=0.01,
@@ -142,7 +143,6 @@ connind = Array{Float64}(tmax);
 ext_prim = Array{Int64}(tmax);
 ext_sec = Array{Int64}(tmax);
 pot_col = Array(Array{Int64},tmax);
-comgen =zeros(Int64,tmax,num_play);
 ppweight = 1/4;
 sim=false;
 par=false;
@@ -155,7 +155,11 @@ tictoc=0;
 sumcol=0;
 sumext=0;
 
-@time int_m, sp_m, t_m, tp_m, tind_m, mp_m, mind_m, simvalue = build_template_degrees(num_play,probs,ppweight);
+@time int_m, sp_m, t_m, tp_m, tind_m, mp_m, mind_m, simvalue = build_template_species(S,probs,ppweight);
+
+num_play = length(diag(int_m));
+comgen =zeros(Int64,tmax,num_play);
+
 cid, c_m, crev_m, com_tp, com_tind, com_mp, com_mind = initiate_comm_func(int_m,tp_m,tind_m,mp_m,mind_m);
 status = "open"; #I don't think we need this now
 @time for t = 1:tmax
