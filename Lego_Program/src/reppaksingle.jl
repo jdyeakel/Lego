@@ -1,20 +1,23 @@
-function reppak(S,reps,tmax,a_thresh,n_thresh,trophicload,rate_col,probs,ppweight)
+function reppaksingle(S,reps,tmax,a_thresh,n_thresh,trophicload,rate_col,probs,ppweight)
 
   #Shared variables
   sprich = SharedArray{Int64}(tmax,reps);
   rich = SharedArray{Int64}(tmax,reps);
   conn = SharedArray{Float64}(tmax,reps);
-  #comgen = SharedArray{Int64}(reps,num_play,tmax);
   ext_prim = SharedArray{Int64}(tmax,reps);
   ext_sec = SharedArray{Int64}(tmax,reps);
   pot_col = SharedArray{Int64}(tmax,reps);
+  cumid = SharedArray{Int64}(tmax,reps);
+  cumspid = SharedArray{Int64}(tmax,reps);
   num_sp = SharedArray{Int64}(reps);
   
+  int_m, sp_m, t_m, tp_m, tind_m, mp_m, mind_m, simvalue = build_template_species(S,probs,ppweight);
+  
+  num_play = length(diag(int_m));
+  
+  comgen = SharedArray{Int64}(reps,num_play,tmax);
+  
   @sync @parallel for r=1:reps
-    
-    int_m, sp_m, t_m, tp_m, tind_m, mp_m, mind_m, simvalue = build_template_species(S,probs,ppweight);
-    
-    num_play = length(diag(int_m));
     
     num_sp[r] = length(find(x->x=='n',diag(int_m)));
     
@@ -25,8 +28,8 @@ function reppak(S,reps,tmax,a_thresh,n_thresh,trophicload,rate_col,probs,ppweigh
     comid = (Array{Int64,1})[];
     push!(comid,cid);
     #rich = Array{Int64}(1);
-    rich[r,1] = length(comid);
-    sprich[r,1] = 1;
+    #rich[r,1] = length(comid);
+    #sprich[r,1] = 1;
     
     t=0;
     while status == "open" && t <= tmax
@@ -46,9 +49,12 @@ function reppak(S,reps,tmax,a_thresh,n_thresh,trophicload,rate_col,probs,ppweigh
       conn[t,r] = (sum(com_tp))/(sprich[t,r]^2);
       rich[t,r] = length(cid);
       
+      cumid[t,r] = sum(cid);
+      cumspid[t,r] = sum(spcid);
+      
       pot_col[t,r] = length(potcol);
       
-      #comgen[r,cid,t] = 1;
+      comgen[r,cid,t] = 1;
       
       
       
@@ -60,15 +66,17 @@ function reppak(S,reps,tmax,a_thresh,n_thresh,trophicload,rate_col,probs,ppweigh
   
   
   return(
-  #int_m,
+  int_m,
   sprich,
   rich,
   conn,
-  #comgen,
+  comgen,
   ext_prim,
   ext_sec,
   pot_col,
-  num_sp
+  num_sp,
+  cumid,
+  cumspid
   )
   
 end

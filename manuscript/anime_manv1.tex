@@ -75,35 +75,106 @@ abstract goes here
 Amazing words. The best words.
 
 
-\section*{Results}
 
-{\bf Effects of engineers on community richness} 
+\section*{Model Description}
+
+%The scale of the model
+
+%Interaction types
+The ANIMe model consists of four direct interaction types:
+$a$: assimlate, which is a dependency involving biomass flow,
+$n$: need, which is a dependency that does not involve biomass flow,
+$i$: ignore, the null interaction, and
+$m$: make, which allows species to engineer objects, which are interactive components of the species that are made by at least one species, and needed, assimilated or ignored by others.
+
+The four directed interaction types describe specific dependencies that one species/object has on another, however it is the coupling of two opposing directed interactions that describe traditional and familiar ecological relationships.
+For example, an $a \leftrightarrow i$ interaction describes a typical predator-prey relationship, where species 1 assimilates species 2, and species 2 ignores species 1.
+Of course, a prey's abundance does not \emph{ignore} predation, however the ANIMe model operates at the scale of presence-absence, rather than abundance.
+Conversely, both the $a \leftrightarrow n$ and $n \leftrightarrow n$ interactions describes mutualisms, with the former involving a trophic interaction (such as a plant-pollinator relationship), and the latter without (such as EXAMPLE).
+A complete list of pairwise interactions is found in Table \ref{table_int}.
+
+
+
+
+% Table 1
+% Interaction | Biological meaning
+% --- | ---
+% {n,a} | Trophic mutualism
+% {n,n} | Non-trophic mutualism
+% {n,i} | Commensalism
+% {n,m} | Engineering
+% {i,a} | Asymmetric Predation
+% {a,a} | Symmetric predation
+% {i,i} | Stable competition, coexistence
+% {i,e} | Asymmetric unstable competitive exclusion
+% {e,e} | Symmetric unstable competitive exclusion
+
+
+
+\section*{Results \& Discussion}
+
+
+{\bf Community assembly without extinctions}
+In the context of community assembly, the niche space that is created by a given assemblage can be measured by evaluating the number of potential colonizers that can \emph{fit} within the assemblage from the species pool, fulfilling required consumption (`a' dependencies) and reproduction requirements (`n' dependencies).
+Because the colonization-only scenario does not account for resource limitation (i.e. no extinctions), niche space cannot be reduced by adding species to the community.
+However, because colonization from the mainland is a zero-sum event, with each successful colonization the number of potential future colonizers is reduced by one.
+Importantly, if a successful colonizer increases the number of potential future colonizers, this can be interpreted as functionally expanding the niche space of the community.
+
+
+We find that the proportion of the species pool capable of successfully colonizing the assembling community is concave parabolic.
+Early in the assembly process, the proportion of potential colonizers is equal to the proportion of species that are primary producers without too many `n' dependencies.
+As assembly continues, niche space expands to a maximum, and then declines as the species pool diminishes and the community is filled.
+
+%Over pr(m)
+For a species pool of 400, by changing the value of pr(`m') from 0.0001 to 0.002, we alter the proportion of engineers within the pool by multiple orders of magnitude.
+As the number of engineers is increased, the number of objects that they create -- and other species can interact with -- is likewise increased.
+For example, a single realization where $S=400$ species and pr(m)=$10^{-4}$ resulted in a $412\times412$ interaction matrix (400 species, 12 objects), while a realization with $S=400$ and pr(m)=$0.003$ resulted in a $1200\times1200$ interaction matrix (400 species, 800 objects).
+The former example generated a small number of engineers, each producing a single object, whereas the latter example generated a large number of engineers, each producing between 1-6 objects, with a significant minority of objects being produced by multiple engineers.
+
+The effects on niche space exansion during assembly, and without the limiting forces of extinction, are substantial.
+While both limited-engineering and engineering systems resulted in a concave down niche expansion curve, the engineered system was different in three important ways.
+First, the system began assembly with a smaller proportion of potential colonizers.
+This is due to the fact that there are many more interdependencies between species and objects, and as there are few objects carried over early in community development, the limitations on species are exaggerated.
+Second, the rate that niche space is expanded is higher for engineering communities
+Third, the production of objects by engineers increases nearly doubles the potential niche space (proportion of potential future colonizers) midway through assembly.
+Once there is a large enough base of colonizers in the assembling communities, there are enough objects present to facilitate rather than inhibit additional colonization opportunities.
+Thus, the influence of engineers during assembly - by creating more interdependencies between species and the objects they engineer - both constrains and promotes assembly at different stages of the process.
+
+%Over need_threshold
+A species needs at least one assimilate interaction, i.e. it must eat at least one other present species or basal resource, and it must fulfill a certain proportion of its `need' interactions, set by the threshold parameter $n_t$.
+As $n_t$ increases, the interdependencies between species become more rigid during the assembly process, and this will serve to limit niche expansion.
+
+However, the trajectory of niche expansion is more complex when $n_t$ is increased.
+Rather than simply lowering the proportion of potential colonizers, increasing $n_t$ results in a qualitatively different assembly process where niche space is first lowered, increased, and lowered again as the community is filled.
+The initial niche space contraction results from a filling of the initial community with primary producers and their direct consumers.
+This lower trophic module fills without creating additional space for higher trophic level organisms due to the harsher restrictions given by a high $n_t$.
+Once a critical point in assembly is reached, the potential to add higher trophic level colonizers is attained, and niche space increases to a maximum, only to finally decrease as the species pool is used up.
+In some realizations, the community is never able to fill, resulting in a system without higher trophic levels.
+
+Assembly where interdependencies between species (and with moderate engineering) follows a 2-step process.
+First, the system is colonized by primary producers.
+Second, once the lower trophic levels are filled and reach a critical point, niche expansion permits the additional of higher trophic level colonizers.
+
+%Is there a diversity-stability link here?
+
+
+%Initial downward slope occurs because primary producers are used up. When it goes back up, there is enough of a base to build a larger community. Will have to check this will average trophic level over time (trophic module!!!)
+
+
+
+
+
+{\bf Effects of engineers on community richness}
 % Negative effects of engineering at the scale of the community
 % The effect of engineers on extinction cascade size
-Increasing the number of engineers (species with $m \leftrightarrow n$ interactions with their respective objects) at time $t$ results in the potential for larger extinction cascades at time $t+1$, and this correlation increases with the number of engineers in the community.
-This positive correlation between the number of objects at time $t$ and extinction cascade size at time $t+1$ results from the increasing interconnectedness that results from the higher number of objects relative to species in the system.
+Increasing the number of engineers (species with $ `m \leftrightarrow n'$ interactions with their respective objects) at time $t$ results in the potential for marginally larger extinction cascades at time $t+1$.
+This weak positive correlation between the number of objects at time $t$ and extinction cascade size at time $t+1$ results from the increasing interconnectedness that results from the higher number of objects relative to species in the system.
 Because the existence of a given object is tied to the species that makes them (one or multiple), the effects of primary extinctions are magnified.
-This correlation saturates as the proportion of engineers -- object to species ratio -- increases, and this MAY be due to redundant engineering.
+
 
 % The effect of engineering colonization facilitation
 Object richness is strongly positively correlated with the number of potential colonizers.
 So from a species packing perspective, engineering enables successful colonization by increasing niche space.
-
-{\bf Community invasibility} 
-In the context of community assembly, the niche space that is created by a given assemblage can be measured by evaluating the number of potential colonizers that can \emph{fit} within the assemblage from the species pool.
-Accordingly, with each successful colonization, the number of potential colonizers declines with the smaller species pool.
-Increases in the number of potential colonizers after a successful colonization event is thus due to niche space created by the successful colonizer.
-
-We find that the proportion of the species pool that are capable of successfully colonizing the assembling community is concave parabolic, and this makes intuitive sense.
-First, the proportion of potential colonizers is equal to the proportion of species that are primary producers that do not have too many `need' dependencies.
-As the community assembles, niche space expands to a maximum, and then declines as the species pool diminishes and the community is filled.
-
-%Over need_threshold
-The ANIMe model 
-
-%Over make_threshold
-For communities with a large proportion of ecosystem engineers, niche expansion and constraction is similarly parabolic, but much more variable.
-The proportion of initial colonizers is generally lower because there are many more indirect dependencies on engineers
 
 
 \end{document}
