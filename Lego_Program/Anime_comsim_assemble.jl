@@ -146,7 +146,7 @@ trophicload = 2;
 ppweight = 1/4;
 rate_col = 1;
 
-varvec = [0.1 0.2 0.3 0.4 0.5];
+varvec = [0.2 0.3 0.4];
 numsp = Array(Array{Int64},length(varvec));
 potcol = Array(Array{Int64},length(varvec));
 for i=1:length(varvec)

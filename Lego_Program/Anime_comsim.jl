@@ -2,18 +2,22 @@ using Distributions
 using RCall
 #using PyCall
 include("$(homedir())/Dropbox/PostDoc/2014_Lego/Lego_Program/src/build_template_degrees.jl")
+include("$(homedir())/Dropbox/PostDoc/2014_Lego/Lego_Program/src/build_template_species.jl")
 include("$(homedir())/Dropbox/PostDoc/2014_Lego/Lego_Program/src/initiate_comm_func.jl")
 include("$(homedir())/Dropbox/PostDoc/2014_Lego/Lego_Program/src/colonize_func.jl")
 include("$(homedir())/Dropbox/PostDoc/2014_Lego/Lego_Program/src/extinct_func.jl")
 include("$(homedir())/Dropbox/PostDoc/2014_Lego/Lego_Program/src/sim_func.jl")
 
 
-makevec = [0.0001 0.003];
+makevec = collect(0.0001:0.0001:0.003);
 rmakers = Array(Array{Int64},length(makevec));
 rnumneed = Array(Array{Int64},length(makevec));
 rnumassim = Array(Array{Int64},length(makevec));
 rengineering = Array(Array{Int64},length(makevec));
-for r=1:2
+robs = zeros(Int64,length(makevec));
+rspecies = zeros(Int64,length(makevec));
+for r=1:length(makevec)
+  println("r=",r)
   #Establish community template
   S = 400;
   probs = [
@@ -27,6 +31,7 @@ for r=1:2
   @time int_m, sp_m, t_m, tp_m, tind_m, mp_m, mind_m, simvalue = build_template_species(S,probs,ppweight);
   num_play = length(diag(int_m));
   obs=find(x->x=='i',diag(int_m));
+  robs[r] = length(obs);
   makers=zeros(length(obs));
   numneed=zeros(length(obs));
   numassim=zeros(length(obs));
@@ -36,6 +41,7 @@ for r=1:2
     numassim[i] = length(find(x->x=='a',int_m[obs[i],:])); #should be 0
   end
   species = find(x->x=='n',diag(int_m));
+  rspecies[r] = length(species);
   engineering = zeros(length(species));
   for i=1:length(species)
     engineering[i] = length(find(x->x=='m',int_m[species[i],:]));
@@ -45,6 +51,20 @@ for r=1:2
   rnumassim[r] = numassim;
   rengineering[r] = engineering;
 end
+
+
+namespace = string("$(homedir())/Dropbox/PostDoc/2014_Lego/Lego_Program/figures/fig_spob.pdf");
+R"""
+library(RColorBrewer)
+cols = brewer.pal(3,'Set1')
+pdf($namespace,height=6,width=6)
+par(mfrow=c(1,1))
+plot($makevec,$robs,pch=1,xlab='pr(m)',ylab='Number')
+points($makevec,$rspecies,pch=16)
+dev.off()
+"""
+
+
 
 namespace = string("$(homedir())/Dropbox/PostDoc/2014_Lego/Lego_Program/figures/fig_engineersS.pdf");
 R"""

@@ -21,37 +21,56 @@ using JLD
 
 
 S = 400;
-reps = 25;
+reps = 10;
 tmax = 1000;
 
 a_thresh = 0;
 trophicload = 2;
 ppweight = 1/4;
 rate_col = 1;
-n_thresh = 0.2;
+n_thresh = 0.3;
 
 #Establish community template
 probs = [
 p_n=0.004,
 p_a=0.01,
-p_m= 0.001, #needvec[i]/num_play, #1/num_play,
+p_m= 0.003, #needvec[i]/num_play, #1/num_play,
 p_i= 1 - sum([p_n,p_m,p_a]) #Ignore with 1 - pr(sum(other))
 ]
 
-int_m,
-sprich,
-rich,
-conn,
-comgen,
-ext_prim,
-ext_sec,
-pot_col,
-num_sp,
-cumid,
-cumspid = reppaksingle(S,reps,tmax,a_thresh,n_thresh,trophicload,rate_col,probs,ppweight);
+lreps = 10;
 
-R"plot($(rich[:,1]),type='l')"
-for i=2:reps
-  totrich = rich[:,i];
-  R"lines($totrich)"
+@sync @parallel for r=1:lreps
+  
+  
+  
+  int_m,
+  sprich,
+  rich,
+  conn,
+  comgen,
+  ext_prim,
+  ext_sec,
+  pot_col,
+  num_sp,
+  tfinal = reppaksingle(S,reps,tmax,a_thresh,n_thresh,trophicload,rate_col,probs,ppweight);
+  
+  #Similarity of community trajectory
+  
+  
 end
+
+
+R"plot($(cumid[:,1]),type='l',xlim=c(0,max($tfinal)))"
+for r=2:reps
+  cmid = cumid[:,r];
+  R"lines($cmid)"
+end
+
+
+
+for r=1:reps
+  #Rank similiarity
+  
+
+R"image($(comgen[:,:,380]),col=rev(gray.colors(2)))"

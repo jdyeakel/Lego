@@ -35,8 +35,8 @@ rate_col = 1;
 a_thresh = 0;
 n_thresh = 0.2;
 
-tmax = 4000;
-reps=20;
+tmax = 5000;
+reps=50;
 
 S = 400;
 ppweight = 1/4;
@@ -104,8 +104,11 @@ EXTINCTIONS_PRIM = d["EXTINCTIONS_PRIM"];
 EXTINCTIONS_SEC = d["EXTINCTIONS_SEC"];
 POT_COL = d["POT_COL"];
 
+
+
+
 startpt = 500;
-n=1000;
+n=4000;
 lm = length(SPRICH);
 reps = length(SPRICH[1][1,:]);
 r2rich = Array{Float64}(lm,reps);
@@ -190,25 +193,25 @@ lines(seq(0,10,length.out=5),seq(0,0,length.out=5),lty=3)
 dev.off()
 """
 
-
-#RSquared
-R"""
-par(mfrow=c(1,2))
-r2rich = $(r2rich);
-boxplot(t(r2rich))
-r2ext = $(r2ext);
-boxplot(t(r2ext))
-"""
-
-
-#Plotting individual scenarios
-R"""
-par(mfrow=c(1,2))
-plot($(obj_ratio[nonext]),$(ext_ratio[nonext]))
-abline(lmext)
-plot($(obj_ratio),$(potcol))
-abline(lmcol)
-"""
-
-R"plot($sprich,type='l',ylim=c(0,max($rich)));
-lines($rich,lty=3)"
+# 
+# #RSquared
+# R"""
+# par(mfrow=c(1,2))
+# r2rich = $(r2rich);
+# boxplot(t(r2rich))
+# r2ext = $(r2ext);
+# boxplot(t(r2ext))
+# """
+# 
+# 
+# #Plotting individual scenarios
+# R"""
+# par(mfrow=c(1,2))
+# plot($(obj_ratio[nonext]),$(ext_ratio[nonext]))
+# abline(lmext)
+# plot($(obj_ratio),$(potcol))
+# abline(lmcol)
+# """
+# 
+# R"plot($sprich,type='l',ylim=c(0,max($rich)));
+# lines($rich,lty=3)"

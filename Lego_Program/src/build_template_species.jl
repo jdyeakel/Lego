@@ -26,7 +26,7 @@ function build_template_species(S, probs, ppweight)
 
   S_real = length(find(x->x=='n',diag(int_m)));
   
-  error = 5;
+  error = 0;
   S_acceptable = collect(400-error:400+error);
   
   howlong = 1;

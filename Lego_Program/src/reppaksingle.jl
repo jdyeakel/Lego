@@ -1,15 +1,16 @@
 function reppaksingle(S,reps,tmax,a_thresh,n_thresh,trophicload,rate_col,probs,ppweight)
 
   #Shared variables
-  sprich = SharedArray{Int64}(tmax,reps);
-  rich = SharedArray{Int64}(tmax,reps);
-  conn = SharedArray{Float64}(tmax,reps);
-  ext_prim = SharedArray{Int64}(tmax,reps);
-  ext_sec = SharedArray{Int64}(tmax,reps);
-  pot_col = SharedArray{Int64}(tmax,reps);
-  cumid = SharedArray{Int64}(tmax,reps);
-  cumspid = SharedArray{Int64}(tmax,reps);
-  num_sp = SharedArray{Int64}(reps);
+  sprich = Array{Int64}(tmax,reps);
+  rich = Array{Int64}(tmax,reps);
+  conn = Array{Float64}(tmax,reps);
+  ext_prim = Array{Int64}(tmax,reps);
+  ext_sec = Array{Int64}(tmax,reps);
+  pot_col = Array{Int64}(tmax,reps);
+  cumid = Array{Int64}(tmax,reps);
+  cumspid = Array{Int64}(tmax,reps);
+  num_sp = Array{Int64}(reps);
+  tfinal = Array{Int64}(reps);
   
   int_m, sp_m, t_m, tp_m, tind_m, mp_m, mind_m, simvalue = build_template_species(S,probs,ppweight);
   
@@ -17,7 +18,7 @@ function reppaksingle(S,reps,tmax,a_thresh,n_thresh,trophicload,rate_col,probs,p
   
   comgen = SharedArray{Int64}(reps,num_play,tmax);
   
-  @sync @parallel for r=1:reps
+  for r=1:reps
     
     num_sp[r] = length(find(x->x=='n',diag(int_m)));
     
@@ -49,6 +50,8 @@ function reppaksingle(S,reps,tmax,a_thresh,n_thresh,trophicload,rate_col,probs,p
       conn[t,r] = (sum(com_tp))/(sprich[t,r]^2);
       rich[t,r] = length(cid);
       
+      
+      
       cumid[t,r] = sum(cid);
       cumspid[t,r] = sum(spcid);
       
@@ -60,6 +63,7 @@ function reppaksingle(S,reps,tmax,a_thresh,n_thresh,trophicload,rate_col,probs,p
       
     end #end while loop
     
+    tfinal[r] = t;
     #Record data important for understanding priority effects
     
   end #end repetition loop
@@ -75,8 +79,7 @@ function reppaksingle(S,reps,tmax,a_thresh,n_thresh,trophicload,rate_col,probs,p
   ext_sec,
   pot_col,
   num_sp,
-  cumid,
-  cumspid
+  tfinal
   )
   
 end
