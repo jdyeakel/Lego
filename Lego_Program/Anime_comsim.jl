@@ -153,7 +153,7 @@ rate_col = 1;
 a_thresh = 0.0;
 n_thresh = 0.2;
 trophicload = 2;
-tmax = 2000;
+tmax = 5000;
 CID = (Array{Int64,1})[];
 fwt = Array(Array{Int64},tmax);
 com_probs = Array{Float64}(tmax,4);
@@ -185,7 +185,7 @@ cid, c_m, crev_m, com_tp, com_tind, com_mp, com_mind = initiate_comm_func(int_m,
 status = "open"; #I don't think we need this now
 @time for t = 1:tmax
   if mod(t,1000)==0
-    println(string("t=",t));
+    println(string("t=",t))
   end
   #The add-until-full simulation
   #Creating a new int_m each time
@@ -256,12 +256,15 @@ for i=1:tmax
   lpotcol[i]=length(pot_col[i])
 end
 
+namespace = "$(homedir())/Dropbox/PostDoc/2014_Lego/Lego_Program/figures/";
 R"""
+pdf(paste($namespace,"fig_traj.pdf",sep=""),width=6,height=5)
 maxsp = max($rich);
-plot($sprich,type='l',xlab='Time',ylab='Species diversity',ylim=c(0,maxsp))
+plot($sprich,type='l',xlab='Time',ylab='Species diversity',ylim=c(0,maxsp),log='x')
 lines($rich,type='l',lty=2,cex.lab=1.5,cex.axis=1.3)
 recol=$(find(x->x==0,sprich));
 points(recol,rep(0,length(recol)))
+dev.off()
 """
 
 

@@ -36,7 +36,7 @@ a_thresh = 0;
 n_thresh = 0.2;
 
 tmax = 5000;
-reps=50;
+reps=100;
 
 S = 400;
 ppweight = 1/4;
@@ -193,7 +193,7 @@ lines(seq(0,10,length.out=5),seq(0,0,length.out=5),lty=3)
 dev.off()
 """
 
-# 
+#
 # #RSquared
 # R"""
 # par(mfrow=c(1,2))
@@ -202,8 +202,8 @@ dev.off()
 # r2ext = $(r2ext);
 # boxplot(t(r2ext))
 # """
-# 
-# 
+#
+#
 # #Plotting individual scenarios
 # R"""
 # par(mfrow=c(1,2))
@@ -212,6 +212,6 @@ dev.off()
 # plot($(obj_ratio),$(potcol))
 # abline(lmcol)
 # """
-# 
+#
 # R"plot($sprich,type='l',ylim=c(0,max($rich)));
 # lines($rich,lty=3)"
