@@ -16,8 +16,6 @@ function colonize_func(int_m,tp_m,tind_m,mp_m,mind_m,a_thresh,n_thresh,cid,c_m,c
   # # Make a list of species-only in community
   # intcom = int_m[cid,cid];
   # spcid = find(x->x=='n',diag(intcom));
-  
-  
   sponly = copy(cid);
   dl = Array{Int64}(0);
   for i=1:length(cid)
@@ -37,6 +35,7 @@ function colonize_func(int_m,tp_m,tind_m,mp_m,mind_m,a_thresh,n_thresh,cid,c_m,c
   #Start with the primary producers
   tlink_full = copy(prim_prod);
   for i=1:length(cidold)
+    #What EATS cid[i]? Where crev_m[:,i] is 'a'
     alink = find(x->x=='a',crev_m[:,i]);
     append!(tlink_full,alink);
   end
@@ -72,7 +71,9 @@ function colonize_func(int_m,tp_m,tind_m,mp_m,mind_m,a_thresh,n_thresh,cid,c_m,c
   #run a while loop to find the next 'colonizer'
   #If it fails, find another primary producer
   
-  #potcol only records the potential colonization of species (not objects)
+  #This is an exhaustive search because we want to count the NUMBER of potential colonizers
+  #In contrast, the colonizesingle_func.jl does not perform an exhaustive search, and only searches until a colonizer is found, so is faster.
+  #potcol records the potential colonizers (does not count objects)
   potcol = Array{Int64}(0);
   
   if length(tlink) > 0
@@ -92,6 +93,7 @@ function colonize_func(int_m,tp_m,tind_m,mp_m,mind_m,a_thresh,n_thresh,cid,c_m,c
       #CHECKING NEEDS
       #What things does this species need?
       dseedneed = copy(dseed);
+      #the diagonal 'need' just identifies it as a species (not an object), and does not indicate an interaction need. Set this to '0' to discount it.
       dseedneed[did] = '0';
       dn = find(x->x=='n',dseedneed);
       ldn=length(dn);
@@ -117,7 +119,7 @@ function colonize_func(int_m,tp_m,tind_m,mp_m,mind_m,a_thresh,n_thresh,cid,c_m,c
       lda=length(da);
       aperc = zeros(Float64,1);
       if lda>0
-        #Are needs fulfilled to threshold?
+        #Are assimilates fulfilled to threshold?
         #Add sun as a 'consumable' within the community
         #This will allow true primary producers to colonize
         cid_wsun = cat(1,1,cid);
@@ -239,9 +241,8 @@ function colonize_func(int_m,tp_m,tind_m,mp_m,mind_m,a_thresh,n_thresh,cid,c_m,c
     c_m = copy(c_m_update);
     crev_m = copy(crev_m_update);
 
-    #BUG: There is an error in updating the trophic (direct and indirect) matrices
-    #Updating the community trophic matrices
-    #The +1 accounts for the fact that the sun is included in species-only matrices (but not species-only list)
+
+    #Update trophic and mutualistic interactions
 
     #1) make a list of species-only in community
     sponly = copy(cid);
@@ -257,10 +258,14 @@ function colonize_func(int_m,tp_m,tind_m,mp_m,mind_m,a_thresh,n_thresh,cid,c_m,c
 
     #2) Find the location of species on trophic matrix
     #This will be used to locate the correct species on trophic matrices
-    #+1 because the 1st row/column of the trophic matrices is the sun
     t_loc = zeros(Int64,lsp);
     for i=1:lsp
-      t_loc[i] = find(x->x==sponly[i],Slist)[1] + 1;
+      sploc = find(x->x==spcid[i],Slist);
+      if length(sploc)>1
+        print("Duplication Error")
+      end
+      #+1 because the 1st row/column of the trophic matrices is the sun
+      t_loc[i] = sploc[1] + 1;
     end
 
     #Attach the primary producer

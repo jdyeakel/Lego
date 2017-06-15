@@ -32,7 +32,7 @@ function initiate_comm_func(int_m,tp_m,tind_m,mp_m,mind_m)
   #reverse interactions of the seed species
   seedrev = copy(int_m[:,id]);
 
-  #What things does the seed species make?
+  #What objects does the seed species make?
   idm = find(x->x=='m',seed);
 
   #Interactions of things made by seed
@@ -87,7 +87,7 @@ function initiate_comm_func(int_m,tp_m,tind_m,mp_m,mind_m)
   com_tind[t_loc,t_loc] = copy(tind_m[t_loc,t_loc]);
   #Mutualistic interactions
   com_mp[t_loc,t_loc] = copy(mp_m[t_loc,t_loc]);
-  #Mutualistic interactions
+  #Indirect Mutualistic interactions
   com_mind[t_loc,t_loc] = copy(mind_m[t_loc,t_loc]);
 
 

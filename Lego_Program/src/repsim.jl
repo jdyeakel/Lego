@@ -1,3 +1,5 @@
+#Generates comgen output
+
 function repsim(num_play,reps,tmax,a_thresh,n_thresh,trophicload,rate_col,probs,ppweight,sim,par)
 
   #Shared variables

@@ -1,3 +1,5 @@
+#Does not generate comgen output, and DOES calculate potential colonizers
+
 function repsimint(S,reps,tmax,a_thresh,n_thresh,trophicload,rate_col,probs,ppweight)
 
   #Shared variables

@@ -1,7 +1,8 @@
 function extinct_func2(int_m,tp_m,a_thresh,n_thresh,trophicload,cid,c_m,crev_m,com_tp,com_tind,com_mp,com_mind)
 
   num_play = length(int_m[1,:]);
-
+  
+  #unused switch to initiate similarity calculations
   sim = true;
 
   # status = "open";
@@ -90,7 +91,9 @@ function extinct_func2(int_m,tp_m,a_thresh,n_thresh,trophicload,cid,c_m,crev_m,c
 
     #Calculate the probability of extinction based on predation load and competitive load
     #NOTE: Should this be based on the global properties or local properties???
+    #Global number of links
     gL = sum(tp_m);
+    #Global number of species
     gS = length(find(x->x=='n',diag(int_m)));
     prext_pred = (1./(1.+exp(-0.5.*(pred_vec.-(trophicload*(gL/gS)) ))));
     #prext_comp = (1./(1.+exp(-10.*(comp_vec.-0.5))));
@@ -109,7 +112,7 @@ function extinct_func2(int_m,tp_m,a_thresh,n_thresh,trophicload,cid,c_m,crev_m,c
 
     #######################################
     #######################################
-    #IF EXTINCTIONS OCCUR AT ALL
+    #PRIMARY EXTINCTIONS (IF ANY)
     #######################################
     #######################################
 
@@ -190,6 +193,7 @@ function extinct_func2(int_m,tp_m,a_thresh,n_thresh,trophicload,cid,c_m,crev_m,c
       #   del_loc = find(x->x==esp[i],cid);
       #   deleteat!(cid,del_loc);
       # end
+      
       #Update SPCID by eliminating esponly
       deleteat!(cid,sort(esploc));
       deleteat!(spcid,sort(esponly_loc));
@@ -316,6 +320,7 @@ function extinct_func2(int_m,tp_m,a_thresh,n_thresh,trophicload,cid,c_m,crev_m,c
         end #End for loop over species
 
         if all(i->i==false,ancheck)
+          #No secondary extinctions
           check = false; #this will break the while loop
           # status = "Primary extinctions only";
         else

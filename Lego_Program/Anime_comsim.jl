@@ -132,6 +132,7 @@ include("$(homedir())/Dropbox/PostDoc/2014_Lego/Lego_Program/src/build_template_
 include("$(homedir())/Dropbox/PostDoc/2014_Lego/Lego_Program/src/build_template_species.jl")
 include("$(homedir())/Dropbox/PostDoc/2014_Lego/Lego_Program/src/initiate_comm_func.jl")
 include("$(homedir())/Dropbox/PostDoc/2014_Lego/Lego_Program/src/colonize_func.jl")
+include("$(homedir())/Dropbox/PostDoc/2014_Lego/Lego_Program/src/colonizesingle_func.jl")
 
 include("$(homedir())/Dropbox/PostDoc/2014_Lego/Lego_Program/src/extinct_func2.jl")
 include("$(homedir())/Dropbox/PostDoc/2014_Lego/Lego_Program/src/sim_func.jl")
@@ -167,6 +168,7 @@ pot_col = Array(Array{Int64},tmax);
 ppweight = 1/4;
 sim=false;
 par=false;
+calcpotcol == false;
 
 window = 20;
 mrich = zeros(0);
@@ -184,6 +186,7 @@ comgen =zeros(Int64,tmax,num_play);
 cid, c_m, crev_m, com_tp, com_tind, com_mp, com_mind = initiate_comm_func(int_m,tp_m,tind_m,mp_m,mind_m);
 status = "open"; #I don't think we need this now
 @time for t = 1:tmax
+  #Print every 1000 timesteps
   if mod(t,1000)==0
     println(string("t=",t))
   end
@@ -193,7 +196,15 @@ status = "open"; #I don't think we need this now
   #Colonize with some probability
   rcol = rand();
   if rcol < rate_col && status == "open"
-    status,cid,spcid,c_m,crev_m,com_tp,com_tind,com_mp,com_mind,potcol = colonize_func(int_m,tp_m,tind_m,mp_m,mind_m,a_thresh,n_thresh,cid,c_m,crev_m,com_tp,com_tind,com_mp,com_mind);
+    
+    #Run the faster colonization function if calcpotcol is set to false
+    
+    if calcpotcol == true
+      status,cid,spcid,c_m,crev_m,com_tp,com_tind,com_mp,com_mind,potcol = colonize_func(int_m,tp_m,tind_m,mp_m,mind_m,a_thresh,n_thresh,cid,c_m,crev_m,com_tp,com_tind,com_mp,com_mind);
+    else
+      status,cid,spcid,c_m,crev_m,com_tp,com_tind,com_mp,com_mind= colonizesingle_func(int_m,tp_m,tind_m,mp_m,mind_m,a_thresh,n_thresh,cid,c_m,crev_m,com_tp,com_tind,com_mp,com_mind);
+    end
+    
     if status == "open"
       sumcol=sumcol+1;
     end
@@ -222,11 +233,14 @@ status = "open"; #I don't think we need this now
   comgen[t,cid] = 1;
   fwt[t] = com_tind;
 
-  # int_mc = copy(int_m);
-  # for i=1:num_play
-  #   int_mc[i,i]='0';
-  # end
-  pot_col[t] = potcol;
+  int_mc = copy(int_m);
+  for i=1:num_play
+    int_mc[i,i]='0';
+  end
+  
+  if calcpotcol==true
+    pot_col[t] = potcol;
+  end
 
   if mod(t,window)==0
     tictoc=tictoc+1;
@@ -251,20 +265,22 @@ end
 obrich = rich.-sprich;
 
 #namespace = "$(homedir())/Dropbox/PostDoc/2014_Lego/Lego_Program/figures/"
-lpotcol=zeros(Int64,tmax)
-for i=1:tmax
-  lpotcol[i]=length(pot_col[i])
+if calcpotcol==true
+  lpotcol=zeros(Int64,tmax)
+  for i=1:tmax
+    lpotcol[i]=length(pot_col[i])
+  end
 end
 
 namespace = "$(homedir())/Dropbox/PostDoc/2014_Lego/Lego_Program/figures/";
 R"""
-pdf(paste($namespace,"fig_traj.pdf",sep=""),width=6,height=5)
+#pdf(paste($namespace,"fig_traj.pdf",sep=""),width=6,height=5)*/
 maxsp = max($rich);
 plot($sprich,type='l',xlab='Time',ylab='Species diversity',ylim=c(0,maxsp),log='x')
 lines($rich,type='l',lty=2,cex.lab=1.5,cex.axis=1.3)
 recol=$(find(x->x==0,sprich));
 points(recol,rep(0,length(recol)))
-dev.off()
+#dev.off()
 """
 
 
