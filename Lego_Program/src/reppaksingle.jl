@@ -1,3 +1,7 @@
+# Species packing algorithm where the number of potential colonizers is not counted (just finds a single colonizer at each step). This should be faster than reppak.jl, but I'm not sure if it's actually different (I think colonize_func should be colonizesingle_func.jl)
+
+
+
 function reppaksingle(S,reps,tmax,a_thresh,n_thresh,trophicload,rate_col,probs,ppweight)
 
   #Shared variables

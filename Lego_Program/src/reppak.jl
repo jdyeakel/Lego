@@ -1,3 +1,6 @@
+# Species packing algorithm where the number of potential colonizers IS counted
+
+
 function reppak(S,reps,tmax,a_thresh,n_thresh,trophicload,rate_col,probs,ppweight)
 
   #Shared variables

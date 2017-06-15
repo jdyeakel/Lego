@@ -354,7 +354,27 @@ plot($cumext,xlab='Extinction size',ylab='Number of extinctions',log='xy',pch=16
 #   end
 # end
 
-
+#Visualize int_m
+int_v = Array{Int64}(length(int_m[1,:]),length(int_m[1,:]));
+int_v[find(x->x=='a',int_m)]=1;
+int_v[find(x->x=='n',int_m)]=2;
+int_v[find(x->x=='i',int_m)]=3;
+int_v[find(x->x=='m',int_m)]=4;
+R"""
+library(igraph)
+library(plotrix)
+library(RColorBrewer)
+#Visualize matrix:
+num_play = length($(int_v[1,:]));
+plot_matrix<-function($int_v, num_play){
+xx=matrix(as.numeric(as.factor($int_v)),c(num_play,num_play))
+par(mar=c(1,1,1,4))
+int_types=levels(as.factor($int_v))
+color2D.matplot(xx,extremes=c(1:length(int_types)), border="white", axes=FALSE, xlab="", ylab="",main="")
+legend(x=num_play+1,y=num_play,legend=int_types,pch=22,pt.bg=c(1:4),xpd=TRUE, bty="n")
+}
+plot_matrix($int_v, num_play)
+"""
 
 R"""
 plot($conn,type='l',log='y',ylab='Trophic connectance')
