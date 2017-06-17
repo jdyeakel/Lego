@@ -17,6 +17,7 @@ using JLD
 
 @everywhere include("$(homedir())/Dropbox/PostDoc/2014_Lego/Lego_Program/src/initiate_comm_func.jl")
 @everywhere include("$(homedir())/Dropbox/PostDoc/2014_Lego/Lego_Program/src/colonize_func.jl")
+@everywhere include("$(homedir())/Dropbox/PostDoc/2014_Lego/Lego_Program/src/trophicalc2.jl")
 
 
 
@@ -32,6 +33,7 @@ rate_col = 1;
 varvec = [0.0001 0.001 0.002];
 numsp = Array(Array{Int64},length(varvec));
 potcol = Array(Array{Int64},length(varvec));
+trophic = Array(Array{Int64},length(varvec));
 for i=1:length(varvec)
   println("i=",i)
 
@@ -53,13 +55,17 @@ for i=1:length(varvec)
   ext_prim,
   ext_sec,
   pot_col,
-  num_sp = reppak(S,reps,tmax,a_thresh,n_thresh,trophicload,rate_col,probs,ppweight);
+  num_sp,
+  mtroph = reppak(S,reps,tmax,a_thresh,n_thresh,trophicload,rate_col,probs,ppweight);
 
   potcol[i] = pot_col;
   numsp[i] = num_sp;
+  trophic[i] = mtroph;
 
 end
 
+namespace = "$(homedir())/Dropbox/PostDoc/2014_Lego/Lego_Program/data/assemble_pm.jld"
+save(namespace,"potcol",potcol,"numsp",numsp,"trophic",trophic);
 
 # quit()
 
@@ -149,6 +155,7 @@ rate_col = 1;
 varvec = [0.2 0.3 0.4];
 numsp = Array(Array{Int64},length(varvec));
 potcol = Array(Array{Int64},length(varvec));
+trophic = Array(Array{Int64},length(varvec));
 for i=1:length(varvec)
   println("i=",i)
 
@@ -170,13 +177,16 @@ for i=1:length(varvec)
   ext_prim,
   ext_sec,
   pot_col,
-  num_sp = reppak(S,reps,tmax,a_thresh,n_thresh,trophicload,rate_col,probs,ppweight);
+  num_sp,
+  mtroph = reppak(S,reps,tmax,a_thresh,n_thresh,trophicload,rate_col,probs,ppweight);
 
   potcol[i] = pot_col;
   numsp[i] = num_sp;
+  trophic[i] = mtroph;
 
 end
-
+namespace = "$(homedir())/Dropbox/PostDoc/2014_Lego/Lego_Program/data/assemble_nt.jld"
+save(namespace,"potcol",potcol,"numsp",numsp,"trophic",trophic);
 
 # quit()
 

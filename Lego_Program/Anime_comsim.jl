@@ -7,6 +7,7 @@ include("$(homedir())/Dropbox/PostDoc/2014_Lego/Lego_Program/src/initiate_comm_f
 include("$(homedir())/Dropbox/PostDoc/2014_Lego/Lego_Program/src/colonize_func.jl")
 include("$(homedir())/Dropbox/PostDoc/2014_Lego/Lego_Program/src/extinct_func.jl")
 include("$(homedir())/Dropbox/PostDoc/2014_Lego/Lego_Program/src/sim_func.jl")
+include("$(homedir())/Dropbox/PostDoc/2014_Lego/Lego_Program/src/trophicalc.jl")
 
 
 makevec = collect(0.0001:0.0001:0.003);
@@ -136,6 +137,7 @@ include("$(homedir())/Dropbox/PostDoc/2014_Lego/Lego_Program/src/colonizesingle_
 
 include("$(homedir())/Dropbox/PostDoc/2014_Lego/Lego_Program/src/extinct_func2.jl")
 include("$(homedir())/Dropbox/PostDoc/2014_Lego/Lego_Program/src/sim_func.jl")
+include("$(homedir())/Dropbox/PostDoc/2014_Lego/Lego_Program/src/trophicalc2.jl")
 
 
 #Establish community template
@@ -143,7 +145,7 @@ S = 400;
 probs = [
 p_n=0.004,
 p_a=0.01,
-p_m=0.002,
+p_m=0.0002,
 p_i= 1 - sum([p_n,p_m,p_a]) #Ignore with 1 - pr(sum(other))
 ]
 #int_m, sp_m, t_m, tp_m, tind_m = build_template_degrees(num_play,probs);
@@ -165,10 +167,11 @@ connind = Array{Float64}(tmax);
 ext_prim = Array{Int64}(tmax);
 ext_sec = Array{Int64}(tmax);
 pot_col = Array(Array{Int64},tmax);
+tl = Array{Float64}(tmax);
 ppweight = 1/4;
 sim=false;
 par=false;
-calcpotcol == false;
+calcpotcol = false;
 
 window = 20;
 mrich = zeros(0);
@@ -252,8 +255,8 @@ status = "open"; #I don't think we need this now
     sumcol=0;
     sumext=0;
   end
-
-
+  
+  tl[t] = maximum(trophicalc(com_tp));
 
   # #Counting probabilities of a, n, i, m, e within simulated communities
   # com_int = sum(vec(int_mc[cid,cid]).==vec(['a', 'n', 'i', 'm'])',1)./(length(cid)^2);
@@ -271,6 +274,11 @@ if calcpotcol==true
     lpotcol[i]=length(pot_col[i])
   end
 end
+
+
+#Calculate the final distribution of trophic levels
+tl = trophicalc(com_tp);
+
 
 namespace = "$(homedir())/Dropbox/PostDoc/2014_Lego/Lego_Program/figures/";
 R"""
