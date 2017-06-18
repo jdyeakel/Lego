@@ -33,7 +33,7 @@ rate_col = 1;
 varvec = [0.0001 0.001 0.002];
 numsp = Array(Array{Int64},length(varvec));
 potcol = Array(Array{Int64},length(varvec));
-trophic = Array(Array{Int64},length(varvec));
+trophic = Array(Array{Float64},length(varvec));
 for i=1:length(varvec)
   println("i=",i)
 
@@ -155,7 +155,7 @@ rate_col = 1;
 varvec = [0.2 0.3 0.4];
 numsp = Array(Array{Int64},length(varvec));
 potcol = Array(Array{Int64},length(varvec));
-trophic = Array(Array{Int64},length(varvec));
+trophic = Array(Array{Float64},length(varvec));
 for i=1:length(varvec)
   println("i=",i)
 
