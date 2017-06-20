@@ -12,6 +12,7 @@ function reppak(S,reps,tmax,a_thresh,n_thresh,trophicload,rate_col,probs,ppweigh
   ext_sec = SharedArray{Int64}(tmax,reps);
   pot_col = SharedArray{Int64}(tmax,reps);
   mtroph = SharedArray{Float64}(tmax,reps);
+  maxtroph = SharedArray{Float64}(tmax,reps);
   num_sp = SharedArray{Int64}(reps);
   
   @sync @parallel for r=1:reps
@@ -56,7 +57,9 @@ function reppak(S,reps,tmax,a_thresh,n_thresh,trophicload,rate_col,probs,ppweigh
       
       #Average trophic level
       if mod(t,1) == 0
-        mtroph[t,r] = mean(trophicalc(com_tp));
+        tlist = trophicalc(com_tp);
+        mtroph[t,r] = mean(tlist);
+        maxtroph[t,r] = maximum(tlist);
       end
       
       
@@ -77,7 +80,8 @@ function reppak(S,reps,tmax,a_thresh,n_thresh,trophicload,rate_col,probs,ppweigh
   ext_sec,
   pot_col,
   num_sp,
-  mtroph
+  mtroph,
+  maxtroph
   )
   
 end
