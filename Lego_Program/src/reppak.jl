@@ -15,6 +15,11 @@ function reppak(S,reps,tmax,a_thresh,n_thresh,trophicload,rate_col,probs,ppweigh
   maxtroph = SharedArray{Float64}(tmax,reps);
   num_sp = SharedArray{Int64}(reps);
   
+  
+  
+  
+  
+  
   @sync @parallel for r=1:reps
     
     int_m, sp_m, t_m, tp_m, tind_m, mp_m, mind_m, simvalue = build_template_species(S,probs,ppweight);
@@ -33,6 +38,7 @@ function reppak(S,reps,tmax,a_thresh,n_thresh,trophicload,rate_col,probs,ppweigh
     rich[r,1] = length(comid);
     sprich[r,1] = 1;
     
+    trophiclist = Array(Array{Float64},tmax);
     t=0;
     while status == "open" && t <= tmax
       t = t+1;
@@ -58,7 +64,8 @@ function reppak(S,reps,tmax,a_thresh,n_thresh,trophicload,rate_col,probs,ppweigh
       #Average trophic level
       if mod(t,1) == 0
         tlist = trophicalc(com_tp);
-        mtroph[t,r] = mean(tlist);
+        trophiclist[t] = tlist;
+        mtroph[t,r] = median(tlist);
         maxtroph[t,r] = maximum(tlist);
       end
       

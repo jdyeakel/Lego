@@ -49,6 +49,8 @@ function extinct_func2(int_m,tp_m,a_thresh,n_thresh,trophicload,cid,c_m,crev_m,c
 
     #Determine the Predation and Competition Load for each species
     pred_vec = zeros(num_comsp);
+    num_secmut = zeros(num_comsp);
+    trophicloadsp = zeros(num_comsp);
     # vuln_vec = zeros(num_comsp);
     # comp_vec = zeros(num_comsp);
     for i=1:num_comsp
@@ -63,39 +65,47 @@ function extinct_func2(int_m,tp_m,a_thresh,n_thresh,trophicload,cid,c_m,crev_m,c
       #Found in the reverse vector
       #Adding the '1' adds in the basal resource
       pred_vec[i] = length(find(x->x=='a',intrev[[1;cid]]));
-
-      #NOTE: Not using vulnerability right now
-      # vuln_vec[i] = (1/(L/lS))*pred_vec[i]
-
-      #NOTE: in this version, only trophic load is being calculated!
       
-      # #What is the max similarity?
-      # comp_load = Array{Float64}(num_comsp);
-      # for j=1:num_comsp
-      #   if sim == true
-      #     #NOTE USE THIS IF SIMS ARE CALCULATED A PRIORI
-      #     comp_load[j] = simvalue[spcid[i],spcid[j]];
-      #   else
-      #     #NOTE USE THIS IF SIMS ARE NOT CALCULATED A PRIORI
-      #     intj = copy(int_m[spcid[j],:]);
-      #     seq1 = copy(inti);
-      #     seq2 = copy(intj);
-      #     comp_load[j] = sim_func(seq1,seq2,num_play);
-      #   end
-      # end
-      # #set itself to zero - otherwise it will be max
-      # comp_load[i] = 0.0;
-      # comp_vec[i] = maximum(comp_load);
+      
+      #Determine the number of second order mutualisms for species
+      #1) find need interactions
+      ncid = cid[find(x->x!=spcid[i],cid)];
+      first_ints = [int_m[ncid,spcid[i]] int_m[spcid[i],ncid]];
+      sec_n = Array{Int64}(0);
+      for j=1:length(ncid)
+        # If the interaction is a mutualism
+        if (first_ints[j,1] == 'n' && first_ints[j,2] == 'n') || (first_ints[j,1] == 'a' && first_ints[j,2] == 'n') || (first_ints[j,1] == 'n' && first_ints[j,2] == 'a')
+          #Find secondary mutualistic interactions
+          sec_ncid = ncid[find(x->x!=ncid[j],ncid)];
+          sec_ints = [int_m[sec_ncid,ncid[j]] int_m[ncid[j],sec_ncid]];
+          if length(sec_ints) > 0
+            for k=1:length(sec_ncid)
+              if (sec_ints[k,1] == 'n' && sec_ints[k,2] == 'n') || (sec_ints[k,1] == 'a' && sec_ints[k,2] == 'n') || (sec_ints[k,1] == 'n' && sec_ints[k,2] == 'a')
+                #If the secondary interaction is a mutualism, record
+                push!(sec_n,sec_ncid[k])
+              end
+            end
+          end
+        end
+      end
+      
+      #what is the number of secondary mutualistic interactors?
+      num_secmut[i] = length(sec_n);
+      trophicloadsp[i] = 1 + 1/(1/(trophicload - 1) + exp(num_secmut[i] - 2));
+      
     end
     #vulnscaled_vec = vuln_vec ./ maximum(vuln_vec);
 
     #Calculate the probability of extinction based on predation load and competitive load
-    #NOTE: Should this be based on the global properties or local properties???
+    #NOTE: Should this be based on the global properties or local properties??? Yes.
+    
+    
+    
     #Global number of links
     gL = sum(tp_m);
     #Global number of species
     gS = length(find(x->x=='n',diag(int_m)));
-    prext_pred = (1./(1.+exp(-0.5.*(pred_vec.-(trophicload*(gL/gS)) ))));
+    prext_pred = (1./(1.+exp(-0.5.*(pred_vec.-(trophicload.*(gL/gS)) ))));
     #prext_comp = (1./(1.+exp(-10.*(comp_vec.-0.5))));
     #prext = prext_pred.*prext_comp;
     

@@ -23,7 +23,7 @@ using JLD
 
 S = 400;
 reps = 100;
-tmax = 1000;
+tmax = 405; #Because we are just packing the community, the max time step should be S+error (from build_template_species.jl)
 
 a_thresh = 0;
 trophicload = 2;
@@ -57,7 +57,8 @@ for i=1:length(varvec)
   ext_sec,
   pot_col,
   num_sp,
-  mtroph = reppak(S,reps,tmax,a_thresh,n_thresh,trophicload,rate_col,probs,ppweight);
+  mtroph,
+  maxtroph = reppak(S,reps,tmax,a_thresh,n_thresh,trophicload,rate_col,probs,ppweight);
 
   potcol[i] = pot_col;
   numsp[i] = num_sp;
@@ -75,7 +76,7 @@ save(namespace,"potcol",potcol,"numsp",numsp,"trophic",trophic,"maxtrophic",maxt
 
 S = 400;
 reps = 100;
-tmax = 1000;
+tmax = 405;
 
 a_thresh = 0;
 trophicload = 2;
@@ -124,7 +125,11 @@ save(namespace,"potcol",potcol,"numsp",numsp,"trophic",trophic,"maxtrophic",maxt
 
 # quit()
 
+R"plot(seq(1,$tmax)/$num_sp[r],$(pot_col[:,r]/num_sp[r]))"
+R"plot(seq(1,$tmax)/$num_sp[r],$(mtroph[:,r]))"
 
+
+R"plot($(pot_col[:,r]/num_sp[r]),$(mtroph[:,r]))"
 
 ###Plotting###
 
@@ -132,7 +137,7 @@ save(namespace,"potcol",potcol,"numsp",numsp,"trophic",trophic,"maxtrophic",maxt
 
 varvec_pm = [0.0001 0.001 0.002];
 varvec_nt = [0.2 0.3 0.4];
-tmax = 1000;
+tmax = 405;
 
 dpm = load("$(homedir())/Dropbox/PostDoc/2014_Lego/Lego_Program/data/assemble_pm.jld");
 potcol_pm = dpm["potcol"];
@@ -153,8 +158,9 @@ pdf($namespace,width=12,height=10);
 par(mfrow=c(2,2));
 pcol = apply($(potcol_pm[1]),1,mean);
 pcolsd = apply($(potcol_pm[1]),1,sd);
-plot(seq(1,$tmax)/$(numsp_pm[1][1]),pcol/$(numsp_pm[1][1]),type='l',xlim=c(0,1),ylim=c(0,0.25),xlab='Proportion filled',ylab='Proportion potential colonizers',col=cols[1],lwd=3)
-polygon(x=c(seq(1,$tmax)/$(numsp_pm[1][1]),rev(seq(1,$tmax)/$(numsp_pm[1][1]))),y=c((pcol-pcolsd)/$(numsp_pm[1][1]),rev((pcol+pcolsd)/$(numsp_pm[1][1]))),col=cols[1],border=NA)
+ns = mean($(numsp_pm[1]));
+plot(seq(1,$tmax)/ns,pcol/ns,type='l',xlim=c(0,1),ylim=c(0,0.25),xlab='Proportion filled',ylab='Proportion potential colonizers',col=cols[1],lwd=3)
+polygon(x=c(seq(1,$tmax)/ns,rev(seq(1,$tmax)/ns)),y=c((pcol-pcolsd)/ns,rev((pcol+pcolsd)/ns)),col=cols[1],border=NA)
 legend(x=0.8,y=0.25,legend=$varvec_pm,col=cols,pch=16,title='pr(m)' ,cex=1,bty='n');
 """
 for i=2:length(varvec_pm)
@@ -162,7 +168,7 @@ for i=2:length(varvec_pm)
   pcol = apply($(potcol_pm[i]),1,mean);
   pcolsd = apply($(potcol_pm[i]),1,sd);
   ns = mean($(numsp_pm[i]));
-  lines(seq(1,$tmax)/$(numsp_pm[1][1]),pcol/$(numsp_pm[1][1]),type='l',xlim=c(0,1),ylim=c(0,0.3),col=cols[$i],lwd=3)
+  lines(seq(1,$tmax)/ns,pcol/ns,type='l',xlim=c(0,1),ylim=c(0,0.3),col=cols[$i],lwd=3)
   polygon(x=c(seq(1,$tmax)/ns,rev(seq(1,$tmax)/ns)),y=c((pcol-pcolsd)/ns,rev((pcol+pcolsd)/ns)),col=cols[$i],border=NA)
   """
 end
@@ -179,8 +185,9 @@ for (i in 1:length(cols)) {cols[i] = paste(cols[i],'70',sep='')}
 #par(mfrow=c(1,2));
 pcol = apply($(potcol_nt[1]),1,mean);
 pcolsd = apply($(potcol_nt[1]),1,sd);
-plot(seq(1,$tmax)/$(numsp_nt[1][1]),pcol/$(numsp_nt[1][1]),type='l',xlim=c(0,1),ylim=c(0,0.25),xlab='Proportion filled',ylab='Proportion potential colonizers',col=cols[1],lwd=3)
-polygon(x=c(seq(1,$tmax)/$(numsp_nt[1][1]),rev(seq(1,$tmax)/$(numsp_nt[1][1]))),y=c((pcol-pcolsd)/$(numsp_nt[1][1]),rev((pcol+pcolsd)/$(numsp_nt[1][1]))),col=cols[1],border=NA)
+ns = mean($(numsp_nt[1]));
+plot(seq(1,$tmax)/ns,pcol/ns,type='l',xlim=c(0,1),ylim=c(0,0.25),xlab='Proportion filled',ylab='Proportion potential colonizers',col=cols[1],lwd=3)
+polygon(x=c(seq(1,$tmax)/ns,rev(seq(1,$tmax)/ns)),y=c((pcol-pcolsd)/ns,rev((pcol+pcolsd)/ns)),col=cols[1],border=NA)
 legend(x=0.8,y=0.25,legend=$varvec_nt,col=cols,pch=16,title='n_t' ,cex=1,bty='n');
 """
 for i=2:length(varvec_nt)
@@ -188,7 +195,7 @@ for i=2:length(varvec_nt)
   pcol = apply($(potcol_nt[i]),1,mean);
   pcolsd = apply($(potcol_nt[i]),1,sd);
   ns = mean($(numsp_nt[i]));
-  lines(seq(1,$tmax)/$(numsp_nt[1][1]),pcol/$(numsp_nt[1][1]),type='l',xlim=c(0,1),ylim=c(0,0.3),col=cols[$i],lwd=3)
+  lines(seq(1,$tmax)/ns,pcol/ns,type='l',xlim=c(0,1),ylim=c(0,0.3),col=cols[$i],lwd=3)
   polygon(x=c(seq(1,$tmax)/ns,rev(seq(1,$tmax)/ns)),y=c((pcol-pcolsd)/ns,rev((pcol+pcolsd)/ns)),col=cols[$i],border=NA)
   """
 end
@@ -205,8 +212,9 @@ for (i in 1:length(cols)) {cols[i] = paste(cols[i],'70',sep='')}
 #par(mfrow=c(1,2));
 trm = apply($(trophic_pm[1]),1,mean);
 trsd = apply($(trophic_pm[1]),1,sd);
-plot(seq(1,$tmax)/$(numsp_pm[1][1]),trm,type='l',xlim=c(0,1),ylim=c(0,10),xlab='Proportion filled',ylab='Trophic level',col=cols[1],lwd=3)
-polygon(x=c(seq(1,$tmax)/$(numsp_pm[1][1]),rev(seq(1,$tmax)/$(numsp_pm[1][1]))),y=c((trm-trsd),rev(trm+trsd)),col=cols[1],border=NA)
+ns = mean($(numsp_pm[1]));
+plot(seq(1,$tmax)/ns,trm,type='l',xlim=c(0,1),ylim=c(0,10),xlab='Proportion filled',ylab='Trophic level',col=cols[1],lwd=3)
+polygon(x=c(seq(1,$tmax)/ns,rev(seq(1,$tmax)/ns)),y=c((trm-trsd),rev(trm+trsd)),col=cols[1],border=NA)
 legend(x=0.8,y=10,legend=$varvec_pm,col=cols,pch=16,title='pr(m)' ,cex=1,bty='n');
 """
 for i=2:length(varvec_pm)
@@ -214,7 +222,7 @@ for i=2:length(varvec_pm)
   trm = apply($(trophic_pm[i]),1,mean);
   trsd = apply($(trophic_pm[i]),1,sd);
   ns = mean($(numsp_pm[i]));
-  lines(seq(1,$tmax)/$(numsp_pm[1][1]),trm,type='l',xlim=c(0,1),ylim=c(0,0.3),col=cols[$i],lwd=3)
+  lines(seq(1,$tmax)/ns,trm,type='l',xlim=c(0,1),ylim=c(0,0.3),col=cols[$i],lwd=3)
   polygon(x=c(seq(1,$tmax)/ns,rev(seq(1,$tmax)/ns)),y=c((trm-trsd),rev((trm+trsd))),col=cols[$i],border=NA)
   """
 end
@@ -231,8 +239,9 @@ for (i in 1:length(cols)) {cols[i] = paste(cols[i],'70',sep='')}
 #par(mfrow=c(1,2));
 trm = apply($(trophic_nt[1]),1,mean);
 trsd = apply($(trophic_nt[1]),1,sd);
-plot(seq(1,$tmax)/$(numsp_nt[1][1]),trm,type='l',xlim=c(0,1),ylim=c(0,10),xlab='Proportion filled',ylab='Trophic level',col=cols[1],lwd=3)
-polygon(x=c(seq(1,$tmax)/$(numsp_nt[1][1]),rev(seq(1,$tmax)/$(numsp_nt[1][1]))),y=c((trm-trsd),rev(trm+trsd)),col=cols[1],border=NA)
+ns = mean($(numsp_nt[1]));
+plot(seq(1,$tmax)/ns,trm,type='l',xlim=c(0,1),ylim=c(0,10),xlab='Proportion filled',ylab='Trophic level',col=cols[1],lwd=3)
+polygon(x=c(seq(1,$tmax)/ns,rev(seq(1,$tmax)/ns)),y=c((trm-trsd),rev(trm+trsd)),col=cols[1],border=NA)
 legend(x=0.8,y=10,legend=$varvec_nt,col=cols,pch=16,title='n_t' ,cex=1,bty='n');
 """
 for i=2:length(varvec_nt)
@@ -240,7 +249,7 @@ for i=2:length(varvec_nt)
   trm = apply($(trophic_nt[i]),1,mean);
   trsd = apply($(trophic_nt[i]),1,sd);
   ns = mean($(numsp_nt[i]));
-  lines(seq(1,$tmax)/$(numsp_nt[1][1]),trm,type='l',xlim=c(0,1),ylim=c(0,0.3),col=cols[$i],lwd=3)
+  lines(seq(1,$tmax)/ns,trm,type='l',xlim=c(0,1),ylim=c(0,0.3),col=cols[$i],lwd=3)
   polygon(x=c(seq(1,$tmax)/ns,rev(seq(1,$tmax)/ns)),y=c((trm-trsd),rev((trm+trsd))),col=cols[$i],border=NA)
   """
 end
