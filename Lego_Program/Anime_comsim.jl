@@ -138,6 +138,7 @@ include("$(homedir())/Dropbox/PostDoc/2014_Lego/Lego_Program/src/colonizesingle_
 include("$(homedir())/Dropbox/PostDoc/2014_Lego/Lego_Program/src/extinct_func2.jl")
 include("$(homedir())/Dropbox/PostDoc/2014_Lego/Lego_Program/src/sim_func.jl")
 include("$(homedir())/Dropbox/PostDoc/2014_Lego/Lego_Program/src/trophicalc2.jl")
+include("$(homedir())/Dropbox/PostDoc/2014_Lego/Lego_Program/src/trophicwidth.jl")
 
 
 #Establish community template
@@ -145,7 +146,7 @@ S = 400;
 probs = [
 p_n=0.004,
 p_a=0.01,
-p_m=0.0002,
+p_m=0.002,
 p_i= 1 - sum([p_n,p_m,p_a]) #Ignore with 1 - pr(sum(other))
 ]
 #int_m, sp_m, t_m, tp_m, tind_m = build_template_degrees(num_play,probs);
@@ -156,7 +157,7 @@ rate_col = 1;
 a_thresh = 0.0;
 n_thresh = 0.2;
 trophicload = 2;
-tmax = 1000;
+tmax = 3000;
 CID = (Array{Int64,1})[];
 fwt = Array(Array{Int64},tmax);
 com_probs = Array{Float64}(tmax,4);
@@ -168,6 +169,12 @@ ext_prim = Array{Int64}(tmax);
 ext_sec = Array{Int64}(tmax);
 pot_col = Array(Array{Int64},tmax);
 tl = Array{Float64}(tmax);
+tw = Array{Float64}(tmax);
+twsd = Array{Float64}(tmax);
+twind = Array{Float64}(tmax);
+twindsd = Array{Float64}(tmax);
+
+
 ppweight = 1/4;
 sim=false;
 par=false;
@@ -257,6 +264,11 @@ status = "open"; #I don't think we need this now
   end
   
   tl[t] = maximum(trophicalc(com_tp));
+  tw[t] = mean(trophicwidth(com_tp));
+  twsd[t] = std(trophicwidth(com_tp));
+  
+  twind[t] = mean(trophicwidth(com_tind));
+  twindsd[t] = std(trophicwidth(com_tind));
 
   # #Counting probabilities of a, n, i, m, e within simulated communities
   # com_int = sum(vec(int_mc[cid,cid]).==vec(['a', 'n', 'i', 'm'])',1)./(length(cid)^2);
@@ -274,6 +286,12 @@ if calcpotcol==true
     lpotcol[i]=length(pot_col[i])
   end
 end
+
+R"par(mfrow=c(2,2));plot($tw,type='l',log='x')"
+R"plot($twsd,type='l',log='x')"
+R"plot($twind,type='l',log='x')"
+R"plot($twindsd,type='l',log='x')"
+
 
 
 #Calculate the final distribution of trophic levels

@@ -124,12 +124,12 @@ namespace = "$(homedir())/Dropbox/PostDoc/2014_Lego/Lego_Program/data/assemble_n
 save(namespace,"potcol",potcol,"numsp",numsp,"trophic",trophic,"maxtrophic",maxtrophic);
 
 # quit()
-
-R"plot(seq(1,$tmax)/$num_sp[r],$(pot_col[:,r]/num_sp[r]))"
-R"plot(seq(1,$tmax)/$num_sp[r],$(mtroph[:,r]))"
-
-
-R"plot($(pot_col[:,r]/num_sp[r]),$(mtroph[:,r]))"
+# 
+# R"plot(seq(1,$tmax)/$num_sp[r],$(pot_col[:,r]/num_sp[r]))"
+# R"plot(seq(1,$tmax)/$num_sp[r],$(mtroph[:,r]))"
+# 
+# 
+# R"plot($(pot_col[:,r]/num_sp[r]),$(mtroph[:,r]))"
 
 ###Plotting###
 
