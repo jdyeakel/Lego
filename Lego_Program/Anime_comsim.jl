@@ -287,10 +287,17 @@ if calcpotcol==true
   end
 end
 
-R"par(mfrow=c(2,2));plot($tw,type='l',log='x')"
-R"plot($twsd,type='l',log='x')"
-R"plot($twind,type='l',log='x')"
-R"plot($twindsd,type='l',log='x')"
+namespace = "$(homedir())/Dropbox/PostDoc/2014_Lego/Lego_Program/figures/";
+R"""
+pdf(paste($namespace,"fig_trophicwidth.pdf",sep=""),width=8,height=4)
+par(mfrow=c(1,2));plot($tw,type='l',log='x',xlab='Time',ylab='Trophic overlap mean')
+plot($twsd,type='l',log='x',xlab='Time',ylab='Trophic overlap SD')
+dev.off()
+"""
+
+
+R"plot($twind,type='l',log='x',xlab='Time',ylab='Indirect trophic width')"
+R"plot($twindsd,type='l',log='x',xlab='Time',ylab='Indirect trophic width SD')"
 
 
 
