@@ -50,6 +50,8 @@ function extinct_func2(int_m,tp_m,a_thresh,n_thresh,trophicload,cid,c_m,crev_m,c
     #Determine the Predation and Competition Load for each species
     pred_vec = zeros(num_comsp);
     num_secmut = zeros(num_comsp);
+    num_primmut = zeros(num_comsp);
+    mut_load = zeros(num_comsp);
     trophicloadsp = zeros(num_comsp);
     # vuln_vec = zeros(num_comsp);
     # comp_vec = zeros(num_comsp);
@@ -72,9 +74,12 @@ function extinct_func2(int_m,tp_m,a_thresh,n_thresh,trophicload,cid,c_m,crev_m,c
       ncid = cid[find(x->x!=spcid[i],cid)];
       first_ints = [int_m[ncid,spcid[i]] int_m[spcid[i],ncid]];
       sec_n = Array{Int64}(0);
+      num_primmut[i] = 0;
       for j=1:length(ncid)
         # If the interaction is a mutualism
         if (first_ints[j,1] == 'n' && first_ints[j,2] == 'n') || (first_ints[j,1] == 'a' && first_ints[j,2] == 'n') || (first_ints[j,1] == 'n' && first_ints[j,2] == 'a')
+          #Number of primary mutualistic partners
+          num_primmut[i] += 1;
           #Find secondary mutualistic interactions
           sec_ncid = ncid[find(x->x!=ncid[j],ncid)];
           sec_ints = [int_m[sec_ncid,ncid[j]] int_m[ncid[j],sec_ncid]];
@@ -88,10 +93,24 @@ function extinct_func2(int_m,tp_m,a_thresh,n_thresh,trophicload,cid,c_m,crev_m,c
           end
         end
       end
-      
       #what is the number of secondary mutualistic interactors?
       num_secmut[i] = length(sec_n);
-      trophicloadsp[i] = 1 + 1/(1/(trophicload - 1) + exp(num_secmut[i] - 2));
+      
+      #The smaller the mutualistic load, the lower the extinction probability
+      #Mutualistic load is small if there are many primary mutualistic partners relative to the number of secondary mutualistic partners (higher efficiency)
+      #Mutualstic load is large if there are few primary mutualistic partners relative to the numberr of secondary mutualistic parterns (lower efficiency)
+      if num_primmut[i] == 0
+        mut_load[i] = 0;
+      else
+        mut_load[i] = num_secmut[i]/num_primmut[i];
+      end
+      
+      maxtl = 2;
+      mintl = 1;
+      #the sensitivity of trophic load to mutualistic load
+      #lower values mean less sensitivity
+      mutsens = 1;
+      trophicloadsp[i] = mintl + 1/(1/(trophicload - mintl) + mutsens*exp(mut_load[i] - maxtl));
       
     end
     #vulnscaled_vec = vuln_vec ./ maximum(vuln_vec);
@@ -105,11 +124,11 @@ function extinct_func2(int_m,tp_m,a_thresh,n_thresh,trophicload,cid,c_m,crev_m,c
     gL = sum(tp_m);
     #Global number of species
     gS = length(find(x->x=='n',diag(int_m)));
-    prext_pred = (1./(1.+exp(-0.5.*(pred_vec.-(trophicload.*(gL/gS)) ))));
+    prext_pred = (1./(1.+exp(-0.5.*(pred_vec.-(trophicloadsp.*(gL/gS)) ))));
     #prext_comp = (1./(1.+exp(-10.*(comp_vec.-0.5))));
     #prext = prext_pred.*prext_comp;
     
-    prext = prext_pred;
+    prext = copy(prext_pred);
 
     #Determine extinction with a binomial draw based on the probability of extinction calculated above
     binext = Array{Int64}(num_comsp);
