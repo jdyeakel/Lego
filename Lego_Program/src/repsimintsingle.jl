@@ -10,6 +10,7 @@ function repsimintsingle(S,reps,tmax,a_thresh,n_thresh,trophicload,rate_col,prob
   ext_prim = SharedArray{Int64}(tmax,reps);
   ext_sec = SharedArray{Int64}(tmax,reps);
   tw = SharedArray{Float64}(tmax,reps);
+  twind = SharedArray{Float64}(tmax,reps);
   #int_mv = SharedArray{Char}(num_play*reps,num_play);
 
   @sync @parallel for r=1:reps
@@ -42,6 +43,7 @@ function repsimintsingle(S,reps,tmax,a_thresh,n_thresh,trophicload,rate_col,prob
       conn[t,r] = (sum(com_tp))/(sprich[t,r]^2);
       rich[t,r] = length(cid);
       tw[t,r] = mean(trophicwidth(com_tp));
+      twind[t,r] = mean(trophicwidth(com_tind));
       #comgen[r,cid,t] = 1;
     end #end time loop
     #int_mv[1+(r-1)*num_play:num_play*r,1:num_play] = int_m;
@@ -57,7 +59,8 @@ function repsimintsingle(S,reps,tmax,a_thresh,n_thresh,trophicload,rate_col,prob
   #comgen,
   ext_prim,
   ext_sec,
-  tw
+  tw,
+  twind
   )
 
 end
