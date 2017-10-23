@@ -1,3 +1,4 @@
+
 using Distributions
 using RCall
 #using PyCall
@@ -139,6 +140,9 @@ include("$(homedir())/Dropbox/PostDoc/2014_Lego/Lego_Program/src/extinct_func2.j
 include("$(homedir())/Dropbox/PostDoc/2014_Lego/Lego_Program/src/sim_func.jl")
 include("$(homedir())/Dropbox/PostDoc/2014_Lego/Lego_Program/src/trophicalc2.jl")
 include("$(homedir())/Dropbox/PostDoc/2014_Lego/Lego_Program/src/trophicwidth.jl")
+include("$(homedir())/Dropbox/PostDoc/2014_Lego/Lego_Program/src/Jmatrix.jl")
+include("$(homedir())/Dropbox/PostDoc/2014_Lego/Lego_Program/src/PSWebs.jl")
+include("$(homedir())/Dropbox/PostDoc/2014_Lego/Lego_Program/src/movingaverage.jl")
 
 
 #Establish community template
@@ -157,9 +161,13 @@ rate_col = 1;
 a_thresh = 0.0;
 n_thresh = 0.2;
 trophicload = 2;
-tmax = 3000;
+tmax = 500;
 CID = (Array{Int64,1})[];
+SPCID = (Array{Int64,1})[];
 fwt = Array(Array{Int64},tmax);
+fwtind = Array(Array{Int64},tmax);
+fwm = Array(Array{Int64},tmax);
+fwmind = Array(Array{Int64},tmax);
 com_probs = Array{Float64}(tmax,4);
 rich = Array{Int64}(tmax);
 sprich = Array{Int64}(tmax);
@@ -226,8 +234,7 @@ status = "open"; #I don't think we need this now
 	#Save primary and secondary extinction information
 
   ext_prim[t] = extinctions[1];
-	ext_sec[t] = extinctions[2];
-  sumext = sumext + sum(extinctions);
+  ext_sec[t] = extinctions[2];
 
   S = length(spcid);
   # length(unique(cid))-length(cid)
@@ -240,9 +247,13 @@ status = "open"; #I don't think we need this now
   #println("Richness = ",rich[t])
 
   push!(CID,copy(cid));
+  push!(SPCID,copy(spcid));
   comgen[t,cid] = 1;
-  fwt[t] = com_tind;
-
+  fwt[t] = copy(com_tp);
+  fwtind[t] = copy(com_tind);
+  fwm[t] = copy(com_mp);
+  fwmind[t] = copy(com_mind);
+  
   int_mc = copy(int_m);
   for i=1:num_play
     int_mc[i,i]='0';
@@ -278,6 +289,7 @@ status = "open"; #I don't think we need this now
 end
 #writedlm("/Users/justinyeakel/Dropbox/PostDoc/2014_Lego/Lego_Program/data/comgen.csv",comgen);
 obrich = rich.-sprich;
+ext_tot = ext_prim .+ ext_sec;
 
 #namespace = "$(homedir())/Dropbox/PostDoc/2014_Lego/Lego_Program/figures/"
 if calcpotcol==true
@@ -286,6 +298,47 @@ if calcpotcol==true
     lpotcol[i]=length(pot_col[i])
   end
 end
+
+
+##########################
+#Proportion of stable webs
+##########################
+psw = zeros(Float64,tmax);
+pswind = zeros(Float64,tmax);
+for t=1:tmax
+    sigma = 0.4
+    reps = 20;
+    psw[t] = PSWebs(fwt[t],fwm[t],sigma,reps);
+    pswind[t] = PSWebs(fwtind[t],fwmind[t],sigma,reps);
+    if mod(t,100)==0
+      println(string("t=",t))
+    end
+end
+
+
+R"""
+par(mfrow=c(2,1))
+plot($psw)
+points($pswind,col='blue')
+plot($sprich,$psw)
+points($sprich,$pswind,col='blue')
+"""
+
+#PSW at time t vs. Primary extinctions at t+1
+R"""
+plot(jitter($(psw[1:tmax-1])),$(ext_prim[2:tmax]),ylab='Number prim extinctions @ time t+1',xlab='PSW @ time t')
+points(jitter($(pswind[1:tmax-1])),$(ext_prim[2:tmax]),col='blue')
+"""
+
+delay=1;
+R"""
+plot(jitter($(pswind[1:tmax-delay])),$(ext_prim[delay+1:tmax]),ylab=paste('Number prim extinctions @ time t+',$delay,sep=''),xlab='PSW @ time t')
+points(jitter($(pswind[1:tmax-delay])),$(ext_sec[delay+1:tmax]),ylab=paste('Number prim extinctions @ time t+',$delay,sep=''),xlab='PSW @ time t',pch=16,cex=0.8)
+"""
+
+delay=1;
+R"plot(jitter($(pswind[1:tmax-delay])),$(ext_prim[delay+1:tmax])/$(sprich[delay+1:tmax]),col='blue',ylab=paste('Number prim extinctions @ time t+',$delay,sep=''),xlab='PSW @ time t')"
+
 
 namespace = "$(homedir())/Dropbox/PostDoc/2014_Lego/Lego_Program/figures/";
 R"""
@@ -315,8 +368,6 @@ recol=$(find(x->x==0,sprich));
 points(recol,rep(0,length(recol)))
 #dev.off()
 """
-
-
 
 R"""
 #pdf(paste($namespace,"fig_colextrates.pdf",sep=""),width=6,height=5)
