@@ -19,10 +19,14 @@
 @everywhere include("$(homedir())/Dropbox/PostDoc/2014_Lego/Lego_Program/src/extinct_func.jl")
 @everywhere include("$(homedir())/Dropbox/PostDoc/2014_Lego/Lego_Program/src/extinct_func2.jl")
 @everywhere include("$(homedir())/Dropbox/PostDoc/2014_Lego/Lego_Program/src/sim_func.jl")
+
 @everywhere include("$(homedir())/Dropbox/PostDoc/2014_Lego/Lego_Program/src/trophicalc2.jl")
 @everywhere include("$(homedir())/Dropbox/PostDoc/2014_Lego/Lego_Program/src/trophicwidth.jl")
 
+@everywhere include("$(homedir())/Dropbox/PostDoc/2014_Lego/Lego_Program/src/Jmatrix.jl")
+@everywhere include("$(homedir())/Dropbox/PostDoc/2014_Lego/Lego_Program/src/PSWebs.jl")
 
+@everywhere include("$(homedir())/Dropbox/PostDoc/2014_Lego/Lego_Program/src/movingaverage.jl")
 
 #Read-only variables
 #Establish colonization and extinction rates
@@ -30,8 +34,8 @@ rate_col = 1;
 #Establish thresholds
 a_thresh = 0;
 
-tmax = 200;
-reps=200;
+tmax = 500;
+reps=50;
 
 
 #Establish community template
@@ -48,6 +52,7 @@ n_thresh = 0.2;
 trophicload = 2;
 ppweight = 1/4;
 
+runpsw=true;
 
 sprich,
 rich,
@@ -56,7 +61,66 @@ conn,
 ext_prim,
 ext_sec,
 tw,
-twind = repsimintsingle(S,reps,tmax,a_thresh,n_thresh,trophicload,rate_col,probs,ppweight);
+twind,
+psw,
+pswind = repsimintsingle(S,reps,tmax,a_thresh,n_thresh,trophicload,rate_col,probs,ppweight,runpsw);
+
+
+####################
+# Jacobian stability
+####################
+
+R"""
+library(RColorBrewer)
+pal = brewer.pal(3,"Set1")
+par(mfrow=c(2,1))
+plot($(movingaverage(psw[:,1],10)),col=pal[1],type='l',ylim=c(0,1))
+lines($(movingaverage(pswind[:,1],10)),col=pal[2])
+"""
+for i=2:reps
+    R"""
+    lines($(movingaverage(psw[:,i],10)),col=pal[1],type='l',ylim=c(0,1))
+    lines($(movingaverage(pswind[:,i],10)),col=pal[2])
+    """
+end
+R"""
+plot($(sprich[:,1]),$(psw[:,1]),col=pal[1],pch=16,cex=0.8)
+points($(sprich[:,1]),$(pswind[:,1]),col=pal[2],pch=16,cex=0.8)
+"""
+for i=2:reps
+    R"""
+    points($(sprich[:,i]),$(psw[:,i]),col=pal[1],pch=16,cex=0.8)
+    points($(sprich[:,i]),$(pswind[:,i]),col=pal[2],pch=16,cex=0.8)
+    """
+end
+
+
+#PSW at time t vs. Primary extinctions at t+1
+delay=1;
+R"""
+plot($(pswind[:,1][1:tmax-delay]),$(ext_prim[:,1][(delay+1):tmax]),ylab='# primary extinctions @ time t+1',xlab='PSW @ time t',col=pal[1],pch=16,cex=0.4,ylim=c(0,3))
+"""
+for i=2:reps
+    R"""
+    points($(pswind[:,i][1:tmax-delay]),jitter($(ext_prim[:,i][(delay+1):tmax])),ylab='Number prim extinctions @ time t+1',xlab='PSW @ time t',col=pal[1],pch=16,cex=0.4)
+    """
+end
+for i=0:3
+    keep = find(x->x==i,ext_prim);
+    psw_ext = pswind[keep];
+    println(median(psw_ext))
+    if i==0
+        R"""
+        library(RColorBrewer)
+        pal = brewer.pal(3,"Set1")
+        hist($psw_ext,col=pal[$i+1],freq=FALSE,breaks=20)
+        """
+    else
+        R"""hist($psw_ext,add=TRUE,col=pal[$i+1],freq=FALSE,breaks=20)"""
+    end
+end
+
+
 
 i=4
 R"plot($(tw[:,i]),type='l')"

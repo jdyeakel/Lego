@@ -22,10 +22,10 @@ function Jmatrix(m_tp_full,m_mp_full)
     
     #find predation (+,-) interactions
     tint = find(x->x==1,m_tp);
-    tintloc = [ind2sub(size(m_tp), ind) for ind in tint];
+    tintloc = [ind2sub(size(m_tp), i) for i in tint];
     #find mutualistic (+,+) interactions
     mint = find(x->x==1,m_mp);
-    mintloc = [ind2sub(size(m_mp), ind) for ind in mint];
+    mintloc = [ind2sub(size(m_mp), i) for i in mint];
     
     #Assign predator-prey interactions (+1,-1)
     for i=1:length(tintloc)

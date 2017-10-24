@@ -162,6 +162,8 @@ a_thresh = 0.0;
 n_thresh = 0.2;
 trophicload = 2;
 tmax = 500;
+
+
 CID = (Array{Int64,1})[];
 SPCID = (Array{Int64,1})[];
 fwt = Array(Array{Int64},tmax);
@@ -249,6 +251,8 @@ status = "open"; #I don't think we need this now
   push!(CID,copy(cid));
   push!(SPCID,copy(spcid));
   comgen[t,cid] = 1;
+  
+  #Record interaction matrices
   fwt[t] = copy(com_tp);
   fwtind[t] = copy(com_tind);
   fwm[t] = copy(com_mp);
@@ -307,7 +311,7 @@ psw = zeros(Float64,tmax);
 pswind = zeros(Float64,tmax);
 for t=1:tmax
     sigma = 0.4
-    reps = 20;
+    reps = 50;
     psw[t] = PSWebs(fwt[t],fwm[t],sigma,reps);
     pswind[t] = PSWebs(fwtind[t],fwmind[t],sigma,reps);
     if mod(t,100)==0
@@ -317,17 +321,20 @@ end
 
 
 R"""
+library(RColorBrewer)
+pal = brewer.pal(3,"Set1")
 par(mfrow=c(2,1))
-plot($psw)
-points($pswind,col='blue')
-plot($sprich,$psw)
-points($sprich,$pswind,col='blue')
+plot($(movingaverage(psw,10)),col=pal[1],type='l',ylim=c(0,1))
+lines($(movingaverage(pswind,10)),col=pal[2])
+plot($sprich,$psw,col=pal[1],pch=16,cex=0.8)
+points($sprich,$pswind,col=pal[2],pch=16,cex=0.8)
 """
 
 #PSW at time t vs. Primary extinctions at t+1
+delay=1;
 R"""
-plot(jitter($(psw[1:tmax-1])),$(ext_prim[2:tmax]),ylab='Number prim extinctions @ time t+1',xlab='PSW @ time t')
-points(jitter($(pswind[1:tmax-1])),$(ext_prim[2:tmax]),col='blue')
+plot($(pswind[1:tmax-delay]),$(ext_prim[(delay+1):tmax]),ylab='Number prim extinctions @ time t+1',xlab='PSW @ time t',col=pal[1],pch=16,cex=0.8)
+#points(jitter($(pswind[1:tmax-delay])),$(ext_prim[delay+1:tmax]),col=pal[2],pch=16,cex=0.8)*/
 """
 
 delay=1;
@@ -337,7 +344,7 @@ points(jitter($(pswind[1:tmax-delay])),$(ext_sec[delay+1:tmax]),ylab=paste('Numb
 """
 
 delay=1;
-R"plot(jitter($(pswind[1:tmax-delay])),$(ext_prim[delay+1:tmax])/$(sprich[delay+1:tmax]),col='blue',ylab=paste('Number prim extinctions @ time t+',$delay,sep=''),xlab='PSW @ time t')"
+R"plot(jitter($(pswind[1:tmax-delay])),$(ext_sec[delay+1:tmax])/$(sprich[delay+1:tmax]),col='blue',ylab=paste('Number prim extinctions @ time t+',$delay,sep=''),xlab='PSW @ time t')"
 
 
 namespace = "$(homedir())/Dropbox/PostDoc/2014_Lego/Lego_Program/figures/";
