@@ -53,6 +53,7 @@ function extinct_func2(int_m,tp_m,a_thresh,n_thresh,trophicload,cid,c_m,crev_m,c
     num_primmut = zeros(num_comsp);
     mut_load = zeros(num_comsp);
     trophicloadsp = zeros(num_comsp);
+    prext_pred = zeros(num_comsp);
     # vuln_vec = zeros(num_comsp);
     # comp_vec = zeros(num_comsp);
     for i=1:num_comsp
@@ -100,33 +101,45 @@ function extinct_func2(int_m,tp_m,a_thresh,n_thresh,trophicload,cid,c_m,crev_m,c
       #Mutualistic load is small if there are many primary mutualistic partners relative to the number of secondary mutualistic partners (higher efficiency)
       #Mutualstic load is large if there are few primary mutualistic partners relative to the numberr of secondary mutualistic parterns (lower efficiency)
       if num_primmut[i] == 0
-        mut_load[i] = 0;
+        mut_load[i] = 1;
+        #If this is zero, it means there is no benefit to having a mutualism
+        #If this is >0, then mutualists have an advantage that wears off as they accumulate additional mutualistic partners
+        #If we have 1.0 here, then we are saying that non-mutualists are at the same 'extinction risk' as mutualists whose n partners have n other partners
+        #(i -- n*pm -- n*sm) is equivalent to (i) and 
+        #(i -- n*pm -- 2n*sm) is worse 
+        #(i -- n*pm -- <n*sm) is better
       else
         mut_load[i] = num_secmut[i]/num_primmut[i];
       end
       
-      maxtl = 2;
+      maxtl = trophicload;
       mintl = 1;
       #the sensitivity of trophic load to mutualistic load
       #lower values mean less sensitivity
       mutsens = 1;
-      trophicloadsp[i] = mintl + 1/(1/(trophicload - mintl) + mutsens*exp(mut_load[i] - maxtl));
+      trophicloadsp[i] = mintl + (1/((1/(maxtl - mintl)) + mutsens*exp(mut_load[i] - maxtl)));
+      
+      
+      #vulnscaled_vec = vuln_vec ./ maximum(vuln_vec);
+
+      #Calculate the probability of extinction based on predation load and competitive load
+      #NOTE: Should this be based on the global properties or local properties??? Yes.
+      
+      
+      #we could try to scale things to the connectance of int_m
+      #Global number of links
+      gL = sum(tp_m);
+      #Global number of species
+      gS = length(find(x->x=='n',diag(int_m)));
+      
+      #Set the baseline extinction probability
+      avgk = 8; # avgk = gL/gS;
+      prext_pred[i] = (1/(1+exp(-0.5*(pred_vec[i]-(trophicloadsp[i]*avgk)))));
+      #prext_comp = (1./(1.+exp(-10.*(comp_vec.-0.5))));
+      #prext = prext_pred.*prext_comp;
       
     end
-    #vulnscaled_vec = vuln_vec ./ maximum(vuln_vec);
-
-    #Calculate the probability of extinction based on predation load and competitive load
-    #NOTE: Should this be based on the global properties or local properties??? Yes.
     
-    
-    
-    #Global number of links
-    gL = sum(tp_m);
-    #Global number of species
-    gS = length(find(x->x=='n',diag(int_m)));
-    prext_pred = (1./(1.+exp(-0.5.*(pred_vec.-(trophicloadsp.*(gL/gS)) ))));
-    #prext_comp = (1./(1.+exp(-10.*(comp_vec.-0.5))));
-    #prext = prext_pred.*prext_comp;
     
     prext = copy(prext_pred);
 

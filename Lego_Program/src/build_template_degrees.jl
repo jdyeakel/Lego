@@ -55,7 +55,7 @@ function build_template_degrees(num_play, probs, ppweight)
 
 
   #Create an empty character array with dimensions equal to the number of players
-  int_m = Array(Char,num_play,num_play);
+  int_m = Array{Char}(num_play,num_play);
   #Matrix of trophic-only interactions
   #The number of species in the trophic and mutualistic matrices will all start out the sames size as int_m, however, the objects will be trimmed later
   t_m = zeros(Int64,num_play,num_play);
@@ -179,7 +179,7 @@ function build_template_degrees(num_play, probs, ppweight)
         #N:I - commensalism
         if r_draw > prob_line[1] && r_draw < prob_line[2]
           index = 2 #find(x -> x == "ni",new_int_labels)
-          mij = Array(Char,2)
+          mij = Array{Char}(2)
           mij[1] = rand([new_int_labels[index][1],new_int_labels[index][2]])
           if mij[1] == new_int_labels[index][1]
             mij[2] = new_int_labels[index][2]
@@ -193,7 +193,7 @@ function build_template_degrees(num_play, probs, ppweight)
         #N:M - ecosystem engineering
         if r_draw > prob_line[2] && r_draw < prob_line[3]
           index = 3 #find(x -> x == "nm",new_int_labels)
-          mij = Array(Char,2)
+          mij = Array{Char}(2)
           mij[1] = rand([new_int_labels[index][1],new_int_labels[index][2]])
           if mij[1] == new_int_labels[index][1]
             mij[2] = new_int_labels[index][2]

@@ -1,6 +1,5 @@
 
-using Distributions
-using RCall
+using Distributions, RCall
 #using PyCall
 include("$(homedir())/Dropbox/PostDoc/2014_Lego/Lego_Program/src/build_template_degrees.jl")
 include("$(homedir())/Dropbox/PostDoc/2014_Lego/Lego_Program/src/build_template_species.jl")
@@ -12,10 +11,10 @@ include("$(homedir())/Dropbox/PostDoc/2014_Lego/Lego_Program/src/trophicalc.jl")
 
 
 makevec = collect(0.0001:0.0001:0.003);
-rmakers = Array(Array{Int64},length(makevec));
-rnumneed = Array(Array{Int64},length(makevec));
-rnumassim = Array(Array{Int64},length(makevec));
-rengineering = Array(Array{Int64},length(makevec));
+rmakers = Array{Array{Int64}}(length(makevec));
+rnumneed = Array{Array{Int64}}(length(makevec));
+rnumassim = Array{Array{Int64}}(length(makevec));
+rengineering = Array{Array{Int64}}(length(makevec));
 robs = zeros(Int64,length(makevec));
 rspecies = zeros(Int64,length(makevec));
 for r=1:length(makevec)
@@ -126,24 +125,7 @@ draw(PDF("$(homedir())/Dropbox/PostDoc/2014_Lego/Lego_Program/figures/fig_fullas
 # COLONIZATION + EXTINCTION
 ############################
 ############################
-using Distributions
-#using Gadfly
-using RCall
-#using PyCall
-include("$(homedir())/Dropbox/PostDoc/2014_Lego/Lego_Program/src/build_template_degrees.jl")
-include("$(homedir())/Dropbox/PostDoc/2014_Lego/Lego_Program/src/build_template_species.jl")
-include("$(homedir())/Dropbox/PostDoc/2014_Lego/Lego_Program/src/initiate_comm_func.jl")
-include("$(homedir())/Dropbox/PostDoc/2014_Lego/Lego_Program/src/colonize_func.jl")
-include("$(homedir())/Dropbox/PostDoc/2014_Lego/Lego_Program/src/colonizesingle_func.jl")
-
-include("$(homedir())/Dropbox/PostDoc/2014_Lego/Lego_Program/src/extinct_func2.jl")
-include("$(homedir())/Dropbox/PostDoc/2014_Lego/Lego_Program/src/sim_func.jl")
-include("$(homedir())/Dropbox/PostDoc/2014_Lego/Lego_Program/src/trophicalc2.jl")
-include("$(homedir())/Dropbox/PostDoc/2014_Lego/Lego_Program/src/trophicwidth.jl")
-include("$(homedir())/Dropbox/PostDoc/2014_Lego/Lego_Program/src/Jmatrix.jl")
-include("$(homedir())/Dropbox/PostDoc/2014_Lego/Lego_Program/src/PSWebs.jl")
-include("$(homedir())/Dropbox/PostDoc/2014_Lego/Lego_Program/src/movingaverage.jl")
-
+loadfunc = include("$(homedir())/Dropbox/PostDoc/2014_Lego/Lego_Program/src/loadfuncs.jl");
 
 #Establish community template
 S = 400;
@@ -161,15 +143,15 @@ rate_col = 1;
 a_thresh = 0.0;
 n_thresh = 0.2;
 trophicload = 2;
-tmax = 500;
+tmax = 1000;
 
 
 CID = (Array{Int64,1})[];
 SPCID = (Array{Int64,1})[];
-fwt = Array(Array{Int64},tmax);
-fwtind = Array(Array{Int64},tmax);
-fwm = Array(Array{Int64},tmax);
-fwmind = Array(Array{Int64},tmax);
+fwt = Array{Array{Int64}}(tmax);
+fwtind = Array{Array{Int64}}(tmax);
+fwm = Array{Array{Int64}}(tmax);
+fwmind = Array{Array{Int64}}(tmax);
 com_probs = Array{Float64}(tmax,4);
 rich = Array{Int64}(tmax);
 sprich = Array{Int64}(tmax);
@@ -177,7 +159,7 @@ conn = Array{Float64}(tmax);
 connind = Array{Float64}(tmax);
 ext_prim = Array{Int64}(tmax);
 ext_sec = Array{Int64}(tmax);
-pot_col = Array(Array{Int64},tmax);
+pot_col = Array{Array{Int64}}(tmax);
 tl = Array{Float64}(tmax);
 tw = Array{Float64}(tmax);
 twsd = Array{Float64}(tmax);
@@ -238,10 +220,10 @@ status = "open"; #I don't think we need this now
   ext_prim[t] = extinctions[1];
   ext_sec[t] = extinctions[2];
 
-  S = length(spcid);
+  Sl = length(spcid);
   # length(unique(cid))-length(cid)
-  conn[t] = (sum(com_tp))/(S^2);
-  connind[t] = (sum(com_tind))/(S^2);
+  conn[t] = (sum(com_tp))/(Sl^2.0);
+  connind[t] = (sum(com_tind))/(Sl^2.0);
 
   rich[t] = length(cid);
   sprich[t] = length(spcid);
@@ -307,25 +289,30 @@ end
 ##########################
 #Proportion of stable webs
 ##########################
+#Turn on parallelization
+par=false;
 psw = zeros(Float64,tmax);
 pswind = zeros(Float64,tmax);
 for t=1:tmax
-    sigma = 0.4
-    reps = 50;
-    psw[t] = PSWebs(fwt[t],fwm[t],sigma,reps);
-    pswind[t] = PSWebs(fwtind[t],fwmind[t],sigma,reps);
+    sigma = 0.4;
+    reps = 10;
+    psw[t] = PSWebs(fwt[t],fwm[t],sigma,reps,par);
+    pswind[t] = PSWebs(fwtind[t],fwmind[t],sigma,reps,par);
     if mod(t,100)==0
       println(string("t=",t))
     end
 end
 
-
+sscomm = mean(sprich[Int64(floor(tmax/2))]);
+sscomm_ob = mean(rich[Int64(floor(tmax/2))]);
 R"""
 library(RColorBrewer)
 pal = brewer.pal(3,"Set1")
 par(mfrow=c(2,1))
-plot($(movingaverage(psw,10)),col=pal[1],type='l',ylim=c(0,1))
+plot($(movingaverage(psw,10)),col=pal[1],type='l',ylim=c(0,1.2))
 lines($(movingaverage(pswind,10)),col=pal[2])
+lines($(movingaverage(sprich/sscomm,10)),col='black')
+lines($(movingaverage(rich/sscomm,10)),col='black',lty=2)
 plot($sprich,$psw,col=pal[1],pch=16,cex=0.8)
 points($sprich,$pswind,col=pal[2],pch=16,cex=0.8)
 """

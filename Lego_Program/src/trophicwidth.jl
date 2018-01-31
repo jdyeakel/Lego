@@ -22,7 +22,7 @@ function trophicwidth(L)
     tw[i] = mean(consload);
   end
   #get rid of nan
-  tw[isnan(tw)]=0;
+  tw[isnan.(tw)]=0;
   
   return(tw);
 

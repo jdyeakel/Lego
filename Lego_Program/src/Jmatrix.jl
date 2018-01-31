@@ -38,6 +38,9 @@ function Jmatrix(m_tp_full,m_mp_full)
         Jmatrix[mintloc[i][2],mintloc[i][1]] = 1;
     end
     
+    #Ensure that the sun is unaffected by anything (a pure source)
+    Jmatrix[1,:] = 0;
+    
     #trim off non-interactions
     #which species have no interactions?
     # colsums = Array{Float64}(lm);
@@ -52,4 +55,3 @@ function Jmatrix(m_tp_full,m_mp_full)
     
     
 end
-

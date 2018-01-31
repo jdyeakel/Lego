@@ -46,8 +46,8 @@ n_thresh_vec = collect(0.0:0.05:0.5);
 ln = length(needvec);
 ltn = length(n_thresh_vec);
 
-SPRICH = Array(Array{Int64},ln,ltn);
-RICH =  Array(Array{Int64},ln,ltn);
+SPRICH = Array{Array{Int64}}(ln,ltn);
+RICH =  Array{Array{Int64}}(ln,ltn);
 
 S = 400;
 ppweight = 1/4;
@@ -205,8 +205,8 @@ n_thresh_vec = collect(0.0:0.05:0.5);
 ln = length(makevec);
 ltn = length(n_thresh_vec);
 
-SPRICH = Array(Array{Int64},ln,ltn);
-RICH =  Array(Array{Int64},ln,ltn);
+SPRICH = Array{Array{Int64}}(ln,ltn);
+RICH =  Array{Array{Int64}}(ln,ltn);
 
 S = 400;
 ppweight = 1/4;
@@ -356,8 +356,8 @@ needvec = collect(0.001:0.001:0.01);
 ln = length(needvec);
 ltn = length(makevec);
 
-SPRICH = Array(Array{Int64},ln,ltn);
-RICH =  Array(Array{Int64},ln,ltn);
+SPRICH = Array{Array{Int64}}(ln,ltn);
+RICH =  Array{Array{Int64}}(ln,ltn);
 
 S = 400;
 ppweight = 1/4;

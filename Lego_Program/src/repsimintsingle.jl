@@ -25,10 +25,10 @@ function repsimintsingle(S,reps,tmax,a_thresh,n_thresh,trophicload,rate_col,prob
     #Establish community template
     cid, c_m, crev_m, com_tp, com_tind, com_mp, com_mind = initiate_comm_func(int_m,tp_m,tind_m,mp_m,mind_m);
     
-    fwt = Array(Array{Int64},tmax);
-    fwtind = Array(Array{Int64},tmax);
-    fwm = Array(Array{Int64},tmax);
-    fwmind = Array(Array{Int64},tmax);
+    fwt = Array{Array{Int64}}(tmax);
+    fwtind = Array{Array{Int64}}(tmax);
+    fwm = Array{Array{Int64}}(tmax);
+    fwmind = Array{Array{Int64}}(tmax);
 
     timetic=0;
     for t=1:tmax
@@ -70,13 +70,15 @@ function repsimintsingle(S,reps,tmax,a_thresh,n_thresh,trophicload,rate_col,prob
         ##########################
         #Proportion of stable webs
         ##########################
+        #turn off parallel loops
+        par = false;
         psw_r = zeros(Float64,tmax);
         pswind_r = zeros(Float64,tmax);
         for t=1:tmax
             sigma = 0.4
             reps = 50;
-            psw_r[t] = PSWebs(fwt[t],fwm[t],sigma,reps);
-            pswind_r[t] = PSWebs(fwtind[t],fwmind[t],sigma,reps);
+            psw_r[t] = PSWebs(fwt[t],fwm[t],sigma,reps,par);
+            pswind_r[t] = PSWebs(fwtind[t],fwmind[t],sigma,reps,par);
             # if mod(t,100)==0
             #   println(string("t=",t))
             # end
