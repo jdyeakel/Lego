@@ -4,3 +4,5 @@ ESA abstract (due Feb 22 2018)
 Title: Quantization of (ecological) interaction(s) (networks) yields insights into community assembly and dynamics
 
 assimilation, need, ignore, make (the ANIMe model).
+
+abstract here
