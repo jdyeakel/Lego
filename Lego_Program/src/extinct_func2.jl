@@ -72,53 +72,54 @@ function extinct_func2(int_m,tp_m,a_thresh,n_thresh,trophicload,cid,c_m,crev_m,c
       
       #Determine the number of second order mutualisms for species
       #1) find need interactions
-      ncid = cid[find(x->x!=spcid[i],cid)];
-      first_ints = [int_m[ncid,spcid[i]] int_m[spcid[i],ncid]];
-      sec_n = Array{Int64}(0);
-      num_primmut[i] = 0;
-      for j=1:length(ncid)
-        # If the interaction is a mutualism
-        if (first_ints[j,1] == 'n' && first_ints[j,2] == 'n') || (first_ints[j,1] == 'a' && first_ints[j,2] == 'n') || (first_ints[j,1] == 'n' && first_ints[j,2] == 'a')
-          #Number of primary mutualistic partners
-          num_primmut[i] += 1;
-          #Find secondary mutualistic interactions
-          sec_ncid = ncid[find(x->x!=ncid[j],ncid)];
-          sec_ints = [int_m[sec_ncid,ncid[j]] int_m[ncid[j],sec_ncid]];
-          if length(sec_ints) > 0
-            for k=1:length(sec_ncid)
-              if (sec_ints[k,1] == 'n' && sec_ints[k,2] == 'n') || (sec_ints[k,1] == 'a' && sec_ints[k,2] == 'n') || (sec_ints[k,1] == 'n' && sec_ints[k,2] == 'a')
-                #If the secondary interaction is a mutualism, record
-                push!(sec_n,sec_ncid[k])
-              end
-            end
-          end
-        end
-      end
-      #what is the number of secondary mutualistic interactors?
-      num_secmut[i] = length(sec_n);
-      
-      #The smaller the mutualistic load, the lower the extinction probability
-      #Mutualistic load is small if there are many primary mutualistic partners relative to the number of secondary mutualistic partners (higher efficiency)
-      #Mutualstic load is large if there are few primary mutualistic partners relative to the numberr of secondary mutualistic parterns (lower efficiency)
-      if num_primmut[i] == 0
-        mut_load[i] = 1;
-        #If this is zero, it means there is no benefit to having a mutualism
-        #If this is >0, then mutualists have an advantage that wears off as they accumulate additional mutualistic partners
-        #If we have 1.0 here, then we are saying that non-mutualists are at the same 'extinction risk' as mutualists whose n partners have n other partners
-        #(i -- n*pm -- n*sm) is equivalent to (i) and 
-        #(i -- n*pm -- 2n*sm) is worse 
-        #(i -- n*pm -- <n*sm) is better
-      else
-        mut_load[i] = num_secmut[i]/num_primmut[i];
-      end
+      # ncid = cid[find(x->x!=spcid[i],cid)];
+      # first_ints = [int_m[ncid,spcid[i]] int_m[spcid[i],ncid]];
+      # sec_n = Array{Int64}(0);
+      # num_primmut[i] = 0;
+      # for j=1:length(ncid)
+      #   # If the interaction is a mutualism
+      #   if (first_ints[j,1] == 'n' && first_ints[j,2] == 'n') || (first_ints[j,1] == 'a' && first_ints[j,2] == 'n') || (first_ints[j,1] == 'n' && first_ints[j,2] == 'a')
+      #     #Number of primary mutualistic partners
+      #     num_primmut[i] += 1;
+      #     #Find secondary mutualistic interactions
+      #     sec_ncid = ncid[find(x->x!=ncid[j],ncid)];
+      #     sec_ints = [int_m[sec_ncid,ncid[j]] int_m[ncid[j],sec_ncid]];
+      #     if length(sec_ints) > 0
+      #       for k=1:length(sec_ncid)
+      #         if (sec_ints[k,1] == 'n' && sec_ints[k,2] == 'n') || (sec_ints[k,1] == 'a' && sec_ints[k,2] == 'n') || (sec_ints[k,1] == 'n' && sec_ints[k,2] == 'a')
+      #           #If the secondary interaction is a mutualism, record
+      #           push!(sec_n,sec_ncid[k])
+      #         end
+      #       end
+      #     end
+      #   end
+      # end
+      # #what is the number of secondary mutualistic interactors?
+      # num_secmut[i] = length(sec_n);
+      # 
+      # #The smaller the mutualistic load, the lower the extinction probability
+      # #Mutualistic load is small if there are many primary mutualistic partners relative to the number of secondary mutualistic partners (higher efficiency)
+      # #Mutualstic load is large if there are few primary mutualistic partners relative to the numberr of secondary mutualistic parterns (lower efficiency)
+      # if num_primmut[i] == 0
+      #   mut_load[i] = 1;
+      #   #If this is zero, it means there is no benefit to having a mutualism
+      #   #If this is >0, then mutualists have an advantage that wears off as they accumulate additional mutualistic partners
+      #   #If we have 1.0 here, then we are saying that non-mutualists are at the same 'extinction risk' as mutualists whose n partners have n other partners
+      #   #(i -- n*pm -- n*sm) is equivalent to (i) and 
+      #   #(i -- n*pm -- 2n*sm) is worse 
+      #   #(i -- n*pm -- <n*sm) is better
+      # else
+      #   mut_load[i] = num_secmut[i]/num_primmut[i];
+      # end
       
       maxtl = trophicload;
       mintl = 1;
       #the sensitivity of trophic load to mutualistic load
       #lower values mean less sensitivity
       mutsens = 1;
-      trophicloadsp[i] = mintl + (1/((1/(maxtl - mintl)) + mutsens*exp(mut_load[i] - maxtl)));
-      
+      # trophicloadsp[i] = mintl + (1/((1/(maxtl - mintl)) + mutsens*exp(mut_load[i] - maxtl)));
+      #NOTE: use this if you do not use secondary mutualism stuff
+      trophicloadsp[i] = trophicload;
       
       #vulnscaled_vec = vuln_vec ./ maximum(vuln_vec);
 
