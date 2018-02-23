@@ -116,7 +116,7 @@ function colext(int_m,cid,a_thresh,n_thresh)
             #Delete species and their UNIQUELY MADE objects
             #what objects are uniquely made by esp?
             # e_ob = ocid[(sum(m_b[e_sp,ocid],1).==1)[1,:]];
-            e_ob = ocid[find(isodd,sum(m_b[e_sp,ocid],1))]
+            e_ob = ocid[find(x->x==1,sum(m_b[e_sp,ocid],1))];
             le_ob = length(e_ob);
             
             prim_extinct = [e_sp;e_ob];
@@ -171,7 +171,8 @@ function colext(int_m,cid,a_thresh,n_thresh)
                         
                         #Delete species and their UNIQUELY MADE objects
                         #what objects are uniquely made by esp?
-                        e_ob2 = ocid[(sum(m_b[e_sp2,ocid],1).==1)[1,:]];
+                        # e_ob2 = ocid[(sum(m_b[e_sp2,ocid],1).==1)[1,:]];
+                        e_ob2 = ocid[find(x->x==1,sum(m_b[e_sp2,ocid],1))];
                         le_ob2 = length(e_ob);
                         
                         sec_extinct = [e_sp;e_ob];
