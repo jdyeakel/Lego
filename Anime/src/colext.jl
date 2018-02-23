@@ -1,25 +1,4 @@
-function colext(int_m,cid,a_thresh,n_thresh)
-
-    #############
-    # Preamble... could take this out of the function
-
-    #Boolian matrices
-    a_b = (int_m .== 'a')*1;
-    n_b = (int_m .== 'n')*1;
-    i_b = (int_m .== 'i')*1;
-    m_b = (int_m .== 'm')*1;
-
-    #copy of need binary matrix with diag = 0
-    n_b0 = copy(n_b);
-    n_b0[diagind(n_b0)]=0;
-
-    #Vector and length of species IDs (over all int_m)
-    sp_v = find(isodd,diag(n_b));
-    l_sp = length(sp_v);
-
-    int_id = collect(1:size(int_m)[1]);
-
-
+function colext(int_m,cid,a_thresh,n_thresh,extinctions,trophicload)
     ######################
     #CURRENT COMMUNITY
     ######################
@@ -95,12 +74,13 @@ function colext(int_m,cid,a_thresh,n_thresh)
 
         #2) Caluculate extinction probability
         avgk = 8; # avgk = gL/gS;
-        prext_pred = (1./(1+exp(-0.5.*(num_preds.-(trophicload*avgk)))));
+        prext_pred = (1./(1+exp.(-0.5.*(num_preds.-(trophicload*avgk)))));
 
         #3) Draw extinctions
         binext = rand.(Binomial.(1,prext_pred));
 
         num_ext1 = sum(binext);
+        num_ext2 = 0;
 
         #Only go through this round if there are any extinctions
         if num_ext1 > 0
@@ -117,9 +97,9 @@ function colext(int_m,cid,a_thresh,n_thresh)
             #what objects are uniquely made by esp?
             # e_ob = ocid[(sum(m_b[e_sp,ocid],1).==1)[1,:]];
             # e_ob = ocid[find(x->x==1,sum(m_b[e_sp,ocid],1))];
-
             #The minimum will be 1... subtract 1 from all and use find(iszero) for speed
-            e_ob = ocid[find(iszero,sum(m_b[e_sp,ocid],1)-1)];
+            # e_ob = ocid[find(iszero,sum(m_b[e_sp,ocid],1)-1)];
+            e_ob = ocid[find(iszero,sum(m_b[spcid,ocid],1)-sum(m_b[e_sp,ocid],1))]
             le_ob = length(e_ob);
 
             prim_extinct = [e_sp;e_ob];
@@ -136,8 +116,6 @@ function colext(int_m,cid,a_thresh,n_thresh)
             #Only do this if there are still members in the community
             if length(cid) > 0
 
-                num_ext2 = 0;
-
                 #The assimilate/need test has to pass (an_test == true) to avoid any more secondary extinctions
                 an_test = false;
 
@@ -147,11 +125,11 @@ function colext(int_m,cid,a_thresh,n_thresh)
                     #Which are objects?
                     ocid = setdiff(cid,spcid);
 
-                    #Re-calculate a_thresh and n_thresh
-                    a_fill = ((sum(a_b[spcid,[1;cid]],2)./sum(a_b[spcid,:],2)) .>= a_thresh)[:,1];
+                    #Re-calculate a_thresh and n_thresh (> a_thresh; >= n_thresh)
+                    a_fill = ((sum(a_b[spcid,[1;cid]],2)./sum(a_b[spcid,:],2)) .> a_thresh)[:,1];
                     prop_n = sum(n_b0[spcid,[1;cid]],2)./sum(n_b0[spcid,:],2);
                     #If there are no 'need' interactions, proportion filled is always 1, and will always pass
-                    prop_n[isnan(prop_n)] = 1;
+                    prop_n[isnan.(prop_n)] = 1;
                     n_fill = (prop_n .>= n_thresh)[:,1];
 
                     #Build a list of those that pass each individual test
@@ -177,10 +155,15 @@ function colext(int_m,cid,a_thresh,n_thresh)
                         # e_ob2 = ocid[(sum(m_b[e_sp2,ocid],1).==1)[1,:]];
                         # e_ob2 = ocid[find(x->x==1,sum(m_b[e_sp2,ocid],1))];
 
-                        e_ob2 = ocid[find(iszero,sum(m_b[e_sp2,ocid],1)-1)];
-                        le_ob2 = length(e_ob);
+                        # e_ob2 = ocid[find(iszero,sum(m_b[e_sp2,ocid],1)-1)];
+                        # sp_ob = ocid[find(iszero,sum(m_b[spcid,ocid],1)-1)];
 
-                        sec_extinct = [e_sp;e_ob];
+
+                        e_ob2 = ocid[find(iszero,sum(m_b[spcid,ocid],1)-sum(m_b[e_sp2,ocid],1))];
+
+                        le_ob2 = length(e_ob2);
+
+                        sec_extinct = [e_sp2;e_ob2];
 
                         #Update community
                         cid = setdiff(cid,sec_extinct);
@@ -192,7 +175,7 @@ function colext(int_m,cid,a_thresh,n_thresh)
 
                     end
 
-                end #end secondary extinction module
+                end #end secondary extinction while loop
 
             end #end if length(cid) > 0
 
