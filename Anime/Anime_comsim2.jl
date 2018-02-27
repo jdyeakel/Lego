@@ -12,15 +12,12 @@ p_a=0.01,
 p_m=0.002,
 p_i= 1 - sum([p_n,p_m,p_a]) #Ignore with 1 - pr(sum(other))
 ]
-#int_m, sp_m, t_m, tp_m, tind_m = build_template_degrees(num_play,probs);
-
-
 
 ppweight = 1/4;
 sim=false;
 par=false;
 calcpotcol = false;
-@time int_m = build_template_species(S,probs,ppweight);
+@time int_m, sp_m, t_m, tp_m, tind_m, mp_m, mind_m = build_template_species(S,probs,ppweight);
 
 a_b,
 n_b,

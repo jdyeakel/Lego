@@ -27,16 +27,23 @@ function build_template_degrees(num_play, probs, ppweight)
   nichev = rand(num_play);
   #Derive connectance from the pr('assimilate')*number of potential links
   #But first try to discount the number of players that are NOT species, which should be on average num_play*pr_nm
-  S = num_play - (pr_nm*num_play);
+  # S = num_play - (pr_nm*num_play);
+  S = (-1 + sqrt(1+4*num_play*pr_nm))/(2*pr_nm);
   #Pr('A')*Directed Connectance
-  C = ((pr_ia+pr_na+pr_aa)*(S*(S-1)))/(S^2);
+  #This should be the connectance for all of the species and objects in the system...
+  # C = ((pr_ia+pr_na+pr_aa)*(S*(S-1)))/(S^2);
+  C = ((pr_ia+pr_na+pr_aa)*(num_play*(num_play-1)))/(num_play^2);
   Ebeta = 2*C;
   beta = (1/Ebeta) - 1;
   BetaD = Beta(1,beta);
   rBeta = rand(BetaD,num_play);
-  #NOTE: Perhaps I should accurately count how many prey fall within the range
+  #How many prey fall within the range
   # rangev = length(find(x->x>nmin&&x<nmax,nichev));
   rangev = rBeta .* nichev;
+  
+  
+  degrees2 = rangev * S;
+  
   centerv = zeros(num_play);
   nmin = zeros(num_play);
   nmax = zeros(num_play);
