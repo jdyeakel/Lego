@@ -12,8 +12,12 @@
 @everywhere include("$(homedir())/Dropbox/PostDoc/2014_Lego/Anime/src/colext.jl")
 @everywhere include("$(homedir())/Dropbox/PostDoc/2014_Lego/Anime/src/preamble_defs.jl")
 
-#Analysis
+#Analysis Calculations
+@everywhere include("$(homedir())/Dropbox/PostDoc/2014_Lego/Anime/src/structure.jl")
+
+#Analysis functions
 @everywhere include("$(homedir())/Dropbox/PostDoc/2014_Lego/Anime/src/trophicalc2.jl")
+@everywhere include("$(homedir())/Dropbox/PostDoc/2014_Lego/Anime/src/pairbin.jl")
 @everywhere include("$(homedir())/Dropbox/PostDoc/2014_Lego/Lego_Program/src/trophicwidth.jl")
 @everywhere include("$(homedir())/Dropbox/PostDoc/2014_Lego/Lego_Program/src/Jmatrix.jl")
 @everywhere include("$(homedir())/Dropbox/PostDoc/2014_Lego/Lego_Program/src/PSWebs.jl")

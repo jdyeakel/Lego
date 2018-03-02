@@ -1,4 +1,4 @@
-\documentclass[twocolumn,preprintnumbers,amsmath,amssymb,superscriptaddress]{revtex4}
+\documentclass[twocolumn,preprintnumbers,amsmath,amssymb,superscriptaddress]{revtex4-1}
 %\usepackage[pdftex]{graphicx}
 
 \usepackage{amsmath,amsfonts,amssymb}
@@ -11,8 +11,8 @@
 \usepackage{graphicx}
 \usepackage{bm}
 \usepackage{mathtools}
-\usepackage{stmaryrd}
-\usepackage{anyfontsize}
+% \usepackage{stmaryrd}
+% \usepackage{anyfontsize}
 
 
 %\usepackage{epstopdf}
@@ -169,6 +169,48 @@ If the assimilate and need threshold conditions are both satisfied, colonization
 The probability of extinction increases sigmoidally as the number of consumers increases for a given species.
 Primary extinctions, which are triggered by this \emph{trophic load} can trigger secondary extinctions, as elimination of prey -- and any objects that an eliminated species uniquely makes -- may then result in consumers falling below either of the above threshold conditions.
 Accordingly, extinctions cascade until the threshold conditions for every remaining species are satisfied.
+
+
+
+\section{Methods}
+\subsection{Generating the community pooled interaction matrix}
+Given the probabilities of assimilate ($a$), need ($n$), ignore ($i$), and make ($m$) \emph{directed} interactions being inserted into the pooled interaction matrix, we calculate the probabilities of pairwise interactions between both species and objects as 
+\begin{align}
+  p_{ai} &= p_i*(p_a/(p_a+p_n+p_i)) + p_a*(p_i/(p_a+p_i+p_n)),\\ \nonumber
+  p_{an} &= p_n*(p_a/(p_a+p_n+p_i+p_m)) + p_a*(p_n/(p_a+p_i+p_n))\\ \nonumber
+  p_{aa} &= p_a*(p_a/(p_i+p_n+p_a)),\\ \nonumber
+  p_{nn} &= p_n*(p_n/(p_a+p_n+p_i+p_m)),
+  p_{ni} &= p_n*(p_i/(p_a+p_n+p_i+p_m)) + p_i(p_n/(p_a+p_n+p_i)),\\ \nonumber
+  p_{mn} &= p_n*(p_m/(p_a+p_n+p_i+p_m)) + p_m,\\ \nonumber
+  p_{ii} &= p_i*(p_i/(p_a+p_n+p_i)).\\ \nonumber
+\end{align}
+The size of the interaction matrix ($\mathcal{N} = \mathcal{S} + \mathcal{O}$) is obtained by first setting the desired number of species ($\mathcal{S}$), where the expected number of objects is then estimated as ${\rm E}(\mathcal{O}) = \mathcal{S}(\mathcal{S}-1)p_{mn}$, though the final number of objects is stochastic and determined by a simulated annealing algorithm where interaction matrices are generated until $\mathcal{S}$ is reached.
+
+We build the community pool interaction matrix according to the following steps:
+1) we first assume that all agents in the system are species, and assign trophic interactions based on a degree distribution estimated from the Niche Model (Williams and Martinez 2000).
+The degree distribution is based on the trophic connectance of the system, which in this case is calculated as 
+\begin{equation}
+  C = p_{ai}+p_{an}+p_{aa}.
+\end{equation}
+For large communities, the number of trophic interactions for a given species $i$ in the Niche Model $d_i$ is proportional to the niche range $r_i$, where $d_i = r_i*\mathcal{N}$ where $r_i = Xn_i$ where $X \sim \beta(1,1/2C - 1)$ and $n_i$ is drawn from a uniform distribution in [0,1].
+However, because we do not stipulate which species are connected according to where the range falls on the niche axis, we incorporate the trophic interaction degree distribution of the Niche Model without the imposed interaction structure.
+
+2) We next impose two post-hoc rules that keep the interaction matrix grounded in biological reality.
+We impose the rule that row/column 1 is the basal resource (e.g. energy from the sun) from which primary producers derive their energy.
+Thus, an assimlate interaction in column 1 means that the consumer is capable of primary production; conversely, row 1 (the basal resources interactions) are `ignore' throughout.
+The second post-hoc rule imposes a certain proportion of `assimilate' interactions across agents that must be linked to the basal resource, such that a given proportion of agents are capable of primary production.
+
+3) Finally, we declare that agents that `make' other agents are species that are making objects.
+Thus, a certain proportion of the agents in the system are declared species if there is a `make' interaction connecting them to another agent; the receiving agent is declared an object.
+When an agent is declared an object, its interactions are all set to `ignore', expect with the species that is making it, which is retained as `need', because its presence in the community requires the presence of the species that makes it.
+Objects are not allowed to `make' other objects; if this occurs, the `m' interaction will be randomly assigned to a declared species.
+Ultimately, species and objects are immediately distinguishable by the diagonal of the interaction matrix: a species has a `need' interaction on the diagonal (a species needs itself to be present); an object has an `ignore' interaction on the diagonal.
+Thus, species can interaction with objects (they may make, assimilate, or need them), however objects do not interact with anything.
+Moreover, multiple species can make the same object: for example, most plant species engineer $O_2$, which is then used by other species.
+Because the number of `make' interactions is probabilistic, the number of species/objects is also probabilistic.
+To obtain the desired $\mathcal{S}$, we use a simulated annealing algorithm to generate multiple interaction matrices of different sizes until the desired $\mathcal{S}$ is found.
+
+\subsection{Colonization and Extinction}
 
 
 \section*{Results \& Discussion}
@@ -329,29 +371,6 @@ Future things that I'm working on implementing (suggestions welcome!!!)
 \item One potentially fruitful line of investigation would be to link this approach to random matrix theory - inclusion of objects should modify species effects on one another. I'm currently tracking both direct trophic and mutualistic adjacency matrices (where if species 1 makes object 1, and species 2 eats object 1, we can say species 2 indirectly eats species 1 - same for any other interaction type), but have not yet explored it - this would probably be good for a stand-alone paper - very little of engineering in food webs
 \item Priority effects - working on this - what species traits alter assembly dynamics?
 \end{enumerate}
-
-
-
-\section{Methods}
-\subsection{Generating the community pool interaction matrix}
-Given the probabilities of assimilate ($a$), need ($n$), ignore ($i$), and make ($m$) \emph{directed} interactions being inserted into the pooled interaction matrix, we calculate the probabilities of pairwise interactions between both species and objects as 
-\begin{align}
-  p_{ai} &= p_i*(p_a/(p_a+p_n+p_i)) + p_a*(p_i/(p_a+p_i+p_n)),\\ \nonumber
-  p_{an} &= p_n*(p_a/(p_a+p_n+p_i+p_m)) + p_a*(p_n/(p_a+p_i+p_n))\\ \nonumber
-  p_{aa} &= p_a*(p_a/(p_i+p_n+p_a)),\\ \nonumber
-  p_{nn} &= p_n*(p_n/(p_a+p_n+p_i+p_m)),
-  p_{ni} &= p_n*(p_i/(p_a+p_n+p_i+p_m)) + p_i(p_n/(p_a+p_n+p_i)),\\ \nonumber
-  p_{mn} &= p_n*(p_m/(p_a+p_n+p_i+p_m)) + p_m,\\ \nonumber
-  p_{ii} &= p_i*(p_i/(p_a+p_n+p_i)).\\ \nonumber
-\end{align}
-The size of the interaction matrix ($\mathcal{N} = \mathcal{S} + \mathcal{O}$) is obtained by first setting the desired number of species ($\mathcal{S}$), where the expected number of objects is then estimated as ${\rm E}(\mathcal{O}) = \mathcal{S}(\mathcal{S}-1)p_{mn}$, though the final number of objects is stochastic and determined by a simulated annealing algorithm where interaction matrices are generated until $\mathcal{S}$ is reached.
-
-To build the community pool interaction matrix, we first assume that all agents in the system are species, and assign trophic interactions based on a degree distribution estimated from the Niche Model (Williams and Martinez 2000).
-The degree distribution is based on the trophic connectance of the system, which in this case is calculated as 
-\begin{equation}
-  C = p_{ai}+p_{an}+p_{aa}.
-\end{equation}
-For large communities, the number of trophic interactions for a given species $i$ in the Niche Model $d$ is proportional to the niche range $r_i$, where $d_i = r_i*\mathcal{N}$ where $r_i = Xn_i$ where $X \sim \beta(1,1/2C - 1)$ and $n_i$ is drawn from a uniform distribution in [0,1].
 
 
 
