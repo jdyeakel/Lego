@@ -19,14 +19,18 @@ function build_template_species(S, probs, ppweight)
 
 
   #Initial guess
+  # num_play = Int64(floor((S^2)*pr_nm));
+  
   num_play = Int64(floor(S + (S^2)*pr_nm));
-
+  
+  #num_play = convert(Int64,round(num_play/2,0));
+  
   #Generate interaction template
   int_m, sp_m, t_m, tp_m, tind_m, mp_m, mind_m = intmatrix(num_play,probs,ppweight);
 
   S_real = length(find(x->x=='n',diag(int_m)));
 
-  error = 1;
+  error = 5;
   S_acceptable = collect(S-error:S+error);
 
   howlong = 1;

@@ -13,7 +13,7 @@
 @everywhere include("$(homedir())/Dropbox/PostDoc/2014_Lego/Anime/src/preamble_defs.jl")
 
 #Analysis
-@everywhere include("$(homedir())/Dropbox/PostDoc/2014_Lego/Lego_Program/src/trophicalc2.jl")
+@everywhere include("$(homedir())/Dropbox/PostDoc/2014_Lego/Anime/src/trophicalc2.jl")
 @everywhere include("$(homedir())/Dropbox/PostDoc/2014_Lego/Lego_Program/src/trophicwidth.jl")
 @everywhere include("$(homedir())/Dropbox/PostDoc/2014_Lego/Lego_Program/src/Jmatrix.jl")
 @everywhere include("$(homedir())/Dropbox/PostDoc/2014_Lego/Lego_Program/src/PSWebs.jl")

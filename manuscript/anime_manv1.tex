@@ -265,9 +265,6 @@ Although modification of pr($n$) and $n_t$ reveals a smooth and expected influen
 The CV is maximized when $n_t$ is intermediate and the number of non-trophic dependencies is large.
 
 
-
-
-
 \begin{figure}
 \centering
 \includegraphics[width=0.45\textwidth]{fig_traj.pdf}
@@ -334,6 +331,27 @@ Future things that I'm working on implementing (suggestions welcome!!!)
 \end{enumerate}
 
 
+
+\section{Methods}
+\subsection{Generating the community pool interaction matrix}
+Given the probabilities of assimilate ($a$), need ($n$), ignore ($i$), and make ($m$) \emph{directed} interactions being inserted into the pooled interaction matrix, we calculate the probabilities of pairwise interactions between both species and objects as 
+\begin{align}
+  p_{ai} &= p_i*(p_a/(p_a+p_n+p_i)) + p_a*(p_i/(p_a+p_i+p_n)),\\ \nonumber
+  p_{an} &= p_n*(p_a/(p_a+p_n+p_i+p_m)) + p_a*(p_n/(p_a+p_i+p_n))\\ \nonumber
+  p_{aa} &= p_a*(p_a/(p_i+p_n+p_a)),\\ \nonumber
+  p_{nn} &= p_n*(p_n/(p_a+p_n+p_i+p_m)),
+  p_{ni} &= p_n*(p_i/(p_a+p_n+p_i+p_m)) + p_i(p_n/(p_a+p_n+p_i)),\\ \nonumber
+  p_{mn} &= p_n*(p_m/(p_a+p_n+p_i+p_m)) + p_m,\\ \nonumber
+  p_{ii} &= p_i*(p_i/(p_a+p_n+p_i)).\\ \nonumber
+\end{align}
+The size of the interaction matrix ($\mathcal{N} = \mathcal{S} + \mathcal{O}$) is obtained by first setting the desired number of species ($\mathcal{S}$), where the expected number of objects is then estimated as ${\rm E}(\mathcal{O}) = \mathcal{S}(\mathcal{S}-1)p_{mn}$, though the final number of objects is stochastic and determined by a simulated annealing algorithm where interaction matrices are generated until $\mathcal{S}$ is reached.
+
+To build the community pool interaction matrix, we first assume that all agents in the system are species, and assign trophic interactions based on a degree distribution estimated from the Niche Model (Williams and Martinez 2000).
+The degree distribution is based on the trophic connectance of the system, which in this case is calculated as 
+\begin{equation}
+  C = p_{ai}+p_{an}+p_{aa}.
+\end{equation}
+For large communities, the number of trophic interactions for a given species $i$ in the Niche Model $d$ is proportional to the niche range $r_i$, where $d_i = r_i*\mathcal{N}$ where $r_i = Xn_i$ where $X \sim \beta(1,1/2C - 1)$ and $n_i$ is drawn from a uniform distribution in [0,1].
 
 
 

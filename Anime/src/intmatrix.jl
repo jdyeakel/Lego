@@ -27,7 +27,7 @@ function intmatrix(num_play, probs, ppweight)
     S = (-1 + sqrt(1+4*num_play*pr_nm))/(2*pr_nm);
     #Directed Connectance
     #Connectance for all of the species and objects in the system... so based on num_play and not S
-    C = ((pr_ia+pr_na+pr_aa)*(num_play*(num_play-1)))/(num_play^2);
+    C = (pr_ia+pr_na+pr_aa); #*(num_play*(num_play-1)))/(num_play^2);
     Ebeta = 2*C;
     beta = (1/Ebeta) - 1;
     BetaD = Beta(1,beta);

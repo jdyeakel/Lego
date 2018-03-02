@@ -37,7 +37,7 @@ cid = Array{Int64}(0);
 a_thresh = 0.0;
 n_thresh = 0.2;
 trophicload = 2;
-tmax = 5000;
+tmax = 1000;
 extinctions = true;
 
 rich = Array{Int64}(tmax);
@@ -62,14 +62,23 @@ obrich = Array{Int64}(tmax);
   status,
   num_ext1,
   num_ext2 = colext(int_m,cid,a_thresh,n_thresh,extinctions,trophicload);
-
+  
+  spcid = intersect(sp_v,cid);
+  spcid_adj = indexin(spcid,[1;sp_v]);
+  
   rich[t] = length(cid);
-  sprich[t] = length(intersect(sp_v,cid));
+  sprich[t] = length(spcid);
   obrich[t] = rich[t] - sprich[t];
 
 end
 
 R"""
-plot($(collect(1:tmax)),$rich,type='l',lty=2)
+plot($(collect(1:tmax)),$rich,type='l',lty=2,log="x",xlab="Time",ylab="Richness")
 lines($(collect(1:tmax)),$sprich)
 """
+
+#NOTE: if you don't account for indirect-object interactions, there will be trophically disconnected species!
+tl = trophicalc(spcid_adj,tp_m);
+tl_ind = trophicalc(spcid_adj,tind_m);
+degrees = vec(sum(tp_m[spcid_adj,spcid_adj],1));
+R"plot($degrees,$tl)"
