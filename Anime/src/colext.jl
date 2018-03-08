@@ -73,8 +73,13 @@ function colext(int_m,cid,a_thresh,n_thresh,extinctions,trophicload)
         num_preds = sum(a_b[spcid,spcid],1)[1,:];
 
         #2) Caluculate extinction probability
-        avgk = 8; # avgk = gL/gS;
-        prext_pred = (1./(1+exp.(-0.5.*(num_preds.-(trophicload*avgk)))));
+        # avgk = 8; # avgk = gL/gS;
+        # prext_pred = (1./(1+exp.(-0.5.*(num_preds.-(trophicload*avgk)))));
+        
+        #Based on the Holt 1977 model where N* propto 1/n where n is the number of preds
+        #baseline extinction probability
+        baseline = 0.001;
+        prext_pred = baseline + (1 - baseline).*(1 - (1./(1 + 0.001*num_preds)));
 
         #3) Draw extinctions
         binext = rand.(Binomial.(1,prext_pred));

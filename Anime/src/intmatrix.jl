@@ -291,29 +291,6 @@ function intmatrix(num_play, probs, ppweight)
 
       end
 
-
-      # It's not pretty but the more complex script works... attempts at the simpler script
-      # int_m[makers,objects] = 'm';
-      # int_m[objects,makers] = 'n';
-      #
-      # #The made thing ignores everything
-      # int_m[made,:] = 'i';
-
-
-      # #Alternative maker loop 2/26/2018
-      # m_bpre = (int_m .== 'm')*1;
-      # int_id = collect(1:size(int_m)[1]);
-      # #What things are objects?
-      # objects = find(!iszero,sum(m_bpre,1);
-      # #What things are makers?
-      # makers = find(!iszero,sum(m_bpre,2));
-      # #makers and objects can't be the same
-      # #which players are found in both vectors?
-      # objectmakers = intersect(objects,makers);
-      #
-
-
-
       #Documenting indirect trophic and mutualistic interactions
       #We want to do this outside of the above maker loop because we want all species/objects correctly accounted for before we try to count the indirect interactions
 

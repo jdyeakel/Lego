@@ -11,9 +11,11 @@
 #Community dynamics
 @everywhere include("$(homedir())/Dropbox/PostDoc/2014_Lego/Anime/src/colext.jl")
 @everywhere include("$(homedir())/Dropbox/PostDoc/2014_Lego/Anime/src/preamble_defs.jl")
+@everywhere include("$(homedir())/Dropbox/PostDoc/2014_Lego/Anime/src/assembly.jl")
 
 #Analysis Calculations
 @everywhere include("$(homedir())/Dropbox/PostDoc/2014_Lego/Anime/src/structure.jl")
+@everywhere include("$(homedir())/Dropbox/PostDoc/2014_Lego/Anime/src/dynstructure.jl")
 
 #Analysis functions
 @everywhere include("$(homedir())/Dropbox/PostDoc/2014_Lego/Anime/src/trophicalc2.jl")

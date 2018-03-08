@@ -1,4 +1,4 @@
-\documentclass[twocolumn,preprintnumbers,amsmath,amssymb,superscriptaddress]{revtex4-1}
+\documentclass[twocolumn,preprintnumbers,amsmath,amssymb,superscriptaddress]{revtex4}
 %\usepackage[pdftex]{graphicx}
 
 \usepackage{amsmath,amsfonts,amssymb}
@@ -11,8 +11,8 @@
 \usepackage{graphicx}
 \usepackage{bm}
 \usepackage{mathtools}
-% \usepackage{stmaryrd}
-% \usepackage{anyfontsize}
+\usepackage{stmaryrd}
+\usepackage{anyfontsize}
 
 
 %\usepackage{epstopdf}
@@ -121,22 +121,22 @@ Moreover, as pr($m$) increases, the probability that multiple species makes the 
 A complete list of pairwise interactions is found in Table \ref{table_int}.
 
 
-\begin{table}[h]
-  \begin{tabular}{ c  l }
-    \hline
-    Off-diagonal interactions & Ecological interpretation \\
-    \hline
-    $a \leftrightarrow i$ & Asymmetric Predation \\
-    $a \leftrightarrow a$ & Symmetric predation \\
-    $n \leftrightarrow a$ & Trophic mutualism \\
-    $n \leftrightarrow n$ & Non-trophic mutualism \\
-    $n \leftrightarrow i$ & Commensalism \\
-    $i \leftrightarrow i$ & Null \\
-    $m \leftrightarrow n$ & Engineering \\
-    \hline
-  \end{tabular}
-  \caption{Pairwise combinations of directed interactions and associated ecological interpretations.}
-\end{table}
+% \begin{table}[h]
+%   \begin{tabular}{ c  l }
+%     \hline
+%     Off-diagonal interactions & Ecological interpretation \\
+%     \hline
+%     $a \leftrightarrow i$ & Asymmetric Predation \\
+%     $a \leftrightarrow a$ & Symmetric predation \\
+%     $n \leftrightarrow a$ & Trophic mutualism \\
+%     $n \leftrightarrow n$ & Non-trophic mutualism \\
+%     $n \leftrightarrow i$ & Commensalism \\
+%     $i \leftrightarrow i$ & Null \\
+%     $m \leftrightarrow n$ & Engineering \\
+%     \hline
+%   \end{tabular}
+%   \caption{Pairwise combinations of directed interactions and associated ecological interpretations.}
+% \end{table}
 
 To establish an interaction matrix, we randomly assign interactions between species and the objects they create based on a set of directed interaction probabilities, which serve as model input. 
 Given a species richness $\mathcal S$, the probability that a pair of species have an interaction as listed in Table 1 results from drawing an initial directed interaction ${\rm pr}(a,n,i,m)$, and the conditional probability of drawing the opposing directed interaction, which is constrained due to the fact that not every combination of $[a,n,i,m]$ is feasible.
@@ -146,12 +146,14 @@ Three additional constraints introduce interaction structure to the model:
 2) The distribution of assimilate interactions for a given species (i.e. the trophic degree) is drawn from an exponential distribution, such that the trophic interaction distribution among species is equivalent to that at the heart of the niche model.
 3) We introduce a \emph{basal resource} that can be assimilated by species, and those that consume this resource are identified as primary producers.
 
-
+%Need discussion of 
 Ecological analogues: 
 As pr(n) increases, so does the number of mutualistic interactions (direct and indirect).
 As pr(m) increases, so does the number of engineers (and indirect interactions).
 As pr(a) increases, so does the connectance of trophic interactions (show how this is related).
 As $n_t$ increases, (this is the weird one), behavioral plasticity decreases in the sense that .
+
+n-n: symbiont interaction
 
 
 {\bf Colonization and extinction dynamics}
@@ -166,9 +168,50 @@ If the assimilate and need threshold conditions are both satisfied, colonization
 
 
 
-The probability of extinction increases sigmoidally as the number of consumers increases for a given species.
-Primary extinctions, which are triggered by this \emph{trophic load} can trigger secondary extinctions, as elimination of prey -- and any objects that an eliminated species uniquely makes -- may then result in consumers falling below either of the above threshold conditions.
+% The probability of extinction increasesas the number of consumers increases for a given species.
+Lotka-Volterra type interactions between $k_i$ predators with respect to a resource density $R_i$ leads to the steady state density $R_i^* \propto k_i^{-1}$.
+Although we do not model population densities explicitly, we make the simplifying assumption that the probability of extinction is increased from a background rate $\omega_{\rm b}$ as a resource's population is depressed by the cumulative effects of $k$ consumers as
+\begin{equation}
+  \omega_i(t) = \frac{\omega_{\rm b} + \epsilon k_i}{1 + \epsilon k_i},
+\end{equation}
+where $\epsilon$ scales the effect of each consumer on extinction and is assumed to be small.
+Primary extinctions can trigger secondary extinctions, as elimination of prey -- and any objects that an eliminated species uniquely makes -- may then result in consumers falling below either of the above threshold conditions.
 Accordingly, extinctions cascade until the threshold conditions for every remaining species are satisfied.
+
+
+\begin{table*}[!t]
+\begin{center}
+\begin{tabular}{ l l l }
+\hline
+Parameter & Definition & Value/Range \\
+\hline
+$\overrightarrow{a}$ & assimilate & \\
+$\overrightarrow{n}$ & need & \\
+$\overrightarrow{i}$ & ignore & \\
+$\overrightarrow{m}$ & make & \\
+\hline
+$a \leftrightarrow i$ & Asymmetric Predation &  \\
+$a \leftrightarrow a$ & Symmetric predation & \\
+$n \leftrightarrow a$ & Trophic mutualism & \\
+$n \leftrightarrow n$ & Non-trophic mutualism & \\
+$n \leftrightarrow i$ & Commensalism & \\
+$i \leftrightarrow i$ & Null & \\
+$m \leftrightarrow n$ & Engineering & \\
+\hline
+$\mathcal{N}$ & Number of species + objects & dyn.\\
+$\mathcal{S}$ & Number of species & dyn.\\
+$\mathcal{O}$ & Number of objects & dyn.\\
+$a_t$ & Assimilate threshold & 0.0\\
+$n_t$ & Need threshold & 0.2\\
+$k$ & Number of consumers interacting with species $i$ & dyn.\\
+$\omega_{\rm b}$ & Background probability of extinction at time $t$\\
+$\omega(t)$ & Cumulative probability of extinction at time $t$ & $\frac{\omega_{\rm b} + \epsilon n}{1 + \epsilon n}$\\
+$1/\epsilon$ & Number of consumers of resource $i$ at which $\omega_i(t)=\frac{1}{2}$ & 1000\\
+\hline
+\end{tabular}
+\end{center}
+\caption{Table of parameters, definitions, and assigned values or ranges.}
+\end{table*}
 
 
 
@@ -176,13 +219,13 @@ Accordingly, extinctions cascade until the threshold conditions for every remain
 \subsection{Generating the community pooled interaction matrix}
 Given the probabilities of assimilate ($a$), need ($n$), ignore ($i$), and make ($m$) \emph{directed} interactions being inserted into the pooled interaction matrix, we calculate the probabilities of pairwise interactions between both species and objects as 
 \begin{align}
-  p_{ai} &= p_i*(p_a/(p_a+p_n+p_i)) + p_a*(p_i/(p_a+p_i+p_n)),\\ \nonumber
-  p_{an} &= p_n*(p_a/(p_a+p_n+p_i+p_m)) + p_a*(p_n/(p_a+p_i+p_n))\\ \nonumber
-  p_{aa} &= p_a*(p_a/(p_i+p_n+p_a)),\\ \nonumber
-  p_{nn} &= p_n*(p_n/(p_a+p_n+p_i+p_m)),
-  p_{ni} &= p_n*(p_i/(p_a+p_n+p_i+p_m)) + p_i(p_n/(p_a+p_n+p_i)),\\ \nonumber
-  p_{mn} &= p_n*(p_m/(p_a+p_n+p_i+p_m)) + p_m,\\ \nonumber
-  p_{ii} &= p_i*(p_i/(p_a+p_n+p_i)).\\ \nonumber
+  p_{ai} &= p_i(p_a/(p_a+p_n+p_i)) + p_a(p_i/(p_a+p_i+p_n)), \\ \nonumber
+  p_{an} &= p_n(p_a/(p_a+p_n+p_i+p_m)) + p_a(p_n/(p_a+p_i+p_n)), \\ \nonumber
+  p_{aa} &= p_a(p_a/(p_i+p_n+p_a)), \\ \nonumber
+  p_{nn} &= p_n(p_n/(p_a+p_n+p_i+p_m)), \\ \nonumber
+  p_{ni} &= p_n(p_i/(p_a+p_n+p_i+p_m)) + p_i(p_n/(p_a+p_n+p_i)), \\ \nonumber
+  p_{mn} &= p_n(p_m/(p_a+p_n+p_i+p_m)) + p_m, \\ \nonumber
+  p_{ii} &= p_i(p_i/(p_a+p_n+p_i)).\\ \nonumber
 \end{align}
 The size of the interaction matrix ($\mathcal{N} = \mathcal{S} + \mathcal{O}$) is obtained by first setting the desired number of species ($\mathcal{S}$), where the expected number of objects is then estimated as ${\rm E}(\mathcal{O}) = \mathcal{S}(\mathcal{S}-1)p_{mn}$, though the final number of objects is stochastic and determined by a simulated annealing algorithm where interaction matrices are generated until $\mathcal{S}$ is reached.
 
