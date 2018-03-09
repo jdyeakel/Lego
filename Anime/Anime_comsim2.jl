@@ -35,21 +35,23 @@ int_id = preamble_defs(int_m);
 
 a_thresh = 0.0;
 n_thresh = 0.2;
-trophicload = 2;
-tmax = 2000;
-extinctions = true;
+tmax = 500;
+extinctions = false;
 
 @time cid,
 rich,
 sprich,
 turnover,
 res_overlap,
+conn,
 prim_ext,
-sec_ext = assembly(a_thresh,n_thresh,trophicload,extinctions,tmax);
+sec_ext,
+status,
+lpot_col = assembly(a_thresh,n_thresh,extinctions,tmax);
 
 spcid = intersect(sp_v,cid);
 spcid_ind = indexin(spcid,[1;sp_v]);
-degrees,tl_ind,conn = structure();
+degrees,tl_ind = structure();
 
 
 namespace = string("$(homedir())/Dropbox/PostDoc/2014_Lego/Anime/figures/res_overlap.pdf");

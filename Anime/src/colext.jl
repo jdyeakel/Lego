@@ -1,7 +1,10 @@
-function colext(int_m,cid,a_thresh,n_thresh,extinctions,trophicload)
+function colext(int_m,cid,a_thresh,n_thresh,extinctions)
     ######################
     #CURRENT COMMUNITY
     ######################
+    
+    #Define the status of the community as open to colonizers
+    status = 1;
 
     #ID's of agents in the community
     cid_old = copy(cid);
@@ -15,9 +18,6 @@ function colext(int_m,cid,a_thresh,n_thresh,extinctions,trophicload)
 
     #which species have an 'a'-link to anyone in the community? (this should include primary producers and those that are trophically linded to objects: [1 cid])
     trophiclinked = setdiff(int_id[(sum(a_b[:,[1;cid]],2) .> 0)[:,1]],cid);
-
-    #Define the status of the community as open to colonizers
-    status = "open";
 
     #For each trophiclinked, count number of assimilate and need interactions in system
     #Determine in the proportion that already exists is >= the threshold
@@ -52,12 +52,14 @@ function colext(int_m,cid,a_thresh,n_thresh,extinctions,trophicload)
         #Update community
         cid = [cid_old;colonize];
     else
-        status = "closed";
+        status = 0; #status=0 means that the community is closed
     end
 
     ######################
     #EXTINCTION MODULE
     ######################
+    num_ext1 = 0;
+    num_ext2 = 0;
 
     #run the extinction module or colonization by itself?
     if extinctions == true
@@ -85,7 +87,7 @@ function colext(int_m,cid,a_thresh,n_thresh,extinctions,trophicload)
         binext = rand.(Binomial.(1,prext_pred));
 
         num_ext1 = sum(binext);
-        num_ext2 = 0;
+        
 
         #Only go through this round if there are any extinctions
         if num_ext1 > 0
