@@ -11,6 +11,11 @@ function dynstructure(cid,cid_old)
     #Turnover
     turnover = 1 - (length(intersect(cid,cid_old)) / length(union(cid,cid_old)));
     
-    return(rich,sprich,turnover)
+    #Resource overlap
+    res_overlap = roverlap(cid);
+    #mean resource overlap
+    mres_overlap = mean(res_overlap[!isnan.(res_overlap)]);
+    
+    return(rich,sprich,turnover,mres_overlap)
     
 end

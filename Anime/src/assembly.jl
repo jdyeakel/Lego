@@ -6,6 +6,7 @@ function assembly(a_thresh,n_thresh,trophicload,extinctions,tmax)
     turnover = Array{Float64}(tmax);
     prim_ext = Array{Int64}(tmax);
     sec_ext = Array{Int64}(tmax);
+    res_overlap = Array{Float64}(tmax);
     
     for t = 1:tmax
       #Print every 1000 timesteps
@@ -18,16 +19,13 @@ function assembly(a_thresh,n_thresh,trophicload,extinctions,tmax)
       cid,
       lpot_col,
       status,
-      num_ext1,
-      num_ext2 = colext(int_m,cid,a_thresh,n_thresh,extinctions,trophicload);
+      prim_ext[t],
+      sec_ext[t] = colext(int_m,cid,a_thresh,n_thresh,extinctions,trophicload);
       
-      rich[t], sprich[t], turnover[t] = dynstructure(cid,cid_old);
-      
-      prim_ext[t] = num_ext1;
-      sec_ext[t] = num_ext2;
+      rich[t], sprich[t], turnover[t], res_overlap[t] = dynstructure(cid,cid_old);      
 
     end
     
-    return(cid,rich,sprich,turnover,prim_ext,sec_ext)
+    return(cid,rich,sprich,turnover,res_overlap,prim_ext,sec_ext)
     
 end

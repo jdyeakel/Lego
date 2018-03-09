@@ -36,13 +36,14 @@ int_id = preamble_defs(int_m);
 a_thresh = 0.0;
 n_thresh = 0.2;
 trophicload = 2;
-tmax = 5000;
+tmax = 2000;
 extinctions = true;
 
 @time cid,
 rich,
 sprich,
 turnover,
+res_overlap,
 prim_ext,
 sec_ext = assembly(a_thresh,n_thresh,trophicload,extinctions,tmax);
 
@@ -50,15 +51,21 @@ spcid = intersect(sp_v,cid);
 spcid_ind = indexin(spcid,[1;sp_v]);
 degrees,tl_ind,conn = structure();
 
-R"par(mfrow=c(1,2))"
 
+namespace = string("$(homedir())/Dropbox/PostDoc/2014_Lego/Anime/figures/res_overlap.pdf");
 R"""
-plot($(collect(1:tmax)),$rich,type='l',lty=2,log="x",xlab="Time",ylab="Richness")
-lines($(collect(1:tmax)),$sprich)
+pdf($namespace,height=5,width=6)
+plot($res_overlap,log='x',xlab="Time",ylab="Resource overlap",pch=16)
+dev.off()
 """
-
+namespace = string("$(homedir())/Dropbox/PostDoc/2014_Lego/Anime/figures/richness_trophic.pdf");
 R"""
 library(RColorBrewer)
+pdf($namespace,height=5,width=10)
+par(mfrow=c(1,2))
+plot($(collect(1:tmax)),$rich,type='l',lty=2,log="x",xlab="Time",ylab="Richness")
+lines($(collect(1:tmax)),$sprich)
 pal = colorRampPalette(brewer.pal(11,"Spectral"))(length($degrees))
 plot($degrees,$tl_ind,log='x',col=pal,pch=16,xlab="Degrees",ylab="")
+dev.off()
 """
