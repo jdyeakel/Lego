@@ -14,9 +14,6 @@ p_i= 1 - sum([p_n,p_m,p_a]) #Ignore with 1 - pr(sum(other))
 ]
 
 ppweight = 1/4;
-sim=false;
-par=false;
-calcpotcol = false;
 @time int_m, sp_m, t_m, tp_m, tind_m, mp_m, mind_m = build_template_species(S,probs,ppweight);
 
 a_b,
@@ -35,8 +32,8 @@ int_id = preamble_defs(int_m);
 
 a_thresh = 0.0;
 n_thresh = 0.2;
-tmax = 500;
-extinctions = false;
+tmax = 2000;
+extinctions = true;
 
 @time cid,
 rich,
@@ -47,11 +44,13 @@ conn,
 prim_ext,
 sec_ext,
 status,
-lpot_col = assembly(a_thresh,n_thresh,extinctions,tmax);
+lpot_col = assembly(
+    int_m,a_b,n_b,i_b,m_b,n_b0,sp_v,int_id,tind_m,
+    a_thresh,n_thresh,extinctions,tmax);
 
 spcid = intersect(sp_v,cid);
 spcid_ind = indexin(spcid,[1;sp_v]);
-degrees,tl_ind = structure();
+degrees,tl_ind = structure(cid,sp_v,tind_m);
 
 
 namespace = string("$(homedir())/Dropbox/PostDoc/2014_Lego/Anime/figures/res_overlap.pdf");

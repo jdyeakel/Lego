@@ -1,4 +1,6 @@
-function colext(int_m,cid,a_thresh,n_thresh,extinctions)
+function colext(
+    int_m,a_b,n_b,i_b,m_b,n_b0,sp_v,int_id,
+    cid,a_thresh,n_thresh,extinctions)
     ######################
     #CURRENT COMMUNITY
     ######################
@@ -80,8 +82,13 @@ function colext(int_m,cid,a_thresh,n_thresh,extinctions)
         
         #Based on the Holt 1977 model where N* propto 1/n where n is the number of preds
         #baseline extinction probability
-        baseline = 0.001;
-        prext_pred = baseline + (1 - baseline).*(1 - (1./(1 + 0.001*num_preds)));
+        
+        # baseline = 0.001;
+        # prext_pred = baseline + (1 - baseline).*(1 - (1./(1 + 0.001*num_preds)));
+        # 
+        epsilon = 0.03;
+        sigma = 1/3;
+        prext_pred = 0.5*erfc.((1-num_preds*epsilon)/(sigma*sqrt(2)));
 
         #3) Draw extinctions
         binext = rand.(Binomial.(1,prext_pred));

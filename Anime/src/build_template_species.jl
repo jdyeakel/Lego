@@ -25,17 +25,27 @@ function build_template_species(S, probs, ppweight)
   
   #num_play = convert(Int64,round(num_play/2,0));
   
+  # @label p;
+  
   #Generate interaction template
   int_m, sp_m, t_m, tp_m, tind_m, mp_m, mind_m = intmatrix(num_play,probs,ppweight);
 
   S_real = length(find(x->x=='n',diag(int_m)));
 
-  error = 5;
+  error = 0;
   S_acceptable = collect(S-error:S+error);
 
   howlong = 1;
   sdiffvec = Array{Int64}(0);
+  
+  et = 0;
+  tic();
   while in(S_real,S_acceptable) == false
+    # #This breaks the while loop and creates a new int_m 
+    # et = toc();
+    # if et > 10
+    #     @goto p
+    # end
     howlong = howlong + 1;
     S_diff = S - S_real;
     sdiffvec = push!(sdiffvec,S_diff);

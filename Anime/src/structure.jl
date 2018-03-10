@@ -1,4 +1,4 @@
-function structure()
+function structure(cid,sp_v,tind_m)
     
     spcid = intersect(sp_v,cid);
     spcid_ind = indexin(spcid,[1;sp_v]);

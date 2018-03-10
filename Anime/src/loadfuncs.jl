@@ -1,5 +1,5 @@
 @everywhere using Distributions
-#@everywhere using Gadfly
+@everywhere using SpecialFunctions
 @everywhere using RCall
 @everywhere using HDF5
 @everywhere using JLD

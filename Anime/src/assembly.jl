@@ -1,4 +1,6 @@
-function assembly(a_thresh,n_thresh,extinctions,tmax)
+function assembly(
+    int_m,a_b,n_b,i_b,m_b,n_b0,sp_v,int_id,tind_m,
+    a_thresh,n_thresh,extinctions,tmax)
     
     cid = Array{Int64}(0);
     rich = Array{Int64}(tmax);
@@ -12,10 +14,9 @@ function assembly(a_thresh,n_thresh,extinctions,tmax)
     lpot_col = Array{Int64}(tmax);
     
     for t = 1:tmax
-      #Print every 1000 timesteps
-      if mod(t,1000)==0
-        println(string("t=",t))
-      end
+      # if mod(t,1000)==0
+      #   println(string("t=",t))
+      # end
       
       cid_old = copy(cid);
       
@@ -23,9 +24,11 @@ function assembly(a_thresh,n_thresh,extinctions,tmax)
       lpot_col[t],
       status[t],
       prim_ext[t],
-      sec_ext[t] = colext(int_m,cid,a_thresh,n_thresh,extinctions);
+      sec_ext[t] = colext(
+      int_m,a_b,n_b,i_b,m_b,n_b0,sp_v,int_id,
+      cid,a_thresh,n_thresh,extinctions);
       
-      rich[t], sprich[t], turnover[t], res_overlap[t], conn[t] = dynstructure(cid,cid_old);      
+      rich[t], sprich[t], turnover[t], res_overlap[t], conn[t] = dynstructure(cid,cid_old,sp_v,a_b,tind_m);      
 
     end
     
