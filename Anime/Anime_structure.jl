@@ -1,8 +1,8 @@
 loadfunc = include("$(homedir())/Dropbox/PostDoc/2014_Lego/Anime/src/loadfuncs.jl");
 
-reps = 100;
+reps = 20;
 S = 400;
-tmax = 2000;
+tmax = 5000;
 ppweight = 1/4;
 
 a_thresh = 0.0;
@@ -30,10 +30,11 @@ prim_ext = SharedArray{Float64}(reps,tmax);
 sec_ext = SharedArray{Float64}(reps,tmax);
 status = SharedArray{Float64}(reps,tmax);
 lpot_col = SharedArray{Float64}(reps,tmax);
+avgdegree = SharedArray{Float64}(reps,tmax);
 
 #Steady state analyses
-# degrees = SharedArray{Array{Int64}}(reps);
-# trophic = SharedArray{Float64}(reps,S);
+degrees = SharedArray{Int64}(reps,S);
+trophic = SharedArray{Float64}(reps,S);
 
 @time @sync @parallel for r=1:reps
     
@@ -56,15 +57,19 @@ lpot_col = SharedArray{Float64}(reps,tmax);
     prim_ext[r,:],
     sec_ext[r,:],
     status[r,:],
-    lpot_col[r,:] = assembly(
+    lpot_col[r,:],
+    avgdegree[r,:] = assembly(
         int_m,a_b,n_b,i_b,m_b,n_b0,sp_v,int_id,tind_m,
         a_thresh,n_thresh,extinctions,tmax);
 
     spcid = intersect(sp_v,cid);
     spcid_ind = indexin(spcid,[1;sp_v]);
     
-    # degrees[r,:],
-    # trophic[r,:] = structure(cid,sp_v,tind_m);
+    #Trophic and degrees at tmax
+    deg,troph = structure(S,cid,sp_v,tind_m);
+    
+    degrees[r,:] = vec(deg);
+    trophic[r,:] = vec(troph);
     
 end
 
@@ -72,14 +77,15 @@ save(string("$(homedir())/Dropbox/PostDoc/2014_Lego/Anime/data/structure.jld"),
 "rich",rich,
 "sprich",sprich,
 "turnover",turnover,
-"res_overlap",res_overlap,
+"mres_overlap",mres_overlap,
 "conn",conn,
 "prim_ext",prim_ext,
 "sec_ext",sec_ext,
 "status",status,
 "lpot_col",lpot_col,
 "degrees",degrees,
-"trophic",trophic
+"trophic",trophic,
+"avgdegree",avgdegree
 );
 
 
@@ -88,10 +94,11 @@ d = load(string("$(homedir())/Dropbox/PostDoc/2014_Lego/Anime/data/structure.jld
 rich = d["rich"];
 sprich = d["sprich"];
 turnover = d["turnover"];
-res_overlap = d["res_overlap"];
+mres_overlap = d["mres_overlap"];
 conn = d["conn"];
 prim_ext = d["prim_ext"];
 sec_ext = d["sec_ext"];
 status = d["status"];
 lpot_col = d["lpot_col"];
-degrees = d["degrees"];
+# degrees = d["degrees"];
+# trophic = d["trophic"];

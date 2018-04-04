@@ -1,6 +1,6 @@
-function structure(cid,sp_v,tind_m)
+function structure(S,com_id,sp_v,tind_m)
     
-    spcid = intersect(sp_v,cid);
+    spcid = intersect(sp_v,com_id);
     spcid_ind = indexin(spcid,[1;sp_v]);
     
     #Degree distribution
@@ -9,11 +9,16 @@ function structure(cid,sp_v,tind_m)
     #Trophic Level
     #NOTE: if you don't account for indirect-object interactions, there will be trophically disconnected species!
     # tl = trophicalc(spcid_ind,tp_m);
-    tl_ind = trophicalc(spcid_ind,tind_m);
+    tl = trophicalc(spcid_ind,tind_m);
     
     # conn = sum(tind_m[spcid_ind,spcid_ind])/(length(spcid)^2);
     
+    #Size difference of community
+    remainder = zeros(S-length(tl));
     
-    return(degrees,tl_ind)
+    degrees_out = [degrees;convert(Array{Int64},remainder)];
+    tl_out = [tl;convert(Array{Float64},remainder)];
+    
+    return(degrees_out,tl_out)
 
 end

@@ -1,4 +1,4 @@
-function trophicalc(spcid_adj,M)
+function trophicalc(spcid_ind,M)
     L = M[[1;spcid_ind],[1;spcid_ind]];
     R"""
     library(NetIndices)

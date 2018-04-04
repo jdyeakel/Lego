@@ -12,6 +12,7 @@ function assembly(
     conn = Array{Float64}(tmax);
     status = Array{Int64}(tmax);
     lpot_col = Array{Int64}(tmax);
+    avgdegree = Array{Float64}(tmax);
     
     for t = 1:tmax
       # if mod(t,1000)==0
@@ -29,9 +30,17 @@ function assembly(
       cid,a_thresh,n_thresh,extinctions);
       
       rich[t], sprich[t], turnover[t], res_overlap[t], conn[t] = dynstructure(cid,cid_old,sp_v,a_b,tind_m);      
+      
+      # spcid = intersect(sp_v,cid);
+      # spcid_ind = indexin(spcid,[1;sp_v]);
+      # degrees = deleteat!(vec(sum(tind_m[[1;spcid_ind],[1;spcid_ind]],2)),1);
+      
+      #These are 'potential degrees'
+      degrees = sum(a_b[cid,:],2);
+      avgdegree[t] = mean(degrees);
 
     end
     
-    return(cid,rich,sprich,turnover,res_overlap,conn,prim_ext,sec_ext,status,lpot_col)
+    return(cid,rich,sprich,turnover,res_overlap,conn,prim_ext,sec_ext,status,lpot_col,avgdegree)
     
 end

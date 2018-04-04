@@ -21,7 +21,8 @@
 @everywhere include("$(homedir())/Dropbox/PostDoc/2014_Lego/Anime/src/roverlap.jl")
 @everywhere include("$(homedir())/Dropbox/PostDoc/2014_Lego/Anime/src/trophicalc2.jl")
 @everywhere include("$(homedir())/Dropbox/PostDoc/2014_Lego/Anime/src/pairbin.jl")
-@everywhere include("$(homedir())/Dropbox/PostDoc/2014_Lego/Lego_Program/src/trophicwidth.jl")
-@everywhere include("$(homedir())/Dropbox/PostDoc/2014_Lego/Lego_Program/src/Jmatrix.jl")
-@everywhere include("$(homedir())/Dropbox/PostDoc/2014_Lego/Lego_Program/src/PSWebs.jl")
-@everywhere include("$(homedir())/Dropbox/PostDoc/2014_Lego/Lego_Program/src/movingaverage.jl")
+
+@everywhere include("$(homedir())/Dropbox/PostDoc/2014_Lego/Anime/src/trophicwidth.jl")
+@everywhere include("$(homedir())/Dropbox/PostDoc/2014_Lego/Anime/src/Jmatrix.jl")
+@everywhere include("$(homedir())/Dropbox/PostDoc/2014_Lego/Anime/src/PSWebs.jl")
+@everywhere include("$(homedir())/Dropbox/PostDoc/2014_Lego/Anime/src/movingaverage.jl")
