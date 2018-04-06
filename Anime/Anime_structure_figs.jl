@@ -90,6 +90,8 @@ pdf($namespace,height=5,width=6)
 boxplot($(mres_overlap_trim[:,seq]),ylim=c(0,0.1),outline=FALSE,names=$seq,
 xlab='Time',ylab='Trophic overlap',
 pars = list(boxwex = 0.4, staplewex = 0.5, outwex = 0.5),col='lightgray')
+points($(vec(mapslices(mean,mres_overlap_trim[:,seq],1))),ylim=c(0,0.1),pch=16)
+lines($(vec(mapslices(mean,mres_overlap_trim[:,seq],1))),ylim=c(0,0.1),lwd=2)
 dev.off()
 """
 
@@ -104,55 +106,31 @@ end
 ##############################
 #Specialization/Generalization
 ##############################
-seq = [1;5;10;50;100;500;1000];
+
+
+seq = [1;5;10;50;100;1000;2000];
 namespace = string("$(homedir())/Dropbox/PostDoc/2014_Lego/Anime/figures/avgdegree_time.pdf");
 R"""
 pdf($namespace,height=5,width=6)
 boxplot($(avgdegree[:,seq]),ylim=c(0,30),outline=FALSE,names=$seq,
 xlab='Time',ylab='Average degree',
 pars = list(boxwex = 0.4, staplewex = 0.5, outwex = 0.5),col='lightgray')
+points($(vec(mapslices(mean,avgdegree[:,seq],1))),ylim=c(0,0.1),pch=16)
+lines($(vec(mapslices(mean,avgdegree[:,seq],1))),ylim=c(0,0.1),lwd=2)
 dev.off()
 """
 
-#Here, the fits do not work very well
-R"M_ad=list(); tic=0";
-parms_ad = Array{Float64}(0,3);
-for i=1:reps
-    # avgdegree_trim = avgdegree[i,find(!iszero,avgdegree[i,:])];
-    x = collect(1:length(avgdegree[i,:]));
-    y = avgdegree[i,:];
-    R"""
-    y <- $y
-    x <- $x
-    m <- try(nls(y ~ a + b * I(x^z), start = list(a = 1, b = 1, z = -1)),silent=TRUE)
-        if (class(m) != "try-error") {
-            tic = tic + 1;
-            M_ad[[tic]]=m;
-            }
-    cf = coef(M_ad[[tic]])
-    """
-    # push!(b,Float64(R"coef(M[[tic]])[2]"));
-    parms_ad = vcat(parms_ad,@rget(cf)')
-end
 
-namespace = string("$(homedir())/Dropbox/PostDoc/2014_Lego/Anime/figures/avgdegree_time.pdf");
-R"""
-pdf($namespace,height=5,width=6)
-plot(fitted(M_ad[[1]]),type='l', col = '#4292E515', lwd = 2,log='xy',ylim=c(1,50),
-xlab='Time',ylab='Average degree')
-"""
-for i=2:length(@rget(M_ad))
-    R"""
-    lines(fitted(M_ad[[$i]]), col = '#4292E515', lwd = 2)
-    """
-end
-R"dev.off()"
 
-i=3
-R"""
-plot(fitted(M_ad[[$i]]),type='l', col = '#80808050', lwd = 2,log='x')
-points($(avgdegree[i,find(!iszero,avgdegree[i,:])]))
-"""
+
+
+
+
+
+
+
+
+
 
 
 
