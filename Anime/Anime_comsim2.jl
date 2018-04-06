@@ -46,9 +46,11 @@ prim_ext,
 sec_ext,
 status,
 lpot_col,
-avgdegree = assembly(
+avgdegree,
+degrees,
+trophic = assembly(
     int_m,a_b,n_b,i_b,m_b,n_b0,sp_v,int_id,tp_m,tind_m,
-    a_thresh,n_thresh,extinctions,tmax);
+    a_thresh,n_thresh,extinctions,tmax,S);
 
 spcid = intersect(sp_v,cid);
 spcid_ind = indexin(spcid,[1;sp_v]);

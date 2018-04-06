@@ -12,26 +12,22 @@ prim_ext = d["prim_ext"];
 sec_ext = d["sec_ext"];
 status = d["status"];
 lpot_col = d["lpot_col"];
+avgdegree = d["avgdegree"];
 degrees = d["degrees"];
 trophic = d["trophic"];
-avgdegree = d["avgdegree"];
 
 reps = size(rich)[1];
 tmax = size(rich)[2];
 
-#trim zeros from degrees and trophic vectors
-degrees_trim = Array{Array{Int64}}(reps);
-trophic_trim = Array{Array{Float64}}(reps);
-for i=1:reps
-    degrees_trim[i] = degrees[i,find(!iszero,degrees[i,:])];
-    trophic_trim[i] = trophic[i,find(!iszero,trophic[i,:])];
-end
 
-#connectance
+################
+#Connectance
+################
+
 #There is a trail of zeros up front.
 #Trim the zeros and fit curve
-R"M=list(); tic=0";
-parms = Array{Float64}(0,3);
+R"M_c=list(); tic=0";
+parms_c = Array{Float64}(0,3);
 for i=1:reps
     conn_trim = conn[i,find(!iszero,conn[i,:])];
     x = collect(1:length(conn_trim));
@@ -42,25 +38,32 @@ for i=1:reps
     m <- try(nls(y ~ a + b * I(x^z), start = list(a = 1, b = 1, z = -1)),silent=TRUE)
         if (class(m) != "try-error") {
             tic = tic + 1;
-            M[[tic]]=m;
+            M_c[[tic]]=m;
             }
-    cf = coef(M[[tic]])
+    cf = coef(M_c[[tic]])
     """
     # push!(b,Float64(R"coef(M[[tic]])[2]"));
-    parms = vcat(parms,@rget(cf)')
+    parms_c = vcat(parms_c,@rget(cf)')
 end
+
+namespace = string("$(homedir())/Dropbox/PostDoc/2014_Lego/Anime/figures/conn_time.pdf");
 R"""
-    plot(fitted(M[[1]]),type='l', col = '#80808050', lwd = 2,log='x',ylim=c(0,0.2))
+pdf($namespace,height=5,width=6)
+plot(fitted(M_c[[1]]),type='l', col = '#4292E515', lwd = 2,log='x',ylim=c(0,0.25),
+xlab='Time',ylab='Connectance')
 """
 for i=2:length(@rget(M))
     R"""
-    lines(fitted(M[[$i]]), col = '#80808050', lwd = 2)
+    lines(fitted(M_c[[$i]]), col = '#4292E515', lwd = 2)
     """
 end
+R"dev.off()"
+
 #Percent of connectance trajectories that start high and asymptote to lower values
-length(find(x->x>0,parms[:,2]))/reps
+length(find(x->x>0,parms_c[:,2]))/reps
 
 i=6
+R"M_c[[$i]]"
 R"""
 plot(fitted(M[[$i]]),type='l', col = '#80808050', lwd = 2,log='x',ylim=c(0,0.2))
 points($(conn[i,find(!iszero,conn[i,:])]))
@@ -68,9 +71,88 @@ points($(conn[i,find(!iszero,conn[i,:])]))
 
 
 
+##############################
+#Trophic Overlap
+##############################
+
+#Trophic Overlap
+#Seems to be best summarized with boxplot
+mres_overlap_trim = Array{Float64}(reps,tmax)*0;
+for i=1:reps
+    mres_overlap_rm = mres_overlap[i,find(x->x>0,mres_overlap[i,:])];
+    mres_overlap_trim[i,1:length(mres_overlap_rm)] = mres_overlap_rm;
+end
+seq = [1;5;10;50;100;1000;2000];
+
+namespace = string("$(homedir())/Dropbox/PostDoc/2014_Lego/Anime/figures/trophicoverlap_time.pdf");
+R"""
+pdf($namespace,height=5,width=6)
+boxplot($(mres_overlap_trim[:,seq]),ylim=c(0,0.1),outline=FALSE,names=$seq,
+xlab='Time',ylab='Trophic overlap',
+pars = list(boxwex = 0.4, staplewex = 0.5, outwex = 0.5),col='lightgray')
+dev.off()
+"""
+
+mres_overlap_trim = mres_overlap[1,find(x->x>0,mres_overlap[1,:])];
+R"""plot($(mres_overlap_trim),log='x',type='l',ylim=c(0,0.1))"""
+for i=2:reps
+    mres_overlap_trim = mres_overlap[i,find(x->x>0,mres_overlap[i,:])];
+    R"""lines($(mres_overlap_trim))"""
+end
 
 
+##############################
+#Specialization/Generalization
+##############################
+seq = [1;5;10;50;100;500;1000];
+namespace = string("$(homedir())/Dropbox/PostDoc/2014_Lego/Anime/figures/avgdegree_time.pdf");
+R"""
+pdf($namespace,height=5,width=6)
+boxplot($(avgdegree[:,seq]),ylim=c(0,30),outline=FALSE,names=$seq,
+xlab='Time',ylab='Average degree',
+pars = list(boxwex = 0.4, staplewex = 0.5, outwex = 0.5),col='lightgray')
+dev.off()
+"""
 
+#Here, the fits do not work very well
+R"M_ad=list(); tic=0";
+parms_ad = Array{Float64}(0,3);
+for i=1:reps
+    # avgdegree_trim = avgdegree[i,find(!iszero,avgdegree[i,:])];
+    x = collect(1:length(avgdegree[i,:]));
+    y = avgdegree[i,:];
+    R"""
+    y <- $y
+    x <- $x
+    m <- try(nls(y ~ a + b * I(x^z), start = list(a = 1, b = 1, z = -1)),silent=TRUE)
+        if (class(m) != "try-error") {
+            tic = tic + 1;
+            M_ad[[tic]]=m;
+            }
+    cf = coef(M_ad[[tic]])
+    """
+    # push!(b,Float64(R"coef(M[[tic]])[2]"));
+    parms_ad = vcat(parms_ad,@rget(cf)')
+end
+
+namespace = string("$(homedir())/Dropbox/PostDoc/2014_Lego/Anime/figures/avgdegree_time.pdf");
+R"""
+pdf($namespace,height=5,width=6)
+plot(fitted(M_ad[[1]]),type='l', col = '#4292E515', lwd = 2,log='xy',ylim=c(1,50),
+xlab='Time',ylab='Average degree')
+"""
+for i=2:length(@rget(M_ad))
+    R"""
+    lines(fitted(M_ad[[$i]]), col = '#4292E515', lwd = 2)
+    """
+end
+R"dev.off()"
+
+i=3
+R"""
+plot(fitted(M_ad[[$i]]),type='l', col = '#80808050', lwd = 2,log='x')
+points($(avgdegree[i,find(!iszero,avgdegree[i,:])]))
+"""
 
 
 
@@ -92,6 +174,9 @@ plot(seq(2,$tmax),$(conn[1,2:tmax]),log='x',type='l',ylim=c(0.0,0.5))
 for i=2:reps
     R"""lines(seq(2,$tmax),$(conn[i,2:tmax]))"""
 end
+
+
+
 R"""plot(seq(2,$tmax),$(mres_overlap[1,2:tmax]),log='x',type='l',ylim=c(0.0,0.25))"""
 for i=2:reps
     R"""lines(seq(2,$tmax),$(mres_overlap[i,2:tmax]))"""

@@ -1,8 +1,8 @@
 function trophicalc(spcid_ind,M)
     L = M[[1;spcid_ind],[1;spcid_ind]];
     R"""
+    library(MASS)  
     library(NetIndices)
-    library(MASS)
     rtl<-TrophInd(t($L))
     """
     @rget rtl;
