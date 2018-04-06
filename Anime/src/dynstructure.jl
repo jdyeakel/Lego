@@ -1,4 +1,4 @@
-function dynstructure(cid,cid_old,sp_v,a_b,tind_m)
+function dynstructure(cid,cid_old,sp_v,a_b,tp_m,tind_m)
     
     spcid = intersect(sp_v,cid);
     spcid_ind = indexin(spcid,[1;sp_v]);
@@ -9,7 +9,8 @@ function dynstructure(cid,cid_old,sp_v,a_b,tind_m)
     obrich = rich - sprich;
     
     #Connectance
-    conn = sum(tind_m[spcid_ind,spcid_ind])/(length(spcid)^2);
+    conn = sum(tp_m[spcid_ind,spcid_ind])/(length(spcid)^2);
+    conn_ind = sum(tind_m[spcid_ind,spcid_ind])/(length(spcid)^2);
     
     
     #Turnover
@@ -20,6 +21,6 @@ function dynstructure(cid,cid_old,sp_v,a_b,tind_m)
     #mean resource overlap
     mres_overlap = mean(res_overlap[isfinite.(res_overlap)]);
     
-    return(rich,sprich,turnover,mres_overlap,conn)
+    return(rich,sprich,turnover,mres_overlap,conn,conn_ind)
     
 end

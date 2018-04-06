@@ -1,6 +1,6 @@
 loadfunc = include("$(homedir())/Dropbox/PostDoc/2014_Lego/Anime/src/loadfuncs.jl");
 
-reps = 20;
+reps = 500;
 S = 400;
 tmax = 5000;
 ppweight = 1/4;
@@ -26,6 +26,7 @@ sprich = SharedArray{Int64}(reps,tmax);
 turnover = SharedArray{Float64}(reps,tmax);
 mres_overlap = SharedArray{Float64}(reps,tmax);
 conn = SharedArray{Float64}(reps,tmax);
+conn_ind = SharedArray{Float64}(reps,tmax);
 prim_ext = SharedArray{Float64}(reps,tmax);
 sec_ext = SharedArray{Float64}(reps,tmax);
 status = SharedArray{Float64}(reps,tmax);
@@ -54,12 +55,13 @@ trophic = SharedArray{Float64}(reps,S);
     turnover[r,:],
     mres_overlap[r,:],
     conn[r,:],
+    conn_ind[r,:],
     prim_ext[r,:],
     sec_ext[r,:],
     status[r,:],
     lpot_col[r,:],
     avgdegree[r,:] = assembly(
-        int_m,a_b,n_b,i_b,m_b,n_b0,sp_v,int_id,tind_m,
+        int_m,a_b,n_b,i_b,m_b,n_b0,sp_v,int_id,tp_m,tind_m,
         a_thresh,n_thresh,extinctions,tmax);
 
     spcid = intersect(sp_v,cid);
@@ -79,6 +81,7 @@ save(string("$(homedir())/Dropbox/PostDoc/2014_Lego/Anime/data/structure.jld"),
 "turnover",turnover,
 "mres_overlap",mres_overlap,
 "conn",conn,
+"conn_ind",conn_ind,
 "prim_ext",prim_ext,
 "sec_ext",sec_ext,
 "status",status,

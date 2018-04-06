@@ -41,12 +41,13 @@ sprich,
 turnover,
 res_overlap,
 conn,
+conn_ind,
 prim_ext,
 sec_ext,
 status,
 lpot_col,
 avgdegree = assembly(
-    int_m,a_b,n_b,i_b,m_b,n_b0,sp_v,int_id,tind_m,
+    int_m,a_b,n_b,i_b,m_b,n_b0,sp_v,int_id,tp_m,tind_m,
     a_thresh,n_thresh,extinctions,tmax);
 
 spcid = intersect(sp_v,cid);

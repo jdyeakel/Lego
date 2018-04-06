@@ -1,5 +1,5 @@
 function assembly(
-    int_m,a_b,n_b,i_b,m_b,n_b0,sp_v,int_id,tind_m,
+    int_m,a_b,n_b,i_b,m_b,n_b0,sp_v,int_id,tp_m,tind_m,
     a_thresh,n_thresh,extinctions,tmax)
     
     cid = Array{Int64}(0);
@@ -10,6 +10,7 @@ function assembly(
     sec_ext = Array{Int64}(tmax);
     res_overlap = Array{Float64}(tmax);
     conn = Array{Float64}(tmax);
+    conn_ind = Array{Float64}(tmax);
     status = Array{Int64}(tmax);
     lpot_col = Array{Int64}(tmax);
     avgdegree = Array{Float64}(tmax);
@@ -29,7 +30,7 @@ function assembly(
       int_m,a_b,n_b,i_b,m_b,n_b0,sp_v,int_id,
       cid,a_thresh,n_thresh,extinctions);
       
-      rich[t], sprich[t], turnover[t], res_overlap[t], conn[t] = dynstructure(cid,cid_old,sp_v,a_b,tind_m);      
+      rich[t], sprich[t], turnover[t], res_overlap[t], conn[t], conn_ind[t] = dynstructure(cid,cid_old,sp_v,a_b,tp_m,tind_m);      
       
       # spcid = intersect(sp_v,cid);
       # spcid_ind = indexin(spcid,[1;sp_v]);
@@ -41,6 +42,6 @@ function assembly(
 
     end
     
-    return(cid,rich,sprich,turnover,res_overlap,conn,prim_ext,sec_ext,status,lpot_col,avgdegree)
+    return(cid,rich,sprich,turnover,res_overlap,conn,conn_ind,prim_ext,sec_ext,status,lpot_col,avgdegree)
     
 end
