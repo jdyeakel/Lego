@@ -31,12 +31,11 @@ end
 #There is a trail of zeros up front.
 #Trim the zeros and fit curve
 R"M=list(); tic=0";
+parms = Array{Float64}(0,3);
 for i=1:reps
-    
     conn_trim = conn[i,find(!iszero,conn[i,:])];
     x = collect(1:length(conn_trim));
     y = conn_trim;
-    
     R"""
     y <- $y
     x <- $x
@@ -45,8 +44,10 @@ for i=1:reps
             tic = tic + 1;
             M[[tic]]=m;
             }
-    
+    cf = coef(M[[tic]])
     """
+    # push!(b,Float64(R"coef(M[[tic]])[2]"));
+    parms = vcat(parms,@rget(cf)')
 end
 R"""
     plot(fitted(M[[1]]),type='l', col = '#80808050', lwd = 2,log='x',ylim=c(0,0.2))
@@ -56,14 +57,30 @@ for i=2:length(@rget(M))
     lines(fitted(M[[$i]]), col = '#80808050', lwd = 2)
     """
 end
+#Percent of connectance trajectories that start high and asymptote to lower values
+length(find(x->x>0,parms[:,2]))/reps
+
+i=6
+R"""
+plot(fitted(M[[$i]]),type='l', col = '#80808050', lwd = 2,log='x',ylim=c(0,0.2))
+points($(conn[i,find(!iszero,conn[i,:])]))
+"""
 
 
 
 
-    plot(y ~ x,log='x')
-    lines(x, fitted(m), lty = 2, col = "red", lwd = 2)
 
 
+
+
+
+
+
+
+
+###############
+# OLD
+###############
 
 
 #Connectance and trophic width
