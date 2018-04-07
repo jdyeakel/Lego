@@ -1,4 +1,7 @@
-loadfunc = include("$(homedir())/Dropbox/PostDoc/2014_Lego/Anime/src/loadfuncs.jl");
+# loadfunc = include("$(homedir())/Dropbox/PostDoc/2014_Lego/Anime/src/loadfuncs.jl");
+
+loadfunc = include("$(homedir())/2014_Lego/Anime/src/loadfuncs.jl");
+
 
 reps = 1000;
 S = 400;
@@ -76,8 +79,25 @@ trophic = SharedArray{Float64}(reps,tmax,S);
     # trophic[r,:] = vec(troph);
     
 end
+# 
+# save(string("$(homedir())/Dropbox/PostDoc/2014_Lego/Anime/data/structure.jld"),
+# "rich",rich,
+# "sprich",sprich,
+# "turnover",turnover,
+# "mres_overlap",mres_overlap,
+# "conn",conn,
+# "conn_ind",conn_ind,
+# "prim_ext",prim_ext,
+# "sec_ext",sec_ext,
+# "status",status,
+# "lpot_col",lpot_col,
+# "avgdegree",avgdegree
+# "degrees",degrees,
+# "trophic",trophic
+# );
 
-save(string("$(homedir())/Dropbox/PostDoc/2014_Lego/Anime/data/structure.jld"),
+
+save(string("$(homedir())/2014_Lego/Anime/data/structure.jld"),
 "rich",rich,
 "sprich",sprich,
 "turnover",turnover,
@@ -92,4 +112,3 @@ save(string("$(homedir())/Dropbox/PostDoc/2014_Lego/Anime/data/structure.jld"),
 "degrees",degrees,
 "trophic",trophic
 );
-
