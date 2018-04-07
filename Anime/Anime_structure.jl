@@ -91,7 +91,7 @@ end
 # "sec_ext",sec_ext,
 # "status",status,
 # "lpot_col",lpot_col,
-# "avgdegree",avgdegree
+# "avgdegree",avgdegree,
 # "degrees",degrees,
 # "trophic",trophic
 # );
@@ -108,7 +108,7 @@ save(string("$(homedir())/2014_Lego/Anime/data/structure.jld"),
 "sec_ext",sec_ext,
 "status",status,
 "lpot_col",lpot_col,
-"avgdegree",avgdegree
+"avgdegree",avgdegree,
 "degrees",degrees,
 "trophic",trophic
 );

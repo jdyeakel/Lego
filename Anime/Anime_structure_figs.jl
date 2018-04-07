@@ -35,12 +35,13 @@ for i=1:reps
     R"""
     y <- $y
     x <- $x
+    cf <- c(0,0,0)
     m <- try(nls(y ~ a + b * I(x^z), start = list(a = 1, b = 1, z = -1)),silent=TRUE)
         if (class(m) != "try-error") {
             tic = tic + 1;
             M_c[[tic]]=m;
+            cf = coef(M_c[[tic]])
             }
-    cf = coef(M_c[[tic]])
     """
     # push!(b,Float64(R"coef(M[[tic]])[2]"));
     parms_c = vcat(parms_c,@rget(cf)')
@@ -52,7 +53,7 @@ pdf($namespace,height=5,width=6)
 plot(fitted(M_c[[1]]),type='l', col = '#4292E515', lwd = 2,log='x',ylim=c(0,0.25),
 xlab='Time',ylab='Connectance')
 """
-for i=2:length(@rget(M))
+for i=2:length(@rget(M_c))
     R"""
     lines(fitted(M_c[[$i]]), col = '#4292E515', lwd = 2)
     """
@@ -62,11 +63,29 @@ R"dev.off()"
 #Percent of connectance trajectories that start high and asymptote to lower values
 length(find(x->x>0,parms_c[:,2]))/reps
 
-i=6
+i=104
 R"M_c[[$i]]"
 R"""
-plot(fitted(M[[$i]]),type='l', col = '#80808050', lwd = 2,log='x',ylim=c(0,0.2))
+plot(fitted(M_c[[$i]]),type='l', col = '#80808050', lwd = 2,log='x',ylim=c(0,0.2))
 points($(conn[i,find(!iszero,conn[i,:])]))
+"""
+
+conn_trim = Array{Float64}(reps,tmax)*0;
+for i=1:reps
+    conn_rm = conn[i,find(!iszero,conn[i,:])];
+    conn_trim[i,1:length(conn_rm)] = conn_rm;
+end
+seq = [2;5;10;50;100;1000;2000];
+
+namespace = string("$(homedir())/Dropbox/PostDoc/2014_Lego/Anime/figures/conn_time2.pdf");
+R"""
+pdf($namespace,height=5,width=6)
+boxplot($(conn_trim[:,seq]),ylim=c(0,0.1),outline=FALSE,names=$seq,
+xlab='Time',ylab='Trophic overlap',
+pars = list(boxwex = 0.4, staplewex = 0.5, outwex = 0.5),col='lightgray')
+points($(vec(mapslices(mean,conn_trim[:,seq],1))),ylim=c(0,0.1),pch=16)
+lines($(vec(mapslices(mean,conn_trim[:,seq],1))),ylim=c(0,0.1),lwd=2)
+dev.off()
 """
 
 
