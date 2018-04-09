@@ -45,7 +45,7 @@ function assembly(
       
       #These are 'potential degrees'
       # degrees = sum(a_b[cid,:],2);
-      avgdegree[t] = mean(degrees[t,:]);
+      avgdegree[t] = mean(degrees[t,1:length(deg)]);
 
     end
     

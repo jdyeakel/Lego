@@ -18,6 +18,8 @@ trophic = d["trophic"];
 
 reps = size(rich)[1];
 tmax = size(rich)[2];
+S = size(degrees)[3];
+
 
 
 ################
@@ -122,20 +124,31 @@ for i=2:reps
 end
 
 
+
+
+
 ##############################
 #Specialization/Generalization
 ##############################
+#Calculate from degrees
+dt = Array{Float64}(reps,tmax);
+for i=1:reps
+    dvec = degrees[i,:,:];
+    for t = 1:tmax
+        dt[i,t] = mean(dvec[t,find(!iszero,dvec[t,:])]);
+    end
+end
+meandegree = mapslices(mean,dt,1);
 
-
-seq = [1;5;10;50;100;1000;2000];
+seq = [2;5;10;50;100;1000;2000];
 namespace = string("$(homedir())/Dropbox/PostDoc/2014_Lego/Anime/figures/avgdegree_time.pdf");
 R"""
 pdf($namespace,height=5,width=6)
-boxplot($(avgdegree[:,seq]),ylim=c(0,30),outline=FALSE,names=$seq,
-xlab='Time',ylab='Average degree',
+boxplot($(dt[:,seq]),ylim=c(0,30),outline=FALSE,names=$seq,
+xlab='Time',ylab='Realized mean degree',
 pars = list(boxwex = 0.4, staplewex = 0.5, outwex = 0.5),col='lightgray')
-points($(vec(mapslices(mean,avgdegree[:,seq],1))),ylim=c(0,0.1),pch=16)
-lines($(vec(mapslices(mean,avgdegree[:,seq],1))),ylim=c(0,0.1),lwd=2)
+points($(vec(mapslices(mean,dt[:,seq],1))),ylim=c(0,0.1),pch=16)
+lines($(vec(mapslices(mean,dt[:,seq],1))),ylim=c(0,0.1),lwd=2)
 dev.off()
 """
 
@@ -143,6 +156,50 @@ dev.off()
 
 
 
+# Somehow display how the *realized* degree distribution changes
+seq = [10;50;100;1000;2000];
+
+mdegt = Array{Float64}(length(seq),S)*0;
+t_ic = 0;
+for t = seq
+    t_ic = t_ic + 1;
+    deg = degrees[:,t,:];
+    #Sort each row
+    degsort = sort(deg,2,rev=true);
+    #which column is the last non-zero?
+    lastcol = find(iszero,sum(degsort,1))[1]-1;
+    mdeg = Array{Float64}(lastcol);
+    #Take means but ignore zeros for each column through lascol
+    for i=1:lastcol
+        mdeg[i] = median(degsort[!iszero.(degsort[:,i]),i]);
+    end
+    mdegt[t_ic,1:length(mdeg)]=mdeg;
+end
+
+namespace = string("$(homedir())/Dropbox/PostDoc/2014_Lego/Anime/figures/degreedist_time.pdf");
+R"""
+library(RColorBrewer)
+pdf($namespace,height=5,width=6)
+pal = brewer.pal($(length(seq)),'Set1')
+plot($(mdegt[1,!iszero.(mdegt[1,:])]),xlim=c(1,200),ylim=c(1,50),log='y',col=pal[1],type='l',lwd=2)
+"""
+for i=2:length(seq)
+    R"""
+    lines($(mdegt[i,!iszero.(mdegt[i,:])]),col=pal[$i],lwd=2)
+    """
+end
+R"dev.off()"
+
+
+
+
+
+i=1;
+t=800;
+deg = reverse(sort(degrees[i,t,find(!iszero,degrees[i,t,:])]));
+R"""
+plot($deg,ylim=c(1,50),log='y')
+"""
 
 
 
