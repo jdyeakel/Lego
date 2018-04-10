@@ -32,14 +32,16 @@ int_id = preamble_defs(int_m);
 
 a_thresh = 0.0;
 n_thresh = 0.2;
-tmax = 2000;
+tmax = 100;
 extinctions = true;
+
 
 @time cid,
 rich,
 sprich,
 turnover,
-res_overlap,
+mres_overlap,
+res_overlap_dist,
 conn,
 conn_ind,
 prim_ext,
