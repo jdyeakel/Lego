@@ -24,6 +24,9 @@ function roverlap(cid,sp_v,a_b)
     #10X faster
     res_overlap = (((a_b[spcid,cid]*preds).-res)/(l_sp-1))./res;
     
+    #This is the same thing, but the above code is 10x faster!
+    # res_overlap = (((a_b[spcid,cid]*preds).-res)./res)/(l_sp-1);
+    
     #Obligate primary producers will be NaN
     #They should be discluded from the measurement so we will keep them NaN
     

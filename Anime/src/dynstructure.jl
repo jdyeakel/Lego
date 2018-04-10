@@ -21,6 +21,6 @@ function dynstructure(cid,cid_old,sp_v,a_b,tp_m,tind_m)
     #mean resource overlap
     mres_overlap = mean(res_overlap[isfinite.(res_overlap)]);
     
-    return(rich,sprich,turnover,mres_overlap,conn,conn_ind)
+    return(rich,sprich,turnover,mres_overlap,res_overlap,conn,conn_ind)
     
 end

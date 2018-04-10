@@ -33,8 +33,9 @@ function assembly(
       int_m,a_b,n_b,i_b,m_b,n_b0,sp_v,int_id,
       cid,a_thresh,n_thresh,extinctions);
       
-      rich[t], sprich[t], turnover[t], res_overlap[t], conn[t], conn_ind[t] = dynstructure(cid,cid_old,sp_v,a_b,tp_m,tind_m);      
+      rich[t], sprich[t], turnover[t], res_overlap[t], res_overlap_all, conn[t], conn_ind[t] = dynstructure(cid,cid_old,sp_v,a_b,tp_m,tind_m);      
       
+      res_overlap_dist[t,1:length(res_overlap_all)] = res_overlap_all;
       # spcid = intersect(sp_v,cid);
       # spcid_ind = indexin(spcid,[1;sp_v]);
       
@@ -49,6 +50,6 @@ function assembly(
 
     end
     
-    return(cid,rich,sprich,turnover,res_overlap,conn,conn_ind,prim_ext,sec_ext,status,lpot_col,avgdegree,degrees,trophic)
+    return(cid,rich,sprich,turnover,res_overlap,res_overlap_dist,conn,conn_ind,prim_ext,sec_ext,status,lpot_col,avgdegree,degrees,trophic)
     
 end

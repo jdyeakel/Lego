@@ -36,6 +36,8 @@ status = SharedArray{Float64}(reps,tmax);
 lpot_col = SharedArray{Float64}(reps,tmax);
 avgdegree = SharedArray{Float64}(reps,tmax);
 
+res_overlap_dist = SharedArray{Float64}(reps,tmax,S);
+
 #Steady state analyses
 degrees = SharedArray{Int64}(reps,tmax,S);
 trophic = SharedArray{Float64}(reps,tmax,S);
@@ -57,6 +59,7 @@ trophic = SharedArray{Float64}(reps,tmax,S);
     sprich[r,:],
     turnover[r,:],
     mres_overlap[r,:],
+    res_overlap_dist[r,:],
     conn[r,:],
     conn_ind[r,:],
     prim_ext[r,:],
@@ -102,6 +105,7 @@ save(string("$(homedir())/2014_Lego/Anime/data/structure.jld"),
 "sprich",sprich,
 "turnover",turnover,
 "mres_overlap",mres_overlap,
+"res_overlap_dist",res_overlap_dist,
 "conn",conn,
 "conn_ind",conn_ind,
 "prim_ext",prim_ext,

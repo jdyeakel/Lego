@@ -73,9 +73,12 @@ points($(conn[i,find(!iszero,conn[i,:])]))
 """
 
 conn_trim = Array{Float64}(reps,tmax)*0;
+conn_ind_trim = Array{Float64}(reps,tmax)*0;
 for i=1:reps
     conn_rm = conn[i,find(!iszero,conn[i,:])];
+    conn_ind_rm = conn_ind[i,find(!iszero,conn[i,:])];
     conn_trim[i,1:length(conn_rm)] = conn_rm;
+    conn_ind_trim[i,1:length(conn_ind_rm)] = conn_ind_rm;
 end
 seq = [2;5;10;50;100;1000;2000];
 
@@ -83,10 +86,22 @@ namespace = string("$(homedir())/Dropbox/PostDoc/2014_Lego/Anime/figures/conn_ti
 R"""
 pdf($namespace,height=5,width=6)
 boxplot($(conn_trim[:,seq]),ylim=c(0,0.1),outline=FALSE,names=$seq,
-xlab='Time',ylab='Trophic overlap',
+xlab='Time',ylab='Connectance',
 pars = list(boxwex = 0.4, staplewex = 0.5, outwex = 0.5),col='lightgray')
 points($(vec(mapslices(mean,conn_trim[:,seq],1))),ylim=c(0,0.1),pch=16)
 lines($(vec(mapslices(mean,conn_trim[:,seq],1))),ylim=c(0,0.1),lwd=2)
+dev.off()
+"""
+
+#Indirect connectance
+namespace = string("$(homedir())/Dropbox/PostDoc/2014_Lego/Anime/figures/connind_time2.pdf");
+R"""
+pdf($namespace,height=5,width=6)
+boxplot($(conn_ind_trim[:,seq]),ylim=c(0,0.1),outline=FALSE,names=$seq,
+xlab='Time',ylab='Connectance',
+pars = list(boxwex = 0.4, staplewex = 0.5, outwex = 0.5),col='lightgray')
+points($(vec(mapslices(mean,conn_ind_trim[:,seq],1))),ylim=c(0,0.1),pch=16)
+lines($(vec(mapslices(mean,conn_ind_trim[:,seq],1))),ylim=c(0,0.1),lwd=2)
 dev.off()
 """
 
@@ -103,7 +118,7 @@ for i=1:reps
     mres_overlap_rm = mres_overlap[i,find(x->x>0,mres_overlap[i,:])];
     mres_overlap_trim[i,1:length(mres_overlap_rm)] = mres_overlap_rm;
 end
-seq = [1;5;10;50;100;1000;2000];
+seq = [2;5;10;50;100;1000;2000];
 
 namespace = string("$(homedir())/Dropbox/PostDoc/2014_Lego/Anime/figures/trophicoverlap_time.pdf");
 R"""
@@ -181,7 +196,7 @@ R"""
 library(RColorBrewer)
 pdf($namespace,height=5,width=6)
 pal = brewer.pal($(length(seq)),'Set1')
-plot($(mdegt[1,!iszero.(mdegt[1,:])]),xlim=c(1,200),ylim=c(1,50),log='y',col=pal[1],type='l',lwd=2)
+plot($(mdegt[1,!iszero.(mdegt[1,:])]),xlim=c(1,200),ylim=c(1,50),log='y',col=pal[1],type='l',lwd=2,xlab = 'Number of species', ylab='Median degree')
 """
 for i=2:length(seq)
     R"""
