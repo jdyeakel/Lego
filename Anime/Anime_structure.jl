@@ -59,7 +59,7 @@ trophic = SharedArray{Float64}(reps,tmax,S);
     sprich[r,:],
     turnover[r,:],
     mres_overlap[r,:],
-    res_overlap_dist[r,:],
+    res_overlap_dist[r,:,:],
     conn[r,:],
     conn_ind[r,:],
     prim_ext[r,:],
