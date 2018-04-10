@@ -8,7 +8,7 @@ function assembly(
     turnover = Array{Float64}(tmax);
     prim_ext = Array{Int64}(tmax);
     sec_ext = Array{Int64}(tmax);
-    res_overlap = Array{Float64}(tmax);
+    res_overlap = Array{Float64}(tmax,S)*0;
     conn = Array{Float64}(tmax);
     conn_ind = Array{Float64}(tmax);
     status = Array{Int64}(tmax);
