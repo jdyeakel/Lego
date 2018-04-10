@@ -13,7 +13,7 @@ p_m=0.002,
 p_i= 1 - sum([p_n,p_m,p_a]) #Ignore with 1 - pr(sum(other))
 ]
 
-ppweight = 1/8;
+ppweight = 1/4;
 @time int_m, sp_m, t_m, tp_m, tind_m, mp_m, mind_m = build_template_species(S,probs,ppweight);
 
 a_b,

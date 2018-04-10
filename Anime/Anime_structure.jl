@@ -1,6 +1,6 @@
 # loadfunc = include("$(homedir())/Dropbox/PostDoc/2014_Lego/Anime/src/loadfuncs.jl");
 
-loadfunc = include("$(homedir())/2014_Lego/Anime/src/loadfuncs.jl");
+loadfunc = include("$(homedir())/2014_Lego/Anime/src/loadfuncsYOG.jl");
 
 
 reps = 1000;

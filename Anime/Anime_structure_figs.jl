@@ -172,9 +172,10 @@ dev.off()
 
 
 # Somehow display how the *realized* degree distribution changes
-seq = [10;50;100;1000;2000];
+seq = [5;10;25;50;100;200;1000;2000;];
 
 mdegt = Array{Float64}(length(seq),S)*0;
+sddegt = Array{Float64}(length(seq),S)*0;
 t_ic = 0;
 for t = seq
     t_ic = t_ic + 1;
@@ -184,26 +185,46 @@ for t = seq
     #which column is the last non-zero?
     lastcol = find(iszero,sum(degsort,1))[1]-1;
     mdeg = Array{Float64}(lastcol);
+    sddeg = Array{Float64}(lastcol);
     #Take means but ignore zeros for each column through lascol
     for i=1:lastcol
         mdeg[i] = median(degsort[!iszero.(degsort[:,i]),i]);
+        sddeg[i] = std(degsort[!iszero.(degsort[:,i]),i]);
     end
     mdegt[t_ic,1:length(mdeg)]=mdeg;
+    sddegt[t_ic,1:length(mdeg)]=sddeg;
 end
 
 namespace = string("$(homedir())/Dropbox/PostDoc/2014_Lego/Anime/figures/degreedist_time.pdf");
 R"""
 library(RColorBrewer)
 pdf($namespace,height=5,width=6)
-pal = brewer.pal($(length(seq)),'Set1')
+pal = brewer.pal($(length(seq)),'Spectral')
 plot($(mdegt[1,!iszero.(mdegt[1,:])]),xlim=c(1,200),ylim=c(1,50),log='y',col=pal[1],type='l',lwd=2,xlab = 'Number of species', ylab='Median degree')
+sdev_pre = $(sddegt[1,find(x->x>0,sddegt[1,:])]);
+sdev = numeric(length($(mdegt[1,find(x->x>0,mdegt[1,:])])))
+sdev[1:length(sdev_pre)]=sdev_pre
+polygon(x=c(seq(1,length(sdev)),seq(length(sdev),1)),
+y=c($(mdegt[1,!iszero.(mdegt[1,:])])[1:length(sdev)]+sdev,
+rev($(mdegt[1,!iszero.(mdegt[1,:])])[1:length(sdev)]-sdev)),col=paste(pal[1],50,sep=''),border=NA)
+lines($(mdegt[1,!iszero.(mdegt[1,:])]),xlim=c(1,200),ylim=c(0.01,50),log='y',col=pal[1],type='l',lwd=2,xlab = 'Number of species', ylab='Median degree')
 """
 for i=2:length(seq)
     R"""
+    sdev_pre = $(sddegt[i,find(x->x>0,sddegt[i,:])]);
+    sdev = numeric(length($(mdegt[i,find(x->x>0,mdegt[i,:])])))
+    sdev[1:length(sdev_pre)]=sdev_pre
+    polygon(x=c(seq(1,length(sdev)),seq(length(sdev),1)),
+    y=c($(mdegt[i,!iszero.(mdegt[i,:])])[1:length(sdev)]+sdev,
+    rev($(mdegt[i,!iszero.(mdegt[i,:])])[1:length(sdev)]-sdev)),col=paste(pal[$i],50,sep=''),border=NA)
     lines($(mdegt[i,!iszero.(mdegt[i,:])]),col=pal[$i],lwd=2)
     """
 end
-R"dev.off()"
+
+R"""
+legend(x=165,y=50,legend = $seq,col=pal,lty=1,lwd=2,title='Time',cex=0.8,bty='n')
+dev.off()
+"""
 
 
 
