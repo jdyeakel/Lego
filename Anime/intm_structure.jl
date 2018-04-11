@@ -3,7 +3,7 @@ loadfunc = include("$(homedir())/Dropbox/PostDoc/2014_Lego/Anime/src/loadfuncs.j
 # loadfunc = include("$(homedir())/2014_Lego/Anime/src/loadfuncsYOG.jl");
 
 
-reps = 1000;
+reps = 5000;
 S = 400;
 tmax = 2500;
 ppweight = 1/4;

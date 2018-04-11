@@ -6,6 +6,7 @@ rich = d["rich"];
 sprich = d["sprich"];
 turnover = d["turnover"];
 mres_overlap = d["mres_overlap"];
+res_overlap_dist = d["res_overlap_dist"];
 conn = d["conn"];
 conn_ind = d["conn_ind"];
 prim_ext = d["prim_ext"];
@@ -20,7 +21,12 @@ reps = size(rich)[1];
 tmax = size(rich)[2];
 S = size(degrees)[3];
 
-
+h = load(string("$(homedir())/Dropbox/PostDoc/2014_Lego/Anime/data/intm_structure.jld"));
+Pconn = h["Pconn"];
+Pconn_ind = h["Pconn_ind"];
+Pres_overlap_dist = h["Pres_overlap_dist"];
+Pdegrees = h["Pdegrees"];
+Ptl = h["Ptl"];
 
 ################
 #Connectance
@@ -155,6 +161,7 @@ for i=1:reps
 end
 meandegree = mapslices(mean,dt,1);
 
+
 seq = [2;5;10;50;100;1000;2000];
 namespace = string("$(homedir())/Dropbox/PostDoc/2014_Lego/Anime/figures/avgdegree_time.pdf");
 R"""
@@ -194,13 +201,17 @@ for t = seq
     mdegt[t_ic,1:length(mdeg)]=mdeg;
     sddegt[t_ic,1:length(mdeg)]=sddeg;
 end
+Pdegreesort = sort(Pdegrees,2,rev=true);
+Pmeandegree = vec(mapslices(median,Pdegreesort,1));
+Psddeg = vec(mapslices(std,Pdegreesort,1));
 
-namespace = string("$(homedir())/Dropbox/PostDoc/2014_Lego/Anime/figures/degreedist_time.pdf");
+
+namespace = string("$(homedir())/Dropbox/PostDoc/2014_Lego/Anime/figures/degreedist_time2.pdf");
 R"""
 library(RColorBrewer)
 pdf($namespace,height=5,width=6)
 pal = brewer.pal($(length(seq)),'Spectral')
-plot($(mdegt[1,!iszero.(mdegt[1,:])]),xlim=c(1,200),ylim=c(1,50),log='y',col=pal[1],type='l',lwd=2,xlab = 'Number of species', ylab='Median degree')
+plot($(mdegt[1,!iszero.(mdegt[1,:])]),xlim=c(1,200),ylim=c(1,100),log='y',col=pal[1],type='l',lwd=2,xlab = 'Number of species', ylab='Median degree')
 sdev_pre = $(sddegt[1,find(x->x>0,sddegt[1,:])]);
 sdev = numeric(length($(mdegt[1,find(x->x>0,mdegt[1,:])])))
 sdev[1:length(sdev_pre)]=sdev_pre
@@ -220,9 +231,15 @@ for i=2:length(seq)
     lines($(mdegt[i,!iszero.(mdegt[i,:])]),col=pal[$i],lwd=2)
     """
 end
-
 R"""
-legend(x=165,y=50,legend = $seq,col=pal,lty=1,lwd=2,title='Time',cex=0.8,bty='n')
+maxsp = 200;
+sdev = $(Psddeg)[1:maxsp];
+polygon(x=c(seq(1,maxsp),seq(maxsp,1)),
+y=c($(Pmeandegree)[1:maxsp]+sdev[1:maxsp],
+rev($(Pmeandegree)[1:maxsp]-sdev[1:maxsp])),col=paste('#000000',50,sep=''),border=NA)
+lines($(Pmeandegree)[1:maxsp],col='black',type='l',lwd=2)
+
+legend(x=175,y=120,legend = $seq,col=pal,lty=1,lwd=2,title='Time',cex=0.7,bty='n')
 dev.off()
 """
 
