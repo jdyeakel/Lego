@@ -78,6 +78,9 @@ plot(fitted(M_c[[$i]]),type='l', col = '#80808050', lwd = 2,log='x',ylim=c(0,0.2
 points($(conn[i,find(!iszero,conn[i,:])]))
 """
 
+
+
+
 conn_trim = Array{Float64}(reps,tmax)*0;
 conn_ind_trim = Array{Float64}(reps,tmax)*0;
 for i=1:reps
@@ -96,6 +99,7 @@ xlab='Time',ylab='Connectance',
 pars = list(boxwex = 0.4, staplewex = 0.5, outwex = 0.5),col='lightgray')
 points($(vec(mapslices(mean,conn_trim[:,seq],1))),ylim=c(0,0.1),pch=16)
 lines($(vec(mapslices(mean,conn_trim[:,seq],1))),ylim=c(0,0.1),lwd=2)
+lines(seq(0.001,3000),rep(mean($Pconn),3000),lty=2)
 dev.off()
 """
 
@@ -108,6 +112,7 @@ xlab='Time',ylab='Connectance',
 pars = list(boxwex = 0.4, staplewex = 0.5, outwex = 0.5),col='lightgray')
 points($(vec(mapslices(mean,conn_ind_trim[:,seq],1))),ylim=c(0,0.1),pch=16)
 lines($(vec(mapslices(mean,conn_ind_trim[:,seq],1))),ylim=c(0,0.1),lwd=2)
+lines(seq(0.001,3000),rep(mean($Pconn_ind),3000),lty=2)
 dev.off()
 """
 
@@ -116,6 +121,13 @@ dev.off()
 ##############################
 #Trophic Overlap
 ##############################
+
+#Species pool
+Preps = size(Pres_overlap_dist)[1];
+Pmeanoverlap = Array{Float64}(Preps)
+for r=1:Preps
+    Pmeanoverlap[r] = mean(Pres_overlap_dist[r,!isnan(Pres_overlap_dist[r,:])]);
+end
 
 #Trophic Overlap
 #Seems to be best summarized with boxplot
@@ -134,6 +146,7 @@ xlab='Time',ylab='Trophic overlap',
 pars = list(boxwex = 0.4, staplewex = 0.5, outwex = 0.5),col='lightgray')
 points($(vec(mapslices(mean,mres_overlap_trim[:,seq],1))),ylim=c(0,0.1),pch=16)
 lines($(vec(mapslices(mean,mres_overlap_trim[:,seq],1))),ylim=c(0,0.1),lwd=2)
+lines(seq(0.001,3000),rep(mean($Pmeanoverlap),3000),lty=2)
 dev.off()
 """
 
@@ -195,14 +208,14 @@ for t = seq
     sddeg = Array{Float64}(lastcol);
     #Take means but ignore zeros for each column through lascol
     for i=1:lastcol
-        mdeg[i] = median(degsort[!iszero.(degsort[:,i]),i]);
+        mdeg[i] = mean(degsort[!iszero.(degsort[:,i]),i]);
         sddeg[i] = std(degsort[!iszero.(degsort[:,i]),i]);
     end
     mdegt[t_ic,1:length(mdeg)]=mdeg;
     sddegt[t_ic,1:length(mdeg)]=sddeg;
 end
 Pdegreesort = sort(Pdegrees,2,rev=true);
-Pmeandegree = vec(mapslices(median,Pdegreesort,1));
+Pmeandegree = vec(mapslices(mean,Pdegreesort,1));
 Psddeg = vec(mapslices(std,Pdegreesort,1));
 
 
@@ -211,13 +224,13 @@ R"""
 library(RColorBrewer)
 pdf($namespace,height=5,width=6)
 pal = brewer.pal($(length(seq)),'Spectral')
-plot($(mdegt[1,!iszero.(mdegt[1,:])]),xlim=c(1,200),ylim=c(1,100),log='y',col=pal[1],type='l',lwd=2,xlab = 'Number of species', ylab='Median degree')
+plot($(mdegt[1,!iszero.(mdegt[1,:])]),xlim=c(1,200),ylim=c(1,100),log='y',col=pal[1],type='l',lwd=2,xlab = 'Number of species', ylab='Mean degree')
 sdev_pre = $(sddegt[1,find(x->x>0,sddegt[1,:])]);
 sdev = numeric(length($(mdegt[1,find(x->x>0,mdegt[1,:])])))
 sdev[1:length(sdev_pre)]=sdev_pre
 polygon(x=c(seq(1,length(sdev)),seq(length(sdev),1)),
 y=c($(mdegt[1,!iszero.(mdegt[1,:])])[1:length(sdev)]+sdev,
-rev($(mdegt[1,!iszero.(mdegt[1,:])])[1:length(sdev)]-sdev)),col=paste(pal[1],50,sep=''),border=NA)
+rev($(mdegt[1,!iszero.(mdegt[1,:])])[1:length(sdev)]-sdev)),col=paste(pal[1],65,sep=''),border=NA)
 lines($(mdegt[1,!iszero.(mdegt[1,:])]),xlim=c(1,200),ylim=c(0.01,50),log='y',col=pal[1],type='l',lwd=2,xlab = 'Number of species', ylab='Median degree')
 """
 for i=2:length(seq)
@@ -227,7 +240,7 @@ for i=2:length(seq)
     sdev[1:length(sdev_pre)]=sdev_pre
     polygon(x=c(seq(1,length(sdev)),seq(length(sdev),1)),
     y=c($(mdegt[i,!iszero.(mdegt[i,:])])[1:length(sdev)]+sdev,
-    rev($(mdegt[i,!iszero.(mdegt[i,:])])[1:length(sdev)]-sdev)),col=paste(pal[$i],50,sep=''),border=NA)
+    rev($(mdegt[i,!iszero.(mdegt[i,:])])[1:length(sdev)]-sdev)),col=paste(pal[$i],65,sep=''),border=NA)
     lines($(mdegt[i,!iszero.(mdegt[i,:])]),col=pal[$i],lwd=2)
     """
 end
@@ -236,10 +249,10 @@ maxsp = 200;
 sdev = $(Psddeg)[1:maxsp];
 polygon(x=c(seq(1,maxsp),seq(maxsp,1)),
 y=c($(Pmeandegree)[1:maxsp]+sdev[1:maxsp],
-rev($(Pmeandegree)[1:maxsp]-sdev[1:maxsp])),col=paste('#000000',50,sep=''),border=NA)
+rev($(Pmeandegree)[1:maxsp]-sdev[1:maxsp])),col=paste('#000000',65,sep=''),border=NA)
 lines($(Pmeandegree)[1:maxsp],col='black',type='l',lwd=2)
 
-legend(x=175,y=120,legend = $seq,col=pal,lty=1,lwd=2,title='Time',cex=0.7,bty='n')
+legend(x=175,y=120,legend = c('Pool',$seq),col=c('black',pal),lty=1,lwd=2,title='Time',cex=0.7,bty='n')
 dev.off()
 """
 
