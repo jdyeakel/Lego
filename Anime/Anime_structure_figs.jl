@@ -196,9 +196,9 @@ seq = [5;10;25;50;100;200;1000;2000;];
 
 mdegt = Array{Float64}(length(seq),S)*0;
 sddegt = Array{Float64}(length(seq),S)*0;
-t_ic = 0;
+t_tic = 0;
 for t = seq
-    t_ic = t_ic + 1;
+    t_tic = t_tic + 1;
     deg = degrees[:,t,:];
     #Sort each row
     degsort = sort(deg,2,rev=true);
@@ -211,8 +211,8 @@ for t = seq
         mdeg[i] = mean(degsort[!iszero.(degsort[:,i]),i]);
         sddeg[i] = std(degsort[!iszero.(degsort[:,i]),i]);
     end
-    mdegt[t_ic,1:length(mdeg)]=mdeg;
-    sddegt[t_ic,1:length(mdeg)]=sddeg;
+    mdegt[t_tic,1:length(mdeg)]=mdeg;
+    sddegt[t_tic,1:length(mdeg)]=sddeg;
 end
 Pdegreesort = sort(Pdegrees,2,rev=true);
 Pmeandegree = vec(mapslices(mean,Pdegreesort,1));
@@ -257,9 +257,6 @@ dev.off()
 """
 
 
-
-
-
 i=1;
 t=800;
 deg = reverse(sort(degrees[i,t,find(!iszero,degrees[i,t,:])]));
@@ -271,6 +268,56 @@ plot($deg,ylim=c(1,50),log='y')
 
 
 
+#####################
+# Trophic levels
+#####################
+seq = [5;10;25;50;100;200;1000;2000;];
+R"M_t=list(); t_tic=0";
+parms_t = Array{Float64}(0,3);
+for i=1:reps
+    for t=seq
+        deg_trim = degrees[i,t,find(!iszero,degrees[i,t,:])];
+        trophic_trim = trophic[i,t,find(!iszero,trophic[i,t,:])];
+        x = deg_trim;
+        y = trophic_trim;
+        R"""
+        y <- $y
+        x <- $x
+        cf <- c(0,0,0)
+        m <- try(nls(y ~ a + b * I(x^z), start = list(a = 1, b = 1, z = -1)),silent=TRUE)
+            if (class(m) != "try-error") {
+                t_tic = t_tic + 1;
+                M_t[[t_tic]]=m;
+                cf = coef(M_t[[t_tic]])
+                }
+        """
+        # push!(b,Float64(R"coef(M[[tic]])[2]"));
+        parms_t = vcat(parms_t,@rget(cf)')
+    end
+end
+# 
+# namespace = string("$(homedir())/Dropbox/PostDoc/2014_Lego/Anime/figures/conn_time.pdf");
+# R"""
+# pdf($namespace,height=5,width=6)
+# plot(fitted(M_c[[1]]),type='l', col = '#4292E515', lwd = 2,log='x',ylim=c(0,0.25),
+# xlab='Time',ylab='Connectance')
+# """
+# for i=2:length(@rget(M_c))
+#     R"""
+#     lines(fitted(M_c[[$i]]), col = '#4292E515', lwd = 2)
+#     """
+# end
+# R"dev.off()"
+
+i=104
+R"M_t[[$i]]"
+namespace = string("$(homedir())/Dropbox/PostDoc/2014_Lego/Anime/figures/test_trophicfit.pdf");
+R"""
+pdf($namespace,height=5,width=6)
+plot(fitted(M_t[[$i]]),type='l', col = '#80808050', lwd = 2,log='xy',xlim=c(1,100),ylim=c(1,20))
+points($(degrees[i,t,find(!iszero,degrees[i,t,:])]),$(trophic[i,t,find(!iszero,trophic[i,t,:])]))
+dev.off()
+"""
 
 
 
