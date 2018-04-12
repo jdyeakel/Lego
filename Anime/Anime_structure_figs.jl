@@ -271,30 +271,79 @@ plot($deg,ylim=c(1,50),log='y')
 #####################
 # Trophic levels
 #####################
-seq = [5;10;25;50;100;200;1000;2000;];
-R"M_t=list(); t_tic=0";
-parms_t = Array{Float64}(0,3);
-for i=1:reps
-    for t=seq
-        deg_trim = degrees[i,t,find(!iszero,degrees[i,t,:])];
-        trophic_trim = trophic[i,t,find(!iszero,trophic[i,t,:])];
-        x = deg_trim;
-        y = trophic_trim;
-        R"""
-        y <- $y
-        x <- $x
-        cf <- c(0,0,0)
-        m <- try(nls(y ~ a + b * I(x^z), start = list(a = 1, b = 1, z = -1)),silent=TRUE)
-            if (class(m) != "try-error") {
-                t_tic = t_tic + 1;
-                M_t[[t_tic]]=m;
-                cf = coef(M_t[[t_tic]])
-                }
-        """
-        # push!(b,Float64(R"coef(M[[tic]])[2]"));
-        parms_t = vcat(parms_t,@rget(cf)')
-    end
+seq = [10;25;50;100;200;1000;2000;];
+
+R"M_t=list()"
+degsort = Array{Array{Int64}}(length(seq));
+trophsort = Array{Array{Float64}}(length(seq));
+for i=1:length(seq)
+    t = seq[i];
+    deg = reshape(degrees[:,t,:],reps*S);
+    troph = reshape(trophic[:,t,:],reps*S);
+    deg_trim = deg[find(!iszero,deg)];
+    trophic_trim = troph[find(!iszero,troph)];
+    x = deg_trim;
+    y = trophic_trim;
+    z = [x y];
+    sp = sortperm(z[:,1]);
+    zsort = [z[sp,1] z[sp,2]];
+    xsort = zsort[:,1];
+    ysort = zsort[:,2];
+    degsort[i] = xsort;
+    trophsort[i] = ysort;
+    R"""
+    y <- $ysort
+    x <- $xsort
+    cf <- c(0,0,0)
+    m <- try(nls(y ~ a + b * I(x^z), start = list(a = 1, b = 1, z = -1)),silent=TRUE)
+    M_t[[$i]] = m
+    """
 end
+
+Pdeg = reshape(Array(Pdegrees),size(Pdegrees)[1]*size(Pdegrees)[2]);
+Ptroph = reshape(Array(Ptl),size(Ptl)[1]*size(Ptl)[2]);
+attached = find(!iszero,Pdeg);
+Pdeg = Pdeg[attached];
+Ptroph = Ptroph[attached];
+z = [Pdeg Ptroph];
+sp = sortperm(z[:,1]);
+zsort = [z[sp,1] z[sp,2]];
+xsort = zsort[:,1];
+ysort = zsort[:,2];
+Pdegsort = xsort;
+Ptrophsort = ysort;
+R"""
+y <- $ysort
+x <- $xsort
+mpool <- try(nls(y ~ a + b * I(x^z), start = list(a = 1, b = 1, z = -1)),silent=TRUE)
+"""
+
+
+namespace = string("$(homedir())/Dropbox/PostDoc/2014_Lego/Anime/figures/trophic_degrees_time.pdf");
+R"""
+library(RColorBrewer)
+pdf($namespace,height=5,width=6)
+pal = brewer.pal(length($seq),'Spectral')
+plot($(degsort[1]),fitted(M_t[[1]]),xlim=c(1,400),ylim=c(1,10),log='x',col=pal[1],type='l',lwd=2,xlab='Degree',ylab='Trophic level')
+"""
+for i=2:length(seq)
+    R"""
+    lines($(degsort[i]),fitted(M_t[[$i]]),col=pal[$i],lwd=2)
+    sampsize = min(length($(degsort[i])),1000)
+    samp = sample(seq(1:length($(degsort[i]))),size=sampsize)
+    points(jitter($(degsort[i])[samp]),jitter($(trophsort[i])[samp]),pch='.',col=pal[$i])
+    """
+end
+R"""
+lines($Pdegsort,fitted(mpool),lwd=2)
+samp = sample(seq(1:length($Pdegsort)),size=1000)
+points(jitter($(Pdegsort)[samp]),jitter($(Ptrophsort)[samp]),pch='.')
+legend(x=180,y=10,legend = c('Pool',$seq),col=c('black',pal),lty=1,lwd=2,title='Time',cex=0.7,bty='n')
+dev.off()
+"""
+
+
+
 # 
 # namespace = string("$(homedir())/Dropbox/PostDoc/2014_Lego/Anime/figures/conn_time.pdf");
 # R"""
@@ -310,12 +359,13 @@ end
 # R"dev.off()"
 
 i=104
-R"M_t[[$i]]"
+t=3
+R"M_t[[$i]][[$t]]"
 namespace = string("$(homedir())/Dropbox/PostDoc/2014_Lego/Anime/figures/test_trophicfit.pdf");
 R"""
 pdf($namespace,height=5,width=6)
-plot(fitted(M_t[[$i]]),type='l', col = '#80808050', lwd = 2,log='xy',xlim=c(1,100),ylim=c(1,20))
-points($(degrees[i,t,find(!iszero,degrees[i,t,:])]),$(trophic[i,t,find(!iszero,trophic[i,t,:])]))
+plot(fitted(M_t[[$i]][[$t]]),type='l', col = '#80808050', lwd = 2,log='xy',xlim=c(1,100),ylim=c(1,20))
+points($(degrees[i,seq[t],find(!iszero,degrees[i,seq[t],:])]),$(trophic[i,seq[t],find(!iszero,trophic[i,seq[t],:])]))
 dev.off()
 """
 
