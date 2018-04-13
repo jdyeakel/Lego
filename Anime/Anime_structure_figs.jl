@@ -224,7 +224,10 @@ for i=1:5000
     Pdegreesort[i,:] = sort(sample(Pdegrees[i,:],meanrich),rev=true);
 end
 Pmeandegree = vec(mapslices(mean,Pdegreesort,1));
+firstone = find(x->x==1,Pmeandegree)[1];
+Pmeandegree[firstone:length(Pmeandegree)] = 1;
 Psddeg = vec(mapslices(std,Pdegreesort,1));
+Psddeg[firstone:length(Psddeg)] = 0;
 
 
 namespace = string("$(homedir())/Dropbox/PostDoc/2014_Lego/Anime/figures/degreedist_time2.pdf");
@@ -233,7 +236,7 @@ library(RColorBrewer)
 pdf($namespace,height=5,width=6)
 pal = brewer.pal($(length(seq)),'Spectral')
 numsp = length($(mdegt[1,!iszero.(mdegt[1,:])]))
-plot($(mdegt[1,!iszero.(mdegt[1,:])]),xlim=c(1,200),ylim=c(1,100),log='y',col=pal[1],type='l',lwd=2,xlab = 'Number of species', ylab='Mean degree')
+plot($(mdegt[1,!iszero.(mdegt[1,:])]),xlim=c(1,250),ylim=c(1,100),log='y',col=pal[1],type='l',lwd=2,xlab = 'Number of species', ylab='Mean degree')
 sdev_pre = $(sddegt[1,find(x->x>0,sddegt[1,:])]);
 sdev = numeric(length($(mdegt[1,find(x->x>0,mdegt[1,:])])))
 sdev[1:length(sdev_pre)]=sdev_pre
@@ -254,14 +257,14 @@ for i=2:length(seq)
     """
 end
 R"""
-maxsp = 200;
+maxsp = $meanrich;
 sdev = $(Psddeg)[1:maxsp];
 polygon(x=c(seq(1,maxsp),seq(maxsp,1)),
 y=c($(Pmeandegree)[1:maxsp]+sdev[1:maxsp],
 rev($(Pmeandegree)[1:maxsp]-sdev[1:maxsp])),col=paste('#000000',65,sep=''),border=NA)
 lines($(Pmeandegree)[1:maxsp],col='black',type='l',lwd=2)
 
-legend(x=175,y=120,legend = c('Pool',$seq),col=c('black',pal),lty=1,lwd=2,title='Time',cex=0.7,bty='n')
+legend(x=215,y=120,legend = c('Pool',$seq),col=c('black',pal),lty=1,lwd=2,title='Time',cex=0.7,bty='n')
 dev.off()
 """
 
