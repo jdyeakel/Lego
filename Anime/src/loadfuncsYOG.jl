@@ -36,6 +36,7 @@
 @everywhere include("$(homedir())/2014_Lego/Anime/src/colext.jl")
 @everywhere include("$(homedir())/2014_Lego/Anime/src/preamble_defs.jl")
 @everywhere include("$(homedir())/2014_Lego/Anime/src/assembly.jl")
+@everywhere include("$(homedir())/2014_Lego/Anime/src/assembly_trim.jl")
 
 #Analysis Calculations
 @everywhere include("$(homedir())/2014_Lego/Anime/src/structure.jl")

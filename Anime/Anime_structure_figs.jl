@@ -218,12 +218,21 @@ Pdegreesort = sort(Pdegrees,2,rev=true);
 Pmeandegree = vec(mapslices(mean,Pdegreesort,1));
 Psddeg = vec(mapslices(std,Pdegreesort,1));
 
+meanrich = convert(Int64,round(mean(rich[:,tmax]),0));
+Pdegreesort = Array{Int64}(5000,meanrich)*0;
+for i=1:5000
+    Pdegreesort[i,:] = sort(sample(Pdegrees[i,:],meanrich),rev=true);
+end
+Pmeandegree = vec(mapslices(mean,Pdegreesort,1));
+Psddeg = vec(mapslices(std,Pdegreesort,1));
+
 
 namespace = string("$(homedir())/Dropbox/PostDoc/2014_Lego/Anime/figures/degreedist_time2.pdf");
 R"""
 library(RColorBrewer)
 pdf($namespace,height=5,width=6)
 pal = brewer.pal($(length(seq)),'Spectral')
+numsp = length($(mdegt[1,!iszero.(mdegt[1,:])]))
 plot($(mdegt[1,!iszero.(mdegt[1,:])]),xlim=c(1,200),ylim=c(1,100),log='y',col=pal[1],type='l',lwd=2,xlab = 'Number of species', ylab='Mean degree')
 sdev_pre = $(sddegt[1,find(x->x>0,sddegt[1,:])]);
 sdev = numeric(length($(mdegt[1,find(x->x>0,mdegt[1,:])])))
@@ -338,7 +347,7 @@ R"""
 lines($Pdegsort,fitted(mpool),lwd=2)
 samp = sample(seq(1:length($Pdegsort)),size=1000)
 points(jitter($(Pdegsort)[samp]),jitter($(Ptrophsort)[samp]),pch='.')
-legend(x=180,y=10,legend = c('Pool',$seq),col=c('black',pal),lty=1,lwd=2,title='Time',cex=0.7,bty='n')
+legend(x=180,y=10.2,legend = c('Pool',$seq),col=c('black',pal),lty=1,lwd=2,title='Time',cex=0.7,bty='n')
 dev.off()
 """
 
