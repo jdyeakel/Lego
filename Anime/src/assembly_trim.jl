@@ -1,4 +1,4 @@
-function assembly(
+function assembly_trim(
     int_m,a_b,n_b,i_b,m_b,n_b0,sp_v,int_id,tp_m,tind_m,
     a_thresh,n_thresh,extinctions,tmax,S)
     
@@ -20,6 +20,8 @@ function assembly(
     degrees = Array{Int64}(tmax,S)*0;
     trophic = Array{Float64}(tmax,S)*0;
     
+    CID = Array{Bool}(tmax,S*2);
+    
     for t = 1:tmax
       # if mod(t,1000)==0
       #   println(string("t=",t))
@@ -34,6 +36,8 @@ function assembly(
       sec_ext[t] = colext(
       int_m,a_b,n_b,i_b,m_b,n_b0,sp_v,int_id,
       cid,a_thresh,n_thresh,extinctions);
+      
+      CID[t,cid] = true;
       
       # rich[t], sprich[t], turnover[t], res_overlap[t], res_overlap_all, conn[t], conn_ind[t] = dynstructure(cid,cid_old,sp_v,a_b,tp_m,tind_m);      
       # 
@@ -52,6 +56,6 @@ function assembly(
 
     end
     
-    return(cid,lpot_col,status,prim_ext,sec_ext)
+    return(cid,lpot_col,status,prim_ext,sec_ext,CID)
     
 end
