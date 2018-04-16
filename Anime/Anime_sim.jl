@@ -29,7 +29,7 @@ lpot_col = SharedArray{Float64}(reps,tmax);
 status = SharedArray{Float64}(reps,tmax);
 prim_ext = SharedArray{Float64}(reps,tmax);
 sec_ext = SharedArray{Float64}(reps,tmax);
-
+cid_r = SharedArray{Bool}(reps,tmax,S*2);
 
 @time @sync @parallel for r=1:reps
     
@@ -60,9 +60,11 @@ sec_ext = SharedArray{Float64}(reps,tmax);
     sec_ext[r,:], = assembly_trim(
         int_m,a_b,n_b,i_b,m_b,n_b0,sp_v,int_id,tp_m,tind_m,
         a_thresh,n_thresh,extinctions,tmax,S);
-
-    spcid = intersect(sp_v,cid);
-    spcid_ind = indexin(spcid,[1;sp_v]);
+    
+    cid_r[r,t,cid] = true;
+    
+    # spcid = intersect(sp_v,cid);
+    # spcid_ind = indexin(spcid,[1;sp_v]);
     
     #Trophic and degrees at tmax
     # deg,troph = structure(S,cid,sp_v,tind_m);
