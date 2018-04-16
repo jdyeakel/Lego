@@ -3,7 +3,7 @@
 loadfunc = include("$(homedir())/2014_Lego/Anime/src/loadfuncsYOG.jl");
 
 
-reps = 36;
+reps = 1000;
 S = 400;
 tmax = 2500;
 ppweight = 1/4;
