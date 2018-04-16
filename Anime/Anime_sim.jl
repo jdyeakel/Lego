@@ -35,8 +35,8 @@ cid_r = SharedArray{Bool}(reps,tmax,S*2);
     
     int_m, sp_m, t_m, tp_m, tind_m, mp_m, mind_m = build_template_species(S,probs,ppweight);
     
-    # namespace = string("/2014_Lego/Anime/data/simbasic/int_m",r,".jld");
-    namespace = string("/$(homedir())/Dropbox/PostDoc/2014_Lego/Anime/data/simbasic/int_m",r,".jld");
+    namespace = string("/2014_Lego/Anime/data/simbasic/int_m",r,".jld");
+    # namespace = string("/$(homedir())/Dropbox/PostDoc/2014_Lego/Anime/data/simbasic/int_m",r,".jld");
     save(namespace,
     "int_m", int_m,
     "sp_m", sp_m,
