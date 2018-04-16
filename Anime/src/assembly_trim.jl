@@ -20,7 +20,7 @@ function assembly_trim(
     degrees = Array{Int64}(tmax,S)*0;
     trophic = Array{Float64}(tmax,S)*0;
     
-    CID = Array{Bool}(tmax,S*2);
+    CID = Array{Bool}(tmax,S*2)*false;
     
     for t = 1:tmax
       # if mod(t,1000)==0

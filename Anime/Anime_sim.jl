@@ -63,7 +63,7 @@ cid_r = SharedArray{Bool}(reps,tmax,S*2);
         int_m,a_b,n_b,i_b,m_b,n_b0,sp_v,int_id,tp_m,tind_m,
         a_thresh,n_thresh,extinctions,tmax,S);
     
-    cid_r[r,:,:] = CID;
+    cid_r[r,:,:] = copy(CID);
     
     # spcid = intersect(sp_v,cid);
     # spcid_ind = indexin(spcid,[1;sp_v]);
