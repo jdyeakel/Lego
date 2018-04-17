@@ -218,7 +218,7 @@ Pdegreesort = sort(Pdegrees,2,rev=true);
 Pmeandegree = vec(mapslices(mean,Pdegreesort,1));
 Psddeg = vec(mapslices(std,Pdegreesort,1));
 
-meanrich = convert(Int64,round(mean(rich[:,tmax]),0));
+meanrich = convert(Int64,round(mean(sprich[:,tmax]),0));
 Pdegreesort = Array{Int64}(5000,meanrich)*0;
 for i=1:5000
     Pdegreesort[i,:] = sort(sample(Pdegrees[i,:],meanrich),rev=true);

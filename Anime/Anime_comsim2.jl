@@ -79,3 +79,70 @@ plot($degrees_null,$tl_ind_null,log='xy',col="808080",pch=16,xlab="Degrees",ylab
 points($degrees,$tl_ind,col=pal,pch=16)
 dev.off()
 """
+
+#Image the interaction matrix
+
+#Establish community template
+S = 20;
+# S = 400;
+probs = [
+p_n=0.04,
+p_a=0.01,
+p_m=0.02,
+# p_n=0.004,
+# p_a=0.01,
+# p_m=0.002,
+p_i= 1 - sum([p_n,p_m,p_a]) #Ignore with 1 - pr(sum(other))
+]
+
+ppweight = 1/4;
+@time int_m, sp_m, t_m, tp_m, tind_m, mp_m, mind_m = build_template_species(S,probs,ppweight);
+N = size(int_m)[1];
+int_v = Array{Int64}(length(int_m[1,:]),length(int_m[1,:]));
+int_v[find(x->x=='a',int_m)]=1;
+int_v[find(x->x=='n',int_m)]=2;
+int_v[find(x->x=='i',int_m)]=3;
+int_v[find(x->x=='m',int_m)]=4;
+
+namespace = string("$(homedir())/Dropbox/PostDoc/2014_Lego/Anime/figures/matrix.pdf");
+R"""
+library(igraph)
+library(plotrix)
+library(RColorBrewer)
+pal=brewer.pal(4,'Set1')
+num_play = length($(int_v[1,:]))
+xx=matrix(as.numeric(as.factor($int_v)),c(num_play,num_play))
+xx2=xx;
+xx2[which(xx==1)] = pal[1];
+xx2[which(xx==2)] = pal[2];
+xx2[which(xx==3)] = pal[3];
+xx2[which(xx==4)] = pal[4];
+#shade made objects
+darken <- function(color, factor=1.4){
+    col <- col2rgb(color)
+    col <- col/factor
+    col <- rgb(t(col), maxColorValue=255)
+    col
+}
+objects = which(diag(xx)==3)[-1];
+for (i in 1:length(objects)) {
+    for (j in 1:num_play) {
+        col = xx2[objects[i],j];
+        xx2[objects[i],j] = darken(col);
+        if (length(intersect(objects,j)) == 0) {
+            col = xx2[j,objects[i]];
+            xx2[j,objects[i]] = darken(col);
+            }
+        }
+    }
+pdf($namespace,height=5,width=6)
+par(mar=c(1,1,1,4))
+int_types=c('a','n','i','m')
+color2D.matplot(xx,extremes=c(1:length(int_types)), border='white', axes=FALSE, xlab='', ylab='',main='',cellcolors=xx2)
+legend(x=num_play+1,y=num_play,legend=int_types,pch=22,pt.bg=pal,xpd=TRUE, bty='n')
+text(x=rep(-0.5,length(objects)),y=num_play-objects+0.5,labels='o', xpd=TRUE)
+text(x=objects-0.5,y=rep(num_play+0.5,length(objects)),labels='o', xpd=TRUE)
+
+dev.off()
+"""
+
