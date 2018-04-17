@@ -97,6 +97,12 @@ p_i= 1 - sum([p_n,p_m,p_a]) #Ignore with 1 - pr(sum(other))
 
 ppweight = 1/4;
 @time int_m, sp_m, t_m, tp_m, tind_m, mp_m, mind_m = build_template_species(S,probs,ppweight);
+
+#Reorganize to clump objects
+objects = deleteat!(find(x->x=='i',diag(int_m)),1);
+species = setdiff(collect(1:length(diag(int_m))),objects);
+int_m = int_m[[species;objects],[species;objects]]
+
 N = size(int_m)[1];
 int_v = Array{Int64}(length(int_m[1,:]),length(int_m[1,:]));
 int_v[find(x->x=='a',int_m)]=1;
@@ -118,7 +124,7 @@ xx2[which(xx==2)] = pal[2];
 xx2[which(xx==3)] = pal[3];
 xx2[which(xx==4)] = pal[4];
 #shade made objects
-darken <- function(color, factor=1.4){
+darken <- function(color, factor=1.3){
     col <- col2rgb(color)
     col <- col/factor
     col <- rgb(t(col), maxColorValue=255)
@@ -142,7 +148,8 @@ color2D.matplot(xx,extremes=c(1:length(int_types)), border='white', axes=FALSE, 
 legend(x=num_play+1,y=num_play,legend=int_types,pch=22,pt.bg=pal,xpd=TRUE, bty='n')
 text(x=rep(-0.5,length(objects)),y=num_play-objects+0.5,labels='o', xpd=TRUE)
 text(x=objects-0.5,y=rep(num_play+0.5,length(objects)),labels='o', xpd=TRUE)
-
+text(x=-0.5,y=num_play-0.5,labels=expression(paste('1',degree)), xpd=TRUE)
+text(x=0.5,y=num_play+0.5,labels=expression(paste('1',degree)), xpd=TRUE)
 dev.off()
 """
 
