@@ -80,6 +80,21 @@ points($degrees,$tl_ind,col=pal,pch=16)
 dev.off()
 """
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 #Image the interaction matrix
 
 #Establish community template
@@ -88,7 +103,7 @@ S = 50;
 probs = [
 p_n=0.04,
 p_a=0.02,
-p_m=0.008,
+p_m=0.01,
 # p_n=0.004,
 # p_a=0.01,
 # p_m=0.002,
@@ -109,23 +124,27 @@ int_id = preamble_defs(int_m);
 
 #Reorganize to clump objects
 objects = deleteat!(find(x->x=='i',diag(int_m)),1);
+objectssort = objects[sortperm(vec(sum(m_b[objects,objects],1)),rev=true)];
+# objectssort2 = objectssort[sortperm(vec(sum(m_b[objectssort,objectssort].+a_b[objectssort,objectssort].+n_b[objectssort,objectssort],2)),rev=false)];
 species = setdiff(collect(1:length(diag(int_m))),objects);
-speciessort = species[sortperm(vec(sum(a_b[species,species],2)),rev=false)];
-int_m = int_m[[speciessort;objects],[speciessort;objects]]
+speciessort = species[sortperm(vec(sum(a_b[species,species].+n_b[species,species],1)),rev=true)];
+speciessort2 = speciessort[sortperm(vec(sum(a_b[speciessort,speciessort].+n_b[speciessort,speciessort],2)),rev=false)];
+int_msort = int_m[[speciessort2;objectssort],[speciessort2;objectssort]];
 
 
-int_v = Array{Int64}(length(int_m[1,:]),length(int_m[1,:]));
-int_v[find(x->x=='a',int_m)]=1;
-int_v[find(x->x=='n',int_m)]=2;
-int_v[find(x->x=='i',int_m)]=3;
-int_v[find(x->x=='m',int_m)]=4;
+int_v = Array{Int64}(length(int_msort[1,:]),length(int_msort[1,:]));
+int_v[find(x->x=='a',int_msort)]=1;
+int_v[find(x->x=='n',int_msort)]=2;
+int_v[find(x->x=='i',int_msort)]=3;
+int_v[find(x->x=='m',int_msort)]=4;
 
 namespace = string("$(homedir())/Dropbox/PostDoc/2014_Lego/Anime/figures/matrix.pdf");
 R"""
 library(igraph)
 library(plotrix)
 library(RColorBrewer)
-pal=brewer.pal(4,'Set1')
+pal=brewer.pal(5,'Set1')
+pal[4] = pal[3]
 pal[3] = '#ffffff'
 num_play = length($(int_v[1,:]))
 xx=matrix(as.numeric(as.factor($int_v)),c(num_play,num_play))
@@ -157,10 +176,10 @@ par(mar=c(1,1,1,4))
 int_types=c('a','n','i','m')
 color2D.matplot(xx,extremes=c(1:length(int_types)), border='white', axes=FALSE, xlab='', ylab='',main='',cellcolors=xx2)
 legend(x=num_play+1,y=num_play,legend=int_types,pch=22,pt.bg=pal,xpd=TRUE, bty='n')
-text(x=rep(-0.8,length(objects)),y=num_play-objects+0.5,labels='o', xpd=TRUE,cex=0.8)
-text(x=objects-0.5,y=rep(num_play+0.8,length(objects)),labels='o', xpd=TRUE,cex=0.8)
-text(x=-0.8,y=num_play-0.8,labels=expression(paste('1',degree)), xpd=TRUE,cex=0.8)
-text(x=0.8,y=num_play+0.8,labels=expression(paste('1',degree)), xpd=TRUE,cex=0.8)
+text(x=rep(-0.8,length(objects)),y=num_play-objects+0.5,labels='o', xpd=TRUE,cex=0.6)
+text(x=objects-0.5,y=rep(num_play+0.8,length(objects)),labels='o', xpd=TRUE,cex=0.6)
+text(x=-0.8,y=num_play-0.8,labels=expression(paste('1',degree)), xpd=TRUE,cex=0.6)
+text(x=0.8,y=num_play+0.8,labels=expression(paste('1',degree)), xpd=TRUE,cex=0.6)
 dev.off()
 """
 

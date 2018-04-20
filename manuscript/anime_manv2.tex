@@ -15,6 +15,9 @@
 \usepackage{anyfontsize}
 
 
+\graphicspath{{../Anime/figures/}}
+
+
 %\usepackage{epstopdf}
 %\usepackage{array}
 %\usepackage{tabularx}
@@ -79,24 +82,22 @@ Amazing words. The best words.
 \section*{Model Description}
 
 %The scale of the model
-{\bf The ANIMe Model} 
-We examine assembly and dynamics of communities where we consider the interaction constraints determining colonization and extinction of species.
-The underlying dynamic that determines whether a species can colonize the community lies in the extent to which its various interactions with other species are satisfied.
-As such, the ANIMe model tracks the presence/absence of species over time, but does not incorporate changes in abundance.
+% \textbf{The ANIMe Model} We examine assembly and dynamics of communities where we consider the interaction constraints determining colonization and extinction of species.
+% The underlying dynamic that determines whether a species can colonize the community lies in the extent to which its various interactions with other species are satisfied.
+% As such, the ANIMe model tracks the presence/absence of species over time, but does not incorporate changes in abundance.
 % We assume that the abundance of all species in a given community are $>0$ and infer persistence based on the combination of interactions between species.
-
-We aim to examine how interdependencies between species in communities either aid or inhibit both assembly and extinction over long timescales, and specifically how ecosystem engineers contribute to these dynamics.
+\textbf{The ANIMe Model} We aim to examine how interdependencies between species in communities either aid or inhibit both assembly and extinction over long timescales, and specifically how ecosystem engineers contribute to these dynamics.
 We approach these questions by considering both multiple types of interactions between species -- including but not limited to trophic interactions --  as well as indirect interactions between species and `objects' that are introduced by the presence of ecosystem engineers.
 Such introduced objects are to be considered in the abstract, and serve to represent either resources, habitat, or environmental alterations that are introduced by the engineers that make them, and can be utilized by others. 
 
 
 \begin{figure}
 \centering
-\includegraphics[width=0.45\textwidth]{fig_spob.pdf}
+\includegraphics[width=0.45\textwidth]{matrix.pdf}
 \caption{
 The number of species (closed circles; set to $\mathcal S=400$) and objects (open circles) in the interaction matrix as a function of pr($m$).
 }
-\label{fig_spob}
+\label{fig:matrix}
 \end{figure} 
 
 %Interaction types
@@ -111,7 +112,7 @@ We also note that such objects are to be considered in the abstract, as they cou
 
 The four directed interaction types describe specific dependencies that one species/object has on another, however it is the coupling of two opposing directed interactions that describe traditional and familiar ecological relationships (listed in Table 1).
 For example, an $a \leftrightarrow i$ interaction describes a typical predator-prey relationship, where species 1 assimilates species 2, and species 2 ignores species 1.
-Of course, a prey's abundance does not \emph{ignore} predation, however our framework operates at the scale of presence-absence, rather than abundance.
+Of course, a prey's abundance does not \emph{ignore} predation, however our framework operates at the scale of presence-absence rather than abundance, and we assume that if both species are in the system, they have positive population densities, such that the state of the prey's occurrence effectively ignores the predator.
 Both the $a \leftrightarrow n$ and $n \leftrightarrow n$ interactions describe service-resource and service-service mutualisms, respectively.
 In the case of the former, one species interacts by way of a trophic interaction, whereas the other is provided a non-trophic need, such is the case in a plant-pollinator relationship.
 Uniquely, the $m \leftrightarrow n$ interaction describes ecosystem engineering, where a species makes an object, while the presence of the object `needs' the presence of the species that makes it to exist.
@@ -139,60 +140,87 @@ We can then calculate the probabilities of pairwise interactions between both sp
 \end{align}
 The directional interaction between species $i \rightarrow j$ is thus described by the element in the $i^{\rm th}$ row and $j^{\rm th}$ column of the interaction matrix.
 
-We build the interaction matrix for the source pool according to the following steps:
+We build the interaction matrix for the source pool (figure \ref{fig:matrix}) according to the following steps:
 1) We impose the rule that row/column 1 of the pool interaction matrix is the basal resource from which primary producers derive their energy.
 Thus, an assimilate interaction in column 1 means that the consumer is capable of primary production; conversely, it is assumed that the basal resource does not interact with any species/objects.
 Moreover, we assume that a fixed proportion of `assimilate' interactions across agents that must be linked to the basal resource, such that a given proportion of agents are capable of primary production.
 
-2) We next assume that all agents in the system are species, and assign trophic interactions based on an exponential degree distribution \cite{Williams:2000wt}.
+2) We next assume that -- initially -- all agents in the system are species, and assign trophic interactions based on an exponential degree distribution \cite{Williams:2000wt}.
 The degree distribution is based on the trophic connectance of the system, which in this case is calculated as 
 \begin{equation}
-  C_{\rm t} = p_{ai}+p_{an}+p_{aa}.
+  C_{\rm trophic} = p_{ai}+p_{an}+p_{aa}.
 \end{equation}
-For large communities, the number of trophic interactions for a given species $i$ in the Niche Model ($d_i$) is proportional to the niche range $r_i$, where $d_i = r_i*\mathcal{N}$ given $r_i = Xn_i$, where $X \sim \beta(1,1/2C - 1)$ and $n_i \sim \mathcal{U}(0,1)$. %is uniform in [0,1].
-Importantly, because we do not stipulate which species are connected according to where the range falls on a niche axis (as in the Niche Model), we incorporate the trophic interaction degree distribution without imposing a structure of interactions.
+For large communities, the number of trophic interactions for a given species $i$ in the Niche Model ($d_i$) is proportional to the niche range $r_i$, where $d_i = r_i*\mathcal{N}$ given $r_i = X\eta_i$, where $X \sim {\rm Beta}(1,1/2C - 1)$ and $\eta_i \sim {\rm Uniform}(0,1)$. %is uniform in [0,1].
+Importantly, because we do not stipulate which species are connected according to where the range falls within a niche axis (as in the Niche Model), we incorporate the trophic interaction degree distribution without imposing a structure of interactions.
 Accordingly, the only input to the interaction matrix of the source pool include the probabilities $p_a$, $p_n$, $p_m$, and the exponential nature of the trophic degree distribution.
-Given the drawn number of trophic interactions for each species, pairwise interactions $a \leftrightarrow i$, $a \leftrightarrow n$, and $a \leftrightarrow a$ are assigned given $p_{ai}$, $p_{an}$, and $p_{aa}$, respectively.
-Non-trophic species interactions $n \leftrightarrow i$ and $n \leftrightarrow n$ interactions are then supplied given the respective probabilites $p_{ni}$ and $p_{nn}$, leaving only interactions involving species and objects to be determined following the implementation of the following post-hoc rules.
+Given the drawn number of trophic interactions for each species, pairwise interactions $a \leftrightarrow i$, $a \leftrightarrow n$, and $a \leftrightarrow a$ are assigned randomly given $p_{ai}$, $p_{an}$, and $p_{aa}$, respectively.
+Non-trophic species interactions $n \leftrightarrow i$ and $n \leftrightarrow n$ interactions are also assigned randomly given the respective probabilites $p_{ni}$ and $p_{nn}$, leaving only interactions involving species and objects to be determined.
 
 
-3) Finally, we declare that agents that `make' other agents are species that are making objects.
+3) Finally, we declare that species with `make' interactions are engineers species that produce objects.
 Thus, a certain proportion of the agents in the system are declared species if there is a `make' interaction connecting them to another agent; the receiving agent is declared an object.
-When an agent is declared an object, the object's interactions are all set to `ignore', expect for those species who make the object, which are set to `need', because its presence in the community requires the presence of the species that makes it.
+When an object is declared, it ignores all other agents in the pool except for those species that make it (which are set to `need').
 Objects are not allowed to `make' other objects; if this occurs, the `m' interaction will be randomly assigned to a declared species.
 % Ultimately, species and objects are immediately distinguishable by the diagonal of the interaction matrix: a species has a `need' interaction on the diagonal (a species needs itself to be present); an object has an `ignore' interaction on the diagonal.
-Species can interact with objects (they may make, assimilate, or need them), however objects do not interact with anything except to need the engineers that make them.
-Moreover, multiple species can make the same object: for example, most plant species engineer $O_2$, which is then used by other species.
-Because the number of `make' interactions is probabilistic, the number of species/objects is also probabilistic.
+Species can interact with objects (they may make, assimilate, or need them), however objects do not interact with anything except to `need' the engineers that make them.
+Multiple species can make the same object: for example, most plant species engineer $O_2$, which is then used by other species.
+Because the number of `make' interactions is stochastic, the number of objects $\mathcal{O}$ and by extenstion the size of the pool $\mathcal{N} = \mathcal{S} + \mathcal{O}$ is also stochastic.
 To obtain the desired $\mathcal{S}$, we use a simulated annealing algorithm to generate multiple interaction matrices of different sizes until the desired $\mathcal{S}$ is found.
 
 
-Although the number of species $\mathcal{S}$ is specified, because the number of engineers and objects $\mathcal{O}$ is stochastic (a function of $p_m$), the total size of the pool has yet to be determined.
-The size of the interaction matrix ($\mathcal{N} = \mathcal{S} + \mathcal{O}$) is obtained by first setting the desired number of species ($\mathcal{S}$), where the expected number of objects is then estimated as ${\rm E}(\mathcal{O}) = \mathcal{S}(\mathcal{S}-1)p_{mn}$.
-The final number of objects is stochastic and is determined by a simulated annealing algorithm where interaction matrices are generated until $\mathcal{S}$ is reached.
+\begin{figure}
+\centering
+\includegraphics[width=0.45\textwidth]{extinction.pdf}
+\caption{
+The number of species (closed circles; set to $\mathcal S=400$) and objects (open circles) in the interaction matrix as a function of pr($m$).
+}
+\label{fig:ext}
+\end{figure} 
 
-
-
-\textbf{Colonization and Extinction} The interaction matrix above specifies how each species interacts with every other, however not all species are capable of coexisting in a given community at a given time.
-Assembly of a species community is thus the result of both colonization and extinction of species that are drawn from the larger interaction matrix, which essentially defines the species pool.
-
-The colonization potential of a given species into a community is determined by two threshold conditions:
-1) it must assimilate at least one species/object, which may include the basal resource if that species is a primary producer, and
-2) it must satisfy a proportion of its need interactions, given by the threshold $n_t$; higher values of $n_t$ means that entry into the community is more difficult (a higher proportion of need interactions must be satisfied).
-If the assimilate and need threshold conditions are both satisfied, colonization is allowed.
-
+\textbf{Colonization and Extinction} The interaction matrix for the source pool specifies how each species interacts with every other.
+Assembly of a species community is the result of both colonization and extinction of species that are drawn from the source pool.
+The realized interactions within the assembled community are thus a subset of the potential interactions observed if every species were present.
+However not all species can coexist in an assembled community at a given time.
+We determine the colonization potential for a given species into a community as a function of two threshold conditions:
+1) the colonizing species must assimilate at least one species/object, which may include the basal resource if that species is a primary producer, and
+2) the colonizing species must satisfy a proportion of its need interactions, given by the threshold $n_t$; higher values of $n_t$ means that entry into the community is more difficult (a higher proportion of need interactions must be satisfied).
+If the assimilate and need threshold conditions are both satisfied, colonization is permitted.
+At each time-step $t$, we determine which species in the source pool can colonize the assembling community based on each meets the assimilate and need threshold conditions.
+If multiple species can colonize, we select one at random and add it (and the objects it makes) to the community.
+In the first time-step, only species that consume the primary resource (row 1; figure \ref{fig:matrix}) and do not have any `need' interactions can initiate the assembly process.
 
 
 
 % The probability of extinction increasesas the number of consumers increases for a given species.
-Lotka-Volterra type interactions between $k_i$ predators with respect to a resource density $R_i$ leads to the steady state density $R_i^* \propto k_i^{-1}$.
-Although we do not model population densities explicitly, we make the simplifying assumption that the probability of extinction is increased from a background rate $\omega_{\rm b}$ as a resource's population is depressed by the cumulative effects of $k$ consumers as
+Although colonization depends only on satisfaction of assimilate/need interactions, persistence depends on
+1) both assimilate and need thresholds remaining fulfilled, and
+2) the pressure levied onto species by predation.
+Although the ANIMe framework does not track population densities, we integrate a central concept from population dynamics: that resource densities decline with increased predation pressure, and that this increases the risk of extinction.
+Assuming Lotka-Volterra predator-prey dynamics, a given resource has density $R$, growth rate $\alpha$, and carrying capacity $\kappa$.
+The consumption of this resource by $m$ non-specialist predators with equivalent steady state densities $P^*$ and attack rates $\beta$ results in the dimensionless steady state resource density $r^* = R^*/\kappa = 1 - m\epsilon$, where $\epsilon=\beta P^*/\alpha$.
+Thus, $\epsilon$ describes the relative impact of a single predator on the resource steady state, which decreases linearly with an increase in the number of predators $m$.
+Although our framework does not track changes in population densities, if we assume that the true resource density is normally distributed around $r^*$ with variance $\sigma^2$, the probability of extinction $\omega$ (defined as the probability that $r^* < 0$) has an exact solution of the form
 \begin{equation}
-  \omega_i(t) = \frac{\omega_{\rm b} + \epsilon k_i}{1 + \epsilon k_i},
+  \omega = \frac{1}{2}{\rm Erfc}\left(\frac{1-m\epsilon}{\sigma\sqrt{2}}\right).
 \end{equation}
-where $\epsilon$ scales the effect of each consumer on extinction and is assumed to be small.
-Primary extinctions can trigger secondary extinctions, as elimination of prey -- and any objects that an eliminated species uniquely makes -- may then result in consumers falling below either of the above threshold conditions.
-Accordingly, extinctions cascade until the threshold conditions for every remaining species are satisfied.
+The probability of extinction for a resource increases sigmoidally with the number of predators on that resource.
+At each time-step, we calculate $\omega$ for each species in the assembled community and determine extinction by drawing from a binomial distribution where there is a single trial with success probability $\omega$.
+Species that go extinct at time-step $t$ may re-colonize at $t+1$.
+In this respect, each time-step is a colonization event and needn't be assumed to represent an equivalent length of time.
+
+
+Primary extinctions can trigger secondary extinctions, as elimination of prey -- and any objects that an eliminated species uniquely engineers -- may then result in consumers falling below either or both of the assimilate and need threshold conditions.
+Accordingly, extinctions can cascade until the threshold conditions for every remaining species are satisfied.
+We differentiate between extinctions that are initiated as the result of predation pressure (primary extinctions) from those that follow one or more primary extinctions (secondary extinctions).
+Taken together, the community dynamics occur from a minimal set of rules:
+\begin{enumerate}
+  \item At time-step $t$, determine whether assimilate/need threshold conditions are met for each species in the source pool that isn't currently in the community
+  \item Select at random a colonizing species and its attendant objects from this subset
+  \item Assess the probability of extinction for all species in the assembling community
+  \item Independently draw extinctions from a binomial distribution with a success probability equal to the extinction probabilities. Eliminate these species and any uniquely made objects from the community. These are \emph{primary extinctions}.
+  \item Re-assess whether assimilate/need threshold conditions are satisfied in the post-extinction community. Eliminate those species and any uniquely made objects from the community that do not meet threshold conditions. If further extinctions occur, continue to re-assess threshold conditions until all species meet the requirements. Combined, these are \emph{secondary extinctions}.
+  \item Time advances as t=t+1 and the process restarts.
+\end{enumerate}
 
 
 
@@ -209,32 +237,14 @@ Accordingly, extinctions cascade until the threshold conditions for every remain
 
 
 
-
-
-To establish an interaction matrix, we randomly assign interactions between species and the objects they create based on a set of directed interaction probabilities, which serve as model input. 
-Given a species richness $\mathcal S$, the probability that a pair of species have an interaction as listed in Table 1 results from drawing an initial directed interaction ${\rm pr}(a,n,i,m)$, and the conditional probability of drawing the opposing directed interaction, which is constrained due to the fact that not every combination of $[a,n,i,m]$ is feasible.
-The emergent $\mathcal R \times \mathcal R$ interaction matrix thus consists of a set of species $\mathcal S$ and objects $\mathcal O$, where $\mathcal R = S + O$. 
-Three additional constraints introduce interaction structure to the model:
-1) Species and objects behave differently: species can both assimilate and make, whereas objects ignore everything in the system except their `makers'.
-2) The distribution of assimilate interactions for a given species (i.e. the trophic degree) is drawn from an exponential distribution, such that the trophic interaction distribution among species is equivalent to that at the heart of the niche model.
-3) We introduce a \emph{basal resource} that can be assimilated by species, and those that consume this resource are identified as primary producers.
-
-
-%Building the pool
-[description]
-As pr($m$) increases, the number of objects made by species increases, such that objects constitute a greater proportion of the interaction matrix compared to the species that create the objects (Fig. \ref{fig_spob}.
-Moreover, as pr($m$) increases, the probability that multiple species makes the same object increases, but at a slower rate.
-A complete list of pairwise interactions is found in Table \ref{table_int}.
-
-
-%Need discussion of 
-Ecological analogues: 
-As pr(n) increases, so does the number of mutualistic interactions (direct and indirect).
-As pr(m) increases, so does the number of engineers (and indirect interactions).
-As pr(a) increases, so does the connectance of trophic interactions (show how this is related).
-As $n_t$ increases, (this is the weird one), behavioral plasticity decreases in the sense that .
-
-n-n: symbiont interaction
+% %Need discussion of 
+% Ecological analogues: 
+% As pr(n) increases, so does the number of mutualistic interactions (direct and indirect).
+% As pr(m) increases, so does the number of engineers (and indirect interactions).
+% As pr(a) increases, so does the connectance of trophic interactions (show how this is related).
+% As $n_t$ increases, (this is the weird one), behavioral plasticity decreases in the sense that .
+% 
+% n-n: symbiont interaction
 
 \begin{table*}[!t]
 \begin{center}
@@ -272,168 +282,166 @@ $1/\epsilon$ & Number of consumers of resource $i$ at which $\omega_i(t)=\frac{1
 
 
 
-\section{Methods}
-\subsection{Generating the community pooled interaction matrix}
 
 \section*{Results \& Discussion}
 
 
-
-
-{\bf Community assembly without extinctions}
-In the context of community assembly, the niche space that is created by a given assemblage can be measured by evaluating the number of potential colonizers that can \emph{fit} within the assemblage from the species pool, fulfilling required assimilation and need threshold conditions.
-Because colonization without extinction does not account for resource limitation due to ever-expanding trophic loads of species that serve as resources for higher-trophic consumers, niche space is not reduced by packing more species into the community.
-However, because colonization from the mainland is a zero-sum event, with each successful colonization the number of potential future colonizers is reduced by one.
-Importantly, if a successful colonizer increases the number of potential future colonizers, this can be interpreted as functionally expanding the niche space of the community.
-
-
-
-
-Due to the competing effects of niche space expansion and species pool depletion, we find that the proportion of the species pool capable of successfully colonizing the assembling community is concave parabolic (Fig. \ref{fig_potcol}a).
-Early in the assembly process, the proportion of potential colonizers is equal to the proportion of species that are primary producers without an abundance of $n$ dependencies (too many need interactions precludes such primary producers from serving as initial colonizers).
-As assembly continues, niche space expands to a maximum, and then declines as the species pool diminishes and the community is filled.
-
-
-%Over pr(m)
-For a species pool of $400$, by changing the value of pr($m$) from 0.0001 to 0.002, we alter the proportion of engineers from ca. 0 to ca. 700.
-As the number of engineers is increased, the number of objects that they create -- and other species can interact with -- is likewise increased.
-For example, a single realization where $S=400$ species and pr(m)=$10^{-4}$ resulted in a $412\times412$ interaction matrix (400 species, 12 objects), while a realization with $S=400$ and pr(m)=$0.003$ resulted in a $1100\times1100$ interaction matrix (400 species, 700 objects).
-The former example generated a small number of engineers, each producing a single object, whereas the latter example generated a large number of engineers, each producing between 1-6 objects, with some objects being produced by multiple engineers.
-
-\begin{figure*}[ht]
-\centering
-\includegraphics[width=0.9\textwidth]{fig_potcol_comb.pdf}
-\caption{
-a) Expansion of niche space (by counting the proportion of species that are capable of colonizing from the larger species pool) over systems with increasing number of engineers (increasing pr($m$)). b) Expansion of niche space over different need thresholds $n_t$. 
-}
-\label{fig_potcol}
-\end{figure*} 
-
-The effects of the proportion of engineers in the community on niche space expansion during assembly, and without the limiting forces of extinction, are substantial.
-While both limited-engineer and many-engineer systems resulted in a concave down niche expansion curve, the engineered system was different in three important ways.
-First, the many-engineer system began assembly with a smaller proportion of potential colonizers.
-This is due to the fact that there are many more interdependencies between species and objects, and as there are few objects carried over early in community development, the limitations on species are exaggerated.
-Second, the rate that niche space is expanded is higher for many-engineer communities
-Third, the production of objects by engineers nearly doubles the potential niche space (proportion of potential future colonizers) midway through assembly.
-Once there is a large enough base of colonizers in the assembling communities, there are enough objects present to facilitate rather than inhibit additional colonization opportunities.
-Thus, the influence of engineers during assembly - by creating more interdependencies between species and the objects they engineer - both constrains and promotes assembly at different stages of the process.
-
-
-%Over need_threshold
-Every species must satisfy at least one assimilate interaction, i.e. it must eat at least one other present species or basal resource.
-Moreover, every species must fulfill a certain proportion of its `need' interactions, set by the threshold parameter $n_t$.
-As $n_t$ increases, the interdependencies between species become more rigid during the assembly process, and this will serve to limit niche expansion.
-
-However, the trajectory of niche expansion is more complex when $n_t$ is increased.
-Rather than simply lowering the proportion of potential colonizers, increasing $n_t$ results in a qualitatively different assembly process where niche space is first lowered, increased, and lowered again as the community is filled (Fig. \ref{fig_potcol}b).
-The initial niche space contraction results from a filling of the initial community with primary producers and their direct consumers.
-This lower trophic module fills without creating additional space for higher trophic level organisms due to the harsher restrictions given by a high $n_t$.
-Once a critical point in assembly is reached, the potential to add higher trophic level colonizers is attained, and niche space increases to a maximum, only to finally decrease as the species pool is used up.
-In some realizations, the community is never able to fill, resulting in a system without higher trophic levels.
-
-Assembly where $n_t$ is large, and with moderate engineering, follows a 2-stage process.
-First, the system is colonized by primary producers.
-Once the lower trophic levels are filled and reach a critical point, niche expansion permits the colonization of higher trophic level colonizers.
-[Need to explore this more by calculating trophic level for each species - in progress]
-
-
-
-
-%Is there a diversity-stability link here?
-
-
-%Initial downward slope occurs because primary producers are used up. When it goes back up, there is enough of a base to build a larger community. Will have to check this will average trophic level over time (trophic module!!!)
-
-
-
-
-
-{\bf Assembly with extinctions}
-% Negative effects of engineering at the scale of the community
-% The effect of engineers on extinction cascade size
-Examination of the assembly process that is regulated by extinctions due to changes in trophic load results in saturation of species richness over time (Fig. \ref{fig_traj}).
-Accordingly, the colonization and extinction dynamic result in regular fluctuations around a steady state community richness, where the size of the fluctuations (relative to the steady state value) strongly depends on $n_t$ and pr($(a,n$).
-
-The average diversity of the system after an initial assembly process increases as the number of need interactions and/or need threshold $n_t$ are sufficiently low.
-This is intuitive because such a system has many more degrees of freedom and is free to expand to higher densities of species.
-Likewise, as pr($n$) and $n_t$ increase, species richness lowers nearly to zero, as does the average trophic level (check), resulting in a system dominated by primary producers and their immediate consumers.
-
-
-The system conforms to an expected Taylor's law relationship for lower species richness (<100), however follow different rules for higher richness (also corresponding to low pr($n$) and $n_t$.
-Here, species dependencies are low, such that primary extinctions due to predation will generally not result in a large number of secondary extinctions because the need threshold is not easily violated, and this reduces the magnitude of fluctuations.
-Accordingly, it is the same drivers that lead to high species richness (increased plasticity and/or fewer non-trophic dependencies) that also reduces the volatility of the system, thereby reducing variability.
-
-
-The magnitude of oscillations around the steady state richness is a measure of community instability and turnover.
-Although modification of pr($n$) and $n_t$ reveals a smooth and expected influence on the mean species richness of the community, the effect on the magnitude of fluctuations around the mean richness is more complex, and this is most evident in the coefficient of variation of community richness over time.
-The CV is maximized when $n_t$ is intermediate and the number of non-trophic dependencies is large.
-
-
-\begin{figure}
-\centering
-\includegraphics[width=0.45\textwidth]{fig_traj.pdf}
-\caption{
-The colonization and extinction dynamics of a community over time. The solid line denotes species richness; the dashed line denotes species+object richness.
-}
-\label{fig_traj}
-\end{figure} 
-
-
-
-
-{\bf Effects of engineers on community dynamics}
-We find that an increase in the number of engineers at time $t$ results in the potential for marginally larger extinction cascades at time $t+1$ (positive but weak correlations, Fig \ref{fig_corrobext}a).
-This weak positive correlation between the number of objects at time $t$ and extinction cascade size at time $t+1$ is due to the increasing interconnectedness that results from the higher number of objects relative to species in the system.
-Because the existence of a given object is tied to the species that makes them (one or multiple), the effects of primary extinctions are magnified.
-
-
-\begin{figure}
-\centering
-\includegraphics[width=0.45\textwidth]{fig_taylors.pdf}
-\caption{
-Relationship between mean species richness and the magnitude of fluctuations (SD) for communities with various values of pr($n$) and $n_t$.
-}
-\label{fig_traj}
-\end{figure} 
-
-
-\begin{figure}
-\centering
-\includegraphics[width=0.45\textwidth]{fig_sen_nn.pdf}
-\caption{Changes in community richness CV as a function of pr($n$) and $n_t$. 
-}
-\label{fig_sen_nn}
-\end{figure} 
-
-
-
-
-% The effect of engineering colonization facilitation
-The number of objects in the system at time $t$ (and by extension the number of engineers) is strongly positively correlated with the number of potential colonizers at time $t+1$.
-This correlation increases markedly with the proportion of engineers in the community.
-So from a species packing perspective, engineering enables successful colonization by increasing niche space, and this is particularly important for communities with a high proporiton of engineers.
-{\bf Colonization of engineers into a community both facilitates future colonization and increases the risks of larger extinction cascades}.
-This dual nature of ecosystem engineers may indicate short term/long term risks/gains?
-
-
-\begin{figure*}[ht]
-\centering
-\includegraphics[width=0.75\textwidth]{fig_corrobext_tl2S.pdf}
-\caption{
-a) Correlations between objects at time $t$ and extinction cascade size at time $t+1$. b) Correlations between objects at time $t$ and the number of potential colonizers at time $t+1$.
-}
-\label{fig_corrobext}
-\end{figure*} 
-
-
-Future things that I'm working on implementing (suggestions welcome!!!)
-\begin{enumerate}
-\item Calculate trophic level for each species
-\item Object decay - this is a big feature of engineered systems - that the objects they engineer can last longer than the species
-\item One potentially fruitful line of investigation would be to link this approach to random matrix theory - inclusion of objects should modify species effects on one another. I'm currently tracking both direct trophic and mutualistic adjacency matrices (where if species 1 makes object 1, and species 2 eats object 1, we can say species 2 indirectly eats species 1 - same for any other interaction type), but have not yet explored it - this would probably be good for a stand-alone paper - very little of engineering in food webs
-\item Priority effects - working on this - what species traits alter assembly dynamics?
-\end{enumerate}
-
+% 
+% 
+% {\bf Community assembly without extinctions}
+% In the context of community assembly, the niche space that is created by a given assemblage can be measured by evaluating the number of potential colonizers that can \emph{fit} within the assemblage from the species pool, fulfilling required assimilation and need threshold conditions.
+% Because colonization without extinction does not account for resource limitation due to ever-expanding trophic loads of species that serve as resources for higher-trophic consumers, niche space is not reduced by packing more species into the community.
+% However, because colonization from the mainland is a zero-sum event, with each successful colonization the number of potential future colonizers is reduced by one.
+% Importantly, if a successful colonizer increases the number of potential future colonizers, this can be interpreted as functionally expanding the niche space of the community.
+% 
+% 
+% 
+% 
+% Due to the competing effects of niche space expansion and species pool depletion, we find that the proportion of the species pool capable of successfully colonizing the assembling community is concave parabolic (Fig. \ref{fig_potcol}a).
+% Early in the assembly process, the proportion of potential colonizers is equal to the proportion of species that are primary producers without an abundance of $n$ dependencies (too many need interactions precludes such primary producers from serving as initial colonizers).
+% As assembly continues, niche space expands to a maximum, and then declines as the species pool diminishes and the community is filled.
+% 
+% 
+% %Over pr(m)
+% For a species pool of $400$, by changing the value of pr($m$) from 0.0001 to 0.002, we alter the proportion of engineers from ca. 0 to ca. 700.
+% As the number of engineers is increased, the number of objects that they create -- and other species can interact with -- is likewise increased.
+% For example, a single realization where $S=400$ species and pr(m)=$10^{-4}$ resulted in a $412\times412$ interaction matrix (400 species, 12 objects), while a realization with $S=400$ and pr(m)=$0.003$ resulted in a $1100\times1100$ interaction matrix (400 species, 700 objects).
+% The former example generated a small number of engineers, each producing a single object, whereas the latter example generated a large number of engineers, each producing between 1-6 objects, with some objects being produced by multiple engineers.
+% % 
+% % \begin{figure*}[ht]
+% % \centering
+% % \includegraphics[width=0.9\textwidth]{fig_potcol_comb.pdf}
+% % \caption{
+% % a) Expansion of niche space (by counting the proportion of species that are capable of colonizing from the larger species pool) over systems with increasing number of engineers (increasing pr($m$)). b) Expansion of niche space over different need thresholds $n_t$. 
+% % }
+% % \label{fig_potcol}
+% % \end{figure*} 
+% 
+% The effects of the proportion of engineers in the community on niche space expansion during assembly, and without the limiting forces of extinction, are substantial.
+% While both limited-engineer and many-engineer systems resulted in a concave down niche expansion curve, the engineered system was different in three important ways.
+% First, the many-engineer system began assembly with a smaller proportion of potential colonizers.
+% This is due to the fact that there are many more interdependencies between species and objects, and as there are few objects carried over early in community development, the limitations on species are exaggerated.
+% Second, the rate that niche space is expanded is higher for many-engineer communities
+% Third, the production of objects by engineers nearly doubles the potential niche space (proportion of potential future colonizers) midway through assembly.
+% Once there is a large enough base of colonizers in the assembling communities, there are enough objects present to facilitate rather than inhibit additional colonization opportunities.
+% Thus, the influence of engineers during assembly - by creating more interdependencies between species and the objects they engineer - both constrains and promotes assembly at different stages of the process.
+% 
+% 
+% %Over need_threshold
+% Every species must satisfy at least one assimilate interaction, i.e. it must eat at least one other present species or basal resource.
+% Moreover, every species must fulfill a certain proportion of its `need' interactions, set by the threshold parameter $n_t$.
+% As $n_t$ increases, the interdependencies between species become more rigid during the assembly process, and this will serve to limit niche expansion.
+% 
+% However, the trajectory of niche expansion is more complex when $n_t$ is increased.
+% Rather than simply lowering the proportion of potential colonizers, increasing $n_t$ results in a qualitatively different assembly process where niche space is first lowered, increased, and lowered again as the community is filled (Fig. \ref{fig_potcol}b).
+% The initial niche space contraction results from a filling of the initial community with primary producers and their direct consumers.
+% This lower trophic module fills without creating additional space for higher trophic level organisms due to the harsher restrictions given by a high $n_t$.
+% Once a critical point in assembly is reached, the potential to add higher trophic level colonizers is attained, and niche space increases to a maximum, only to finally decrease as the species pool is used up.
+% In some realizations, the community is never able to fill, resulting in a system without higher trophic levels.
+% 
+% Assembly where $n_t$ is large, and with moderate engineering, follows a 2-stage process.
+% First, the system is colonized by primary producers.
+% Once the lower trophic levels are filled and reach a critical point, niche expansion permits the colonization of higher trophic level colonizers.
+% [Need to explore this more by calculating trophic level for each species - in progress]
+% 
+% 
+% 
+% 
+% %Is there a diversity-stability link here?
+% 
+% 
+% %Initial downward slope occurs because primary producers are used up. When it goes back up, there is enough of a base to build a larger community. Will have to check this will average trophic level over time (trophic module!!!)
+% 
+% 
+% 
+% 
+% 
+% {\bf Assembly with extinctions}
+% % Negative effects of engineering at the scale of the community
+% % The effect of engineers on extinction cascade size
+% Examination of the assembly process that is regulated by extinctions due to changes in trophic load results in saturation of species richness over time (Fig. \ref{fig_traj}).
+% Accordingly, the colonization and extinction dynamic result in regular fluctuations around a steady state community richness, where the size of the fluctuations (relative to the steady state value) strongly depends on $n_t$ and pr($(a,n$).
+% 
+% The average diversity of the system after an initial assembly process increases as the number of need interactions and/or need threshold $n_t$ are sufficiently low.
+% This is intuitive because such a system has many more degrees of freedom and is free to expand to higher densities of species.
+% Likewise, as pr($n$) and $n_t$ increase, species richness lowers nearly to zero, as does the average trophic level (check), resulting in a system dominated by primary producers and their immediate consumers.
+% 
+% 
+% The system conforms to an expected Taylor's law relationship for lower species richness (<100), however follow different rules for higher richness (also corresponding to low pr($n$) and $n_t$.
+% Here, species dependencies are low, such that primary extinctions due to predation will generally not result in a large number of secondary extinctions because the need threshold is not easily violated, and this reduces the magnitude of fluctuations.
+% Accordingly, it is the same drivers that lead to high species richness (increased plasticity and/or fewer non-trophic dependencies) that also reduces the volatility of the system, thereby reducing variability.
+% 
+% 
+% The magnitude of oscillations around the steady state richness is a measure of community instability and turnover.
+% Although modification of pr($n$) and $n_t$ reveals a smooth and expected influence on the mean species richness of the community, the effect on the magnitude of fluctuations around the mean richness is more complex, and this is most evident in the coefficient of variation of community richness over time.
+% The CV is maximized when $n_t$ is intermediate and the number of non-trophic dependencies is large.
+% 
+% % 
+% % \begin{figure}
+% % \centering
+% % \includegraphics[width=0.45\textwidth]{fig_traj.pdf}
+% % \caption{
+% % The colonization and extinction dynamics of a community over time. The solid line denotes species richness; the dashed line denotes species+object richness.
+% % }
+% % \label{fig_traj}
+% % \end{figure} 
+% % 
+% 
+% 
+% 
+% {\bf Effects of engineers on community dynamics}
+% We find that an increase in the number of engineers at time $t$ results in the potential for marginally larger extinction cascades at time $t+1$ (positive but weak correlations, Fig \ref{fig_corrobext}a).
+% This weak positive correlation between the number of objects at time $t$ and extinction cascade size at time $t+1$ is due to the increasing interconnectedness that results from the higher number of objects relative to species in the system.
+% Because the existence of a given object is tied to the species that makes them (one or multiple), the effects of primary extinctions are magnified.
+% 
+% % 
+% % \begin{figure}
+% % \centering
+% % \includegraphics[width=0.45\textwidth]{fig_taylors.pdf}
+% % \caption{
+% % Relationship between mean species richness and the magnitude of fluctuations (SD) for communities with various values of pr($n$) and $n_t$.
+% % }
+% % \label{fig_traj}
+% % \end{figure} 
+% % 
+% % 
+% % \begin{figure}
+% % \centering
+% % \includegraphics[width=0.45\textwidth]{fig_sen_nn.pdf}
+% % \caption{Changes in community richness CV as a function of pr($n$) and $n_t$. 
+% % }
+% % \label{fig_sen_nn}
+% % \end{figure} 
+% % 
+% 
+% 
+% 
+% % The effect of engineering colonization facilitation
+% The number of objects in the system at time $t$ (and by extension the number of engineers) is strongly positively correlated with the number of potential colonizers at time $t+1$.
+% This correlation increases markedly with the proportion of engineers in the community.
+% So from a species packing perspective, engineering enables successful colonization by increasing niche space, and this is particularly important for communities with a high proporiton of engineers.
+% {\bf Colonization of engineers into a community both facilitates future colonization and increases the risks of larger extinction cascades}.
+% This dual nature of ecosystem engineers may indicate short term/long term risks/gains?
+% % 
+% % 
+% % \begin{figure*}[ht]
+% % \centering
+% % \includegraphics[width=0.75\textwidth]{fig_corrobext_tl2S.pdf}
+% % \caption{
+% % a) Correlations between objects at time $t$ and extinction cascade size at time $t+1$. b) Correlations between objects at time $t$ and the number of potential colonizers at time $t+1$.
+% % }
+% % \label{fig_corrobext}
+% % \end{figure*} 
+% 
+% 
+% Future things that I'm working on implementing (suggestions welcome!!!)
+% \begin{enumerate}
+% \item Calculate trophic level for each species
+% \item Object decay - this is a big feature of engineered systems - that the objects they engineer can last longer than the species
+% \item One potentially fruitful line of investigation would be to link this approach to random matrix theory - inclusion of objects should modify species effects on one another. I'm currently tracking both direct trophic and mutualistic adjacency matrices (where if species 1 makes object 1, and species 2 eats object 1, we can say species 2 indirectly eats species 1 - same for any other interaction type), but have not yet explored it - this would probably be good for a stand-alone paper - very little of engineering in food webs
+% \item Priority effects - working on this - what species traits alter assembly dynamics?
+% \end{enumerate}
+% 
 
 
 \end{document}
