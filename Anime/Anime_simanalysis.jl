@@ -14,6 +14,15 @@ reps = size(cid_r)[1];
 tmax = size(cid_r)[2];
 S = convert(Int64,size(cid_r)[3]/2);
 
+#We need to 'grab' individual cid_r's within the parallel loop
+#Export them here and then import them separately under parallel rep loop
+for r=1:reps
+    namespace = string("$(homedir())/2014_Lego/Anime/data/simbasic/cid_",r,".jld");
+    # namespace = string("/$(homedir())/Dropbox/PostDoc/2014_Lego/Anime/data/simbasic/int_m",r,".jld");
+    CID = cid_r[r,:,:];
+    save(namespace,
+    "CID", CID);
+end
 
 #define cid_r everywhere
 
@@ -48,6 +57,10 @@ trophic = SharedArray{Float64}(reps,tseqmax,S);
     tind_m = d2["tind_m"];
     mp_m = d2["mp_m"];
     mind_m = d2["mind_m"];
+    
+    namespace_cid = string("$(homedir())/2014_Lego/Anime/data/simbasic/cid_",r,".jld");
+    d3 = load(namespace_cid);
+    CID = d3["CID"];
     
     CID = copy(cid_r[r,:,:]);
     

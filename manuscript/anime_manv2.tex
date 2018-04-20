@@ -95,7 +95,7 @@ Such introduced objects are to be considered in the abstract, and serve to repre
 \centering
 \includegraphics[width=0.45\textwidth]{matrix.pdf}
 \caption{
-The number of species (closed circles; set to $\mathcal S=400$) and objects (open circles) in the interaction matrix as a function of pr($m$).
+An example of the source pool interaction matrix where $\mathcal{S} = 50$. Species and objects are aligned across the rows and columns; objects are shaded and labeled by `o' to distinguish them from species. The interaction recorded in row $i$ and column $j$ describes the directed interaction from species/object $i$ to species/object $j$. The first row/column represents the basal resource; species that assimilate the primary resource are capable of primary production. Species interact with other species and/or objects; objects only interact with their engineers by `needing' them; objects do not interact with other objects.
 }
 \label{fig:matrix}
 \end{figure} 
@@ -144,14 +144,15 @@ We build the interaction matrix for the source pool (figure \ref{fig:matrix}) ac
 1) We impose the rule that row/column 1 of the pool interaction matrix is the basal resource from which primary producers derive their energy.
 Thus, an assimilate interaction in column 1 means that the consumer is capable of primary production; conversely, it is assumed that the basal resource does not interact with any species/objects.
 Moreover, we assume that a fixed proportion of `assimilate' interactions across agents that must be linked to the basal resource, such that a given proportion of agents are capable of primary production.
+The basal resource is assumed to be always available, and cannot be removed during the assembly process.
 
 2) We next assume that -- initially -- all agents in the system are species, and assign trophic interactions based on an exponential degree distribution \cite{Williams:2000wt}.
-The degree distribution is based on the trophic connectance of the system, which in this case is calculated as 
+The degree distribution is based on the trophic connectance of the system (where only links involving assimilation are involved), which in this case is calculated as 
 \begin{equation}
   C_{\rm trophic} = p_{ai}+p_{an}+p_{aa}.
 \end{equation}
-For large communities, the number of trophic interactions for a given species $i$ in the Niche Model ($d_i$) is proportional to the niche range $r_i$, where $d_i = r_i*\mathcal{N}$ given $r_i = X\eta_i$, where $X \sim {\rm Beta}(1,1/2C - 1)$ and $\eta_i \sim {\rm Uniform}(0,1)$. %is uniform in [0,1].
-Importantly, because we do not stipulate which species are connected according to where the range falls within a niche axis (as in the Niche Model), we incorporate the trophic interaction degree distribution without imposing a structure of interactions.
+For large communities, the number of trophic interactions for a given species $i$ in the Niche Model ($d_i$) is proportional to the niche range $r_i$, where $d_i = r_i*\mathcal{N}$ given $r_i = X\eta_i$, where $X \sim {\rm Beta}(1,1/2C_{\rm trophic} - 1)$ and $\eta_i \sim {\rm Uniform}(0,1)$ \cite{Williams:2000wt}. %is uniform in [0,1].
+Importantly, because we do not stipulate which species are connected according to where the range falls within a niche axis (as is the primary function of the Niche Model), we incorporate the trophic interaction degree distribution without imposing a structure of interactions.
 Accordingly, the only input to the interaction matrix of the source pool include the probabilities $p_a$, $p_n$, $p_m$, and the exponential nature of the trophic degree distribution.
 Given the drawn number of trophic interactions for each species, pairwise interactions $a \leftrightarrow i$, $a \leftrightarrow n$, and $a \leftrightarrow a$ are assigned randomly given $p_{ai}$, $p_{an}$, and $p_{aa}$, respectively.
 Non-trophic species interactions $n \leftrightarrow i$ and $n \leftrightarrow n$ interactions are also assigned randomly given the respective probabilites $p_{ni}$ and $p_{nn}$, leaving only interactions involving species and objects to be determined.
@@ -168,14 +169,6 @@ Because the number of `make' interactions is stochastic, the number of objects $
 To obtain the desired $\mathcal{S}$, we use a simulated annealing algorithm to generate multiple interaction matrices of different sizes until the desired $\mathcal{S}$ is found.
 
 
-\begin{figure}
-\centering
-\includegraphics[width=0.45\textwidth]{extinction.pdf}
-\caption{
-The number of species (closed circles; set to $\mathcal S=400$) and objects (open circles) in the interaction matrix as a function of pr($m$).
-}
-\label{fig:ext}
-\end{figure} 
 
 \textbf{Colonization and Extinction} The interaction matrix for the source pool specifies how each species interacts with every other.
 Assembly of a species community is the result of both colonization and extinction of species that are drawn from the source pool.
@@ -189,6 +182,14 @@ At each time-step $t$, we determine which species in the source pool can coloniz
 If multiple species can colonize, we select one at random and add it (and the objects it makes) to the community.
 In the first time-step, only species that consume the primary resource (row 1; figure \ref{fig:matrix}) and do not have any `need' interactions can initiate the assembly process.
 
+\begin{figure}
+\centering
+\includegraphics[width=0.4\textwidth]{predpreymotif.pdf}
+\caption{
+Non-specialist predators ($q=2$) consume a shared resource $i$, while each has alternative resources to fall-back on. Assuming Lotka-Volterra dynamics and equivalent attack rates of the predators $\beta$, the non-dimensional steady state density for the shared resource is $r_i^* = R_i^*/\kappa_i=1 - q\epsilon_i$ where $\epsilon_i=\beta P^*/\alpha_i$. We use this relationship between resource density and the number of predators $q$ to calculate extinction probabilities as a function of the number of predators $\omega_i(q)$
+}
+\label{fig:lv}
+\end{figure} 
 
 
 % The probability of extinction increasesas the number of consumers increases for a given species.
@@ -196,17 +197,26 @@ Although colonization depends only on satisfaction of assimilate/need interactio
 1) both assimilate and need thresholds remaining fulfilled, and
 2) the pressure levied onto species by predation.
 Although the ANIMe framework does not track population densities, we integrate a central concept from population dynamics: that resource densities decline with increased predation pressure, and that this increases the risk of extinction.
-Assuming Lotka-Volterra predator-prey dynamics, a given resource has density $R$, growth rate $\alpha$, and carrying capacity $\kappa$.
-The consumption of this resource by $m$ non-specialist predators with equivalent steady state densities $P^*$ and attack rates $\beta$ results in the dimensionless steady state resource density $r^* = R^*/\kappa = 1 - m\epsilon$, where $\epsilon=\beta P^*/\alpha$.
-Thus, $\epsilon$ describes the relative impact of a single predator on the resource steady state, which decreases linearly with an increase in the number of predators $m$.
-Although our framework does not track changes in population densities, if we assume that the true resource density is normally distributed around $r^*$ with variance $\sigma^2$, the probability of extinction $\omega$ (defined as the probability that $r^* < 0$) has an exact solution of the form
+Assuming Lotka-Volterra predator-prey dynamics, a given resource $i$ has density $R_i$, growth rate $\alpha_i$, and carrying capacity $\kappa_i$.
+The consumption of this resource by $q$ non-specialist predators with equivalent steady state densities $P^*$ and attack rates $\beta$ results in the dimensionless steady state resource density $r_i^* = R_i^*/\kappa_i = 1 - q\epsilon_i$, where $\epsilon_i=\beta P^*/\alpha_i$ (see figure \ref{fig:lv} for an exemplary motif illustrating the described interactions).
+Thus, $\epsilon$ describes the relative impact of a single predator on the resource steady state, which decreases linearly with an increase in the number of predators $q$.
+Although our framework does not track changes in population densities, if we assume that the true resource density is normally distributed around $r^*$ with variance $\sigma^2$, the probability of extinction $\omega_i$ (defined as the probability that $r^* < 0$) has an exact solution of the form
 \begin{equation}
-  \omega = \frac{1}{2}{\rm Erfc}\left(\frac{1-m\epsilon}{\sigma\sqrt{2}}\right).
+  \omega_i(q) = \frac{1}{2}{\rm Erfc}\left(\frac{1-q\epsilon_i}{\sigma\sqrt{2}}\right).
 \end{equation}
 The probability of extinction for a resource increases sigmoidally with the number of predators on that resource.
-At each time-step, we calculate $\omega$ for each species in the assembled community and determine extinction by drawing from a binomial distribution where there is a single trial with success probability $\omega$.
+At each time-step, we calculate $\omega_i$ for each species in the assembled community and determine extinction by drawing from a binomial distribution where there is a single trial with success probability $\omega_i$.
 Species that go extinct at time-step $t$ may re-colonize at $t+1$.
 In this respect, each time-step is a colonization event and needn't be assumed to represent an equivalent length of time.
+
+\begin{figure}
+\centering
+\includegraphics[width=0.45\textwidth]{extinction.pdf}
+\caption{
+The probability of extinction at time $t$ as a function of the number of predators consuming a given resource species $\omega_i(q)$. There is always \emph{some} risk of extinction even if a species has no predators, as $\omega_i(q=0) = 0.0014$.
+}
+\label{fig:ext}
+\end{figure} 
 
 
 Primary extinctions can trigger secondary extinctions, as elimination of prey -- and any objects that an eliminated species uniquely engineers -- may then result in consumers falling below either or both of the assimilate and need threshold conditions.
