@@ -2,17 +2,22 @@
 loadfunc = include("$(homedir())/2014_Lego/Anime/src/loadfuncsYOG.jl");
 
 # namespace = string("$(homedir())/Dropbox/Postdoc/2014_Lego/Anime/data/simbasic/sim.jld");
-namespace = string("$(homedir())/2014_Lego/Anime/data/simbasic/sim.jld");
-d1 = load(namespace);
-lpot_col = d1["lpot_col"];
-status = d1["status"];
-prim_ext = d1["prim_ext"];
-sec_ext = d1["sec_ext"];
-cid_r = d1["cid_r"];
+# namespace = string("$(homedir())/2014_Lego/Anime/data/simbasic/sim.jld");
+# d1 = load(namespace);
+# lpot_col = d1["lpot_col"];
+# status = d1["status"];
+# prim_ext = d1["prim_ext"];
+# sec_ext = d1["sec_ext"];
+# cid_r = d1["cid_r"];
 
-reps = size(cid_r)[1];
-tmax = size(cid_r)[2];
-S = convert(Int64,size(cid_r)[3]/2);
+# reps = size(cid_r)[1];
+# tmax = size(cid_r)[2];
+# S = convert(Int64,size(cid_r)[3]/2);
+
+reps = 1000;
+tmax = 2500;
+S = 400;
+
 
 # #We need to 'grab' individual cid_r's within the parallel loop
 # #Export them here and then import them separately under parallel rep loop
