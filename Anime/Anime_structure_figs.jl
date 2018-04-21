@@ -85,7 +85,7 @@ conn_trim = Array{Float64}(reps,tmax)*0;
 conn_ind_trim = Array{Float64}(reps,tmax)*0;
 for i=1:reps
     conn_rm = conn[i,find(!iszero,conn[i,:])];
-    conn_ind_rm = conn_ind[i,find(!iszero,conn[i,:])];
+    conn_ind_rm = conn_ind[i,find(!iszero,conn_ind[i,:])];
     conn_trim[i,1:length(conn_rm)] = conn_rm;
     conn_ind_trim[i,1:length(conn_ind_rm)] = conn_ind_rm;
 end
