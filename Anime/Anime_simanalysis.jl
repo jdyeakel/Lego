@@ -129,7 +129,7 @@ lastbins = indexin(laststeps,seq);
 seq_stitch = [initsteps;laststeps];
 conn_stitch = [init_conn_trim[:,initsteps] conn[:,lastbins]];
 
-namespace = string("$(homedir())/conn_time2NEW.pdf");
+namespace = string("$(homedir())/2014_Lego/Anime/figures/conn_time2.pdf");
 R"""
 pdf($namespace,height=5,width=6)
 boxplot($(conn_stitch),ylim=c(0,0.1),outline=FALSE,names=$(seq_stitch),
@@ -169,7 +169,7 @@ lastbins = indexin(laststeps,seq);
 seq_stitch = [initsteps;laststeps];
 overlap_stitch = [init_overlap_trim[:,initsteps] res_overlap[:,lastbins]];
 
-namespace = string("$(homedir())/trophicoverlap_timeNEW.pdf");
+namespace = string("$(homedir())/2014_Lego/Anime/figures/trophicoverlap_time.pdf");
 R"""
 pdf($namespace,height=5,width=6)
 boxplot($(overlap_stitch),ylim=c(0,0.1),outline=FALSE,names=$(seq_stitch),
@@ -226,7 +226,7 @@ Psddeg = vec(mapslices(std,Pdegreesort,1));
 Psddeg[firstone:length(Psddeg)] = 0;
 
 
-namespace = string("$(homedir())/degreedist_time2NEW.pdf");
+namespace = string("$(homedir())/2014_Lego/Anime/figures/degreedist_time2.pdf");
 R"""
 library(RColorBrewer)
 pdf($namespace,height=5,width=6)
@@ -317,7 +317,7 @@ mpool <- try(nls(y ~ a + b * I(x^z), start = list(a = 1, b = 1, z = -1)),silent=
 """
 
 
-namespace = string("$(homedir())/trophic_degrees_timeNEW.pdf");
+namespace = string("$(homedir())/2014_Lego/Anime/figures/trophic_degrees_time.pdf");
 R"""
 library(RColorBrewer)
 pdf($namespace,height=5,width=6)
