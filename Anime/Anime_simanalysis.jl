@@ -1,22 +1,15 @@
 # loadfunc = include("$(homedir())/Dropbox/PostDoc/2014_Lego/Anime/src/loadfuncs.jl");
 loadfunc = include("$(homedir())/2014_Lego/Anime/src/loadfuncsYOG.jl");
 
-# namespace = string("$(homedir())/Dropbox/Postdoc/2014_Lego/Anime/data/simbasic/sim.jld");
-# namespace = string("$(homedir())/2014_Lego/Anime/data/simbasic/sim.jld");
-# d1 = load(namespace);
-# lpot_col = d1["lpot_col"];
-# status = d1["status"];
-# prim_ext = d1["prim_ext"];
-# sec_ext = d1["sec_ext"];
-# cid_r = d1["cid_r"];
-
-# reps = size(cid_r)[1];
-# tmax = size(cid_r)[2];
-# S = convert(Int64,size(cid_r)[3]/2);
-
-reps = 1000;
-tmax = 2500;
-S = 400;
+namespace = string("$(homedir())/2014_Lego/Anime/data/simbasic/sim_settings.jld");
+d1 = load(namespace);
+reps = d1["reps"];
+S = d1["S"];
+tmax = d1["tmax"];
+# a_thresh = d1["a_thresh"];
+# n_thresh = d1["n_thresh"];
+# extinctions = d1["extinctions"];
+# probs = d1["probs"]; 
 
 
 # #We need to 'grab' individual cid_r's within the parallel loop
@@ -33,8 +26,6 @@ S = 400;
 
 
 # NOTE: just analyze the timesteps necessary for the sequence
-
-# seq = [10;25;50;100;200;1000;2000;];
 
 #We want to catch the full assembly early on, and then skip ahead
 seq = [collect(2:50);100;200;1000;2000;];
@@ -101,6 +92,8 @@ trophic = SharedArray{Float64}(reps,tseqmax,S);
 
 end
 
+
+
 h = load(string("$(homedir())/2014_Lego/Anime/data/intm_structure.jld"));
 Pconn = h["Pconn"];
 Pconn_ind = h["Pconn_ind"];
@@ -108,6 +101,10 @@ Pres_overlap_dist = h["Pres_overlap_dist"];
 Pdegrees = h["Pdegrees"];
 Ptl = h["Ptl"];
 Preps = size(Pconn)[1];
+
+
+
+
 
 ############
 #Connectance
