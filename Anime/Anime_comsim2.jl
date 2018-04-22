@@ -98,15 +98,15 @@ dev.off()
 #Image the interaction matrix
 
 #Establish community template
-S = 50;
+S = 400;
 # S = 400;
 probs = [
-p_n=0.04,
-p_a=0.02,
+# p_n=0.04,
+# p_a=0.02,
+# p_m=0.01,
+p_n=0.004,
+p_a=0.01,
 p_m=0.01,
-# p_n=0.004,
-# p_a=0.01,
-# p_m=0.002,
 p_i= 1 - sum([p_n,p_m,p_a]) #Ignore with 1 - pr(sum(other))
 ]
 
@@ -138,7 +138,7 @@ int_v[find(x->x=='n',int_msort)]=2;
 int_v[find(x->x=='i',int_msort)]=3;
 int_v[find(x->x=='m',int_msort)]=4;
 
-namespace = string("$(homedir())/Dropbox/PostDoc/2014_Lego/Anime/figures/matrix.pdf");
+namespace = string("$(homedir())/Dropbox/PostDoc/2014_Lego/Anime/figures/matrixtest.pdf");
 R"""
 library(igraph)
 library(plotrix)

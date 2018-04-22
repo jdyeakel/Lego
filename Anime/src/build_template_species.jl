@@ -22,7 +22,8 @@ function build_template_species(S, probs, ppweight)
   # num_play = Int64(floor((S^2)*pr_nm));
   
   num_play = Int64(floor(S + (S^2)*pr_nm));
-  
+  np = Array{Int64}(0);
+  push!(np,num_play);
   #num_play = convert(Int64,round(num_play/2,0));
   
   # @label p;
@@ -32,7 +33,7 @@ function build_template_species(S, probs, ppweight)
 
   S_real = length(find(x->x=='n',diag(int_m)));
 
-  error = 0;
+  error = 10;
   S_acceptable = collect(S-error:S+error);
 
   howlong = 1;
@@ -48,17 +49,22 @@ function build_template_species(S, probs, ppweight)
     # end
     howlong = howlong + 1;
     S_diff = S - S_real;
-    sdiffvec = push!(sdiffvec,S_diff);
+    push!(sdiffvec,S_diff);
     plusminus = sign(S_diff);
-    dhop = Poisson(abs(S_diff));
-    np_hop = rand(dhop);
+    
+    #Choose the next step size for the size of int_m
+    dhop = Poisson(2*abs(S_diff));
+    # np_hop = rand(dhop);
+    np_hop = convert(Int64,round(rand(dhop)*(S/S_real),0));
 
     num_play = num_play+(np_hop*plusminus);
+    push!(np,num_play);
 
     #Generate interaction template
     int_m, sp_m, t_m, tp_m, tind_m, mp_m, mind_m = intmatrix(num_play,probs,ppweight);
 
     S_real = length(find(x->x=='n',diag(int_m)));
+    println("S_diff = ",S_diff)
   end
   # println("how long? ",howlong)
 
