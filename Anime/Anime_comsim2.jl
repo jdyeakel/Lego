@@ -1,15 +1,15 @@
 loadfunc = include("$(homedir())/Dropbox/PostDoc/2014_Lego/Anime/src/loadfuncs.jl");
 
 #Establish community template
-S = 400;
+S = 20;
 # S = 400;
 probs = [
-# p_n=0.04,
+p_n=0.04,
+p_a=0.08,
+p_m=0.04,
+# p_n=0.004,
 # p_a=0.01,
-# p_m=0.04,
-p_n=0.004,
-p_a=0.01,
-p_m=0.002,
+# p_m=0.002,
 p_i= 1 - sum([p_n,p_m,p_a]) #Ignore with 1 - pr(sum(other))
 ]
 

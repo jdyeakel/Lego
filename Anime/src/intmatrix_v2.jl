@@ -19,7 +19,8 @@ function intmatrix(S, probs, ppweight)
     #Expected size of the system
     O = convert(Int64,round(pr_nm*S*(S-1),0));
     N = S + O;
-
+    spind = collect(1:S);
+    obind = collect(S+1:N);
     #Calculate the distribution of trophic links per species
     #Step 1: niche values
     nichev = rand(S);
@@ -42,6 +43,7 @@ function intmatrix(S, probs, ppweight)
     #Region 3) Lower left OxS are object-species interacions (n only)
     #Region 4) Lower right OxO are object-object interactions (i only)
     int_m = Array{Char}(N,N);
+    int_m[:] = '0';
     #Matrix of trophic-only interactions
     #The number of species in the trophic and mutualistic matrices will all start out the sames size as int_m, however, the objects will be trimmed later
     t_m = zeros(Int64,S,S);
@@ -57,8 +59,8 @@ function intmatrix(S, probs, ppweight)
         
         #Species trophic degree
         k = degrees[i];
-        #Possible foods
-        resource = sample(collect(2:N),k,replace=false);
+        #Possible foods (do not count self)
+        resource = sample(deleteat!(collect(2:N),i-1),k,replace=false);
         
         #Is this species a primary producer? If so, make it eat basal resource
         #Ensure species 2 is always a primary producer
