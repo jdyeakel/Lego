@@ -73,6 +73,8 @@ function intmatrix(S, probs, ppweight)
         
         #Which of these resources are species?
         spresource = resource[resource.<=S];
+        #Which of these resources are objects?
+        obresource = setdiff(resource,spresource);
 
         #Establish these prey in the interaction matrix
         int_m[i,resource] = 'a'
@@ -84,13 +86,13 @@ function intmatrix(S, probs, ppweight)
         #Assigning complimentary interactions
         #ONLY for interactions with SPECIES
         #First disconsider aa interactions
-        aa_int = find(x -> x == 'a', int_m[resource,i]);
-        aa_int_loc = resource[aa_int];
+        aa_int = find(x -> x == 'a', int_m[spresource,i]);
+        aa_int_loc = spresource[aa_int];
 
 
         if length(aa_int) >= 1
-          #Remove elements ee_int
-          deleteat!(resource,aa_int);
+          #Remove elements aa_int
+          deleteat!(spresource,aa_int);
         end
 
         #An 'a' has been drawn...
@@ -98,20 +100,29 @@ function intmatrix(S, probs, ppweight)
         #Draw from a binomial: which interaciton will be Asymmetric predation?
         #Draw 1 = Asymmetric predation; Draw 0 = facultative mutualism
         pr_i_given_a = (p_i/(p_i+p_n)); #again discounting a-a, which are already determined
-        bindist = Binomial(1,pr_i_given_a)
-        bin_draw = rand(bindist,length(resource))
+        bindist = Binomial(1,pr_i_given_a);
+        bin_draw = rand(bindist,length(spresource));
+        
+        #Force ignore for primaru producer basal resource interaction
+        ignorebasal = find(x->x==1,spresource);
+        if length(ignorebasal) > 0
+            bin_draw[ignorebasal] = 1;
+        end
 
         #Asymmetric predation
-        res_i = resource[find(x->x==1,bin_draw)]
-        int_m[collect(res_i),i] = 'i' #assigning n's according to random draw
+        res_i = spresource[find(x->x==1,bin_draw)];
+        int_m[res_i,i] = 'i'; #assigning i's according to random draw
+
+        #All complimentary interactions for species-object assimilations are 'i'
+        int_m[obresource,i] = 'i';
 
         #Faculatative mutualism
-        res_n = resource[find(x->x==0,bin_draw)]
-        int_m[collect(res_n),i] = 'n' #assigning i's according to random draw
+        res_n = spresource[find(x->x==0,bin_draw)];
+        int_m[res_n,i] = 'n'; #assigning n's according to random draw
 
         #Record mutualistic interaction in m_m matrix
-        m_m[collect(res_n),i] = 1;
-        m_m[i,collect(res_n)] = 1;
+        m_m[res_n,i] = 1;
+        m_m[i,res_n] = 1;
 
     end
 
