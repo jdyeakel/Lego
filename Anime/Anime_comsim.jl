@@ -2,18 +2,20 @@ loadfunc = include("$(homedir())/Dropbox/PostDoc/2014_Lego/Anime/src/loadfuncs.j
 
 #Establish community template
 S = 20;
+p_engineer = 0.25;
+ppweight = 1/4;
 # S = 400;
 probs = [
 p_n=0.04,
 p_a=0.08,
-p_m=0.04,
+p_m=0.01,
 # p_n=0.004,
 # p_a=0.01,
 # p_m=0.002,
 p_i= 1 - sum([p_n,p_m,p_a]) #Ignore with 1 - pr(sum(other))
 ]
 
-ppweight = 1/4;
+
 @time int_m, sp_m, t_m, tp_m, tind_m, mp_m, mind_m = build_template_species(S,probs,ppweight);
 
 a_b,
@@ -99,19 +101,22 @@ dev.off()
 
 #Establish community template
 S = 400;
+ppweight = 1/4;
 # S = 400;
 probs = [
 # p_n=0.04,
 # p_a=0.02,
 # p_m=0.01,
-p_n=0.004,
-p_a=0.01,
-p_m=0.01,
+p_n=0.1,
+p_a=0.1,
+# p_m=0.01,
 p_i= 1 - sum([p_n,p_m,p_a]) #Ignore with 1 - pr(sum(other))
 ]
+p_engineer = 1;
 
-ppweight = 1/4;
-@time int_m, sp_m, t_m, tp_m, tind_m, mp_m, mind_m = build_template_species(S,probs,ppweight);
+
+# @time int_m, sp_m, t_m, tp_m, tind_m, mp_m, mind_m = build_template_species(S,probs,ppweight);
+@time int_m, tp_m, tind_m, mp_m, mind_m = intmatrixv2(S,p_engineer,probs,ppweight);
 
 
 a_b,
@@ -171,7 +176,7 @@ for (i in 1:length(objects)) {
             }
         }
     }
-pdf($namespace,height=5,width=6)
+# pdf($namespace,height=5,width=6)
 par(mar=c(1,1,1,4))
 int_types=c('a','n','i','m')
 color2D.matplot(xx,extremes=c(1:length(int_types)), border='white', axes=FALSE, xlab='', ylab='',main='',cellcolors=xx2)
@@ -180,6 +185,6 @@ text(x=rep(-0.8,length(objects)),y=num_play-objects+0.5,labels='o', xpd=TRUE,cex
 text(x=objects-0.5,y=rep(num_play+0.8,length(objects)),labels='o', xpd=TRUE,cex=0.6)
 text(x=-0.8,y=num_play-0.8,labels=expression(paste('1',degree)), xpd=TRUE,cex=0.6)
 text(x=0.8,y=num_play+0.8,labels=expression(paste('1',degree)), xpd=TRUE,cex=0.6)
-dev.off()
+# dev.off()
 """
 

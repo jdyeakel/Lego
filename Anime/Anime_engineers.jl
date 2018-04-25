@@ -2,6 +2,48 @@
 
 loadfunc = include("$(homedir())/2014_Lego/Anime/src/loadfuncsYOG.jl");
 
+
+
+#Establish community template
+S = 400;
+ppweight = 1/4;
+# S = 400;
+probs = [
+# p_n=0.04,
+# p_a=0.02,
+# p_m=0.01,
+p_n=0.1,
+p_a=0.1,
+# p_m=0.01,
+p_i= 1 - sum([p_n,p_m,p_a]) #Ignore with 1 - pr(sum(other))
+]
+
+pevec = collect(0:0.1:5);
+n = zeros(length(pevec));
+
+nev=zeros(length(pevec))
+for i=1:length(pevec)
+  ne=0;
+  p_engineer = pevec[i];
+  int_m, tp_m, tind_m, mp_m, mind_m = intmatrixv2(S,p_engineer,probs,ppweight);
+  for j=1:S
+    if length(find(x->x=='m',int_m[j,:])) > 0
+      ne += 1;
+    end
+  end  
+  n[i] = length(find(x->x=='i',diag(int_m)));
+  nev[i] = ne;
+end
+
+R"plot($n)"
+
+
+
+
+
+
+
+
 pm_vec = collect(0.0:0.0002:0.01);
 lpm_vec = length(pm_vec);
 

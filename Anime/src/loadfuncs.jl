@@ -7,6 +7,7 @@
 #Interaction matrix
 @everywhere include("$(homedir())/Dropbox/PostDoc/2014_Lego/Anime/src/build_template_species.jl")
 @everywhere include("$(homedir())/Dropbox/PostDoc/2014_Lego/Anime/src/intmatrix.jl")
+@everywhere include("$(homedir())/Dropbox/PostDoc/2014_Lego/Anime/src/intmatrixv2.jl")
 
 #Community dynamics
 @everywhere include("$(homedir())/Dropbox/PostDoc/2014_Lego/Anime/src/colext.jl")
