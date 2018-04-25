@@ -194,11 +194,11 @@ function intmatrixv2(S, p_engineer, probs, ppweight)
     #Eliminate n-a, i-a, a-a, n-m interactions, which are already determined
     
     # 1) pr_na
-    # 2) pr_nn
-    # 3) pr_ni
+    # 2) pr_nn ** 
+    # 3) pr_ni **
     # 4) pr_nm
     # 5) pr_ia
-    # 6) pr_ii
+    # 6) pr_ii **
     # 7) pr_aa
     deleteat!(pw_prob_new,[1,4,5,7])
     pw_prob_new = pw_prob_new/sum(pw_prob_new)
@@ -279,10 +279,10 @@ function intmatrixv2(S, p_engineer, probs, ppweight)
     
     # 1) pr_na
     # 2) pr_nn
-    # 3) pr_ni
+    # 3) pr_ni **
     # 4) pr_nm
     # 5) pr_ia
-    # 6) pr_ii
+    # 6) pr_ii **
     # 7) pr_aa
     
     so_pw_prob = [pw_prob_init[3],pw_prob_init[6]];

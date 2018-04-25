@@ -1,22 +1,39 @@
 loadfunc = include("$(homedir())/Dropbox/PostDoc/2014_Lego/Anime/src/loadfuncs.jl");
 
-#Establish community template
-S = 20;
-p_engineer = 0.25;
+# #Establish community template
+# S = 20;
+# p_engineer = 0.25;
+# ppweight = 1/4;
+# # S = 400;
+# probs = [
+# p_n=0.04,
+# p_a=0.08,
+# p_m=0.01,
+# # p_n=0.004,
+# # p_a=0.01,
+# # p_m=0.002,
+# p_i= 1 - sum([p_n,p_m,p_a]) #Ignore with 1 - pr(sum(other))
+# ]
+# 
+
+S = 400;
 ppweight = 1/4;
 # S = 400;
 probs = [
-p_n=0.04,
-p_a=0.08,
-p_m=0.01,
-# p_n=0.004,
-# p_a=0.01,
-# p_m=0.002,
+# p_n=0.04,
+# p_a=0.02,
+# p_m=0.01,
+p_n=0.005,
+p_a=0.005,
+# p_m=0.01,
 p_i= 1 - sum([p_n,p_m,p_a]) #Ignore with 1 - pr(sum(other))
 ]
+p_engineer = 0.5;
 
 
-@time int_m, sp_m, t_m, tp_m, tind_m, mp_m, mind_m = build_template_species(S,probs,ppweight);
+# @time int_m, sp_m, t_m, tp_m, tind_m, mp_m, mind_m = build_template_species(S,probs,ppweight);
+@time int_m, tp_m, tind_m, mp_m, mind_m = intmatrixv2(S,p_engineer,probs,ppweight);
+
 
 a_b,
 n_b,
@@ -33,8 +50,8 @@ int_id = preamble_defs(int_m);
 #Establish colonization and extinction rates
 
 a_thresh = 0.0;
-n_thresh = 0.2;
-tmax = 100;
+n_thresh = 0.1;
+tmax = 2500;
 extinctions = true;
 
 
@@ -55,6 +72,12 @@ degrees,
 trophic = assembly(
     int_m,a_b,n_b,i_b,m_b,n_b0,sp_v,int_id,tp_m,tind_m,
     a_thresh,n_thresh,extinctions,tmax,S);
+    
+R"""
+plot($sprich,type='l',ylim=c(0,max($([sprich;rich]))))
+lines($rich,lty=2)
+"""
+
 
 spcid = intersect(sp_v,cid);
 spcid_ind = indexin(spcid,[1;sp_v]);
@@ -100,15 +123,15 @@ dev.off()
 #Image the interaction matrix
 
 #Establish community template
-S = 400;
+S = 100;
 ppweight = 1/4;
 # S = 400;
 probs = [
 # p_n=0.04,
 # p_a=0.02,
 # p_m=0.01,
-p_n=0.1,
-p_a=0.1,
+p_n=0.05,
+p_a=0.05,
 # p_m=0.01,
 p_i= 1 - sum([p_n,p_m,p_a]) #Ignore with 1 - pr(sum(other))
 ]
