@@ -128,6 +128,8 @@ lastbins = indexin(laststeps,seq);
 #Stitch together
 seq_stitch = [initsteps;laststeps];
 conn_stitch = [init_conn_trim[:,initsteps] conn[:,lastbins]];
+meanconn = [mean(conn_stitch[!isnan(conn_stitch[:,i]),i]) for i=1:length(bins)];
+
 
 namespace = string("$(homedir())/2014_Lego/Anime/figures2/conn_time2.pdf");
 R"""
@@ -135,8 +137,8 @@ pdf($namespace,height=5,width=6)
 boxplot($(conn_stitch),ylim=c(0,0.1),outline=FALSE,names=$(seq_stitch),
 xlab='Time',ylab='Connectance',
 pars = list(boxwex = 0.4, staplewex = 0.5, outwex = 0.5),col='lightgray')
-points($(vec(mapslices(mean,conn_stitch,1))),ylim=c(0,0.1),pch=16)
-lines($(vec(mapslices(mean,conn_stitch,1))),ylim=c(0,0.1),lwd=2)
+points($(meanconn),ylim=c(0,0.1),pch=16)
+lines($(meanconn),ylim=c(0,0.1),lwd=2)
 lines(seq(0.001,3000),rep(mean($Pconn),3000),lty=2)
 dev.off()
 """
@@ -168,6 +170,7 @@ lastbins = indexin(laststeps,seq);
 #Stitch together
 seq_stitch = [initsteps;laststeps];
 overlap_stitch = [init_overlap_trim[:,initsteps] res_overlap[:,lastbins]];
+meanoverlap = [mean(overlap_stitch[!isnan(overlap_stitch[:,i]),i]) for i=1:length(bins)];
 
 namespace = string("$(homedir())/2014_Lego/Anime/figures2/trophicoverlap_time.pdf");
 R"""
@@ -175,8 +178,8 @@ pdf($namespace,height=5,width=6)
 boxplot($(overlap_stitch),ylim=c(0,0.1),outline=FALSE,names=$(seq_stitch),
 xlab='Time',ylab='Resource overlap',
 pars = list(boxwex = 0.4, staplewex = 0.5, outwex = 0.5),col='lightgray')
-points($(vec(mapslices(mean,overlap_stitch,1))),ylim=c(0,0.1),pch=16)
-lines($(vec(mapslices(mean,overlap_stitch,1))),ylim=c(0,0.1),lwd=2)
+points($(meanoverlap),ylim=c(0,0.1),pch=16)
+lines($(meanoverlap),ylim=c(0,0.1),lwd=2)
 lines(seq(0.001,3000),rep(mean($Pmeanoverlap),3000),lty=2)
 dev.off()
 """
@@ -293,7 +296,7 @@ for i=1:length(seq2)
     y <- $ysort
     x <- $xsort
     cf <- c(0,0,0)
-    m <- try(nls(y ~ a + b * I(x^z), start = list(a = 1, b = 1, z = -1)),silent=TRUE)
+    m <- try(nls(y ~ a + b * I(x^z), start = list(a = 1, b = -1, z = -1)),silent=TRUE)
     M_t[[$i]] = m
     """
 end
@@ -313,7 +316,7 @@ Ptrophsort = ysort;
 R"""
 y <- $ysort
 x <- $xsort
-mpool <- try(nls(y ~ a + b * I(x^z), start = list(a = 1, b = 1, z = -1)),silent=TRUE)
+mpool <- try(nls(y ~ a + b * I(x^z), start = list(a = 1, b = -1, z = -1)),silent=TRUE)
 """
 
 
@@ -322,14 +325,14 @@ R"""
 library(RColorBrewer)
 pdf($namespace,height=5,width=6)
 pal = brewer.pal(length($seq2),'Spectral')
-plot($(degsort[1]),fitted(M_t[[1]]),xlim=c(1,400),ylim=c(1,10),log='x',col=pal[1],type='l',lwd=2,xlab='Degree',ylab='Trophic level')
+plot($(degsort[1]),fitted(M_t[[1]]),xlim=c(1,400),ylim=c(1,15),log='x',col=pal[1],type='l',lwd=2,xlab='Degree',ylab='Trophic level')
 """
 for i=2:length(seq2)
     R"""
-    lines($(degsort[i]),fitted(M_t[[$i]]),col=pal[$i],lwd=2)
+    lines($(degsort[i]),fitted(M_t[[$(i)]]),col=pal[$(i)],lwd=2)
     sampsize = min(length($(degsort[i])),1000)
     samp = sample(seq(1:length($(degsort[i]))),size=sampsize)
-    points(jitter($(degsort[i])[samp]),jitter($(trophsort[i])[samp]),pch='.',col=pal[$i])
+    points(jitter($(degsort[i])[samp]),jitter($(trophsort[i])[samp]),pch='.',col=pal[$(i)])
     """
 end
 R"""
