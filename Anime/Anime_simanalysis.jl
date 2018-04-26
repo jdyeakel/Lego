@@ -149,7 +149,7 @@ dev.off()
 ############
 #Species pool
 Preps = size(Pres_overlap_dist)[1];
-Pmeanoverlap = Array{Float64}(Preps)
+Pmeanoverlap = Array{Float64}(Preps);
 for r=1:Preps
     Pmeanoverlap[r] = mean(Pres_overlap_dist[r,!isnan(Pres_overlap_dist[r,:])]);
 end
@@ -218,7 +218,7 @@ Pmeandegree = vec(mapslices(mean,Pdegreesort,1));
 Psddeg = vec(mapslices(std,Pdegreesort,1));
 
 meanrich = convert(Int64,round(mean(sprich[:,tseqmax]),0));
-Pdegreesort = Array{Int64}(5000,meanrich)*0;
+Pdegreesort = Array{Int64}(Preps,meanrich)*0;
 for i=1:Preps
     Pdegreesort[i,:] = sort(sample(Pdegrees[i,:],meanrich),rev=true);
 end
@@ -242,7 +242,7 @@ sdev[1:length(sdev_pre)]=sdev_pre
 polygon(x=c(seq(1,length(sdev)),seq(length(sdev),1)),
 y=c($(mdegt[1,!iszero.(mdegt[1,:])])[1:length(sdev)]+sdev,
 rev($(mdegt[1,!iszero.(mdegt[1,:])])[1:length(sdev)]-sdev)),col=paste(pal[1],65,sep=''),border=NA)
-lines($(mdegt[1,!iszero.(mdegt[1,:])]),xlim=c(1,200),ylim=c(0.01,50),log='y',col=pal[1],type='l',lwd=2,xlab = 'Number of species', ylab='Median degree')
+lines($(mdegt[1,!iszero.(mdegt[1,:])]),xlim=c(1,200),ylim=c(0.01,50),col=pal[1],lwd=2,xlab = 'Number of species', ylab='Median degree')
 """
 for i=2:length(seq2)
     R"""
