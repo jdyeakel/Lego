@@ -1,27 +1,18 @@
-loadfunc = include("$(homedir())/Dropbox/PostDoc/2014_Lego/Anime/src/loadfuncs.jl");
+# loadfunc = include("$(homedir())/Dropbox/PostDoc/2014_Lego/Anime/src/loadfuncs.jl");
 
-# loadfunc = include("$(homedir())/2014_Lego/Anime/src/loadfuncsYOG.jl");
+loadfunc = include("$(homedir())/2014_Lego/Anime/src/loadfuncsYOG.jl");
 
 
 reps = 5000;
 S = 400;
-tmax = 2500;
 ppweight = 1/4;
-
-a_thresh = 0.0;
-n_thresh = 0.2;
-extinctions = true;
-
+# S = 400;
 probs = [
-# p_n=0.04,
-# p_a=0.01,
-# p_m=0.04,
-p_n=0.004,
-p_a=0.01,
-p_m=0.002,
-p_i= 1 - sum([p_n,p_m,p_a]) #Ignore with 1 - pr(sum(other))
-];
-
+p_n=0.01,
+p_a=0.01
+]
+#expected objects per species
+lambda = 1/2;
 
 Pconn = SharedArray{Float64}(reps);
 Pconn_ind = SharedArray{Float64}(reps);
@@ -32,7 +23,7 @@ Ptl = SharedArray{Float64}(reps,S);
 
 @time @sync @parallel for r=1:reps
     
-    int_m, sp_m, t_m, tp_m, tind_m, mp_m, mind_m = build_template_species(S,probs,ppweight);
+    int_m, tp_m, tind_m, mp_m, mind_m = intmatrixv2(S,lambda,probs,ppweight);
 
     a_b,
     n_b,
