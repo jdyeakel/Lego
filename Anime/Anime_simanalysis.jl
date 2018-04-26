@@ -50,8 +50,6 @@ trophic = SharedArray{Float64}(reps,tseqmax,S);
     
     d2 = load(namespace_rep);
     int_m = d2["int_m"];
-    sp_m = d2["sp_m"];
-    t_m = d2["t_m"];
     tp_m = d2["tp_m"];
     tind_m = d2["tind_m"];
     mp_m = d2["mp_m"];
