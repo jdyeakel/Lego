@@ -36,7 +36,7 @@ lambda = 1/2;
 
 a_thresh = 0.0;
 n_thresh = 0.1;
-tmax = 2500;
+tmax = 3000;
 extinctions = true;
 
 
