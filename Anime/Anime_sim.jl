@@ -57,6 +57,7 @@ save(namespace,
 "a_thresh", a_thresh,
 "n_thresh", n_thresh,
 "extinctions", extinctions,
+"ppweight", ppweight,
 "probs", probs,
 "lambda",lambda);
 
@@ -69,8 +70,6 @@ save(namespace,
     # namespace = string("/$(homedir())/Dropbox/PostDoc/2014_Lego/Anime/data/simbasic/int_m",r,".jld");
     save(namespace,
     "int_m", int_m,
-    "sp_m", sp_m,
-    "t_m", t_m,
     "tp_m", tp_m,
     "tind_m", tind_m,
     "mp_m", mp_m,
