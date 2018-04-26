@@ -60,10 +60,10 @@ save(namespace,
 "probs", probs,
 "lambda",lambda);
 
-@time @sync @parallel for r=1:reps
+@sync @parallel for r=1:reps
     
     # int_m, sp_m, t_m, tp_m, tind_m, mp_m, mind_m = build_template_species(S,probs,ppweight);
-    @time int_m, tp_m, tind_m, mp_m, mind_m = intmatrixv2(S,lambda,probs,ppweight);
+    int_m, tp_m, tind_m, mp_m, mind_m = intmatrixv2(S,lambda,probs,ppweight);
     
     namespace = string("$(homedir())/2014_Lego/Anime/data/simbasic/int_m",r,".jld");
     # namespace = string("/$(homedir())/Dropbox/PostDoc/2014_Lego/Anime/data/simbasic/int_m",r,".jld");
