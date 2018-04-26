@@ -42,7 +42,7 @@ res_overlap_dist = SharedArray{Float64}(reps,tseqmax,S);
 degrees = SharedArray{Int64}(reps,tseqmax,S);
 trophic = SharedArray{Float64}(reps,tseqmax,S);
 
-@time @sync @parallel for r=1:reps
+@sync @parallel for r=1:reps
     #Read in the interaction matrix
     # namespace = string("$(homedir())/Dropbox/Postdoc/2014_Lego/Anime/data/simbasic/int_m",r,".jld");
 
