@@ -28,15 +28,11 @@ S = 400;
 ppweight = 1/4;
 # S = 400;
 probs = [
-# p_n=0.04,
-# p_a=0.02,
-# p_m=0.01,
-p_n=0.005,
-p_a=0.005,
-# p_m=0.01,
-p_i= 1 - sum([p_n,p_m,p_a]) #Ignore with 1 - pr(sum(other))
+p_n=0.01,
+p_a=0.01
 ]
-p_engineer = 0.5;
+#expected objects per species
+lambda = 1/2;
 
 a_thresh = 0.0;
 n_thresh = 0.1;
@@ -45,7 +41,6 @@ extinctions = true;
 
 
 #Dynamic analyses
-cid = SharedArray{}
 lpot_col = SharedArray{Float64}(reps,tmax);
 status = SharedArray{Float64}(reps,tmax);
 prim_ext = SharedArray{Float64}(reps,tmax);
@@ -63,12 +58,12 @@ save(namespace,
 "n_thresh", n_thresh,
 "extinctions", extinctions,
 "probs", probs,
-"p_engineer",p_engineer);
+"lambda",lambda);
 
 @time @sync @parallel for r=1:reps
     
     # int_m, sp_m, t_m, tp_m, tind_m, mp_m, mind_m = build_template_species(S,probs,ppweight);
-    @time int_m, tp_m, tind_m, mp_m, mind_m = intmatrixv2(S,p_engineer,probs,ppweight);
+    @time int_m, tp_m, tind_m, mp_m, mind_m = intmatrixv2(S,lambda,probs,ppweight);
     
     namespace = string("$(homedir())/2014_Lego/Anime/data/simbasic/int_m",r,".jld");
     # namespace = string("/$(homedir())/Dropbox/PostDoc/2014_Lego/Anime/data/simbasic/int_m",r,".jld");

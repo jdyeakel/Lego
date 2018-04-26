@@ -2,7 +2,7 @@ loadfunc = include("$(homedir())/Dropbox/PostDoc/2014_Lego/Anime/src/loadfuncs.j
 
 # #Establish community template
 # S = 20;
-# p_engineer = 0.25;
+# lambda = 0.25;
 # ppweight = 1/4;
 # # S = 400;
 # probs = [
@@ -20,20 +20,14 @@ S = 400;
 ppweight = 1/4;
 # S = 400;
 probs = [
-# p_n=0.04,
-# p_a=0.02,
-# p_m=0.01,
-p_n=0.005,
-p_a=0.005,
-# p_m=0.01,
-p_i= 1 - sum([p_n,p_m,p_a]) #Ignore with 1 - pr(sum(other))
+p_n=0.01,
+p_a=0.01
 ]
-p_engineer = 0.5;
-
+#expected objects per species
+lambda = 1/2;
 
 # @time int_m, sp_m, t_m, tp_m, tind_m, mp_m, mind_m = build_template_species(S,probs,ppweight);
-@time int_m, tp_m, tind_m, mp_m, mind_m = intmatrixv2(S,p_engineer,probs,ppweight);
-
+@time int_m, tp_m, tind_m, mp_m, mind_m = intmatrixv2(S,lambda,probs,ppweight);
 
 a_b,
 n_b,
@@ -48,12 +42,10 @@ int_id = preamble_defs(int_m);
 # COMMUNITY SIMULATION THROUGH TIME
 ###################################
 #Establish colonization and extinction rates
-
 a_thresh = 0.0;
 n_thresh = 0.1;
-tmax = 2500;
+tmax = 3000;
 extinctions = true;
-
 
 @time cid,
 rich,
@@ -74,8 +66,8 @@ trophic = assembly(
     a_thresh,n_thresh,extinctions,tmax,S);
     
 R"""
-plot($sprich,type='l',ylim=c(0,max($([sprich;rich]))))
-lines($rich,lty=2)
+plot($sprich,type='l',ylim=c(0,max($(sprich))))
+lines($rich-$sprich,lty=2)
 """
 
 
@@ -123,7 +115,8 @@ dev.off()
 #Image the interaction matrix
 
 #Establish community template
-S = 100;
+
+S = 50;
 ppweight = 1/4;
 # S = 400;
 probs = [
@@ -131,15 +124,15 @@ probs = [
 # p_a=0.02,
 # p_m=0.01,
 p_n=0.05,
-p_a=0.05,
+p_a=0.05
 # p_m=0.01,
-p_i= 1 - sum([p_n,p_m,p_a]) #Ignore with 1 - pr(sum(other))
+# p_i= 1 - sum([p_n,p_a]) #Ignore with 1 - pr(sum(other))
 ]
-p_engineer = 1;
-
+#expected objects per species
+lambda = 2;
 
 # @time int_m, sp_m, t_m, tp_m, tind_m, mp_m, mind_m = build_template_species(S,probs,ppweight);
-@time int_m, tp_m, tind_m, mp_m, mind_m = intmatrixv2(S,p_engineer,probs,ppweight);
+@time int_m, tp_m, tind_m, mp_m, mind_m = intmatrixv2(S,lambda,probs,ppweight);
 
 
 a_b,

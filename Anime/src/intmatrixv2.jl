@@ -1,23 +1,24 @@
-function intmatrixv2(S, p_engineer, probs, ppweight)
+function intmatrixv2(S, lambda, probs, ppweight)
     
     p_n=copy(probs[1]);
     p_a=copy(probs[2]);
-    p_i=copy(probs[3]);
+    # p_i=copy(probs[3]);
     #Defining paiwise probabilities
     #These are probabilities of pairwise interactions within the whole universe of possible interactions (15)
 
     
-    pdist = Poisson(p_engineer);
+    
     #Draw the number of objects made per species
-    #Done many times, the mean will be p_engineer*S
+    #Done many times, the mean will be lambda*S
     #A species is an engineer if number of objects > 0
+    pdist = Poisson(lambda);
     OpS = rand(pdist,S-1);
     OpS = [0;OpS]; # basal resource does not make anything
     engind = find(!iszero,OpS);
     E = length(engind);
     
     #Some of these objects may not be unique
-    obline = collect(1:sum(OpS))
+    obline = collect(1:sum(OpS));
     obindpS = zeros(Int64,E,sum(OpS));
     for i = 1:E
         o = sample(obline,OpS[engind][i],replace=false);
@@ -28,13 +29,17 @@ function intmatrixv2(S, p_engineer, probs, ppweight)
     O = size(obindpS)[2];
     
     #Expected size of the system
-    # O = convert(Int64,round(p_engineer*S,0));
+    # O = convert(Int64,round(lambda*S,0));
     N = S + O;
     spind = collect(1:S);
     obind = collect(S+1:N);
     engind = collect(S-E+1:S);
     
-    pr_m = (sum(obindpS))/(N^2);
+    p_m = (sum(obindpS))/(N^2);
+    p_i = 1 - (p_n + p_a + p_m);
+    
+    # exp_p_m = (e*lambda)/(S*(e+(e-1)*lambda))
+    
     pw_prob_init = [
       pr_na = p_n*(p_a/(p_a+p_n+p_i+p_m)) + p_a*(p_n/(p_a+p_i+p_n)),
       pr_nn = p_n*(p_n/(p_a+p_n+p_i+p_m)),
