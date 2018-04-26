@@ -181,10 +181,10 @@ function intmatrixv2(S, lambda, probs, ppweight)
 
     end
 
-    #Duplicate this information for tall_m
+    #Duplicate this information for tind_m
     #This matrix includes indirect trophic interactions
     #Where if 1 (m) 2, and 3 (a) 2, then 3 (a) 1
-    tall_m = copy(tp_m);
+    tind_m = copy(tp_m);
     
     #Deal with the basal resource
     int_m[1,:] = 'i';
@@ -261,7 +261,7 @@ function intmatrixv2(S, lambda, probs, ppweight)
     # mp_m = copy(m_m);
 
     #A matrix for Direct + Indirect mutualistic interactions
-    mall_m = copy(mp_m);
+    mind_m = copy(mp_m);
 
     
     #Species-object & object-species interactions
@@ -332,17 +332,14 @@ function intmatrixv2(S, lambda, probs, ppweight)
         for j=1:O
             if int_m[spind[i],obind[j]] == 'a'
                 makers = find(x->x=='m',int_m[:,obind[j]]);
-                tall_m[spind[i],makers] = 1;
+                tind_m[spind[i],makers] = 1;
             end
             if int_m[spind[i],obind[j]] == 'n'
                 makers = find(x->x=='m',int_m[:,obind[j]]);
-                mall_m[spind[i],makers] = 1;
+                mind_m[spind[i],makers] = 1;
             end
         end
     end
-    
-    tind_m = copy(tall_m);
-    mind_m = copy(mall_m);
     
     
     return(int_m, tp_m, tind_m, mp_m, mind_m)
