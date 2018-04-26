@@ -62,7 +62,7 @@ Ptl = SharedArray{Float64}(reps,S);
     
 end
 
-save(string("$(homedir())/Dropbox/PostDoc/2014_Lego/Anime/data/intm_structure.jld"),
+save(string("$(homedir())/2014_Lego/Anime/data/intm_structure.jld"),
 "Pconn",Pconn,
 "Pconn_ind",Pconn_ind,
 "Pres_overlap_dist",Pres_overlap_dist,
