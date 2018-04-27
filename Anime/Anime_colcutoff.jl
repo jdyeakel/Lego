@@ -23,7 +23,7 @@ loadfunc = include("$(homedir())/2014_Lego/Anime/src/loadfuncsYOG.jl");
 # p_i= 1 - sum([p_n,p_m,p_a]) #Ignore with 1 - pr(sum(other))
 # ];
 
-reps = 1000;
+reps = 5000;
 S = 400;
 ppweight = 1/4;
 # S = 400;
@@ -59,10 +59,12 @@ save(namespace,
 "tmax", tmax,
 "a_thresh", a_thresh,
 "n_thresh", n_thresh,
+"colonizations", colonizations,
 "extinctions", extinctions,
 "ppweight", ppweight,
 "probs", probs,
-"lambda",lambda);
+"lambda",lambda,
+"tswitch",tswitch);
 
 @sync @parallel for r=1:reps
     
