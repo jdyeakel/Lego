@@ -24,7 +24,7 @@ p_n=0.01,
 p_a=0.01
 ]
 #expected objects per species
-lambda = 2;
+lambda = 1/2;
 
 # @time int_m, sp_m, t_m, tp_m, tind_m, mp_m, mind_m = build_template_species(S,probs,ppweight);
 @time int_m, tp_m, tind_m, mp_m, mind_m = intmatrixv2(S,lambda,probs,ppweight);
@@ -44,9 +44,10 @@ int_id = preamble_defs(int_m);
 #Establish colonization and extinction rates
 a_thresh = 0.0;
 n_thresh = 0.1;
-tmax = 5000;
-extinctions = [ones(Bool,2500);ones(Bool,2500)];
-colonizations = [ones(Bool,2500);zeros(Bool,2500)];
+tmax = 2000;
+tswitch = 1000;
+extinctions = [ones(Bool,tswitch);ones(Bool,tswitch)];
+colonizations = [ones(Bool,tswitch);zeros(Bool,tswitch)];
 
 @time cid,
 rich,
@@ -65,10 +66,14 @@ degrees,
 trophic = assembly(
     int_m,a_b,n_b,i_b,m_b,n_b0,sp_v,int_id,tp_m,tind_m,
     a_thresh,n_thresh,colonizations,extinctions,tmax,S);
-    
+
+namespace = string("$(homedir())/Dropbox/PostDoc/2014_Lego/Anime/figures2/rich_time.pdf");
 R"""
-plot($sprich,type='l',ylim=c(0,max($(sprich))))
+pdf($namespace,height=5,width=6)
+plot($sprich,type='l',ylim=c(0,max(c($(sprich),$rich-$sprich))),xlab='Time',ylab='Richness')
 lines($rich-$sprich,lty=2)
+points($tswitch,0,pch=16,col='red')
+dev.off()
 """
 
 
@@ -204,4 +209,3 @@ text(x=-0.8,y=num_play-0.8,labels=expression(paste('1',degree)), xpd=TRUE,cex=0.
 text(x=0.8,y=num_play+0.8,labels=expression(paste('1',degree)), xpd=TRUE,cex=0.6)
 # dev.off()
 """
-
