@@ -30,7 +30,9 @@ tswitch = d1["tswitch"];
 
 rich = SharedArray{Int64}(reps,tmax);
 sprich = SharedArray{Int64}(reps,tmax);
-
+t_ext = SharedArray{Int64}(reps);
+peakrich = SharedArray{Float64}(reps);
+ext_thresh = 10;
 @time @sync @parallel for r=1:reps
     #Read in the interaction matrix
     # namespace = string("$(homedir())/Dropbox/Postdoc/2014_Lego/Anime/data/colcutoff/int_m",r,".jld");
@@ -61,12 +63,27 @@ sprich = SharedArray{Int64}(reps,tmax);
         rich[r,tstep] = length(cid);
         sprich[r,tstep] = length(intersect(sp_v,cid));
     end
+    
+
+    extinctsp = find(x->x<=ext_thresh,sprich[r,tswitch:tmax]);
+    
+    peakrich[r] = mean(sprich[r,tswitch-100:tswitch]);
+    
+    if length(extinctsp) > 0
+        t_ext[r] = extinctsp[1];
+    else
+        t_ext[r] = 0;
+    end
 
 end
 
 
 meansp = mean(sprich,1);
 stdsp = std(sprich,1);
+
+#loss per timestep = extinction rate
+ext_rate = (peakrich - ext_thresh)./t_ext;
+ext_rate[find(x->x<0,ext_rate)] = NaN;
 
 namespace = string("$(homedir())/2014_Lego/Anime/figures2/rich_colcutoff.pdf");
 R"""
@@ -76,6 +93,18 @@ polygon(c(seq(1,$tmax),rev(seq(1,$tmax))),c($meansp+$stdsp, rev($meansp-$stdsp))
 dev.off()
 """
 
+namespace = string("$(homedir())/2014_Lego/Anime/figures2/extinctiontime.pdf");
+R"""
+pdf($namespace,height=5,width=6)
+hist(log($t_ext),breaks=50,xlab='ln Time to extinction',ylab='Frequency',col='gray')
+dev.off()
+"""
+namespace = string("$(homedir())/2014_Lego/Anime/figures2/extinctionrate.pdf");
+R"""
+pdf($namespace,height=5,width=6)
+hist(log($ext_rate),breaks=50,xlab='ln Extinction rate',ylab='Frequency',col='gray')
+dev.off()
+"""
 
 
 
