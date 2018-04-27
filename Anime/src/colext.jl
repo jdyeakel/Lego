@@ -1,6 +1,8 @@
 function colext(
     int_m,a_b,n_b,i_b,m_b,n_b0,sp_v,int_id,
-    cid,a_thresh,n_thresh,extinctions)
+    cid,a_thresh,n_thresh,colcheck,extcheck)
+    
+    
     ######################
     #CURRENT COMMUNITY
     ######################
@@ -13,49 +15,58 @@ function colext(
 
     #IDs of species only
     spcid = intersect(sp_v,cid_old);
+    
+    
+    if colcheck == true
+    
+        ######################
+        #COLONIZATION MODULE
+        ######################
 
-    ######################
-    #COLONIZATION MODULE
-    ######################
+        #which species have an 'a'-link to anyone in the community? (this should include primary producers and those that are trophically linded to objects: [1 cid])
+        trophiclinked = setdiff(int_id[(sum(a_b[:,[1;cid]],2) .> 0)[:,1]],cid);
 
-    #which species have an 'a'-link to anyone in the community? (this should include primary producers and those that are trophically linded to objects: [1 cid])
-    trophiclinked = setdiff(int_id[(sum(a_b[:,[1;cid]],2) .> 0)[:,1]],cid);
+        #For each trophiclinked, count number of assimilate and need interactions in system
+        #Determine in the proportion that already exists is >= the threshold
+        a_fill = ((sum(a_b[trophiclinked,[1;cid]],2)./sum(a_b[trophiclinked,:],2)) .>= a_thresh)[:,1];
+        prop_n = sum(n_b0[trophiclinked,[1;cid]],2)./sum(n_b0[trophiclinked,:],2);
+        #If there are no 'need' interactions, proportion filled is always 1, and will always pass
+        prop_n[isnan.(prop_n)] = 1;
+        n_fill = (prop_n .>= n_thresh)[:,1];
 
-    #For each trophiclinked, count number of assimilate and need interactions in system
-    #Determine in the proportion that already exists is >= the threshold
-    a_fill = ((sum(a_b[trophiclinked,[1;cid]],2)./sum(a_b[trophiclinked,:],2)) .>= a_thresh)[:,1];
-    prop_n = sum(n_b0[trophiclinked,[1;cid]],2)./sum(n_b0[trophiclinked,:],2);
-    #If there are no 'need' interactions, proportion filled is always 1, and will always pass
-    prop_n[isnan.(prop_n)] = 1;
-    n_fill = (prop_n .>= n_thresh)[:,1];
+        #Build a list of those that pass each individual test
+        a_pass = trophiclinked[a_fill];
+        n_pass = trophiclinked[n_fill];
 
-    #Build a list of those that pass each individual test
-    a_pass = trophiclinked[a_fill];
-    n_pass = trophiclinked[n_fill];
+        #Build a list of those that pass both tests (potential colonizers)
+        pot_col = intersect(a_pass,n_pass);
 
-    #Build a list of those that pass both tests (potential colonizers)
-    pot_col = intersect(a_pass,n_pass);
+        #Count the number that pass
+        lpot_col = length(pot_col);
 
-    #Count the number that pass
-    lpot_col = length(pot_col);
+        #Choose a colonizer at random
+        if lpot_col > 0
+            c_sp = rand(pot_col);
 
-    #Choose a colonizer at random
-    if lpot_col > 0
-        c_sp = rand(pot_col);
+            #select made objects as well
+            c_ob_full = find(isodd,m_b[c_sp,:]);
 
-        #select made objects as well
-        c_ob_full = find(isodd,m_b[c_sp,:]);
+            #Only bring in objects that aren't already in the community
+            c_ob = setdiff(c_ob_full,cid_old);
 
-        #Only bring in objects that aren't already in the community
-        c_ob = setdiff(c_ob_full,cid_old);
+            colonize = [c_sp;c_ob];
 
-        colonize = [c_sp;c_ob];
+            #Update community
+            cid = [cid_old;colonize];
+        else
+            status = 0; #status=0 means that the community is closed
+        end
+    else #If colonization is closed
+        lpot_col = 0;
+        cid = copy(cid_old);
+    end #End colonization module
 
-        #Update community
-        cid = [cid_old;colonize];
-    else
-        status = 0; #status=0 means that the community is closed
-    end
+
 
     ######################
     #EXTINCTION MODULE
@@ -64,7 +75,7 @@ function colext(
     num_ext2 = 0;
 
     #run the extinction module or colonization by itself?
-    if extinctions == true
+    if extcheck == true
 
         cid_old = copy(cid);
 

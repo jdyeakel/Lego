@@ -1,6 +1,6 @@
 function assembly_trim(
     int_m,a_b,n_b,i_b,m_b,n_b0,sp_v,int_id,tp_m,tind_m,
-    a_thresh,n_thresh,extinctions,tmax,S)
+    a_thresh,n_thresh,colonizations,extinctions,tmax,S)
     
     cid = Array{Int64}(0);
     rich = Array{Int64}(tmax);
@@ -29,13 +29,16 @@ function assembly_trim(
       
       cid_old = copy(cid);
       
+      colcheck = colonizations[t];
+      extcheck = extinctions[t];
+      
       cid,
       lpot_col[t],
       status[t],
       prim_ext[t],
       sec_ext[t] = colext(
       int_m,a_b,n_b,i_b,m_b,n_b0,sp_v,int_id,
-      cid,a_thresh,n_thresh,extinctions);
+      cid,a_thresh,n_thresh,colcheck,extcheck);
       
       CID[t,cid] = true;
       

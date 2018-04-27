@@ -24,7 +24,7 @@ p_n=0.01,
 p_a=0.01
 ]
 #expected objects per species
-lambda = 1/2;
+lambda = 2;
 
 # @time int_m, sp_m, t_m, tp_m, tind_m, mp_m, mind_m = build_template_species(S,probs,ppweight);
 @time int_m, tp_m, tind_m, mp_m, mind_m = intmatrixv2(S,lambda,probs,ppweight);
@@ -44,8 +44,9 @@ int_id = preamble_defs(int_m);
 #Establish colonization and extinction rates
 a_thresh = 0.0;
 n_thresh = 0.1;
-tmax = 3000;
-extinctions = true;
+tmax = 5000;
+extinctions = [ones(Bool,2500);ones(Bool,2500)];
+colonizations = [ones(Bool,2500);zeros(Bool,2500)];
 
 @time cid,
 rich,
@@ -63,7 +64,7 @@ avgdegree,
 degrees,
 trophic = assembly(
     int_m,a_b,n_b,i_b,m_b,n_b0,sp_v,int_id,tp_m,tind_m,
-    a_thresh,n_thresh,extinctions,tmax,S);
+    a_thresh,n_thresh,colonizations,extinctions,tmax,S);
     
 R"""
 plot($sprich,type='l',ylim=c(0,max($(sprich))))
