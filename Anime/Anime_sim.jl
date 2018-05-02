@@ -90,7 +90,7 @@ save(namespace,
     namespace = string("$(homedir())/2014_Lego/Anime/data/simbasic/cid_",r,".jld");
     # namespace = string("$(homedir())/Dropbox/PostDoc//2014_Lego/Anime/data/simbasic/cid_",r,".jld");
     save(namespace,
-    "CID", CID);
+    "CID", cid_r[r,:,:]);
     
     
 end

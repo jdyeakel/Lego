@@ -123,7 +123,7 @@ lambda = 0.5;
 
 a_thresh = 0;
 n_thresh = 0.2;
-tmax = 2000;
+tmax = 5000;
 tswitch = 1000;
 extinctions = [ones(Bool,tswitch);ones(Bool,tmax-tswitch)];
 colonizations = [ones(Bool,tswitch);zeros(Bool,tmax-tswitch)];
