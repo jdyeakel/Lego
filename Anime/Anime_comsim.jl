@@ -24,10 +24,11 @@ p_n=0.01,
 p_a=0.01
 ]
 #expected objects per species
-lambda = 1/2;
+lambda = 1;
 
 # @time int_m, sp_m, t_m, tp_m, tind_m, mp_m, mind_m = build_template_species(S,probs,ppweight);
-@time int_m, tp_m, tind_m, mp_m, mind_m = intmatrixv2(S,lambda,probs,ppweight);
+# @time int_m, tp_m, tind_m, mp_m, mind_m = intmatrixv2(S,lambda,probs,ppweight);
+@time int_m, tp_m, tind_m, mp_m, mind_m = intmatrixv3(S,lambda,probs);
 
 a_b,
 n_b,
@@ -43,11 +44,11 @@ int_id = preamble_defs(int_m);
 ###################################
 #Establish colonization and extinction rates
 a_thresh = 0.0;
-n_thresh = 0.1;
-tmax = 2000;
-tswitch = 1000;
+n_thresh = 0.2;
+tmax = 1000;
+tswitch = 500;
 extinctions = [ones(Bool,tswitch);ones(Bool,tswitch)];
-colonizations = [ones(Bool,tswitch);zeros(Bool,tswitch)];
+colonizations = [ones(Bool,tswitch);ones(Bool,tswitch)];
 
 @time cid,
 rich,
@@ -108,6 +109,57 @@ dev.off()
 
 
 
+loadfunc = include("$(homedir())/Dropbox/PostDoc/2014_Lego/Anime/src/loadfuncs.jl");
+
+S = 400;
+ppweight = 1/4;
+# S = 400;
+probs = [
+p_n=0.0025,
+p_a=0.0025
+]
+#expected objects per species
+lambda = 0.5;
+
+a_thresh = 0;
+n_thresh = 0.2;
+tmax = 2000;
+tswitch = 1000;
+extinctions = [ones(Bool,tswitch);ones(Bool,tmax-tswitch)];
+colonizations = [ones(Bool,tswitch);zeros(Bool,tmax-tswitch)];
+
+maxsize = 0; tictoc=0;
+#This will rerun the assembly process if the community does not assemble >10 species
+while maxsize < 10
+    tictoc=tictoc+1;
+    println("Try ",tictoc)    
+    # int_m, sp_m, t_m, tp_m, tind_m, mp_m, mind_m = build_template_species(S,probs,ppweight);
+    int_m, tp_m, tind_m, mp_m, mind_m = intmatrixv3(S,lambda,probs);
+
+    a_b,
+    n_b,
+    i_b,
+    m_b,
+    n_b0,
+    sp_v,
+    int_id = preamble_defs(int_m);
+
+    cid,
+    lpot_col,
+    status,
+    prim_ext,
+    sec_ext,
+    CID = assembly_trim(
+        int_m,a_b,n_b,i_b,m_b,n_b0,sp_v,int_id,tp_m,tind_m,
+        a_thresh,n_thresh,colonizations,extinctions,tmax,S);
+    
+    maxsize = maximum(sum(CID,2));
+    
+end
+R"""plot($(sum(CID,2)),type='l')
+points($tswitch,0,pch=16,col='red')"""
+
+
 
 
 
@@ -135,10 +187,11 @@ p_a=0.05
 # p_i= 1 - sum([p_n,p_a]) #Ignore with 1 - pr(sum(other))
 ]
 #expected objects per species
-lambda = 2;
+lambda = 0.5;
 
 # @time int_m, sp_m, t_m, tp_m, tind_m, mp_m, mind_m = build_template_species(S,probs,ppweight);
-@time int_m, tp_m, tind_m, mp_m, mind_m = intmatrixv2(S,lambda,probs,ppweight);
+# @time int_m, tp_m, tind_m, mp_m, mind_m = intmatrixv2(S,lambda,probs,ppweight);
+@time int_m, tp_m, tind_m, mp_m, mind_m = intmatrixv3(S,lambda,probs);
 
 
 a_b,

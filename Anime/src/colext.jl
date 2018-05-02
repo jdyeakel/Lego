@@ -97,8 +97,8 @@ function colext(
         # baseline = 0.001;
         # prext_pred = baseline + (1 - baseline).*(1 - (1./(1 + 0.001*num_preds)));
         # 
-        epsilon = 0.03;
-        sigma = 1/3.2;
+        epsilon = 0.1;
+        sigma = 1/3;
         prext_pred = 0.5*erfc.((1-num_preds*epsilon)/(sigma*sqrt(2)));
 
         #3) Draw extinctions

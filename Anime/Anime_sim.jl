@@ -2,43 +2,23 @@
 
 loadfunc = include("$(homedir())/2014_Lego/Anime/src/loadfuncsYOG.jl");
 
-
-# reps = 1000;
-
-# S = 400;
-# tmax = 2500;
-# ppweight = 1/4;
-# 
-# a_thresh = 0.0;
-# n_thresh = 0.2;
-# extinctions = true;
-# 
-# probs = [
-# # p_n=0.04,
-# # p_a=0.01,
-# # p_m=0.04,
-# p_n=0.004,
-# p_a=0.01,
-# p_m=0.002,
-# p_i= 1 - sum([p_n,p_m,p_a]) #Ignore with 1 - pr(sum(other))
-# ];
-
 reps = 1000;
 S = 400;
 ppweight = 1/4;
 # S = 400;
 probs = [
-p_n=0.01,
-p_a=0.01
+p_n=0.0025,
+p_a=0.0025
 ]
 #expected objects per species
-lambda = 1/2;
+lambda = 0.5;
 
 a_thresh = 0.0;
-n_thresh = 0.1;
+n_thresh = 0.2;
 tmax = 3000;
-extinctions = true;
-
+tswitch = 1500;
+extinctions = [ones(Bool,tswitch);ones(Bool,tmax-tswitch)];
+colonizations = [ones(Bool,tswitch);ones(Bool,tmax-tswitch)];
 
 #Dynamic analyses
 lpot_col = SharedArray{Float64}(reps,tmax);
@@ -63,34 +43,44 @@ save(namespace,
 
 @sync @parallel for r=1:reps
     
-    # int_m, sp_m, t_m, tp_m, tind_m, mp_m, mind_m = build_template_species(S,probs,ppweight);
-    int_m, tp_m, tind_m, mp_m, mind_m = intmatrixv2(S,lambda,probs,ppweight);
+    maxsize = 0;
     
-    namespace = string("$(homedir())/2014_Lego/Anime/data/simbasic/int_m",r,".jld");
-    # namespace = string("/$(homedir())/Dropbox/PostDoc/2014_Lego/Anime/data/simbasic/int_m",r,".jld");
-    save(namespace,
-    "int_m", int_m,
-    "tp_m", tp_m,
-    "tind_m", tind_m,
-    "mp_m", mp_m,
-    "mind_m", mind_m);
+    #This will rerun the assembly process if the community does not assemble >10 species
+    while maxsize < 10
+        
+        # int_m, sp_m, t_m, tp_m, tind_m, mp_m, mind_m = build_template_species(S,probs,ppweight);
+        int_m, tp_m, tind_m, mp_m, mind_m = intmatrixv3(S,lambda,probs);
 
-    a_b,
-    n_b,
-    i_b,
-    m_b,
-    n_b0,
-    sp_v,
-    int_id = preamble_defs(int_m);
+        namespace = string("$(homedir())/2014_Lego/Anime/data/simbasic/int_m",r,".jld");
+        # namespace = string("/$(homedir())/Dropbox/PostDoc/2014_Lego/Anime/data/simbasic/int_m",r,".jld");
+        save(namespace,
+        "int_m", int_m,
+        "tp_m", tp_m,
+        "tind_m", tind_m,
+        "mp_m", mp_m,
+        "mind_m", mind_m);
 
-    cid,
-    lpot_col[r,:],
-    status[r,:],
-    prim_ext[r,:],
-    sec_ext[r,:],
-    CID = assembly_trim(
-        int_m,a_b,n_b,i_b,m_b,n_b0,sp_v,int_id,tp_m,tind_m,
-        a_thresh,n_thresh,extinctions,tmax,S);
+        a_b,
+        n_b,
+        i_b,
+        m_b,
+        n_b0,
+        sp_v,
+        int_id = preamble_defs(int_m);
+
+        cid,
+        lpot_col[r,:],
+        status[r,:],
+        prim_ext[r,:],
+        sec_ext[r,:],
+        CID = assembly_trim(
+            int_m,a_b,n_b,i_b,m_b,n_b0,sp_v,int_id,tp_m,tind_m,
+            a_thresh,n_thresh,colonizations,extinctions,tmax,S);
+        
+        maxsize = maximum(sum(CID,2));
+            
+    end
+        
     
     cid_r[r,:,:] = copy(CID);
     

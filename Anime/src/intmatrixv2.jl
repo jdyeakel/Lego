@@ -38,7 +38,8 @@ function intmatrixv2(S, lambda, probs, ppweight)
     p_m = (sum(obindpS))/(N^2);
     p_i = 1 - (p_n + p_a + p_m);
     
-    # exp_p_m = (e*lambda)/(S*(e+(e-1)*lambda))
+    
+    # exp_p_m = S*lambda/((S + S*lambda*(1-exp(-1)))^2)
     
     pw_prob_init = [
       pr_na = p_n*(p_a/(p_a+p_n+p_i+p_m)) + p_a*(p_n/(p_a+p_i+p_n)),
@@ -82,9 +83,7 @@ function intmatrixv2(S, lambda, probs, ppweight)
     rangev = rBeta .* nichev;
     degrees = convert.(Int,round.(rangev * S,0));
     degrees[find(iszero,degrees)]=1;
-
-
-
+    
     #Matrix of trophic-only interactions
     #The number of species in the trophic and mutualistic matrices will all start out the sames size as int_m, however, the objects will be trimmed later
     tp_m = zeros(Int64,S,S);
