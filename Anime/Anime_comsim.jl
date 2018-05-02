@@ -128,6 +128,8 @@ tswitch = 1000;
 extinctions = [ones(Bool,tswitch);ones(Bool,tmax-tswitch)];
 colonizations = [ones(Bool,tswitch);zeros(Bool,tmax-tswitch)];
 
+MaxN = convert(Int64,floor(S + S*lambda));
+
 maxsize = 0; tictoc=0;
 #This will rerun the assembly process if the community does not assemble >10 species
 while maxsize < 10
@@ -151,7 +153,7 @@ while maxsize < 10
     sec_ext,
     CID = assembly_trim(
         int_m,a_b,n_b,i_b,m_b,n_b0,sp_v,int_id,tp_m,tind_m,
-        a_thresh,n_thresh,colonizations,extinctions,tmax,S);
+        a_thresh,n_thresh,colonizations,extinctions,tmax,S,MaxN);
     
     maxsize = maximum(sum(CID,2));
     

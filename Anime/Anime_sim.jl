@@ -20,12 +20,14 @@ tswitch = 1500;
 extinctions = [ones(Bool,tswitch);ones(Bool,tmax-tswitch)];
 colonizations = [ones(Bool,tswitch);ones(Bool,tmax-tswitch)];
 
+MaxN = convert(Int64,floor(S + S*lambda));
+
 #Dynamic analyses
 lpot_col = SharedArray{Float64}(reps,tmax);
 status = SharedArray{Float64}(reps,tmax);
 prim_ext = SharedArray{Float64}(reps,tmax);
 sec_ext = SharedArray{Float64}(reps,tmax);
-cid_r = SharedArray{Bool}(reps,tmax,S*2);
+cid_r = SharedArray{Bool}(reps,tmax,MaxN);
 
 #Save a small file to record the settings of the simulation
 namespace = string("$(homedir())/2014_Lego/Anime/data/simbasic/sim_settings.jld");
@@ -75,7 +77,7 @@ save(namespace,
         sec_ext[r,:],
         CID = assembly_trim(
             int_m,a_b,n_b,i_b,m_b,n_b0,sp_v,int_id,tp_m,tind_m,
-            a_thresh,n_thresh,colonizations,extinctions,tmax,S);
+            a_thresh,n_thresh,colonizations,extinctions,tmax,S,MaxN);
         
         maxsize = maximum(sum(CID,2));
             

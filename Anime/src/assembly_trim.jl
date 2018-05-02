@@ -1,8 +1,6 @@
 function assembly_trim(
     int_m,a_b,n_b,i_b,m_b,n_b0,sp_v,int_id,tp_m,tind_m,
-    a_thresh,n_thresh,colonizations,extinctions,tmax,S)
-    
-    N = size(int_m)[1];
+    a_thresh,n_thresh,colonizations,extinctions,tmax,S,MaxN)
     
     cid = Array{Int64}(0);
     rich = Array{Int64}(tmax);
@@ -22,7 +20,7 @@ function assembly_trim(
     degrees = Array{Int64}(tmax,S)*0;
     trophic = Array{Float64}(tmax,S)*0;
     
-    CID = Array{Bool}(tmax,N)*false;
+    CID = Array{Bool}(tmax,S*2)*false;
     
     for t = 1:tmax
       # if mod(t,1000)==0
