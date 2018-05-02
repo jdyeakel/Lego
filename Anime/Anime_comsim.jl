@@ -130,6 +130,12 @@ colonizations = [ones(Bool,tswitch);zeros(Bool,tmax-tswitch)];
 
 MaxN = convert(Int64,floor(S + S*lambda));
 
+prim_ext = Array{Int64}(tmax);
+sec_ext = Array{Int64}(tmax);
+status = Array{Int64}(tmax);
+lpot_col = Array{Int64}(tmax);
+CID = Array{Bool}(tmax,MaxN)*false;
+
 maxsize = 0; tictoc=0;
 #This will rerun the assembly process if the community does not assemble >10 species
 while maxsize < 10

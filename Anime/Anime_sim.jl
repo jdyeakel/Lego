@@ -75,16 +75,16 @@ save(namespace,
         status[r,:],
         prim_ext[r,:],
         sec_ext[r,:],
-        CID = assembly_trim(
+        cid_r[r,:,:] = assembly_trim(
             int_m,a_b,n_b,i_b,m_b,n_b0,sp_v,int_id,tp_m,tind_m,
             a_thresh,n_thresh,colonizations,extinctions,tmax,S,MaxN);
         
-        maxsize = maximum(sum(CID,2));
+        maxsize = maximum(sum(cid_r[r,:,:],2));
             
     end
         
     
-    cid_r[r,:,:] = copy(CID);
+    # cid_r[r,:,:] = copy(CID);
     
     #Save individually so data can be loaded in parallel
     namespace = string("$(homedir())/2014_Lego/Anime/data/simbasic/cid_",r,".jld");

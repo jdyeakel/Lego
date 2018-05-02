@@ -3,23 +3,10 @@ function assembly_trim(
     a_thresh,n_thresh,colonizations,extinctions,tmax,S,MaxN)
     
     cid = Array{Int64}(0);
-    rich = Array{Int64}(tmax);
-    sprich = Array{Int64}(tmax);
-    turnover = Array{Float64}(tmax);
     prim_ext = Array{Int64}(tmax);
     sec_ext = Array{Int64}(tmax);
-    res_overlap = Array{Float64}(tmax);
-    conn = Array{Float64}(tmax);
-    conn_ind = Array{Float64}(tmax);
     status = Array{Int64}(tmax);
     lpot_col = Array{Int64}(tmax);
-    avgdegree = Array{Float64}(tmax);
-    
-    res_overlap_dist = Array{Float64}(tmax,S)*0;
-    
-    degrees = Array{Int64}(tmax,S)*0;
-    trophic = Array{Float64}(tmax,S)*0;
-    
     CID = Array{Bool}(tmax,MaxN)*false;
     
     for t = 1:tmax
