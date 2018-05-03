@@ -281,11 +281,13 @@ for i=1:length(seq2)
     t = seq2[i];
     deg = reshape(degrees[:,t,:],reps*S);
     troph = reshape(trophic[:,t,:],reps*S);
-    deg_trim = deg[find(!iszero,deg)];
-    trophic_trim = troph[find(!iszero,troph)];
-    x = deg_trim;
-    y = trophic_trim;
-    z = [x y];
+    # deg_trim = deg[find(!iszero,deg)];
+    # trophic_trim = troph[find(!iszero,troph)];
+    x = vec(deg);
+    y = vec(troph);
+    zpre = [x y];
+    zkeep = find(!iszero,sum(zpre,2));
+    z = zpre[zkeep,:];
     sp = sortperm(z[:,1]);
     zsort = [z[sp,1] z[sp,2]];
     xsort = zsort[:,1];
@@ -325,7 +327,7 @@ R"""
 library(RColorBrewer)
 pdf($namespace,height=5,width=6)
 pal = brewer.pal(length($seq2),'Spectral')
-plot($(degsort[1]),fitted(M_t[[1]]),xlim=c(1,400),ylim=c(1,15),log='x',col=pal[1],type='l',lwd=2,xlab='Degree',ylab='Trophic level')
+plot($(degsort[1]),fitted(M_t[[1]]),xlim=c(1,50),ylim=c(1,12),log='x',col=pal[1],type='l',lwd=2,xlab='Degree',ylab='Trophic level')
 """
 for i=2:length(seq2)
     R"""
