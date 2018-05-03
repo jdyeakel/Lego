@@ -92,6 +92,7 @@ function intmatrixv3(S, lambda, probs)
     #Deal with the basal resource
     int_m[1,:] = 'i';
     int_m[find(x->x=='0',int_m[:,1]),1] = 'i';
+    tp_m[]
 
     
     #NOTE: Interactions BETWEEN SPECIES
@@ -199,6 +200,7 @@ function intmatrixv3(S, lambda, probs)
     total_trophic = sum(tp_m,2);
     prim_prod = find(iszero,total_trophic)+1;
     int_m[prim_prod,1] = 'a';
+    tp_m[prim_prod,1] = 1;
     
     #SPECIES-OBJECT INTERACTIONS
     

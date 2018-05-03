@@ -13,8 +13,8 @@ function structure(S,com_id,sp_v,tind_m)
     
     # conn = sum(tind_m[spcid_ind,spcid_ind])/(length(spcid)^2);
     
-    #Size difference of community NOTE set at '-1' so we can delete
-    remainder = zeros(S-length(tl))-1;
+    #Size difference of community
+    remainder = zeros(S-length(tl));
     
     degrees_out = [degrees;convert(Array{Int64},remainder)];
     tl_out = [tl;convert(Array{Float64},remainder)];

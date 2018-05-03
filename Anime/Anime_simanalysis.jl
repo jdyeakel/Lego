@@ -281,8 +281,11 @@ for i=1:length(seq2)
     t = seq2[i];
     deg = reshape(degrees[:,t,:],reps*S);
     troph = reshape(trophic[:,t,:],reps*S);
-    deg_trim = deg[find(x->x>-1,deg)];
-    trophic_trim = troph[find(x->x>-1,troph)];
+    degnozeros = find(x->x>=0,deg);
+    trophnozeros = find(x->x>=0,troph);
+    bothnozeros = intersect(degnozeros,trophnozeros);
+    deg_trim = deg[bothnozeros];
+    trophic_trim = troph[bothnozeros];
     x = deg_trim;
     y = trophic_trim;
     z = [x y];
