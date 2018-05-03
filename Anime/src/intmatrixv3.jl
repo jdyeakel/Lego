@@ -80,6 +80,7 @@ function intmatrixv3(S, lambda, probs)
 
     #The first true species (row/col 2) is always a primary producer
     int_m[2,1] = 'a'
+    tp_m[2,1] = 1;
     
     #Fill in diagonal
     #Index 1 is the basal resource ('i')
@@ -91,8 +92,8 @@ function intmatrixv3(S, lambda, probs)
 
     #Deal with the basal resource
     int_m[1,:] = 'i';
+    tp_m[1,:] = 0;
     int_m[find(x->x=='0',int_m[:,1]),1] = 'i';
-    tp_m[]
 
     
     #NOTE: Interactions BETWEEN SPECIES
@@ -198,7 +199,7 @@ function intmatrixv3(S, lambda, probs)
     
     #We could assume that any species without recorded trophic interactions is a primary producer
     total_trophic = sum(tp_m,2);
-    prim_prod = find(iszero,total_trophic)+1;
+    prim_prod = deleteat!(find(iszero,total_trophic),1); #eliminate row 1
     int_m[prim_prod,1] = 'a';
     tp_m[prim_prod,1] = 1;
     
@@ -256,7 +257,7 @@ function intmatrixv3(S, lambda, probs)
     colonizer_n = deleteat!(find(x->x=='n',int_m[2,:]),1);
     
     int_m[2,colonizer_n] = 'i';
-    mp_m[1,:] = 0;
+    mp_m[2,:] = 0;
     
     #Document the indirect interactions
     for i=2:S

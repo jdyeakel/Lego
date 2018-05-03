@@ -115,15 +115,15 @@ S = 400;
 ppweight = 1/4;
 # S = 400;
 probs = [
-p_n=0.0025,
-p_a=0.0025
+p_n=0.002,
+p_a=0.002
 ]
 #expected objects per species
-lambda = 2;
+lambda = 0.5;
 
 a_thresh = 0;
 n_thresh = 0.2;
-tmax = 5000;
+tmax = 2000;
 tswitch = 1000;
 extinctions = [ones(Bool,tswitch);ones(Bool,tmax-tswitch)];
 colonizations = [ones(Bool,tswitch);ones(Bool,tmax-tswitch)];
@@ -171,10 +171,10 @@ points($tswitch,0,pch=16,col='red')"""
 
 
 a_b,n_b,i_b,m_b,n_b0,sp_v,int_id = preamble_defs(int_m);
-tstep = 5000;
+tstep = 500;
 cid = find(isodd,CID[tstep,:]);
 deg,troph = structure(S,cid,sp_v,tind_m);
-
+R"plot($deg,$troph)"
 
 
 
