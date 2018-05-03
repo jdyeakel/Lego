@@ -119,7 +119,7 @@ p_n=0.0025,
 p_a=0.0025
 ]
 #expected objects per species
-lambda = 0.5;
+lambda = 2;
 
 a_thresh = 0;
 n_thresh = 0.2;

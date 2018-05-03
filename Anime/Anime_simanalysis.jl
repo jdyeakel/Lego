@@ -131,7 +131,7 @@ conn_stitch = [init_conn_trim[:,initsteps] conn[:,lastbins]];
 meanconn = [mean(conn_stitch[!isnan(conn_stitch[:,i]),i]) for i=1:length(bins)];
 
 
-namespace = string("$(homedir())/2014_Lego/Anime/figures2/conn_time2.pdf");
+namespace = string("$(homedir())/2014_Lego/Anime/figures2/nodegreedist/conn_time2.pdf");
 R"""
 pdf($namespace,height=5,width=6)
 boxplot($(conn_stitch),ylim=c(0,0.1),outline=FALSE,names=$(seq_stitch),
@@ -172,7 +172,7 @@ seq_stitch = [initsteps;laststeps];
 overlap_stitch = [init_overlap_trim[:,initsteps] res_overlap[:,lastbins]];
 meanoverlap = [mean(overlap_stitch[!isnan(overlap_stitch[:,i]),i]) for i=1:length(bins)];
 
-namespace = string("$(homedir())/2014_Lego/Anime/figures2/trophicoverlap_time.pdf");
+namespace = string("$(homedir())/2014_Lego/Anime/figures2/nodegreedist/trophicoverlap_time.pdf");
 R"""
 pdf($namespace,height=5,width=6)
 boxplot($(overlap_stitch),ylim=c(0,0.1),outline=FALSE,names=$(seq_stitch),
@@ -229,7 +229,7 @@ Psddeg = vec(mapslices(std,Pdegreesort,1));
 Psddeg[firstone:length(Psddeg)] = 0;
 
 
-namespace = string("$(homedir())/2014_Lego/Anime/figures2/degreedist_time2.pdf");
+namespace = string("$(homedir())/2014_Lego/Anime/figures2/nodegreedist/degreedist_time2.pdf");
 R"""
 library(RColorBrewer)
 pdf($namespace,height=5,width=6)
@@ -320,7 +320,7 @@ mpool <- try(nls(y ~ a + b * I(x^z), start = list(a = 1, b = -1, z = -1)),silent
 """
 
 
-namespace = string("$(homedir())/2014_Lego/Anime/figures2/trophic_degrees_time.pdf");
+namespace = string("$(homedir())/2014_Lego/Anime/figures2/nodegreedist/trophic_degrees_time.pdf");
 R"""
 library(RColorBrewer)
 pdf($namespace,height=5,width=6)
