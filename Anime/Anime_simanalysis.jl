@@ -134,11 +134,11 @@ meanconn = [mean(conn_stitch[!isnan(conn_stitch[:,i]),i]) for i=1:length(bins)];
 namespace = string("$(homedir())/2014_Lego/Anime/figures2/nodegreedist/conn_time2.pdf");
 R"""
 pdf($namespace,height=5,width=6)
-boxplot($(conn_stitch),ylim=c(0,0.1),outline=FALSE,names=$(seq_stitch),
+boxplot($(conn_stitch),ylim=c(0,0.03),outline=FALSE,names=$(seq_stitch),
 xlab='Time',ylab='Connectance',
 pars = list(boxwex = 0.4, staplewex = 0.5, outwex = 0.5),col='lightgray')
 points($(meanconn),ylim=c(0,0.03),pch=16)
-lines($(meanconn),ylim=c(0,0.1),lwd=2)
+lines($(meanconn),ylim=c(0,0.03),lwd=2)
 lines(seq(0.001,3000),rep(mean($Pconn),3000),lty=2)
 dev.off()
 """
@@ -281,11 +281,8 @@ for i=1:length(seq2)
     t = seq2[i];
     deg = reshape(degrees[:,t,:],reps*S);
     troph = reshape(trophic[:,t,:],reps*S);
-    degnozeros = find(x->x>=0,deg);
-    trophnozeros = find(x->x>=0,troph);
-    bothnozeros = intersect(degnozeros,trophnozeros);
-    deg_trim = deg[bothnozeros];
-    trophic_trim = troph[bothnozeros];
+    deg_trim = deg[find(!iszero,deg)];
+    trophic_trim = troph[find(!iszero,troph)];
     x = deg_trim;
     y = trophic_trim;
     z = [x y];
@@ -346,15 +343,3 @@ legend(x=180,y=10.2,legend = c('Pool',$(seq[seq2])),col=c('black',pal),lty=1,lwd
 dev.off()
 """
 
-
-
-
-#testplot
-namespace = string("$(homedir())/2014_Lego/Anime/figures2/nodegreedist/test.pdf");
-R"""
-library(RColorBrewer)
-pdf($namespace,height=5,width=6)
-pal = brewer.pal(length($seq2),'Spectral')
-plot($x,$y)
-dev.off()
-"""
