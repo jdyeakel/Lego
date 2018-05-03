@@ -126,10 +126,12 @@ n_thresh = 0.2;
 tmax = 5000;
 tswitch = 1000;
 extinctions = [ones(Bool,tswitch);ones(Bool,tmax-tswitch)];
-colonizations = [ones(Bool,tswitch);zeros(Bool,tmax-tswitch)];
+colonizations = [ones(Bool,tswitch);ones(Bool,tmax-tswitch)];
 
 MaxN = convert(Int64,floor(S + S*lambda));
 
+int_m = Array{Char}();
+tind_m = Array{Int64}();
 prim_ext = Array{Int64}(tmax);
 sec_ext = Array{Int64}(tmax);
 status = Array{Int64}(tmax);
@@ -168,8 +170,10 @@ R"""plot($(sum(CID,2)),type='l')
 points($tswitch,0,pch=16,col='red')"""
 
 
-
-
+a_b,n_b,i_b,m_b,n_b0,sp_v,int_id = preamble_defs(int_m);
+tstep = 5000;
+cid = find(isodd,CID[tstep,:]);
+deg,troph = structure(S,cid,sp_v,tind_m);
 
 
 

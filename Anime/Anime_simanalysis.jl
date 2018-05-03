@@ -137,7 +137,7 @@ pdf($namespace,height=5,width=6)
 boxplot($(conn_stitch),ylim=c(0,0.1),outline=FALSE,names=$(seq_stitch),
 xlab='Time',ylab='Connectance',
 pars = list(boxwex = 0.4, staplewex = 0.5, outwex = 0.5),col='lightgray')
-points($(meanconn),ylim=c(0,0.1),pch=16)
+points($(meanconn),ylim=c(0,0.03),pch=16)
 lines($(meanconn),ylim=c(0,0.1),lwd=2)
 lines(seq(0.001,3000),rep(mean($Pconn),3000),lty=2)
 dev.off()
@@ -175,7 +175,7 @@ meanoverlap = [mean(overlap_stitch[!isnan(overlap_stitch[:,i]),i]) for i=1:lengt
 namespace = string("$(homedir())/2014_Lego/Anime/figures2/nodegreedist/trophicoverlap_time.pdf");
 R"""
 pdf($namespace,height=5,width=6)
-boxplot($(overlap_stitch),ylim=c(0,0.1),outline=FALSE,names=$(seq_stitch),
+boxplot($(overlap_stitch),ylim=c(0,0.04),outline=FALSE,names=$(seq_stitch),
 xlab='Time',ylab='Resource overlap',
 pars = list(boxwex = 0.4, staplewex = 0.5, outwex = 0.5),col='lightgray')
 points($(meanoverlap),ylim=c(0,0.1),pch=16)
@@ -235,7 +235,7 @@ library(RColorBrewer)
 pdf($namespace,height=5,width=6)
 pal = brewer.pal($(length(seq2)),'Spectral')
 numsp = length($(mdegt[1,!iszero.(mdegt[1,:])]))
-plot($(mdegt[1,!iszero.(mdegt[1,:])]),xlim=c(1,250),ylim=c(1,100),log='y',col=pal[1],type='l',lwd=2,xlab = 'Number of species', ylab='Mean degree')
+plot($(mdegt[1,!iszero.(mdegt[1,:])]),xlim=c(1,150),ylim=c(1,100),log='y',col=pal[1],type='l',lwd=2,xlab = 'Number of species', ylab='Mean degree')
 sdev_pre = $(sddegt[1,find(x->x>0,sddegt[1,:])]);
 sdev = numeric(length($(mdegt[1,find(x->x>0,mdegt[1,:])])))
 sdev[1:length(sdev_pre)]=sdev_pre
@@ -281,8 +281,11 @@ for i=1:length(seq2)
     t = seq2[i];
     deg = reshape(degrees[:,t,:],reps*S);
     troph = reshape(trophic[:,t,:],reps*S);
-    deg_trim = deg[find(!iszero,deg)];
-    trophic_trim = troph[find(!iszero,troph)];
+    degnozeros = find(!iszero,deg);
+    trophnozeros = find(!iszero,troph);
+    bothnozeros = intersect(degnozeros,trophnozeros);
+    deg_trim = deg[bothnozeros];
+    trophic_trim = troph[bothnozeros];
     x = deg_trim;
     y = trophic_trim;
     z = [x y];
@@ -343,3 +346,15 @@ legend(x=180,y=10.2,legend = c('Pool',$(seq[seq2])),col=c('black',pal),lty=1,lwd
 dev.off()
 """
 
+
+
+
+#testplot
+namespace = string("$(homedir())/2014_Lego/Anime/figures2/nodegreedist/test.pdf");
+R"""
+library(RColorBrewer)
+pdf($namespace,height=5,width=6)
+pal = brewer.pal(length($seq2),'Spectral')
+plot($x,$y)
+dev.off()
+"""
