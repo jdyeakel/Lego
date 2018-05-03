@@ -7,8 +7,8 @@ S = 400;
 ppweight = 1/4;
 # S = 400;
 probs = [
-p_n=0.0025,
-p_a=0.0025
+p_n=0.002,
+p_a=0.002
 ]
 #expected objects per species
 lambda = 0.5;
