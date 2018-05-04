@@ -97,7 +97,7 @@ function colext(
         # baseline = 0.001;
         # prext_pred = baseline + (1 - baseline).*(1 - (1./(1 + 0.001*num_preds)));
         # 
-        epsilon = 0.1;
+        epsilon = 0.01;
         sigma = 1/3;
         prext_pred = 0.5*erfc.((1-num_preds*epsilon)/(sigma*sqrt(2)));
 
@@ -131,7 +131,12 @@ function colext(
 
             #Update community
             cid = setdiff(cid_old,prim_extinct);
-
+            
+            #which are species?
+            spcid = intersect(sp_v,cid);
+            #which are objects?
+            ocid = setdiff(cid,spcid);
+            spcid_ind = indexin(spcid,[1;sp_v]);
 
 
             #######################
@@ -140,67 +145,98 @@ function colext(
 
             #Only do this if there are still members in the community
             if length(cid) > 0
+                
+                #Determine if the SUN has been disconnected
+                
+                adjmatrix = tind_m[[1;spcid_ind],[1;spcid_ind]];
+                g = DiGraph(adjmatrix);
+                #Is the network weakly connected? i.e. if all directed links became undirected, is everything still connected? There is only one sun, so EVERYTHING MUST BE CONNECTED
+                conn_test = is_weakly_connected(g);
+                
+                # basalconsumer = sum(a_b[[1;cid],[1;cid]][:,1]);
+                
+                if conn_test == false
+                    
+                    survivors = Array{Int64}(0);
+                    e_sp2 = setdiff(spcid,survivors);
 
-                #The assimilate/need test has to pass (an_test == true) to avoid any more secondary extinctions
-                an_test = false;
+                    #Number of secondary extinctions
+                    le_sp2 = length(e_sp2);
+                    num_ext2 += le_sp2;
+                    
+                    e_ob2 = ocid[find(iszero,sum(m_b[spcid,ocid],1)-sum(m_b[e_sp2,ocid],1))];
 
-                while an_test == false
-                    #Which are species?
-                    spcid = intersect(sp_v,cid);
-                    #Which are objects?
-                    ocid = setdiff(cid,spcid);
+                    le_ob2 = length(e_ob2);
 
-                    #Re-calculate a_thresh and n_thresh (> a_thresh; >= n_thresh)
-                    a_fill = ((sum(a_b[spcid,[1;cid]],2)./sum(a_b[spcid,:],2)) .> a_thresh)[:,1];
-                    prop_n = sum(n_b0[spcid,[1;cid]],2)./sum(n_b0[spcid,:],2);
-                    #If there are no 'need' interactions, proportion filled is always 1, and will always pass
-                    prop_n[isnan.(prop_n)] = 1;
-                    n_fill = (prop_n .>= n_thresh)[:,1];
+                    sec_extinct = [e_sp2;e_ob2];
 
-                    #Build a list of those that pass each individual test
-                    a_pass = spcid[a_fill];
-                    n_pass = spcid[n_fill];
+                    #Update community
+                    cid = setdiff(cid,sec_extinct);
+                    
+                else
 
-                    #which species pass?
-                    survivors = intersect(a_pass,n_pass);
+                    #The assimilate/need test has to pass (an_test == true) to avoid any more secondary extinctions
+                    an_test = false;
 
-                    #If there are secondary extinctions...
-                    if length(survivors) != length(spcid)
+                    while an_test == false
+                        #Which are species?
+                        spcid = intersect(sp_v,cid);
+                        #Which are objects?
+                        ocid = setdiff(cid,spcid);
 
-                        #Species that secondarily don't pass the a-n test
-                        e_sp2 = setdiff(spcid,survivors);
+                        #Re-calculate a_thresh and n_thresh (> a_thresh; >= n_thresh)
+                        a_fill = ((sum(a_b[spcid,[1;cid]],2)./sum(a_b[spcid,:],2)) .> a_thresh)[:,1];
+                        prop_n = sum(n_b0[spcid,[1;cid]],2)./sum(n_b0[spcid,:],2);
+                        #If there are no 'need' interactions, proportion filled is always 1, and will always pass
+                        prop_n[isnan.(prop_n)] = 1;
+                        n_fill = (prop_n .>= n_thresh)[:,1];
 
-                        #Number of secondary extinctions
-                        le_sp2 = length(e_sp2);
+                        #Build a list of those that pass each individual test
+                        a_pass = spcid[a_fill];
+                        n_pass = spcid[n_fill];
 
-                        num_ext2 += le_sp2;
+                        #which species pass?
+                        survivors = intersect(a_pass,n_pass);
 
-                        #Delete species and their UNIQUELY MADE objects
-                        #what objects are uniquely made by esp?
-                        # e_ob2 = ocid[(sum(m_b[e_sp2,ocid],1).==1)[1,:]];
-                        # e_ob2 = ocid[find(x->x==1,sum(m_b[e_sp2,ocid],1))];
+                        #If there are secondary extinctions...
+                        if length(survivors) != length(spcid)
 
-                        # e_ob2 = ocid[find(iszero,sum(m_b[e_sp2,ocid],1)-1)];
-                        # sp_ob = ocid[find(iszero,sum(m_b[spcid,ocid],1)-1)];
+                            #Species that secondarily don't pass the a-n test
+                            e_sp2 = setdiff(spcid,survivors);
+
+                            #Number of secondary extinctions
+                            le_sp2 = length(e_sp2);
+
+                            num_ext2 += le_sp2;
+
+                            #Delete species and their UNIQUELY MADE objects
+                            #what objects are uniquely made by esp?
+                            # e_ob2 = ocid[(sum(m_b[e_sp2,ocid],1).==1)[1,:]];
+                            # e_ob2 = ocid[find(x->x==1,sum(m_b[e_sp2,ocid],1))];
+
+                            # e_ob2 = ocid[find(iszero,sum(m_b[e_sp2,ocid],1)-1)];
+                            # sp_ob = ocid[find(iszero,sum(m_b[spcid,ocid],1)-1)];
 
 
-                        e_ob2 = ocid[find(iszero,sum(m_b[spcid,ocid],1)-sum(m_b[e_sp2,ocid],1))];
+                            e_ob2 = ocid[find(iszero,sum(m_b[spcid,ocid],1)-sum(m_b[e_sp2,ocid],1))];
 
-                        le_ob2 = length(e_ob2);
+                            le_ob2 = length(e_ob2);
 
-                        sec_extinct = [e_sp2;e_ob2];
+                            sec_extinct = [e_sp2;e_ob2];
 
-                        #Update community
-                        cid = setdiff(cid,sec_extinct);
+                            #Update community
+                            cid = setdiff(cid,sec_extinct);
 
-                    else
+                        else
 
-                        #If there are no survivors, test is passed; exit loop
-                        an_test = true;
+                            #If there are no survivors, test is passed; exit loop
+                            an_test = true;
 
-                    end
+                        end
 
-                end #end secondary extinction while loop
+                    end #end secondary extinction while loop
+                
+                end #end sun-disconnected loop 
 
             end #end if length(cid) > 0
 

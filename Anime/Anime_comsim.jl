@@ -1,130 +1,19 @@
 loadfunc = include("$(homedir())/Dropbox/PostDoc/2014_Lego/Anime/src/loadfuncs.jl");
 
-# #Establish community template
-# S = 20;
-# lambda = 0.25;
-# ppweight = 1/4;
-# # S = 400;
-# probs = [
-# p_n=0.04,
-# p_a=0.08,
-# p_m=0.01,
-# # p_n=0.004,
-# # p_a=0.01,
-# # p_m=0.002,
-# p_i= 1 - sum([p_n,p_m,p_a]) #Ignore with 1 - pr(sum(other))
-# ]
-# 
-
 S = 400;
 ppweight = 1/4;
 # S = 400;
 probs = [
-p_n=0.01,
-p_a=0.01
+p_n=0.003,
+p_a=0.005
 ]
 #expected objects per species
 lambda = 1;
 
-# @time int_m, sp_m, t_m, tp_m, tind_m, mp_m, mind_m = build_template_species(S,probs,ppweight);
-# @time int_m, tp_m, tind_m, mp_m, mind_m = intmatrixv2(S,lambda,probs,ppweight);
-@time int_m, tp_m, tind_m, mp_m, mind_m = intmatrixv3(S,lambda,probs);
-
-a_b,
-n_b,
-i_b,
-m_b,
-n_b0,
-sp_v,
-int_id = preamble_defs(int_m);
-
-
-###################################
-# COMMUNITY SIMULATION THROUGH TIME
-###################################
-#Establish colonization and extinction rates
-a_thresh = 0.0;
-n_thresh = 0.2;
-tmax = 1000;
-tswitch = 500;
-extinctions = [ones(Bool,tswitch);ones(Bool,tswitch)];
-colonizations = [ones(Bool,tswitch);ones(Bool,tswitch)];
-
-@time cid,
-rich,
-sprich,
-turnover,
-mres_overlap,
-res_overlap_dist,
-conn,
-conn_ind,
-prim_ext,
-sec_ext,
-status,
-lpot_col,
-avgdegree,
-degrees,
-trophic = assembly(
-    int_m,a_b,n_b,i_b,m_b,n_b0,sp_v,int_id,tp_m,tind_m,
-    a_thresh,n_thresh,colonizations,extinctions,tmax,S);
-
-namespace = string("$(homedir())/Dropbox/PostDoc/2014_Lego/Anime/figures2/rich_time.pdf");
-R"""
-pdf($namespace,height=5,width=6)
-plot($sprich,type='l',ylim=c(0,max(c($(sprich),$rich-$sprich))),xlab='Time',ylab='Richness')
-lines($rich-$sprich,lty=2)
-points($tswitch,0,pch=16,col='red')
-dev.off()
-"""
-
-
-spcid = intersect(sp_v,cid);
-spcid_ind = indexin(spcid,[1;sp_v]);
-degrees,tl_ind = structure(S,cid,sp_v,tind_m);
-#Null degrees,tl_ind
-cid_null = collect(1:size(int_m)[1]);
-degrees_null,tl_ind_null = structure(S,cid_null,sp_v,tind_m);
-
-namespace = string("$(homedir())/Dropbox/PostDoc/2014_Lego/Anime/figures/res_overlap.pdf");
-R"""
-pdf($namespace,height=5,width=6)
-plot($res_overlap,log='x',xlab="Time",ylab="Resource overlap",type='l')
-dev.off()
-"""
-namespace = string("$(homedir())/Dropbox/PostDoc/2014_Lego/Anime/figures/richness_trophic.pdf");
-R"""
-library(RColorBrewer)
-pdf($namespace,height=5,width=10)
-par(mfrow=c(1,2))
-plot($(collect(1:tmax)),$rich,type='l',lty=2,log="x",xlab="Time",ylab="Richness")
-lines($(collect(1:tmax)),$sprich)
-pal = colorRampPalette(brewer.pal(11,"Spectral"))(length($degrees))
-plot($degrees_null,$tl_ind_null,log='xy',col="808080",pch=16,xlab="Degrees",ylab="Trophic level",ylim=c(1,max(cbind($tl_ind,$tl_ind_null))))
-points($degrees,$tl_ind,col=pal,pch=16)
-dev.off()
-"""
-
-
-
-
-
-
-loadfunc = include("$(homedir())/Dropbox/PostDoc/2014_Lego/Anime/src/loadfuncs.jl");
-
-S = 400;
-ppweight = 1/4;
-# S = 400;
-probs = [
-p_n=0.002,
-p_a=0.002
-]
-#expected objects per species
-lambda = 0.5;
-
 a_thresh = 0;
 n_thresh = 0.2;
-tmax = 2000;
-tswitch = 1000;
+tmax = 1000;
+tswitch = 50;
 extinctions = [ones(Bool,tswitch);ones(Bool,tmax-tswitch)];
 colonizations = [ones(Bool,tswitch);ones(Bool,tmax-tswitch)];
 
@@ -166,20 +55,33 @@ while maxsize < 10
     maxsize = maximum(sum(CID,2));
     
 end
-R"""plot($(sum(CID,2)),type='l')
+R"""
+par(mfrow=c(1,2))
+plot($(sum(CID,2)),type='l')
 points($tswitch,0,pch=16,col='red')"""
 
 
+tstep = findmax(sum(CID,2))[2];
 a_b,n_b,i_b,m_b,n_b0,sp_v,int_id = preamble_defs(int_m);
-tstep = 500;
 cid = find(isodd,CID[tstep,:]);
 deg,troph = structure(S,cid,sp_v,tind_m);
-R"plot($deg,$troph)"
-
-
-
-
-
+spcid = intersect(sp_v,cid);
+spcid_ind = indexin(spcid,[1;sp_v]);
+#Degree distribution
+# degrees = vec(sum(tind_m[spcid_ind,spcid_ind],2));
+adjmatrix = tind_m[[1;spcid_ind],[1;spcid_ind]];
+#Visualize graph
+R"""
+library(igraph)
+library(RColorBrewer)
+pal <- brewer.pal(3,"Set1")
+fw_g <- graph.adjacency($(adjmatrix'));
+basal_pos <- 1
+trophic = as.numeric($([0;troph[1:size(adjmatrix)[1]-1]]));
+coords <- cbind(runif(vcount(fw_g)),trophic);
+coords[basal_pos,1] <- 0.5
+plot(fw_g,layout=coords,vertex.size=5,edge.arrow.size=0.5,main=ecount(fw_g)/$(size(adjmatrix)[1])^2,vertex.label=NA, vertex.color=c(pal[1],rep(pal[2],vcount(fw_g)-1)))
+"""
 
 
 #Image the interaction matrix
