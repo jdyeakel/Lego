@@ -1,21 +1,25 @@
 loadfunc = include("$(homedir())/Dropbox/PostDoc/2014_Lego/Anime/src/loadfuncs.jl");
 
 S = 400;
-ppweight = 1/4;
+
+tmax = 1000;
+tswitch = 50;
+
 # S = 400;
 probs = [
 p_n=0.003,
 p_a=0.003
 # p_n = 0.02,
 # p_a = 0.02
-]
+];
 #expected objects per species
 lambda = 0.5;
 
-a_thresh = -1;
-n_thresh = -1;
-tmax = 1000;
-tswitch = 50;
+a_thresh = 0;
+n_thresh = 0.2;
+extmid = 0.5; #Similarity at which pr(ext) = 0.5
+steep = 2; #higher is steeper
+
 extinctions = [ones(Bool,tswitch);ones(Bool,tmax-tswitch)];
 colonizations = [ones(Bool,tswitch);ones(Bool,tmax-tswitch)];
 
@@ -54,7 +58,7 @@ while maxsize < 10
     sec_ext,
     CID = assembly_trim(
         int_m,a_b,n_b,i_b,m_b,n_b0,sp_v,int_id,tp_m,tind_m,
-        a_thresh,n_thresh,colonizations,extinctions,tmax,S,MaxN);
+        a_thresh,n_thresh,extmid,steep,colonizations,extinctions,tmax,S,MaxN);
     
     maxsize = maximum(sum(CID,2));
     

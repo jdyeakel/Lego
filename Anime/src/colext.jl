@@ -1,6 +1,6 @@
 function colext(
     int_m,a_b,n_b,i_b,m_b,n_b0,sp_v,int_id,
-    cid,a_thresh,n_thresh,colcheck,extcheck)
+    cid,a_thresh,n_thresh,extmid,steep,colcheck,extcheck)
     
     
     ######################
@@ -86,7 +86,7 @@ function colext(
         ocid = setdiff(cid_old,spcid);
 
         #1) determine predation load for each species
-        num_preds = sum(a_b[spcid,spcid],1)[1,:];
+        # num_preds = sum(a_b[spcid,spcid],1)[1,:];
 
         #2) Caluculate extinction probability
         # avgk = 8; # avgk = gL/gS;
@@ -122,8 +122,8 @@ function colext(
         res_overlap[isnan.(res_overlap)] = 0;
         
         #Similarity where pr(extinction) = 0.5
-        extmidpoint = 0.5;
-        abeta = 1; #Higher values = steeper sigmoid
+        extmidpoint = extmid;
+        abeta = steep; #Higher values = steeper sigmoid
         
         bbeta = (-1 + 3*abeta + 2*extmidpoint - 3*abeta*extmidpoint)/(3*extmidpoint);
         pr_background = 0.001;
@@ -178,17 +178,26 @@ function colext(
                 # g = DiGraph(adjmatrix);
                 
                 #Create a symmetric matrix of the adjacency
-                symmatrix = (UpperTriangular(adjmatrix) + LowerTriangular(adjmatrix)' + LowerTriangular(adjmatrix) + UpperTriangular(adjmatrix)').>0;
+                symmatrix = (adjmatrix + adjmatrix').>0;
                 
                 gs = SimpleGraph(symmatrix);
                 #Find the connected components and eliminate anything that is not a component with vertex 1;
                 cc = connected_components(gs);
                 #Collect the disconnected species
-                todisconnect = cc[find(x->in(1,x)==false,cc)]
+                todisconnect = cc[find(x->in(1,x)==false,cc)];
                 
+                
+                
+                conn_test = true;
                 if length(todisconnect) > 0
                     disconnected = collect(Iterators.flatten(todisconnect));
-                    conn_test = false
+                    
+                    #convert these identifiers (elements of tind_m[[1;spcid_ind],[1;spcid_ind]]) back to species IDs
+                    disconnected = [1;spcid_ind][disconnected];
+                    
+                    conn_test = false;
+                else
+                    disconnected = Array{Int64}(0);
                 end
                 
                 # basalconsumer = sum(a_b[[1;cid],[1;cid]][:,1]);
