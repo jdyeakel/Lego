@@ -5,13 +5,15 @@ ppweight = 1/4;
 # S = 400;
 probs = [
 p_n=0.003,
-p_a=0.005
+p_a=0.003
+# p_n = 0.02,
+# p_a = 0.02
 ]
 #expected objects per species
-lambda = 1;
+lambda = 0.5;
 
-a_thresh = 0;
-n_thresh = 0.2;
+a_thresh = -1;
+n_thresh = -1;
 tmax = 1000;
 tswitch = 50;
 extinctions = [ones(Bool,tswitch);ones(Bool,tmax-tswitch)];
@@ -19,6 +21,7 @@ colonizations = [ones(Bool,tswitch);ones(Bool,tmax-tswitch)];
 
 MaxN = convert(Int64,floor(S + S*lambda));
 
+sprich = Array{Int64}(tmax);
 int_m = Array{Char}();
 tind_m = Array{Int64}();
 prim_ext = Array{Int64}(tmax);
@@ -42,7 +45,8 @@ while maxsize < 10
     n_b0,
     sp_v,
     int_id = preamble_defs(int_m);
-
+    
+    sprich,
     cid,
     lpot_col,
     status,
@@ -55,11 +59,13 @@ while maxsize < 10
     maxsize = maximum(sum(CID,2));
     
 end
+
 R"""
 par(mfrow=c(1,2))
-plot($(sum(CID,2)),type='l')
-points($tswitch,0,pch=16,col='red')"""
-
+plot($(sum(CID,2))-$sprich,type='l',lty=3,ylim=c(0,max(c($(sum(CID,2))-$sprich,$sprich))))
+lines($sprich)
+points($tswitch,0,pch=16,col='red')
+"""
 
 tstep = findmax(sum(CID,2))[2];
 a_b,n_b,i_b,m_b,n_b0,sp_v,int_id = preamble_defs(int_m);
@@ -80,8 +86,11 @@ basal_pos <- 1
 trophic = as.numeric($([0;troph[1:size(adjmatrix)[1]-1]]));
 coords <- cbind(runif(vcount(fw_g)),trophic);
 coords[basal_pos,1] <- 0.5
-plot(fw_g,layout=coords,vertex.size=5,edge.arrow.size=0.5,main=ecount(fw_g)/$(size(adjmatrix)[1])^2,vertex.label=NA, vertex.color=c(pal[1],rep(pal[2],vcount(fw_g)-1)))
+plot(fw_g,layout=coords,vertex.size=5,edge.arrow.size=0.25,edge.color='#80808050',main=ecount(fw_g)/$(size(adjmatrix)[1])^2,vertex.label=NA,vertex.frame.color=NA, vertex.color=c(pal[1],rep(pal[2],vcount(fw_g)-1)))
 """
+
+
+R"plot($(sort(deg[spcid_ind],rev=true)))"
 
 
 #Image the interaction matrix

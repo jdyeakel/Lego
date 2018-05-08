@@ -23,6 +23,7 @@ colonizations = [ones(Bool,tswitch);ones(Bool,tmax-tswitch)];
 MaxN = convert(Int64,floor(S + S*lambda));
 
 #Dynamic analyses
+sprich = SharedArray{Int64}(reps,tmax);
 lpot_col = SharedArray{Float64}(reps,tmax);
 status = SharedArray{Float64}(reps,tmax);
 prim_ext = SharedArray{Float64}(reps,tmax);
@@ -69,7 +70,8 @@ save(namespace,
         n_b0,
         sp_v,
         int_id = preamble_defs(int_m);
-
+        
+        sprich[r,:],
         cid,
         lpot_col[r,:],
         status[r,:],

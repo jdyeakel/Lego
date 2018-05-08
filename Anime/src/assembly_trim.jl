@@ -2,6 +2,7 @@ function assembly_trim(
     int_m,a_b,n_b,i_b,m_b,n_b0,sp_v,int_id,tp_m,tind_m,
     a_thresh,n_thresh,colonizations,extinctions,tmax,S,MaxN)
     
+    sprich = Array{Int64}(tmax);
     cid = Array{Int64}(0);
     prim_ext = Array{Int64}(tmax);
     sec_ext = Array{Int64}(tmax);
@@ -29,6 +30,8 @@ function assembly_trim(
       
       CID[t,cid] = true;
       
+      sprich[t] = length(intersect(sp_v,cid));
+      
       # rich[t], sprich[t], turnover[t], res_overlap[t], res_overlap_all, conn[t], conn_ind[t] = dynstructure(cid,cid_old,sp_v,a_b,tp_m,tind_m);      
       # 
       # res_overlap_dist[t,1:length(res_overlap_all)] = res_overlap_all;
@@ -46,6 +49,6 @@ function assembly_trim(
 
     end
     
-    return(cid,lpot_col,status,prim_ext,sec_ext,CID)
+    return(sprich,cid,lpot_col,status,prim_ext,sec_ext,CID)
     
 end

@@ -26,6 +26,7 @@ function colext(
         #which species have an 'a'-link to anyone in the community? (this should include primary producers and those that are trophically linded to objects: [1 cid])
         trophiclinked = setdiff(int_id[(sum(a_b[:,[1;cid]],2) .> 0)[:,1]],cid);
 
+        
         #For each trophiclinked, count number of assimilate and need interactions in system
         #Determine in the proportion that already exists is >= the threshold
         a_fill = ((sum(a_b[trophiclinked,[1;cid]],2)./sum(a_b[trophiclinked,:],2)) .>= a_thresh)[:,1];
@@ -94,18 +95,43 @@ function colext(
         #Based on the Holt 1977 model where N* propto 1/n where n is the number of preds
         #baseline extinction probability
         
-        # baseline = 0.001;
-        # prext_pred = baseline + (1 - baseline).*(1 - (1./(1 + 0.001*num_preds)));
-        # 
-        epsilon = 0.01;
-        sigma = 1/3;
-        prext_pred = 0.5*erfc.((1-num_preds*epsilon)/(sigma*sqrt(2)));
-
-        #3) Draw extinctions
-        binext = rand.(Binomial.(1,prext_pred));
-
-        num_ext1 = sum(binext);
         
+        # #Extinction by predation load
+        # #=========================#
+        # epsilon = 0.01;
+        # sigma = 1/3;
+        # prext_pred = 0.5*erfc.((1-num_preds*epsilon)/(sigma*sqrt(2)));
+        # #3) Draw extinctions
+        # binext = rand.(Binomial.(1,prext_pred));
+        # num_ext1 = sum(binext);
+        # #=========================#
+        
+        
+        #Extinction by similarity
+        #=========================#
+        #Species consuming each resource (species and objects)
+        preds = vec(sum(a_b[cid,cid],1));
+        users = vec(sum(a_b[cid,cid],1)) .+ vec(sum(n_b0[cid,cid],1));
+        #Number of resources for each species (will be zero if species are only eating basal resource)
+        res = vec(sum(a_b[spcid,cid],2));
+        used = vec(sum(a_b[spcid,cid],2)) + vec(sum(n_b0[spcid,cid],2));
+        #Proporitonal overlap of resources between species
+        # res_overlap = (((a_b[spcid,cid]*preds).-res)/(length(spcid)-1))./res;
+        res_overlap = (((((a_b[spcid,cid]+n_b0[spcid,cid]))*users).-used)/(length(spcid)-1))./used;
+        #non if 0 resources (could be sharing )
+        res_overlap[isnan.(res_overlap)] = 0;
+        
+        #Similarity where pr(extinction) = 0.5
+        extmidpoint = 0.5;
+        abeta = 1; #Higher values = steeper sigmoid
+        
+        bbeta = (-1 + 3*abeta + 2*extmidpoint - 3*abeta*extmidpoint)/(3*extmidpoint);
+        pr_background = 0.001;
+        # R"plot($(collect(0.0:0.001:1.0)),$(pr_background + (1-pr_background)*cdf.(Beta(abeta,bbeta),collect(0.0:0.001:1.0))),pch='.',log='x'); points($extmidpoint,0.5,pch=16)"
+        prext_comp = pr_background + (1-pr_background)*cdf.(Beta(abeta,bbeta),res_overlap);
+        binext = rand.(Binomial.(1,prext_comp));
+        num_ext1 = sum(binext);
+        #=========================#
 
         #Only go through this round if there are any extinctions
         if num_ext1 > 0
@@ -149,16 +175,28 @@ function colext(
                 #Determine if the SUN has been disconnected
                 
                 adjmatrix = tind_m[[1;spcid_ind],[1;spcid_ind]];
-                g = DiGraph(adjmatrix);
-                #Is the network weakly connected? i.e. if all directed links became undirected, is everything still connected? There is only one sun, so EVERYTHING MUST BE CONNECTED
-                conn_test = is_weakly_connected(g);
+                # g = DiGraph(adjmatrix);
+                
+                #Create a symmetric matrix of the adjacency
+                symmatrix = (UpperTriangular(adjmatrix) + LowerTriangular(adjmatrix)' + LowerTriangular(adjmatrix) + UpperTriangular(adjmatrix)').>0;
+                
+                gs = SimpleGraph(symmatrix);
+                #Find the connected components and eliminate anything that is not a component with vertex 1;
+                cc = connected_components(gs);
+                #Collect the disconnected species
+                todisconnect = cc[find(x->in(1,x)==false,cc)]
+                
+                if length(todisconnect) > 0
+                    disconnected = collect(Iterators.flatten(todisconnect));
+                    conn_test = false
+                end
                 
                 # basalconsumer = sum(a_b[[1;cid],[1;cid]][:,1]);
                 
                 if conn_test == false
                     
-                    survivors = Array{Int64}(0);
-                    e_sp2 = setdiff(spcid,survivors);
+                    survivors = setdiff(spcid,disconnected);
+                    e_sp2 = disconnected;
 
                     #Number of secondary extinctions
                     le_sp2 = length(e_sp2);

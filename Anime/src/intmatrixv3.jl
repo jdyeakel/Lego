@@ -1,5 +1,7 @@
 function intmatrixv3(S, lambda, probs)
     
+    #NOTE In this version, interactions are randomly assigned and there is no inputted distribution for trophic or need interactions
+    
     p_n=copy(probs[1]);
     p_a=copy(probs[2]);
     # p_i=copy(probs[3]);

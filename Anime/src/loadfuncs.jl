@@ -1,5 +1,6 @@
 @everywhere using Distributions
 @everywhere using SpecialFunctions
+@everywhere using LightGraphs
 @everywhere using RCall
 @everywhere using HDF5
 @everywhere using JLD
