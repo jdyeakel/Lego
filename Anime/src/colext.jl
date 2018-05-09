@@ -175,17 +175,29 @@ function colext(
                 #Determine if the SUN has been disconnected
                 
                 adjmatrix = tind_m[[1;spcid_ind],[1;spcid_ind]];
-                # g = DiGraph(adjmatrix);
                 
+                
+                #====================#
+                #Connected component method
                 #Create a symmetric matrix of the adjacency
                 symmatrix = (adjmatrix + adjmatrix').>0;
-                
                 gs = SimpleGraph(symmatrix);
                 #Find the connected components and eliminate anything that is not a component with vertex 1;
                 cc = connected_components(gs);
                 #Collect the disconnected species
                 todisconnect = cc[find(x->in(1,x)==false,cc)];
                 
+                #====================#
+                #Path to sun method
+                g = DiGraph(adjmatrix');
+                #Find directed pathlengths to sun
+                # paths = deleteat!(length.(enumerate_paths(dijkstra_shortest_paths(g,1))),1)-1;
+                #FASTEST algorithm I've found
+                paths = gdistances(g,1);
+                #Basal resource itself will have a length of '0'
+                #Disconnected nodes have an insanely large path...
+                #If any nodes to NOT have a directed path length, then they must be disconnected.
+                todisconnect = find(x->x>size(adjmatrix)[1],paths);
                 
                 
                 conn_test = true;

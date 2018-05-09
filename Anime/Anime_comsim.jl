@@ -2,7 +2,7 @@ loadfunc = include("$(homedir())/Dropbox/PostDoc/2014_Lego/Anime/src/loadfuncs.j
 
 S = 400;
 
-tmax = 1000;
+tmax = 2000;
 tswitch = 50;
 
 # S = 400;
@@ -18,7 +18,7 @@ lambda = 0.5;
 a_thresh = 0;
 n_thresh = 0.2;
 extmid = 0.5; #Similarity at which pr(ext) = 0.5
-steep = 2; #higher is steeper
+steep = 1.5; #higher is steeper
 
 extinctions = [ones(Bool,tswitch);ones(Bool,tmax-tswitch)];
 colonizations = [ones(Bool,tswitch);ones(Bool,tmax-tswitch)];
@@ -27,6 +27,7 @@ MaxN = convert(Int64,floor(S + S*lambda));
 
 sprich = Array{Int64}(tmax);
 int_m = Array{Char}();
+tp_m = Array{Int64}();
 tind_m = Array{Int64}();
 prim_ext = Array{Int64}(tmax);
 sec_ext = Array{Int64}(tmax);
@@ -80,6 +81,7 @@ spcid_ind = indexin(spcid,[1;sp_v]);
 #Degree distribution
 # degrees = vec(sum(tind_m[spcid_ind,spcid_ind],2));
 adjmatrix = tind_m[[1;spcid_ind],[1;spcid_ind]];
+indmatrix = adjmatrix .- tp_m[[1;spcid_ind],[1;spcid_ind]];
 #Visualize graph
 R"""
 library(igraph)
@@ -94,7 +96,7 @@ plot(fw_g,layout=coords,vertex.size=5,edge.arrow.size=0.25,edge.color='#80808050
 """
 
 
-R"plot($(sort(deg[spcid_ind],rev=true)))"
+R"plot($(sort(deg[spcid_ind]+1,rev=true)))"
 
 
 #Image the interaction matrix
