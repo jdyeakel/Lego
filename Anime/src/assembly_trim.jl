@@ -25,7 +25,7 @@ function assembly_trim(
       status[t],
       prim_ext[t],
       sec_ext[t] = colext(
-      int_m,a_b,n_b,i_b,m_b,n_b0,sp_v,int_id,
+      int_m,tp_m,tind_m,a_b,n_b,i_b,m_b,n_b0,sp_v,int_id,
       cid,a_thresh,n_thresh,extmid,steep,colcheck,extcheck);
       
       CID[t,cid] = true;
