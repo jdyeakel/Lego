@@ -177,15 +177,15 @@ function colext(
                 adjmatrix = tind_m[[1;spcid_ind],[1;spcid_ind]];
                 
                 
-                #====================#
-                #Connected component method
-                #Create a symmetric matrix of the adjacency
-                symmatrix = (adjmatrix + adjmatrix').>0;
-                gs = SimpleGraph(symmatrix);
-                #Find the connected components and eliminate anything that is not a component with vertex 1;
-                cc = connected_components(gs);
-                #Collect the disconnected species
-                todisconnect = cc[find(x->in(1,x)==false,cc)];
+                # #====================#
+                # #Connected component method
+                # #Create a symmetric matrix of the adjacency
+                # symmatrix = (adjmatrix + adjmatrix').>0;
+                # gs = SimpleGraph(symmatrix);
+                # #Find the connected components and eliminate anything that is not a component with vertex 1;
+                # cc = connected_components(gs);
+                # #Collect the disconnected species
+                # todisconnect = cc[find(x->in(1,x)==false,cc)];
                 
                 #====================#
                 #Path to sun method

@@ -4,19 +4,25 @@ loadfunc = include("$(homedir())/2014_Lego/Anime/src/loadfuncsYOG.jl");
 
 reps = 1000;
 S = 400;
-ppweight = 1/4;
+
+tmax = 2000;
+tswitch = 1000;
+
 # S = 400;
 probs = [
-p_n=0.002,
-p_a=0.002
-]
+p_n=0.003,
+p_a=0.003
+# p_n = 0.02,
+# p_a = 0.02
+];
 #expected objects per species
 lambda = 0.5;
 
-a_thresh = 0.0;
+a_thresh = 0;
 n_thresh = 0.2;
-tmax = 3000;
-tswitch = 1500;
+extmid = 0.5; #Similarity at which pr(ext) = 0.5
+steep = 1.5; #higher is steeper
+
 extinctions = [ones(Bool,tswitch);ones(Bool,tmax-tswitch)];
 colonizations = [ones(Bool,tswitch);ones(Bool,tmax-tswitch)];
 
@@ -37,10 +43,13 @@ save(namespace,
 "reps", reps,
 "S", S,
 "tmax", tmax,
+"tswitch",tswitch,
 "a_thresh", a_thresh,
 "n_thresh", n_thresh,
+"colonizations", colonizations,
 "extinctions", extinctions,
-"ppweight", ppweight,
+"extmid", extmid, #Similarity at which pr(ext) = 0.5
+"steep", steep,
 "probs", probs,
 "lambda",lambda);
 
@@ -107,6 +116,7 @@ end
 
 
 save(string("$(homedir())/2014_Lego/Anime/data/simbasic/sim.jld"),
+"sprich",sprich,
 "lpot_col",lpot_col,
 "status",status,
 "prim_ext",prim_ext,

@@ -3,7 +3,7 @@ loadfunc = include("$(homedir())/Dropbox/PostDoc/2014_Lego/Anime/src/loadfuncs.j
 S = 400;
 
 tmax = 2000;
-tswitch = 50;
+tswitch = 1000;
 
 # S = 400;
 probs = [
@@ -67,7 +67,7 @@ end
 
 R"""
 par(mfrow=c(1,2))
-plot($(sum(CID,2))-$sprich,type='l',lty=3,ylim=c(0,max(c($(sum(CID,2))-$sprich,$sprich))))
+plot($(sum(CID,2))-$sprich,type='l',lty=3,ylim=c(0,max(c($(sum(CID,2))-$sprich,$sprich))),xlab='Time',ylab='Richness')
 lines($sprich)
 points($tswitch,0,pch=16,col='red')
 """
