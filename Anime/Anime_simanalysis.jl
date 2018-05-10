@@ -235,7 +235,7 @@ library(RColorBrewer)
 pdf($namespace,height=5,width=6)
 pal = brewer.pal($(length(seq2)),'Spectral')
 numsp = length($(mdegt[1,!iszero.(mdegt[1,:])]))
-plot($(mdegt[1,!iszero.(mdegt[1,:])]),xlim=c(1,150),ylim=c(1,100),log='y',col=pal[1],type='l',lwd=2,xlab = 'Number of species', ylab='Mean degree')
+plot($(mdegt[1,!iszero.(mdegt[1,:])]),xlim=c(1,150),ylim=c(1,50),log='y',col=pal[1],type='l',lwd=2,xlab = 'Number of species', ylab='Mean degree')
 sdev_pre = $(sddegt[1,find(x->x>0,sddegt[1,:])]);
 sdev = numeric(length($(mdegt[1,find(x->x>0,mdegt[1,:])])))
 sdev[1:length(sdev_pre)]=sdev_pre
