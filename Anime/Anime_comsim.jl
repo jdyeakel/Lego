@@ -18,7 +18,7 @@ lambda = 0.5;
 a_thresh = 0;
 n_thresh = 0.2;
 extmid = 0.5; #Similarity at which pr(ext) = 0.5
-steep = 1.5; #higher is steeper
+steep = 1.6; #higher is steeper
 
 extinctions = [ones(Bool,tswitch);ones(Bool,tmax-tswitch)];
 colonizations = [ones(Bool,tswitch);ones(Bool,tmax-tswitch)];

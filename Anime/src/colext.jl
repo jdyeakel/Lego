@@ -111,14 +111,15 @@ function colext(
         #=========================#
         #Species consuming each resource (species and objects)
         preds = vec(sum(a_b[cid,cid],1));
+        #Species consuming or needing each resource (species and objects)
         users = vec(sum(a_b[cid,cid],1)) .+ vec(sum(n_b0[cid,cid],1));
         #Number of resources for each species (will be zero if species are only eating basal resource)
         res = vec(sum(a_b[spcid,cid],2));
-        used = vec(sum(a_b[spcid,cid],2)) + vec(sum(n_b0[spcid,cid],2));
+        used = vec(sum(a_b[spcid,cid],2)) .+ vec(sum(n_b0[spcid,cid],2));
         #Proporitonal overlap of resources between species
         # res_overlap = (((a_b[spcid,cid]*preds).-res)/(length(spcid)-1))./res;
         res_overlap = (((((a_b[spcid,cid]+n_b0[spcid,cid]))*users).-used)/(length(spcid)-1))./used;
-        #non if 0 resources (could be sharing )
+        #nan if 0 resources ~ pure primary producer
         res_overlap[isnan.(res_overlap)] = 0;
         
         #Similarity where pr(extinction) = 0.5

@@ -1,0 +1,100 @@
+\documentclass[onecolumn,preprintnumbers,amsmath,amssymb,superscriptaddress]{revtex4}
+%\usepackage[pdftex]{graphicx}
+
+\usepackage{amsmath,amsfonts,amssymb}
+\usepackage[english]{babel}
+\usepackage[latin1]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{color}
+\usepackage{float}
+\usepackage{verbatim}
+\usepackage{graphicx}
+\usepackage{bm}
+\usepackage{mathtools}
+\usepackage{stmaryrd}
+\usepackage{anyfontsize}
+
+
+\graphicspath{{../Anime/figures/}}
+
+
+%\usepackage{epstopdf}
+%\usepackage{array}
+%\usepackage{tabularx}
+%\usepackage{multirow}
+\usepackage{color}
+%\usepackage{multibox}
+%\usepackage{rotating}
+%\usepackage{lineno}
+%\usepackage[left]{lineno}
+%\usepackage[comma,sort&compress]{natbib}
+%\usepackage{authblk}
+%\usepackage{multicol}
+
+%\bibliographystyle{ieeetr}
+
+
+%\linenumbers
+%\setlength\linenumbersep{3pt}
+
+\begin{document}
+
+
+
+\author{Justin D. Yeakel} \affiliation{School of Natural Sciences, University
+  of California, Merced, Merced, CA 95340, USA}
+
+\author{Mathias Pires} \affiliation{}
+
+\author{James O'Donnell} \affiliation{}
+
+\author{Marcus de Aguiar} \affiliation{}
+
+\author{Paulo Guimar\~aes Jr} \affiliation{}
+
+\author{Dominique Gravel} \affiliation{}
+
+\author{Thilo Gross} \affiliation{}
+
+%\title{Simple rules yield complex communities: deconstructed species interactions and the assembly of communities}
+%\title{Community assembly and dynamics by the deconstruction of species interactions}
+\title{Quantization of ecological interactions yields insights into community assembly and dynamics}
+%\author{Justin D. Yeakel${}^{1,2,*}$, Christopher P. Kempes${}^{2}$, \& Sidney Redner${}^{2,3}$ \\ \\
+%${}^1$School of Natural Science, University of California Merced, Merced, CA \\
+%${}^2$The Santa Fe Institute, Santa Fe, NM \\
+%${}^3$Department of Physics, Boston University, Boston MA \\
+%${}^*$To whom correspondence should be addressed: jdyeakel@gmail.com
+%}
+
+\section{Brief description of extinction due to similarity in resource overlap}
+
+Extinction probabilities are based on a similarity metric, where overlap in food resources and need resources with other species increases a species' probability of extinction.
+To calculate: The matrix $\bm{A}$ is the asymmetrical adjacency matrix of eat and need interactions with rows corresponding to species and columns corresponding to both species \emph{and} objects.
+The number of users (eaters or needers) of each species/object is given by summing across rows, given by the vector $\bm{x}$, and the number of species or objects eaten or consumed by each species is given by $\bm{y}$.
+
+We calculate the number of species consuming or needing each of a species' possible resources (i.e. the number of species sharing a species' resources), not including itself by $\bm{z} = (\bm{A}\cdot\bm{x}) - \bm{y}$.
+Thus the average number of species sharing each species' resources is 
+$\bm{ro} = \bm{z}/\bm{y}$ (where division is element-by-element), and the average \emph{proportion} of species sharing each species' resources is given by ${\bm{RO}} = \bm{ro}/(S-1)$ where $S-1$ is the number of potential competitors in the community.
+
+Thus, a species consuming/needing resources that have no other consumers/needers will have an ${\bm{RO}}=0$. In contrast, if all of a species' resources are shared by every other species in the community, ${\bm{RO}} = 1$.
+Partial overlap of resource use by other species ranges of course between 0 and 1.
+
+The probability of extinction is assumed to be logistic as a function of ${\bm{RO}}$, where a value close to one will result in a probability of extinction close to one (and zero in the opposing case).
+Where the probability of extinction increases, and the slope of the increase are inputs of the model and largely set the steady state of the assembly process.
+
+\section{Example}
+If
+\(
+\bm{A}=
+\begin{bmatrix}
+    1 & 1 & 1 & 0 & 0 & 0 \\
+    1 & 0 & 1 & 0 & 0 & 1 \\
+    1 & 1 & 0 & 0 & 0 & 1 \\
+    0 & 0 & 0 & 0 & 1 & 0 \\
+    1 & 0 & 0 & 0 & 0 & 0
+\end{bmatrix}
+\)
+where rows 1-5 are species, and the last column shows the dependence of each species on a single object, then $\bm{RO} = (0.42,0.42,0.42,0,0.75)$. Resource overlap for species 1-3 is 0.42 because each species consumes 3 resources that are shared by either 2 or 1 additional species. Resource overlap for species 4 is 0 because it eats a single uniquely consumed resource. Resource overlap for species 5 is 0.75 because its single resource is shared by 3 competing species out of the universe of 4 potential competitors.
+
+
+\end{document}
