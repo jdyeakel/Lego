@@ -5,14 +5,15 @@ loadfunc = include("$(homedir())/2014_Lego/Anime/src/loadfuncsYOG.jl");
 
 reps = 10000;
 S = 400;
-ppweight = 1/4;
 # S = 400;
 probs = [
-p_n=0.01,
-p_a=0.01
-]
+p_n=0.003,
+p_a=0.003
+# p_n = 0.02,
+# p_a = 0.02
+];
 #expected objects per species
-lambda = 1/2;
+lambda = 0.5;
 
 Pconn = SharedArray{Float64}(reps);
 Pconn_ind = SharedArray{Float64}(reps);
@@ -23,7 +24,7 @@ Ptl = SharedArray{Float64}(reps,S);
 
 @time @sync @parallel for r=1:reps
     
-    int_m, tp_m, tind_m, mp_m, mind_m = intmatrixv2(S,lambda,probs,ppweight);
+    int_m, tp_m, tind_m, mp_m, mind_m = intmatrixv3(S,lambda,probs);
 
     a_b,
     n_b,
