@@ -220,7 +220,7 @@ meanoverlap = [mean(overlap_stitch[!isnan(overlap_stitch[:,i]),i]) for i=1:lengt
 namespace = string("$(homedir())/2014_Lego/Anime/figures2/nodegreedist/useroverlap_time.pdf");
 R"""
 pdf($namespace,height=5,width=6)
-boxplot($(overlap_stitch),ylim=c(0,0.2),outline=FALSE,names=$(seq_stitch),
+boxplot($(overlap_stitch),ylim=c(0,0.02),outline=FALSE,names=$(seq_stitch),
 xlab='Time',ylab='User overlap',
 pars = list(boxwex = 0.4, staplewex = 0.5, outwex = 0.5),col='lightgray')
 points($(meanoverlap),ylim=c(0,0.1),pch=16)
