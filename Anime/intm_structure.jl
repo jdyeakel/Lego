@@ -44,7 +44,7 @@ Ptl = SharedArray{Float64}(reps,S);
     Pconn_ind[r] = sum(tind_m[spcid_ind,spcid_ind])/(length(spcid)^2);
     
     #Resource overlap
-    res_overlap = roverlap(cid,sp_v,a_b);
+    res_overlap = roverlap(cid,sp_v,a_b,n_b0);
     Pres_overlap_dist[r,1:length(res_overlap)]=res_overlap;
     
     degrees = deleteat!(vec(sum(tind_m[[1;spcid_ind],[1;spcid_ind]],2)),1);
