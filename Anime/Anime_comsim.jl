@@ -107,6 +107,48 @@ cind = sum(indmatrix)/(size(indmatrix)[1]^2)
 R"plot($(sort(deg[spcid_ind]+1,rev=true)))"
 
 
+#Dynstructure analysis
+
+a_b,n_b,i_b,m_b,n_b0,sp_v,int_id = preamble_defs(int_m);
+rich = Array{Int64}(tmax-1);
+sprich = Array{Int64}(tmax-1);
+turnover = Array{Float64}(tmax-1);
+res_overlap = Array{Float64}(tmax-1);
+user_overlap = Array{Float64}(tmax-1);
+conn = Array{Float64}(tmax-1);
+conn_ind = Array{Float64}(tmax-1);
+avgdegree = Array{Float64}(tmax-1);
+res_overlap_dist = Array{Float64}(tmax-1,S);
+user_overlap_dist = Array{Float64}(tmax-1,S);
+degrees = Array{Int64}(tmax-1,S);
+trophic = Array{Float64}(tmax-1,S);
+for t=2:(tmax)
+    cid = find(isodd,CID[t,:]);
+    cid_old = find(isodd,CID[t-1,:]);
+    
+    rich[t-1], sprich[t-1], turnover[t-1], res_overlap[t-1], user_overlap[t-1], res_overlap_all, user_overlap_all, conn[t-1], conn_ind[t-1] = dynstructure(cid,cid_old,sp_v,a_b,n_b0,tp_m,tind_m);
+    
+    res_overlap_dist[t-1,1:length(res_overlap_all)] = res_overlap_all;
+    #Only save species user-overlap, and not object user-overlap
+    user_overlap_dist[t-1,1:length(user_overlap_all)] = user_overlap_all; 
+end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 #Image the interaction matrix
 
 #Establish community template
