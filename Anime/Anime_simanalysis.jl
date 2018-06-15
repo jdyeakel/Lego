@@ -373,7 +373,7 @@ R"""
 library(RColorBrewer)
 pdf($namespace,height=5,width=6)
 pal = brewer.pal(length($seq2),'Spectral')
-plot($(degsort[1]),fitted(M_t[[1]]),xlim=c(1,10),ylim=c(1,10),col=pal[1],type='l',lwd=2,xlab='Degree',ylab='Trophic level')
+plot($(degsort[1]),fitted(M_t[[1]]),xlim=c(1,10),ylim=c(1,8),col=pal[1],type='l',lwd=2,xlab='Degree',ylab='Trophic level')
 """
 for i=2:length(seq2)
     R"""
