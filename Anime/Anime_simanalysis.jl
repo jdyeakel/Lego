@@ -221,7 +221,7 @@ namespace = string("$(homedir())/2014_Lego/Anime/figures2/nodegreedist/useroverl
 R"""
 pdf($namespace,height=5,width=6)
 boxplot($(overlap_stitch),ylim=c(0,0.2),outline=FALSE,names=$(seq_stitch),
-xlab='Time',ylab='Resource overlap',
+xlab='Time',ylab='User overlap',
 pars = list(boxwex = 0.4, staplewex = 0.5, outwex = 0.5),col='lightgray')
 points($(meanoverlap),ylim=c(0,0.1),pch=16)
 lines($(meanoverlap),ylim=c(0,0.1),lwd=2)
