@@ -70,7 +70,7 @@
 
 Extinction probabilities are based on a similarity metric, where overlap in food resources and need resources with other species increases a species' probability of extinction.
 To calculate: The matrix $\bm{A}$ is the asymmetrical adjacency matrix of eat and need interactions with rows corresponding to species and columns corresponding to both species \emph{and} objects.
-The number of users (eaters or needers) of each species/object is given by summing across rows, given by the vector $\bm{x}$, and the number of species or objects eaten or consumed by each species is given by $\bm{y}$.
+The number of users (eaters or needers) of each species/object is given by summing across columns resulting in the vector $\bm{x}$, and the number of species or objects eaten or consumed by each species is given by summing across rows resulting in the vector $\bm{y}$.
 
 We calculate the number of species consuming or needing each of a species' possible resources (i.e. the number of species sharing a species' resources), not including itself by $\bm{z} = (\bm{A}\cdot\bm{x}) - \bm{y}$.
 Thus the average number of species sharing each species' resources is 

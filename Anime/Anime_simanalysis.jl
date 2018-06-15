@@ -35,10 +35,12 @@ rich = SharedArray{Int64}(reps,tseqmax);
 sprich = SharedArray{Int64}(reps,tseqmax);
 turnover = SharedArray{Float64}(reps,tseqmax);
 res_overlap = SharedArray{Float64}(reps,tseqmax);
+user_overlap = SharedArray{Float64}(reps,tseqmax);
 conn = SharedArray{Float64}(reps,tseqmax);
 conn_ind = SharedArray{Float64}(reps,tseqmax);
 avgdegree = SharedArray{Float64}(reps,tseqmax);
 res_overlap_dist = SharedArray{Float64}(reps,tseqmax,S);
+user_overlap_dist = SharedArray{Float64}(reps,tseqmax,S);
 degrees = SharedArray{Int64}(reps,tseqmax,S);
 trophic = SharedArray{Float64}(reps,tseqmax,S);
 
@@ -75,9 +77,11 @@ trophic = SharedArray{Float64}(reps,tseqmax,S);
         cid = find(isodd,CID[tstep,:]);
         cid_old = find(isodd,CID[tstep-1,:]); #because we have this, seq can't start at t=1;
         
-        rich[r,t], sprich[r,t], turnover[r,t], res_overlap[r,t], res_overlap_all, conn[r,t], conn_ind[r,t] = dynstructure(cid,cid_old,sp_v,a_b,n_b0,tp_m,tind_m);     
+        rich[r,t], sprich[r,t], turnover[r,t], res_overlap[r,t], user_overlap[r,t], res_overlap_all, user_overlap_all, conn[r,t], conn_ind[r,t] = dynstructure(cid,cid_old,sp_v,a_b,n_b0,tp_m,tind_m);     
         
-        res_overlap_dist[r,t,1:length(res_overlap_all)] = res_overlap_all; 
+        res_overlap_dist[r,t,1:length(res_overlap_all)] = res_overlap_all;
+        #Only save species user-overlap, and not object user-overlap
+        user_overlap_dist[r,t,1:length(user_overlap_all)] = user_overlap_all; 
         
         deg,troph = structure(S,cid,sp_v,tind_m);
         
@@ -183,6 +187,48 @@ lines($(meanoverlap),ylim=c(0,0.1),lwd=2)
 lines(seq(0.001,3000),rep(mean($Pmeanoverlap),3000),lty=2)
 dev.off()
 """
+
+
+############
+#User overlap
+############
+#Species pool
+# Preps = size(Pres_overlap_dist)[1];
+# Pmeanoverlap = Array{Float64}(Preps);
+# for r=1:Preps
+#     Pmeanoverlap[r] = mean(Pres_overlap_dist[r,!isnan(Pres_overlap_dist[r,:])]);
+# end
+
+lfseq = find(x->x>1,diff(seq))[1];
+#This is the initial assembly process
+init_overlap = user_overlap[:,1:lfseq];
+init_overlap_trim = Array{Float64}(reps,lfseq)*0;
+for r=1:reps
+    init_overlap_rm = init_overlap[r,find(x->x>0,init_overlap[r,:])];
+    init_overlap_trim[r,1:length(init_overlap_rm)] = init_overlap_rm;
+end
+bins = [2;5;10;50;100;1000;2000];
+initsteps = bins[bins.<lfseq]; #use these locations for init
+laststeps = bins[bins.>=lfseq]; #use these locations for the rest
+lastbins = indexin(laststeps,seq);
+
+#Stitch together
+seq_stitch = [initsteps;laststeps];
+overlap_stitch = [init_overlap_trim[:,initsteps] user_overlap[:,lastbins]];
+meanoverlap = [mean(overlap_stitch[!isnan(overlap_stitch[:,i]),i]) for i=1:length(bins)];
+
+namespace = string("$(homedir())/2014_Lego/Anime/figures2/nodegreedist/useroverlap_time.pdf");
+R"""
+pdf($namespace,height=5,width=6)
+boxplot($(overlap_stitch),ylim=c(0,0.2),outline=FALSE,names=$(seq_stitch),
+xlab='Time',ylab='Resource overlap',
+pars = list(boxwex = 0.4, staplewex = 0.5, outwex = 0.5),col='lightgray')
+points($(meanoverlap),ylim=c(0,0.1),pch=16)
+lines($(meanoverlap),ylim=c(0,0.1),lwd=2)
+#lines(seq(0.001,3000),rep(mean($Pmeanoverlap),3000),lty=2)
+dev.off()
+"""
+
 
 #######################
 # DEGREE DISTRIBUTION
@@ -327,7 +373,7 @@ R"""
 library(RColorBrewer)
 pdf($namespace,height=5,width=6)
 pal = brewer.pal(length($seq2),'Spectral')
-plot($(degsort[1]),fitted(M_t[[1]]),xlim=c(1,10),ylim=c(1,10),log='x',col=pal[1],type='l',lwd=2,xlab='Degree',ylab='Trophic level')
+plot($(degsort[1]),fitted(M_t[[1]]),xlim=c(1,10),ylim=c(1,10),col=pal[1],type='l',lwd=2,xlab='Degree',ylab='Trophic level')
 """
 for i=2:length(seq2)
     R"""

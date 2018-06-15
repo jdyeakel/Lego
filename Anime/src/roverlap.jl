@@ -21,10 +21,16 @@ function roverlap(cid,sp_v,a_b,n_b0)
     #Proporitonal overlap of resources between species
     res_overlap = (((((a_b[spcid,cid]+n_b0[spcid,cid]))*users).-used)/(length(spcid)-1))./used;
     
+    user_overlap = (((((a_b[spcid,cid]+n_b0[spcid,cid]))'*used).-users)/(length(spcid)-1))./users;
+    #Save only overlap in objects
+    user_overlap = user_overlap[1:l_sp];
+    #species with no users have value nan; set this equal to 0
+    user_overlap[find(isnan,user_overlap)]=0;
+    
     #Obligate primary producers will be NaN
     #They should be discluded from the measurement so we will keep them NaN
     
     
-    return(res_overlap)
+    return(res_overlap,user_overlap)
     
 end
