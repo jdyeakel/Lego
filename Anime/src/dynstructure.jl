@@ -1,4 +1,4 @@
-function dynstructure(cid,cid_old,sp_v,a_b,tp_m,tind_m)
+function dynstructure(cid,cid_old,sp_v,a_b,n_b0,tp_m,tind_m)
     
     spcid = intersect(sp_v,cid);
     spcid_ind = indexin(spcid,[1;sp_v]);
@@ -17,7 +17,7 @@ function dynstructure(cid,cid_old,sp_v,a_b,tp_m,tind_m)
     turnover = 1 - (length(intersect(cid,cid_old)) / length(union(cid,cid_old)));
     
     #Resource overlap
-    res_overlap = roverlap(cid,sp_v,a_b);
+    res_overlap = roverlap(cid,sp_v,a_b,n_b0);
     #mean resource overlap
     mres_overlap = mean(res_overlap[isfinite.(res_overlap)]);
     

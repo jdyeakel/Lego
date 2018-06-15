@@ -13,7 +13,7 @@ p_a=0.003
 # p_a = 0.02
 ];
 #expected objects per species
-lambda = 0.5;
+lambda = 1;
 
 a_thresh = 0;
 n_thresh = 0.2;
@@ -37,7 +37,7 @@ CID = Array{Bool}(tmax,MaxN)*false;
 
 maxsize = 0; tictoc=0;
 #This will rerun the assembly process if the community does not assemble >10 species
-while maxsize < 10
+@time while maxsize < 10
     tictoc=tictoc+1;
     println("Try ",tictoc)    
     # int_m, sp_m, t_m, tp_m, tind_m, mp_m, mind_m = build_template_species(S,probs,ppweight);
@@ -82,6 +82,9 @@ spcid_ind = indexin(spcid,[1;sp_v]);
 # degrees = vec(sum(tind_m[spcid_ind,spcid_ind],2));
 adjmatrix = tind_m[[1;spcid_ind],[1;spcid_ind]];
 indmatrix = adjmatrix .- tp_m[[1;spcid_ind],[1;spcid_ind]];
+dirmatrix = tp_m[[1;spcid_ind],[1;spcid_ind]];
+
+
 #Visualize graph
 R"""
 library(igraph)
@@ -92,9 +95,14 @@ basal_pos <- 1
 trophic = as.numeric($([0;troph[1:size(adjmatrix)[1]-1]]));
 coords <- cbind(runif(vcount(fw_g)),trophic);
 coords[basal_pos,1] <- 0.5
-plot(fw_g,layout=coords,vertex.size=5,edge.arrow.size=0.25,edge.color='#80808050',main=ecount(fw_g)/$(size(adjmatrix)[1])^2,vertex.label=NA,vertex.frame.color=NA, vertex.color=c(pal[1],rep(pal[2],vcount(fw_g)-1)))
+plot(fw_g,layout=coords,vertex.size=5,edge.arrow.size=0.5,edge.color='#6495ED',main=ecount(fw_g)/$(size(adjmatrix)[1])^2,vertex.label=NA,vertex.frame.color=NA, vertex.color=c(pal[1],rep(pal[2],vcount(fw_g)-1)))
+fw_ind <- graph.adjacency($(indmatrix'));
+plot(fw_ind,layout=coords,vertex.size=5,edge.arrow.size=0.5,edge.color='red',vertex.label=NA,vertex.frame.color=NA, vertex.color=c(pal[1],rep(pal[2],vcount(fw_g)-1)),add=TRUE)
 """
 
+cdir = sum(dirmatrix)/(size(dirmatrix)[1]^2)
+call = sum(adjmatrix)/(size(adjmatrix)[1]^2)
+cind = sum(indmatrix)/(size(indmatrix)[1]^2)
 
 R"plot($(sort(deg[spcid_ind]+1,rev=true)))"
 

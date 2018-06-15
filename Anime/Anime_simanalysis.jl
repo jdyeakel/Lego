@@ -75,7 +75,7 @@ trophic = SharedArray{Float64}(reps,tseqmax,S);
         cid = find(isodd,CID[tstep,:]);
         cid_old = find(isodd,CID[tstep-1,:]); #because we have this, seq can't start at t=1;
         
-        rich[r,t], sprich[r,t], turnover[r,t], res_overlap[r,t], res_overlap_all, conn[r,t], conn_ind[r,t] = dynstructure(cid,cid_old,sp_v,a_b,tp_m,tind_m);     
+        rich[r,t], sprich[r,t], turnover[r,t], res_overlap[r,t], res_overlap_all, conn[r,t], conn_ind[r,t] = dynstructure(cid,cid_old,sp_v,a_b,n_b0,tp_m,tind_m);     
         
         res_overlap_dist[r,t,1:length(res_overlap_all)] = res_overlap_all; 
         
@@ -344,4 +344,3 @@ points(jitter($(Pdegsort)[samp]),jitter($(Ptrophsort)[samp]),pch='.')
 legend(x=180,y=10.2,legend = c('Pool',$(seq[seq2])),col=c('black',pal),lty=1,lwd=2,title='Time',cex=0.7,bty='n')
 dev.off()
 """
-
