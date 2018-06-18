@@ -277,20 +277,21 @@ Psddeg[firstone:length(Psddeg)] = 0;
 
 namespace = string("$(homedir())/2014_Lego/Anime/figures2/nodegreedist/degreedist_time2.pdf");
 R"""
+i=length(seq2)
 library(RColorBrewer)
 pdf($namespace,height=5,width=6)
 pal = brewer.pal($(length(seq2)),'Spectral')
-numsp = length($(mdegt[1,!iszero.(mdegt[1,:])]))
-plot($(mdegt[1,!iszero.(mdegt[1,:])]),xlim=c(1,150),ylim=c(1,10),log='y',col=pal[1],type='l',lwd=2,xlab = 'Number of species', ylab='Mean degree')
-sdev_pre = $(sddegt[1,find(x->x>0,sddegt[1,:])]);
-sdev = numeric(length($(mdegt[1,find(x->x>0,mdegt[1,:])])))
+numsp = length($(mdegt[i,!iszero.(mdegt[i,:])]))
+plot($(mdegt[i,!iszero.(mdegt[i,:])]),xlim=c(1,150),ylim=c(1,10),log='y',col=pal[i],type='l',lwd=2,xlab = 'Number of species', ylab='Mean degree')
+sdev_pre = $(sddegt[i,find(x->x>0,sddegt[i,:])]);
+sdev = numeric(length($(mdegt[i,find(x->x>0,mdegt[i,:])])))
 sdev[1:length(sdev_pre)]=sdev_pre
 polygon(x=c(seq(1,length(sdev)),seq(length(sdev),1)),
-y=c($(mdegt[1,!iszero.(mdegt[1,:])])[1:length(sdev)]+sdev,
-rev($(mdegt[1,!iszero.(mdegt[1,:])])[1:length(sdev)]-sdev)),col=paste(pal[1],65,sep=''),border=NA)
-lines($(mdegt[1,!iszero.(mdegt[1,:])]),xlim=c(1,200),ylim=c(0.01,50),col=pal[1],lwd=2,xlab = 'Number of species', ylab='Median degree')
+y=c($(mdegt[i,!iszero.(mdegt[i,:])])[1:length(sdev)]+sdev,
+rev($(mdegt[i,!iszero.(mdegt[i,:])])[1:length(sdev)]-sdev)),col=paste(pal[1],65,sep=''),border=NA)
+lines($(mdegt[i,!iszero.(mdegt[i,:])]),xlim=c(1,200),ylim=c(0.01,50),col=pal[1],lwd=2,xlab = 'Number of species', ylab='Median degree')
 """
-for i=2:length(seq2)
+for i=length(seq2)-1:-1:1
     R"""
     sdev_pre = $(sddegt[i,find(x->x>0,sddegt[i,:])]);
     sdev = numeric(length($(mdegt[i,find(x->x>0,mdegt[i,:])])))
