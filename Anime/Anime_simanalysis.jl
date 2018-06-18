@@ -282,14 +282,14 @@ library(RColorBrewer)
 pdf($namespace,height=5,width=6)
 pal = brewer.pal($(length(seq2)),'Spectral')
 numsp = length($(mdegt[i,!iszero.(mdegt[i,:])]))
-plot($(mdegt[i,!iszero.(mdegt[i,:])]),xlim=c(1,150),ylim=c(1,10),log='y',col=pal[i],type='l',lwd=2,xlab = 'Number of species', ylab='Mean degree')
+plot($(mdegt[i,!iszero.(mdegt[i,:])]),xlim=c(1,150),ylim=c(1,10),log='y',col=pal[$i],type='l',lwd=2,xlab = 'Number of species', ylab='Mean degree')
 sdev_pre = $(sddegt[i,find(x->x>0,sddegt[i,:])]);
 sdev = numeric(length($(mdegt[i,find(x->x>0,mdegt[i,:])])))
 sdev[1:length(sdev_pre)]=sdev_pre
 polygon(x=c(seq(1,length(sdev)),seq(length(sdev),1)),
 y=c($(mdegt[i,!iszero.(mdegt[i,:])])[1:length(sdev)]+sdev,
-rev($(mdegt[i,!iszero.(mdegt[i,:])])[1:length(sdev)]-sdev)),col=paste(pal[i],65,sep=''),border=NA)
-lines($(mdegt[i,!iszero.(mdegt[i,:])]),xlim=c(1,200),ylim=c(0.01,50),col=pal[i],lwd=2,xlab = 'Number of species', ylab='Median degree')
+rev($(mdegt[i,!iszero.(mdegt[i,:])])[1:length(sdev)]-sdev)),col=paste(pal[$i],65,sep=''),border=NA)
+lines($(mdegt[i,!iszero.(mdegt[i,:])]),xlim=c(1,200),ylim=c(0.01,50),col=pal[$i],lwd=2,xlab = 'Number of species', ylab='Median degree')
 """
 for i=length(seq2)-1:-1:1
     R"""
@@ -391,3 +391,28 @@ points(jitter($(Pdegsort)[samp]),jitter($(Ptrophsort)[samp]),pch='.')
 legend(x=180,y=10.2,legend = c('Pool',$(seq[seq2])),col=c('black',pal),lty=1,lwd=2,title='Time',cex=0.7,bty='n')
 dev.off()
 """
+
+
+
+#Species richness vs. connectance
+bins = [5;10;25;50;100;200;1000;2000;];
+seq2 = indexin(bins,seq);
+speciesrichness = Array{Int64}(reps,length(seq2));
+connectance = Array{Float64}(reps,length(seq2));
+for i=1:length(seq2)
+    t = seq2[i];
+    speciesrichness[:,i] = sprich[:,t];
+    connectance[:,i] = conn[:,t];
+end
+namespace = string("$(homedir())/2014_Lego/Anime/figures2/nodegreedist/richconn.pdf");
+R"""
+pdf($namespace,height=10,width=15)
+par(mfrow=c(2,4))
+plot($(speciesrichness[:,1]),$(connectance[:,1]),log='xy',xlim=c(1,300),ylim=c(0.001,0.02),main=paste(c('t=',$(bins[1])),sep=''))
+"""
+for i=2:length(seq2)
+    R"""
+    plot($(speciesrichness[:,i]),$(connectance[:,i]),log='xy',xlim=c(1,300),ylim=c(0.001,0.02),main=paste(c('t=',$(bins[i])),sep=''))
+    """
+end
+R"dev.off()"

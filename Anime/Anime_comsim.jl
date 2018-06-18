@@ -13,7 +13,7 @@ p_a=0.003
 # p_a = 0.02
 ];
 #expected objects per species
-lambda = 1;
+lambda = 0.5;
 
 a_thresh = 0;
 n_thresh = 0.2;
@@ -95,9 +95,9 @@ basal_pos <- 1
 trophic = as.numeric($([0;troph[1:size(adjmatrix)[1]-1]]));
 coords <- cbind(runif(vcount(fw_g)),trophic);
 coords[basal_pos,1] <- 0.5
-plot(fw_g,layout=coords,vertex.size=5,edge.arrow.size=0.5,edge.color='#6495ED',main=ecount(fw_g)/$(size(adjmatrix)[1])^2,vertex.label=NA,vertex.frame.color=NA, vertex.color=c(pal[1],rep(pal[2],vcount(fw_g)-1)))
+plot(fw_g,layout=coords,vertex.size=5,edge.arrow.size=0.25,edge.color='#6495ED',main=ecount(fw_g)/$(size(adjmatrix)[1])^2,vertex.label=NA,vertex.frame.color=NA, vertex.color=c(pal[1],rep(pal[2],vcount(fw_g)-1)))
 fw_ind <- graph.adjacency($(indmatrix'));
-plot(fw_ind,layout=coords,vertex.size=5,edge.arrow.size=0.5,edge.color='red',vertex.label=NA,vertex.frame.color=NA, vertex.color=c(pal[1],rep(pal[2],vcount(fw_g)-1)),add=TRUE)
+plot(fw_ind,layout=coords,vertex.size=5,edge.arrow.size=0.25,edge.color='red',vertex.label=NA,vertex.frame.color=NA, vertex.color=c(pal[1],rep(pal[2],vcount(fw_g)-1)),add=TRUE)
 """
 
 cdir = sum(dirmatrix)/(size(dirmatrix)[1]^2)
@@ -135,11 +135,14 @@ end
 
 
 
-
-
-
-
-
+#Frequency of occupation by species
+occfreq = (sum(CID,1)/tmax)[1:S];
+R"hist($occfreq,breaks=20)"
+numocc = Array{Int64}(tmax);
+for i=1:tmax
+    numocc[i] = length(find(x->x>i/tmax,occfreq));
+end
+R"plot(seq(1:$tmax)/$tmax,$numocc)"
 
 
 
