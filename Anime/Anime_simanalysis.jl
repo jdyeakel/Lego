@@ -276,8 +276,8 @@ Psddeg[firstone:length(Psddeg)] = 0;
 
 
 namespace = string("$(homedir())/2014_Lego/Anime/figures2/nodegreedist/degreedist_time2.pdf");
+i=length(seq2);
 R"""
-i=length(seq2)
 library(RColorBrewer)
 pdf($namespace,height=5,width=6)
 pal = brewer.pal($(length(seq2)),'Spectral')
