@@ -288,8 +288,8 @@ sdev = numeric(length($(mdegt[i,find(x->x>0,mdegt[i,:])])))
 sdev[1:length(sdev_pre)]=sdev_pre
 polygon(x=c(seq(1,length(sdev)),seq(length(sdev),1)),
 y=c($(mdegt[i,!iszero.(mdegt[i,:])])[1:length(sdev)]+sdev,
-rev($(mdegt[i,!iszero.(mdegt[i,:])])[1:length(sdev)]-sdev)),col=paste(pal[1],65,sep=''),border=NA)
-lines($(mdegt[i,!iszero.(mdegt[i,:])]),xlim=c(1,200),ylim=c(0.01,50),col=pal[1],lwd=2,xlab = 'Number of species', ylab='Median degree')
+rev($(mdegt[i,!iszero.(mdegt[i,:])])[1:length(sdev)]-sdev)),col=paste(pal[i],65,sep=''),border=NA)
+lines($(mdegt[i,!iszero.(mdegt[i,:])]),xlim=c(1,200),ylim=c(0.01,50),col=pal[i],lwd=2,xlab = 'Number of species', ylab='Median degree')
 """
 for i=length(seq2)-1:-1:1
     R"""
