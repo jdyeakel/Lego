@@ -22,6 +22,7 @@ a_thresh = 0;
 n_thresh = 0.2;
 extmid = 0.5; #Similarity at which pr(ext) = 0.5
 steep = 1.5; #higher is steeper
+exttype = "RO"; #RO #PL #ROPL
 
 extinctions = [ones(Float64,tswitch);ones(Float64,tmax-tswitch)];
 colonizations = [ones(Float64,tswitch);ones(Float64,tmax-tswitch)];
@@ -51,7 +52,8 @@ save(namespace,
 "extmid", extmid, #Similarity at which pr(ext) = 0.5
 "steep", steep,
 "probs", probs,
-"lambda",lambda);
+"lambda",lambda,
+"exttype",exttype);
 
 @sync @parallel for r=1:reps
     
@@ -88,7 +90,7 @@ save(namespace,
         sec_ext[r,:],
         cid_r[r,:,:] = assembly_trim(
             int_m,a_b,n_b,i_b,m_b,n_b0,sp_v,int_id,tp_m,tind_m,
-            a_thresh,n_thresh,extmid,steep,colonizations,extinctions,tmax,S,MaxN);
+            a_thresh,n_thresh,extmid,steep,colonizations,extinctions,tmax,S,MaxN,exttype);
         
         maxsize = maximum(sum(cid_r[r,:,:],2));
             
