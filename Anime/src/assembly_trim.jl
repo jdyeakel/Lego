@@ -1,6 +1,9 @@
 function assembly_trim(
     int_m,a_b,n_b,i_b,m_b,n_b0,sp_v,int_id,tp_m,tind_m,
-    a_thresh,n_thresh,extmid,steep,colonizations,extinctions,tmax,S,MaxN,exttype)
+    a_thresh,n_thresh,extmid,steep,epsilon,sigma,colonizations,extinctions,tmax,exttype)
+    
+    S = length(sp_v) + 1;
+    MaxN = convert(Int64,floor(S + S*lambda));
     
     sprich = Array{Int64}(tmax);
     cid = Array{Int64}(0);

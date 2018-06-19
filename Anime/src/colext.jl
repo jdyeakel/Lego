@@ -112,8 +112,8 @@ function colext(
         if exttype == "PL"
             #Extinction by predation load
             #=========================#
-            epsilon = 0.01;
-            sigma = 1/3;
+            # epsilon = 0.01;
+            # sigma = 1/3;
             prext_pred = 0.5*erfc.((1-num_preds*epsilon)/(sigma*sqrt(2)));
             #3) Draw extinctions
             binext = rand.(Binomial.(1,prext_pred));

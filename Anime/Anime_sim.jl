@@ -22,6 +22,8 @@ a_thresh = 0;
 n_thresh = 0.2;
 extmid = 0.5; #Similarity at which pr(ext) = 0.5
 steep = 1.5; #higher is steeper
+epsilon = 0.01;
+sigma = 1/3;
 exttype = "RO"; #RO #PL #ROPL
 
 extinctions = [ones(Float64,tswitch);ones(Float64,tmax-tswitch)];
@@ -90,7 +92,7 @@ save(namespace,
         sec_ext[r,:],
         cid_r[r,:,:] = assembly_trim(
             int_m,a_b,n_b,i_b,m_b,n_b0,sp_v,int_id,tp_m,tind_m,
-            a_thresh,n_thresh,extmid,steep,colonizations,extinctions,tmax,S,MaxN,exttype);
+            a_thresh,n_thresh,extmid,steep,epsilon,sigma,colonizations,extinctions,tmax,exttype);
         
         maxsize = maximum(sum(cid_r[r,:,:],2));
             
