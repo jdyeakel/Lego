@@ -1,6 +1,6 @@
 function colext(
     int_m,tp_m,tind_m,a_b,n_b,i_b,m_b,n_b0,sp_v,int_id,
-    cid,a_thresh,n_thresh,extmid,steep,colcheck,extcheck)
+    cid,a_thresh,n_thresh,extmid,steep,colcheck,extcheck,exttype)
     
     
     ######################
@@ -96,44 +96,58 @@ function colext(
         #Based on the Holt 1977 model where N* propto 1/n where n is the number of preds
         #baseline extinction probability
         
+        binext = Array{Int64}(length(spcid));
+        num_ext1 = Int64;
         
-        # #Extinction by predation load
-        # #=========================#
-        # epsilon = 0.01;
-        # sigma = 1/3;
-        # prext_pred = 0.5*erfc.((1-num_preds*epsilon)/(sigma*sqrt(2)));
-        # #3) Draw extinctions
-        # binext = rand.(Binomial.(1,prext_pred));
-        # num_ext1 = sum(binext);
-        # #=========================#
-        
-        
-        #Extinction by similarity
-        #=========================#
+        #Number of predators consuming each species
+        num_preds = sum(a_b[spcid,spcid],1)[1,:];
         #Species consuming each resource (species and objects)
-        preds = vec(sum(a_b[cid,cid],1));
+        # preds = vec(sum(a_b[cid,cid],1));
         #Species consuming or needing each resource (species and objects)
         users = vec(sum(a_b[cid,cid],1)) .+ vec(sum(n_b0[cid,cid],1));
         #Number of resources for each species (will be zero if species are only eating basal resource)
-        res = vec(sum(a_b[spcid,cid],2));
+        # res = vec(sum(a_b[spcid,cid],2));
         used = vec(sum(a_b[spcid,cid],2)) .+ vec(sum(n_b0[spcid,cid],2));
-        #Proporitonal overlap of resources between species
-        # res_overlap = (((a_b[spcid,cid]*preds).-res)/(length(spcid)-1))./res;
-        res_overlap = (((((a_b[spcid,cid]+n_b0[spcid,cid]))*users).-used)/(length(spcid)-1))./used;
-        #nan if 0 resources ~ pure primary producer
-        res_overlap[isnan.(res_overlap)] = 0;
         
-        #Similarity where pr(extinction) = 0.5
-        extmidpoint = extmid;
-        abeta = steep; #Higher values = steeper sigmoid
-        
-        bbeta = (-1 + 3*abeta + 2*extmidpoint - 3*abeta*extmidpoint)/(3*extmidpoint);
-        pr_background = 0.000;
-        # R"plot($(collect(0.0:0.001:1.0)),$(pr_background + (1-pr_background)*cdf.(Beta(abeta,bbeta),collect(0.0:0.001:1.0))),pch='.',log='x'); points($extmidpoint,0.5,pch=16)"
-        prext_comp = pr_background + (1-pr_background)*cdf.(Beta(abeta,bbeta),res_overlap);
-        binext = rand.(Binomial.(1,prext_comp));
-        num_ext1 = sum(binext);
-        #=========================#
+        if exttype == "PL"
+            #Extinction by predation load
+            #=========================#
+            epsilon = 0.01;
+            sigma = 1/3;
+            prext_pred = 0.5*erfc.((1-num_preds*epsilon)/(sigma*sqrt(2)));
+            #3) Draw extinctions
+            binext = rand.(Binomial.(1,prext_pred));
+            num_ext1 = sum(binext);
+            #=========================#
+
+        else
+            
+            #Extinction by similarity
+            #=========================#
+            
+            #Proporitonal overlap of resources between species
+            # res_overlap = (((a_b[spcid,cid]*preds).-res)/(length(spcid)-1))./res;
+            res_overlap = (((((a_b[spcid,cid]+n_b0[spcid,cid]))*users).-used)/(length(spcid)-1))./used;
+            #nan if 0 resources ~ pure primary producer
+            res_overlap[isnan.(res_overlap)] = 0;
+            
+            #Similarity where pr(extinction) = 0.5
+            extmidpoint = extmid;
+            abeta = steep; #Higher values = steeper sigmoid
+            
+            bbeta = (-1 + 3*abeta + 2*extmidpoint - 3*abeta*extmidpoint)/(3*extmidpoint);
+            pr_background = 0.000;
+            # R"plot($(collect(0.0:0.001:1.0)),$(pr_background + (1-pr_background)*cdf.(Beta(abeta,bbeta),collect(0.0:0.001:1.0))),pch='.',log='x'); points($extmidpoint,0.5,pch=16)"
+            prext_comp = pr_background + (1-pr_background)*cdf.(Beta(abeta,bbeta),res_overlap);
+            binext = rand.(Binomial.(1,prext_comp));
+            num_ext1 = sum(binext);
+            #=========================#
+            
+            if exttype == "ROPL"
+                #TODO: Merge the RO extinction metric to the predation load extinction metric
+            end
+            
+        end
 
         #Only go through this round if there are any extinctions
         if num_ext1 > 0

@@ -1,6 +1,6 @@
 function assembly_trim(
     int_m,a_b,n_b,i_b,m_b,n_b0,sp_v,int_id,tp_m,tind_m,
-    a_thresh,n_thresh,extmid,steep,colonizations,extinctions,tmax,S,MaxN)
+    a_thresh,n_thresh,extmid,steep,colonizations,extinctions,tmax,S,MaxN,exttype)
     
     sprich = Array{Int64}(tmax);
     cid = Array{Int64}(0);
@@ -26,7 +26,7 @@ function assembly_trim(
       prim_ext[t],
       sec_ext[t] = colext(
       int_m,tp_m,tind_m,a_b,n_b,i_b,m_b,n_b0,sp_v,int_id,
-      cid,a_thresh,n_thresh,extmid,steep,colcheck,extcheck);
+      cid,a_thresh,n_thresh,extmid,steep,colcheck,extcheck,exttype);
       
       CID[t,cid] = true;
       
