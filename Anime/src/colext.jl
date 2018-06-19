@@ -16,8 +16,8 @@ function colext(
     #IDs of species only
     spcid = intersect(sp_v,cid_old);
     
-    
-    if colcheck == true
+    colrand = rand();
+    if colcheck > colrand
     
         ######################
         #COLONIZATION MODULE
@@ -76,7 +76,8 @@ function colext(
     num_ext2 = 0;
 
     #run the extinction module or colonization by itself?
-    if extcheck == true
+    extrand = rand();
+    if extcheck > extrand
 
         cid_old = copy(cid);
 

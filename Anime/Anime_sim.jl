@@ -23,8 +23,8 @@ n_thresh = 0.2;
 extmid = 0.5; #Similarity at which pr(ext) = 0.5
 steep = 1.5; #higher is steeper
 
-extinctions = [ones(Bool,tswitch);ones(Bool,tmax-tswitch)];
-colonizations = [ones(Bool,tswitch);ones(Bool,tmax-tswitch)];
+extinctions = [ones(Float64,tswitch);ones(Float64,tmax-tswitch)];
+colonizations = [ones(Float64,tswitch);ones(Float64,tmax-tswitch)];
 
 MaxN = convert(Int64,floor(S + S*lambda));
 
