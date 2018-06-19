@@ -23,6 +23,7 @@
 @everywhere include("$(homedir())/Dropbox/PostDoc/2014_Lego/Anime/src/dynstructure.jl")
 
 #Analysis functions
+@everywhere include("$(homedir())/Dropbox/PostDoc/2014_Lego/Anime/src/phylo.jl")
 @everywhere include("$(homedir())/Dropbox/PostDoc/2014_Lego/Anime/src/roverlap.jl")
 @everywhere include("$(homedir())/Dropbox/PostDoc/2014_Lego/Anime/src/trophicalc2.jl")
 @everywhere include("$(homedir())/Dropbox/PostDoc/2014_Lego/Anime/src/pairbin.jl")

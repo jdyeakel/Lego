@@ -1,6 +1,6 @@
 loadfunc = include("$(homedir())/Dropbox/PostDoc/2014_Lego/Anime/src/loadfuncs.jl");
 
-S = 400;
+S = 100;
 
 tmax = 2000;
 tswitch = 1000;
@@ -18,7 +18,7 @@ lambda = 0.5;
 a_thresh = 0;
 n_thresh = 0.2;
 extmid = 0.5; #Similarity at which pr(ext) = 0.5
-steep = 1.4; #higher is steeper
+steep = 1.5; #higher is steeper
 
 extinctions = [ones(Float64,tswitch);ones(Float64,tmax-tswitch)];
 colonizations = [ones(Float64,tswitch);ones(Float64,tmax-tswitch)];
@@ -146,10 +146,16 @@ R"plot(seq(1:$tmax)/$tmax,$numocc)"
 
 
 
+#Phylogenetic relatedness
+#Interactome distance
+#Small values mean more closely 'related'
+dm = phylo(int_m[2:S,2:S]);
+R"""
+hc = hclust(as.dist($dm));
+plot(hc,hang=-1,cex=0.4)
+"""
 
-
-
-
+R"hc$height"
 
 
 #Image the interaction matrix
