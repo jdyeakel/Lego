@@ -127,7 +127,7 @@ function colext(
         abeta = steep; #Higher values = steeper sigmoid
         
         bbeta = (-1 + 3*abeta + 2*extmidpoint - 3*abeta*extmidpoint)/(3*extmidpoint);
-        pr_background = 0.001;
+        pr_background = 0.000;
         # R"plot($(collect(0.0:0.001:1.0)),$(pr_background + (1-pr_background)*cdf.(Beta(abeta,bbeta),collect(0.0:0.001:1.0))),pch='.',log='x'); points($extmidpoint,0.5,pch=16)"
         prext_comp = pr_background + (1-pr_background)*cdf.(Beta(abeta,bbeta),res_overlap);
         binext = rand.(Binomial.(1,prext_comp));

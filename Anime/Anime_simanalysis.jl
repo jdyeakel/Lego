@@ -408,16 +408,16 @@ namespace = string("$(homedir())/2014_Lego/Anime/figures2/nodegreedist/richconn.
 R"""
 pdf($namespace,height=10,width=15)
 par(mfrow=c(2,4))
-y <- $(speciesrichness[:,1])
-x <- $(connectance[:,1])
+y <- log($(speciesrichness[:,1]))
+x <- log($(connectance[:,1]))
 m <- lm(y ~ x)
 plot($(connectance[:,1]),$(speciesrichness[:,1]),log='xy',ylim=c(1,300),xlim=c(0.001,0.02),main=paste(c('t=',$(bins[1])),sep=''))
 abline(m)
 """
 for i=2:length(seq2)
     R"""
-    y <- $(speciesrichness[:,1])
-    x <- $(connectance[:,1])
+    y <- log($(speciesrichness[:,1]))
+    x <- log($(connectance[:,1]))
     m <- lm(y ~ x)
     plot($(connectance[:,i]),$(speciesrichness[:,i]),log='xy',ylim=c(1,300),xlim=c(0.001,0.02),main=paste(c('t=',$(bins[i])),sep=''))
     abline(m)

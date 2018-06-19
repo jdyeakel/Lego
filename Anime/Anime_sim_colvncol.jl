@@ -2,11 +2,11 @@
 
 loadfunc = include("$(homedir())/2014_Lego/Anime/src/loadfuncsYOG.jl");
 
-reps = 5000;
+reps = 1000;
 S = 400;
 
-tmax = 2000;
-tswitch = 1000;
+tmax = 4000;
+tswitch = 2000;
 
 # S = 400;
 probs = [
@@ -21,10 +21,10 @@ lambda = 0.5;
 a_thresh = 0;
 n_thresh = 0.2;
 extmid = 0.5; #Similarity at which pr(ext) = 0.5
-steep = 1.5; #higher is steeper
+steep = 1.6; #higher is steeper
 
 extinctions = [ones(Bool,tswitch);ones(Bool,tmax-tswitch)];
-colonizations = [ones(Bool,tswitch);ones(Bool,tmax-tswitch)];
+colonizations = [ones(Bool,tswitch);zeros(Bool,tmax-tswitch)];
 
 MaxN = convert(Int64,floor(S + S*lambda));
 
@@ -37,8 +37,8 @@ sec_ext = SharedArray{Float64}(reps,tmax);
 cid_r = SharedArray{Bool}(reps,tmax,MaxN);
 
 #Save a small file to record the settings of the simulation
-namespace = string("$(homedir())/2014_Lego/Anime/data/simbasic/sim_settings.jld");
-# namespace = string("/$(homedir())/Dropbox/PostDoc/2014_Lego/Anime/data/simbasic/int_m",r,".jld");
+namespace = string("$(homedir())/2014_Lego/Anime/data/simncol/sim_settings.jld");
+# namespace = string("/$(homedir())/Dropbox/PostDoc/2014_Lego/Anime/data/simncol/int_m",r,".jld");
 save(namespace,
 "reps", reps,
 "S", S,
@@ -63,8 +63,8 @@ save(namespace,
         # int_m, sp_m, t_m, tp_m, tind_m, mp_m, mind_m = build_template_species(S,probs,ppweight);
         int_m, tp_m, tind_m, mp_m, mind_m = intmatrixv3(S,lambda,probs);
 
-        namespace = string("$(homedir())/2014_Lego/Anime/data/simbasic/int_m",r,".jld");
-        # namespace = string("/$(homedir())/Dropbox/PostDoc/2014_Lego/Anime/data/simbasic/int_m",r,".jld");
+        namespace = string("$(homedir())/2014_Lego/Anime/data/simncol/int_m",r,".jld");
+        # namespace = string("/$(homedir())/Dropbox/PostDoc/2014_Lego/Anime/data/simncol/int_m",r,".jld");
         save(namespace,
         "int_m", int_m,
         "tp_m", tp_m,
@@ -80,6 +80,19 @@ save(namespace,
         sp_v,
         int_id = preamble_defs(int_m);
         
+        # #Simulations where colonizations 
+        # colonizations[tmax-tswitch:tmax] = ones(Bool,tmax-tswitch);
+        # sprich[r,:],
+        # cid,
+        # lpot_col[r,:],
+        # status[r,:],
+        # prim_ext[r,:],
+        # sec_ext[r,:],
+        # cid_r[r,:,:] = assembly_trim(
+        #     int_m,a_b,n_b,i_b,m_b,n_b0,sp_v,int_id,tp_m,tind_m,
+        #     a_thresh,n_thresh,extmid,steep,colonizations,extinctions,tmax,S,MaxN);
+            
+        # colonizations[tmax-tswitch:tmax] = zeros(Bool,tmax-tswitch);
         sprich[r,:],
         cid,
         lpot_col[r,:],
@@ -98,15 +111,15 @@ save(namespace,
     # cid_r[r,:,:] = copy(CID);
     
     #Save individually so data can be loaded in parallel
-    namespace = string("$(homedir())/2014_Lego/Anime/data/simbasic/cid_",r,".jld");
-    # namespace = string("$(homedir())/Dropbox/PostDoc//2014_Lego/Anime/data/simbasic/cid_",r,".jld");
+    namespace = string("$(homedir())/2014_Lego/Anime/data/simncol/cid_",r,".jld");
+    # namespace = string("$(homedir())/Dropbox/PostDoc//2014_Lego/Anime/data/simncol/cid_",r,".jld");
     save(namespace,
     "CID", cid_r[r,:,:]);
     
     
 end
 # 
-# save(string("$(homedir())/Dropbox/PostDoc/2014_Lego/Anime/data/simbasic/sim.jld"),
+# save(string("$(homedir())/Dropbox/PostDoc/2014_Lego/Anime/data/simncol/sim.jld"),
 # "lpot_col",lpot_col,
 # "status",status,
 # "prim_ext",prim_ext,
@@ -115,7 +128,7 @@ end
 # );
 
 
-save(string("$(homedir())/2014_Lego/Anime/data/simbasic/sim.jld"),
+save(string("$(homedir())/2014_Lego/Anime/data/simncol/sim.jld"),
 "sprich",sprich,
 "lpot_col",lpot_col,
 "status",status,
