@@ -24,12 +24,12 @@ extinctions = [ones(Float64,tswitch);ones(Float64,tmax-tswitch)];
 colonizations = [ones(Float64,tswitch);ones(Float64,tmax-tswitch)];
 
 #Predator load parameters
-epsilonvec = collect(0.01:0.01:0.1);
-sigmavec = collect(0.1:0.1:1.0);
+epsilonvec = collect(0.01:(0.5-0.01)/(50-1):0.5);
+sigmavec = collect(0.1:(0.5-0.1)/(50-1):0.5);
 
 #Resource overlap parameters
-extmidvec = collect(0.1:0.1:1.0);
-steepvec = collect(0.5:0.16:2.0);
+extmidvec = collect(0.1:(1.0-0.1)/(50-1):1.0);
+steepvec = collect(0.5:(3.0-0.5)/(50-1):3.0);
 
 reps = 100;
 
@@ -103,9 +103,28 @@ end
 
 save(string("$(homedir())/2014_Lego/Anime/data/SS.jld"),
 "ROSS",ROSS,
-"PLSS",PLSS
+"PLSS",PLSS,
+"epsilonvec",epsilonvec,
+"sigmavec",sigmavec,
+"extmidvec",extmidvec,
+"steepvec",steepvec
 );
 
-            
         
-        
+d = load(string("$(homedir())/2014_Lego/Anime/data/SS.jld"));
+ROSS = d["ROSS"];
+PLSS = d["PLSS"];
+epsilonvec = d["epsilonvec"];
+sigmavec = d["sigmavec"];
+extmidvec = d["extmidvec"];
+steepvec = d["steepvec"];
+
+
+namespace = string("$(homedir())/2014_Lego/Anime/figures2/nodegreedist/SS.pdf");
+R"""
+pdf($namespace,height=8,width=18)
+par(mfrow=c(1,2))
+image(x=$extmidvec,y=$steepvec,z=$ROSS)
+image(x=$epsilonvec,y=$sigmavec,z=$PLSS)
+dev.off()
+"""
