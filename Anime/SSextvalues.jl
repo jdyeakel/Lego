@@ -37,7 +37,7 @@ ROSS = Array{Float64}(length(extmidvec),length(steepvec));
 
 PLSS = Array{Float64}(length(epsilonvec),length(sigmavec));
 #Search across the parameter space for both PL and RO models and take average steady state across repetitions
-@sync @parallel for i = 1:length(extmidvec)
+for i = 1:length(extmidvec)
     for j = 1:length(steepvec)
         
         extmid = extmidvec[i];
@@ -46,10 +46,10 @@ PLSS = Array{Float64}(length(epsilonvec),length(sigmavec));
         epsilon = epsilonvec[i];
         sigma = sigmavec[j];
         
-        rss = Array{Float64}(reps);
-        pss = Array{Float64}(reps);
+        rss = SharedArray{Float64}(reps);
+        pss = SharedArray{Float64}(reps);
         
-        for r = 1:reps
+        @sync @parallel for r = 1:reps
 
             int_m, tp_m, tind_m, mp_m, mind_m = intmatrixv3(S,lambda,probs);
 
