@@ -1,4 +1,6 @@
-loadfunc = include("$(homedir())/Dropbox/PostDoc/2014_Lego/Anime/src/loadfuncs.jl");
+# loadfunc = include("$(homedir())/Dropbox/PostDoc/2014_Lego/Anime/src/loadfuncs.jl");
+loadfunc = include("$(homedir())/2014_Lego/Anime/src/loadfuncsYOG.jl");
+
 
 S = 400;
 
@@ -98,6 +100,11 @@ for i = 1:length(extmidvec)
 end
 
             
+
+save(string("$(homedir())/2014_Lego/Anime/data/SS.jld"),
+"ROSS",ROSS,
+"PLSS",PLSS
+);
 
             
         
