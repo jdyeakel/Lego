@@ -1,6 +1,6 @@
 function colext(
     int_m,tp_m,tind_m,a_b,n_b,i_b,m_b,n_b0,sp_v,int_id,
-    cid,a_thresh,n_thresh,extmid,steep,colcheck,extcheck,exttype)
+    cid,a_thresh,n_thresh,extmid,steep,epsilon,sigma,colcheck,extcheck,exttype)
     
     
     ######################
