@@ -32,7 +32,7 @@ sigmavec = collect(0.1:(0.5-0.1)/(lvec-1):0.5);
 extmidvec = collect(0.1:(1.0-0.1)/(lvec-1):1.0);
 steepvec = collect(0.5:(3.0-0.5)/(lvec-1):3.0);
 
-reps = 100;
+reps = 50;
 
 ROSS = Array{Float64}(length(extmidvec),length(steepvec));
 
