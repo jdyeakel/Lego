@@ -1,6 +1,6 @@
 loadfunc = include("$(homedir())/Dropbox/PostDoc/2014_Lego/Anime/src/loadfuncs.jl");
 
-S = 400;
+S = 450;
 
 tmax = 2000;
 tswitch = 1000;
