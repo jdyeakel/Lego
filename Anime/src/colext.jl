@@ -1,6 +1,6 @@
 function colext(
     int_m,tp_m,tind_m,a_b,n_b,i_b,m_b,n_b0,sp_v,int_id,
-    cid,a_thresh,n_thresh,extmid,steep,epsilon,sigma,colcheck,extcheck,exttype)
+    cid,a_thresh,n_thresh,extmid,steep,epsilon,sigma,prext,colcheck,extcheck,exttype)
     
     
     ######################
@@ -152,21 +152,34 @@ function colext(
             
         end
         if exttype == "EN"
-            prext = 1;
             prext_comp = Array{Float64}(length(spcid));
             #Calculate the strength of the interaction (num needs - num eats)
             strength = sum(n_b0[spcid,[1;cid]],2) .- sum(a_b[spcid,[1;cid]],2);
-            smatrix = a_b[spcid,[1;cid]];
+            smatrix = Array{Float64}(copy(a_b[spcid,[1;cid]]));
             for i=1:length(spcid)
                 smatrix[i,:] = a_b[spcid[i],[1;cid]] * strength[i];
             end
+            smatrix[find(iszero,a_b[spcid,[1;cid]])] = NaN;
             for i=1:length(spcid)
+                
                 cmatrix = smatrix[:,find(!iszero,a_b[spcid[i],[1;cid]])]
-                if any(cmatrix[i,:] .>= findmax(cmatrix,1)[1]') == false
-                    prext_comp[i] = prext;
+                
+                #Proportion of strength-max foods
+                propmax = sum(cmatrix[i,:] .>= findmax(cmatrix,1)[1]')/length(cmatrix[i,:]);
+                
+                if propmax > 0
+                    prext_comp[i] = 0;
                 else
-                    prext_comp[i] = 1 - prext;
+                    prext_comp[i] = prext;
                 end
+                #probability of extinction is 1 - proportion of strength-max foods
+                # prext_comp[i] = 1 - propmax;
+                
+                # if propmax > prext
+                #     prext_comp[i] = prext;
+                # else
+                #     prext_comp[i] = 1 - prext;
+                # end
             end
             binext = rand.(Binomial.(1,prext_comp));
             num_ext1 = sum(binext);

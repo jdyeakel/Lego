@@ -1,6 +1,6 @@
 function assembly_trim(
     int_m,a_b,n_b,i_b,m_b,n_b0,sp_v,int_id,tp_m,tind_m,
-    a_thresh,n_thresh,extmid,steep,epsilon,sigma,colonizations,extinctions,tmax,exttype)
+    a_thresh,n_thresh,extmid,steep,epsilon,sigma,prext,colonizations,extinctions,tmax,exttype)
     
     S = length(sp_v) + 1;
     MaxN = convert(Int64,floor(S + S*lambda));
@@ -29,7 +29,7 @@ function assembly_trim(
       prim_ext[t],
       sec_ext[t] = colext(
       int_m,tp_m,tind_m,a_b,n_b,i_b,m_b,n_b0,sp_v,int_id,
-      cid,a_thresh,n_thresh,extmid,steep,epsilon,sigma,colcheck,extcheck,exttype);
+      cid,a_thresh,n_thresh,extmid,steep,epsilon,sigma,prext,colcheck,extcheck,exttype);
       
       CID[t,cid] = true;
       
