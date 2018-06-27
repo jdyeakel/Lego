@@ -101,13 +101,7 @@ function colext(
         
         #Number of predators consuming each species
         num_preds = sum(a_b[spcid,spcid],1)[1,:];
-        #Species consuming each resource (species and objects)
-        # preds = vec(sum(a_b[cid,cid],1));
-        #Species consuming or needing each resource (species and objects)
-        users = vec(sum(a_b[cid,cid],1)) .+ vec(sum(n_b0[cid,cid],1));
-        #Number of resources for each species (will be zero if species are only eating basal resource)
-        # res = vec(sum(a_b[spcid,cid],2));
-        used = vec(sum(a_b[spcid,cid],2)) .+ vec(sum(n_b0[spcid,cid],2));
+
         
         if exttype == "PL"
             #Extinction by predation load
@@ -120,10 +114,19 @@ function colext(
             num_ext1 = sum(binext);
             #=========================#
 
-        else
+        end
+        if exttype == "RO"
             
             #Extinction by similarity
             #=========================#
+            
+            #Species consuming each resource (species and objects)
+            # preds = vec(sum(a_b[cid,cid],1));
+            #Species consuming or needing each resource (species and objects)
+            users = vec(sum(a_b[cid,cid],1)) .+ vec(sum(n_b0[cid,cid],1));
+            #Number of resources for each species (will be zero if species are only eating basal resource)
+            # res = vec(sum(a_b[spcid,cid],2));
+            used = vec(sum(a_b[spcid,cid],2)) .+ vec(sum(n_b0[spcid,cid],2));
             
             #Proporitonal overlap of resources between species
             # res_overlap = (((a_b[spcid,cid]*preds).-res)/(length(spcid)-1))./res;
@@ -143,10 +146,30 @@ function colext(
             num_ext1 = sum(binext);
             #=========================#
             
-            if exttype == "ROPL"
-                #TODO: Merge the RO extinction metric to the predation load extinction metric
-            end
+            # if exttype == "ROPL"
+            #     #TODO: Merge the RO extinction metric to the predation load extinction metric
+            # end
             
+        end
+        if exttype == "EN"
+            prext = 1;
+            prext_comp = Array{Float64}(length(spcid));
+            #Calculate the strength of the interaction (num needs - num eats)
+            strength = sum(n_b0[spcid,[1;cid]],2) .- sum(a_b[spcid,[1;cid]],2);
+            smatrix = a_b[spcid,[1;cid]];
+            for i=1:length(spcid)
+                smatrix[i,:] = a_b[spcid[i],[1;cid]] * strength[i];
+            end
+            for i=1:length(spcid)
+                cmatrix = smatrix[:,find(!iszero,a_b[spcid[i],[1;cid]])]
+                if any(cmatrix[i,:] .>= findmax(cmatrix,1)[1]') == false
+                    prext_comp[i] = prext;
+                else
+                    prext_comp[i] = 1 - prext;
+                end
+            end
+            binext = rand.(Binomial.(1,prext_comp));
+            num_ext1 = sum(binext);
         end
 
         #Only go through this round if there are any extinctions
