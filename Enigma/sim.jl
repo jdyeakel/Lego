@@ -7,13 +7,12 @@
 # 
 @everywhere include("$(homedir())/Dropbox/PostDoc/2014_Lego/Enigma/src/intmatrixv3.jl")
 @everywhere include("$(homedir())/Dropbox/PostDoc/2014_Lego/Enigma/src/preamble_defs.jl")
-# @everywhere include("$(homedir())/Dropbox/PostDoc/2014_Lego/Enigma/src/assembly.jl")
+@everywhere include("$(homedir())/Dropbox/PostDoc/2014_Lego/Enigma/src/assembly.jl")
 
 
 S = 400;
 
-tmax = 2000;
-tswitch = 1000;
+tmax = 10;
 
 # S = 400;
 probs = [
@@ -24,7 +23,9 @@ p_a=0.003
 ];
 #expected objects per species
 lambda = 0.5;
-
+athresh = 0;
+nthresh = 0.5;
+MaxN = convert(Int64,floor(S + S*lambda));
 
 sprich = Array{Int64}(tmax);
 int_m = Array{Char}();
@@ -46,11 +47,11 @@ n_b0,
 sp_v,
 int_id = preamble_defs(int_m);
 
-sprich,
-cid,
-lpot_col,
-status,
-prim_ext,
-sec_ext,
-CID = assembly(
-    int_m,a_b,n_b,i_b,m_b,n_b0,sp_v,int_id,tp_m,tind_m,tmax);
+@time sprich,rich,clock = assembly(
+    int_m,a_b,n_b,i_b,m_b,n_b0,sp_v,int_id,tp_m,tind_m,
+    athresh,nthresh,tmax);
+
+R"plot($sprich,type='l')"
+R"lines($(rich .- sprich),col='gray')"
+
+

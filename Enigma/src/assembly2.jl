@@ -1,8 +1,9 @@
-function assembly(int_m,a_b,n_b,i_b,m_b,n_b0,sp_v,int_id,tp_m,tind_m,
+function assembly2(int_m,a_b,n_b,i_b,m_b,n_b0,sp_v,int_id,tp_m,tind_m,
     athresh,nthresh,tmax)
     
     S = length(sp_v) + 1;
-    MaxN = convert(Int64,floor(S + S*lambda));
+    N = size(int_m)[1];
+    # MaxN = convert(Int64,floor(S + S*lambda));
     cid = Array{Int64}(0);
     sprich = Array{Int64}(0);
     rich = Array{Int64}(0;)
@@ -16,21 +17,27 @@ function assembly(int_m,a_b,n_b,i_b,m_b,n_b0,sp_v,int_id,tp_m,tind_m,
     end
     smatrix[find(iszero,a_b)] = NaN;
     
-    
-    
+    spvec = collect(2:S);
+    obvec = collect(S+1:N);
+    spbk = 0;
+    obbk = 0;
     t=0;
     it = 0;
-    while t < tmax
+    @time while t < tmax
         
         cid_old = copy(cid);
         #Which are species?
-        spcid = intersect(sp_v,cid);
+        spcid = spvec[1:spbk]; #surprisingly this works with spbk=0
+        # spcid = intersect(sp_v,cid);
         #Which are objects?
-        ocid = setdiff(cid,spcid);
-        
+        ocid = obvec[1:obbk];
+        # ocid = setdiff(cid,spcid);
+        cid = [spcid;ocid];
         
         #COUNT POTENTIAL COLONIZERS
-        trophiclinked = setdiff(int_id[(sum(a_b[:,[1;cid]],2) .> 0)[:,1]],cid);
+        nspcid = spvec[spbk+1:N];
+        trophiclinked = int_id[vec(sum(a_b[:,[1;cid]],2) .> 0)];
+        # trophiclinked = setdiff(int_id[(sum(a_b[:,[1;cid]],2) .> 0)[:,1]],cid);
         #For each trophiclinked, count number of assimilate and need interactions in system
         #Determine in the proportion that already exists is >= the threshold
         a_fill = ((sum(a_b[trophiclinked,[1;cid]],2)./sum(a_b[trophiclinked,:],2)) .>= athresh)[:,1];
@@ -62,21 +69,34 @@ function assembly(int_m,a_b,n_b,i_b,m_b,n_b0,sp_v,int_id,tp_m,tind_m,
         survivors = intersect(a_pass,n_pass);
         spext1 = setdiff(spcid,survivors);
         
+        #2) By not having the max strength for consuming at least one resource
+        # strength = sum(n_b0[spcid,[1;cid]],2) .- sum(a_b[spcid,[1;cid]],2);
+        # smatrix = Array{Float64}(copy(a_b[spcid,[1;cid]]));
+        # for i=1:length(spcid)
+        #     smatrix[i,:] = a_b[spcid[i],[1;cid]] * strength[i];
+        # end
+        # smatrix[find(iszero,a_b[spcid,[1;cid]])] = NaN;
+        
+        # #NOTE: This is probably the slowest part
+        # prext_comp = Array{Bool}(length(spcid));
+        # for i=1:length(spcid)
+        #     cmatrix = smatrix[:,find(!iszero,a_b[spcid[i],[1;cid]])];
+        #     #Proportion of strength-max foods
+        #     propmax = sum(cmatrix[i,:] .>= findmax(cmatrix,1)[1]')/length(cmatrix[i,:]);
+        #     if propmax > 0
+        #         prext_comp[i] = false;
+        #     else
+        #         prext_comp[i] = true;
+        #     end
+        # end
+        # spext2 = spcid[prext_comp];
         
         #Alternative approach
-        
+        prext_comp = Array{Bool}(length(spcid));
         #define subset of smatrix for community at this timestep
         cmatrix = smatrix[spcid,cid];
         #define max values for community at this timestep
         cmax = vec(findmax(cmatrix,1)[1]);
-        
-        # NOTE: THis is not faster
-        # cinv = 1./cmax;
-        # m = (strength[spcid] * cinv');
-        # m0 = m .* a_b[spcid,cid];
-        # spext2 = spcid[vec(maximum(m0,2) .< 1)];
-        
-        prext_comp = Array{Bool}(length(spcid));
         for i=1:length(spcid)
             if any(strength[spcid[i]] .>= cmax[find(!isnan,cmatrix[i,:])]);
                 #species is NOT added to pool
@@ -87,8 +107,7 @@ function assembly(int_m,a_b,n_b,i_b,m_b,n_b0,sp_v,int_id,tp_m,tind_m,
             end
         end
         spext2 = spcid[prext_comp];
-        # 
-        # spext2 = Array{Int64}(0);
+        
         spext = unique([spext1;spext2]);
         lspext = length(spext);
         
@@ -147,8 +166,7 @@ function assembly(int_m,a_b,n_b,i_b,m_b,n_b0,sp_v,int_id,tp_m,tind_m,
     
     return(
     sprich,
-    rich,
-    clock
+    rich
     )
     
 end
