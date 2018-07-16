@@ -14,7 +14,7 @@ function assembly(int_m,a_b,n_b,i_b,m_b,n_b0,sp_v,int_id,tp_m,tind_m,
     for i=1:size(a_b)[1]
         smatrix[i,:] = a_b[i,:] * strength[i];
     end
-    smatrix[find(iszero,a_b)] = NaN;
+    # smatrix[find(iszero,a_b)] = NaN;
     
     
     
@@ -74,16 +74,18 @@ function assembly(int_m,a_b,n_b,i_b,m_b,n_b0,sp_v,int_id,tp_m,tind_m,
         # cinv = 1./cmax;
         # m = (strength[spcid] * cinv');
         # m0 = m .* a_b[spcid,cid];
-        # spext2 = spcid[vec(maximum(m0,2) .< 1)];
-        
-        prext_comp = Array{Bool}(length(spcid));
+        # spext2 = spcid[vec(findmax(m0,2)[1] .< 1)];
+        # 
+        prext_comp = trues(length(spcid));
         for i=1:length(spcid)
-            if any(strength[spcid[i]] .>= cmax[find(!isnan,cmatrix[i,:])]);
-                #species is NOT added to pool
+            ieats = (a_b[i,cid] .== true);
+            if any(ieats)
+                if any(strength[spcid[i]] .>= cmax[ieats]); #cmax[find(!isnan,cmatrix[i,:])]);
+                    #species is NOT added to pool
+                    prext_comp[i] = false;
+                end
+            else
                 prext_comp[i] = false;
-            else 
-                #species IS added to pool
-                prext_comp[i] = true;
             end
         end
         spext2 = spcid[prext_comp];

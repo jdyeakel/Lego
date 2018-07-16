@@ -1,10 +1,16 @@
-function assembly2(int_m,a_b,n_b,i_b,m_b,n_b0,sp_v,int_id,tp_m,tind_m,
+function assembly(int_m,a_b,n_b,i_b,m_b,n_b0,sp_v,int_id,tp_m,tind_m,
     athresh,nthresh,tmax)
     
-    S = length(sp_v) + 1;
     N = size(int_m)[1];
-    # MaxN = convert(Int64,floor(S + S*lambda));
-    cid = Array{Int64}(0);
+    v = collect(1:N);
+    cid = falses(N);
+    
+    S = length(sp_v) + 1;
+    spcid = falses(S);
+    vob = collect(S+1:N);
+    O = length(vob);
+    ocid = falses(O);
+    
     sprich = Array{Int64}(0);
     rich = Array{Int64}(0;)
     clock = Array{Float64}(0);
@@ -15,33 +21,26 @@ function assembly2(int_m,a_b,n_b,i_b,m_b,n_b0,sp_v,int_id,tp_m,tind_m,
     for i=1:size(a_b)[1]
         smatrix[i,:] = a_b[i,:] * strength[i];
     end
-    smatrix[find(iszero,a_b)] = NaN;
+    # smatrix[find(iszero,a_b)] = NaN;
     
-    spvec = collect(2:S);
-    obvec = collect(S+1:N);
-    spbk = 0;
-    obbk = 0;
+    
     t=0;
     it = 0;
-    @time while t < tmax
+    while t < tmax
         
         cid_old = copy(cid);
         #Which are species?
-        spcid = spvec[1:spbk]; #surprisingly this works with spbk=0
-        # spcid = intersect(sp_v,cid);
+        # spcid = intersect(sp_v,v[cid]);
         #Which are objects?
-        ocid = obvec[1:obbk];
-        # ocid = setdiff(cid,spcid);
-        cid = [spcid;ocid];
+        # ocid = setdiff(v[cid],spcid);
+        
         
         #COUNT POTENTIAL COLONIZERS
-        nspcid = spvec[spbk+1:N];
-        trophiclinked = int_id[vec(sum(a_b[:,[1;cid]],2) .> 0)];
-        # trophiclinked = setdiff(int_id[(sum(a_b[:,[1;cid]],2) .> 0)[:,1]],cid);
+        trophiclinked = setdiff(int_id[(sum(a_b[:,[1;v[cid]]],2) .> 0)[:,1]],v[cid]);
         #For each trophiclinked, count number of assimilate and need interactions in system
         #Determine in the proportion that already exists is >= the threshold
-        a_fill = ((sum(a_b[trophiclinked,[1;cid]],2)./sum(a_b[trophiclinked,:],2)) .>= athresh)[:,1];
-        prop_n = sum(n_b0[trophiclinked,[1;cid]],2)./sum(n_b0[trophiclinked,:],2);
+        a_fill = ((sum(a_b[trophiclinked,[1;v[cid]]],2)./sum(a_b[trophiclinked,:],2)) .>= athresh)[:,1];
+        prop_n = sum(n_b0[trophiclinked,[1;v[cid]]],2)./sum(n_b0[trophiclinked,:],2);
         #If there are no 'need' interactions, proportion filled is always 1, and will always pass
         prop_n[isnan.(prop_n)] = 1;
         n_fill = (prop_n .>= nthresh)[:,1];
@@ -57,63 +56,53 @@ function assembly2(int_m,a_b,n_b,i_b,m_b,n_b0,sp_v,int_id,tp_m,tind_m,
         #COUNT POTENTIAL EXTINCT SPECIES
         #1) By not fulfilling Eat/Need thresholds
         #Re-calculate athresh and nthresh (> athresh; >= nthresh)
-        a_fill = ((sum(a_b[spcid,[1;cid]],2)./sum(a_b[spcid,:],2)) .> athresh)[:,1];
-        prop_n = sum(n_b0[spcid,[1;cid]],2)./sum(n_b0[spcid,:],2);
+        a_fill = ((sum(a_b[v[spcid],[1;v[cid]]],2)./sum(a_b[v[spcid],:],2)) .> athresh)[:,1];
+        prop_n = sum(n_b0[v[spcid],[1;v[cid]]],2)./sum(n_b0[v[spcid],:],2);
         #If there are no 'need' interactions, proportion filled is always 1, and will always pass
         prop_n[isnan.(prop_n)] = 1;
         n_fill = (prop_n .>= nthresh)[:,1];
         #Build a list of those that pass each individual test
-        a_pass = spcid[a_fill];
-        n_pass = spcid[n_fill];
+        a_pass = v[spcid][a_fill];
+        n_pass = v[spcid][n_fill];
         #which species pass?
         survivors = intersect(a_pass,n_pass);
-        spext1 = setdiff(spcid,survivors);
+        spext1 = setdiff(v[spcid],survivors);
         
-        #2) By not having the max strength for consuming at least one resource
-        # strength = sum(n_b0[spcid,[1;cid]],2) .- sum(a_b[spcid,[1;cid]],2);
-        # smatrix = Array{Float64}(copy(a_b[spcid,[1;cid]]));
-        # for i=1:length(spcid)
-        #     smatrix[i,:] = a_b[spcid[i],[1;cid]] * strength[i];
-        # end
-        # smatrix[find(iszero,a_b[spcid,[1;cid]])] = NaN;
-        
-        # #NOTE: This is probably the slowest part
-        # prext_comp = Array{Bool}(length(spcid));
-        # for i=1:length(spcid)
-        #     cmatrix = smatrix[:,find(!iszero,a_b[spcid[i],[1;cid]])];
-        #     #Proportion of strength-max foods
-        #     propmax = sum(cmatrix[i,:] .>= findmax(cmatrix,1)[1]')/length(cmatrix[i,:]);
-        #     if propmax > 0
-        #         prext_comp[i] = false;
-        #     else
-        #         prext_comp[i] = true;
-        #     end
-        # end
-        # spext2 = spcid[prext_comp];
         
         #Alternative approach
-        prext_comp = Array{Bool}(length(spcid));
+        
         #define subset of smatrix for community at this timestep
-        cmatrix = smatrix[spcid,cid];
+        cmatrix = smatrix[v[spcid],v[cid]];
         #define max values for community at this timestep
         cmax = vec(findmax(cmatrix,1)[1]);
-        for i=1:length(spcid)
-            if any(strength[spcid[i]] .>= cmax[find(!isnan,cmatrix[i,:])]);
-                #species is NOT added to pool
+        
+        # NOTE: THis is not faster
+        # cinv = 1./cmax;
+        # m = (strength[spcid] * cinv');
+        # m0 = m .* a_b[spcid,cid];
+        # spext2 = spcid[vec(findmax(m0,2)[1] .< 1)];
+        # 
+        prext_comp = trues(length(v[spcid]));
+        for i=1:length(v[spcid])
+            ieats = (a_b[i,v[cid]] .== true);
+            if any(ieats)
+                if any(strength[v[spcid][i]] .>= cmax[ieats]); #cmax[find(!isnan,cmatrix[i,:])]);
+                    #species is NOT added to pool
+                    prext_comp[i] = false;
+                end
+            else
                 prext_comp[i] = false;
-            else 
-                #species IS added to pool
-                prext_comp[i] = true;
             end
         end
-        spext2 = spcid[prext_comp];
-        
+        spext2 = v[spcid][prext_comp];
+        # 
+        # spext2 = Array{Int64}(0);
         spext = unique([spext1;spext2]);
         lspext = length(spext);
         
         
         #COUNT POTENTIAL EXTINCT OBJECTS
-        obext = ocid[find(iszero,sum(m_b[spcid,ocid],1))];
+        obext = vob[ocid][find(iszero,sum(m_b[v[spcid],vob[ocid]],1))];
         lobext = length(obext);
         
         levents = sum([lcol;lspext;lobext]);
@@ -128,17 +117,17 @@ function assembly2(int_m,a_b,n_b,i_b,m_b,n_b0,sp_v,int_id,tp_m,tind_m,
         re = rand();
         
         if re < (lcol/levents)
-            
             #COLONIZATION FUNCTION
             c_sp = rand(col);
             #select made objects as well
             c_ob_full = find(isodd,m_b[c_sp,:]);
             #Only bring in objects that aren't already in the community
-            c_ob = setdiff(c_ob_full,cid_old);
+            c_ob = setdiff(c_ob_full,v[cid_old]);
             colonize = [c_sp;c_ob];
             #Update community
-            cid = [cid_old;colonize];
-            
+            cid[colonize] = true;
+            spcid[c_sp] = true;
+            ocid[c_ob-S] = true;
         end
         
         if re > (lcol/levents) && re < ((lcol + lspext)/levents)
@@ -146,27 +135,29 @@ function assembly2(int_m,a_b,n_b,i_b,m_b,n_b0,sp_v,int_id,tp_m,tind_m,
             #SPECIES EXTINCTION FUNCTION
             #select species to go extinct
             sp_bye = rand(spext,1);
-            cid = setdiff(cid_old,sp_bye);
-            
+            cid[sp_bye] = false;
+            spcid[sp_bye] = false;
         end
         
         if re > ((lcol + lspext)/levents)
             
             #OBJECT EXTINCTION FUNCTION
             ob_bye = rand(obext,1);
-            cid = setdiff(cid_old,ob_bye);
+            cid[ob_bye] = false;
+            ocid[ob_bye-S] = false;
             
         end
         
         #NOTE - updating CID....
         #CID[t,cid] = true;
-        push!(sprich,length(spcid));
-        push!(rich,length(cid));
+        push!(sprich,length(v[spcid]));
+        push!(rich,length(v[cid));
     end #end time steps
     
     return(
     sprich,
-    rich
+    rich,
+    clock
     )
     
 end
