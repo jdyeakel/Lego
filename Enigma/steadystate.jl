@@ -38,10 +38,13 @@ save(namespace,
 "maxits", maxits,
 "a_thresh", a_thresh,
 "n_thresh", n_thresh,
-"lambda",lambda
+"lambda",lambda,
 "probs",probs);
 
-for r = 1:reps
+@parallel for r = 1:reps
+    
+    println("reps = ",r)
+    
     int_m, tp_m, tind_m, mp_m, mind_m = intmatrixv3(S,lambda,probs);
 
     a_b,
