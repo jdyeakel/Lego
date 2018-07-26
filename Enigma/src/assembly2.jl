@@ -1,12 +1,15 @@
-function assembly(int_m,a_b,n_b,i_b,m_b,n_b0,sp_v,int_id,tp_m,tind_m,
+function assembly2(int_m,a_b,n_b,i_b,m_b,n_b0,sp_v,int_id,tp_m,tind_m,
     athresh,nthresh,tmax)
     
     N = size(int_m)[1];
     v = collect(1:N);
     cid = falses(N);
     
+    
     S = length(sp_v) + 1;
+    vsp = collect(1:S);
     spcid = falses(S);
+    
     vob = collect(S+1:N);
     O = length(vob);
     ocid = falses(O);
@@ -56,23 +59,26 @@ function assembly(int_m,a_b,n_b,i_b,m_b,n_b0,sp_v,int_id,tp_m,tind_m,
         #COUNT POTENTIAL EXTINCT SPECIES
         #1) By not fulfilling Eat/Need thresholds
         #Re-calculate athresh and nthresh (> athresh; >= nthresh)
-        a_fill = ((sum(a_b[v[spcid],[1;v[cid]]],2)./sum(a_b[v[spcid],:],2)) .> athresh)[:,1];
-        prop_n = sum(n_b0[v[spcid],[1;v[cid]]],2)./sum(n_b0[v[spcid],:],2);
+        a_fill = ((sum(a_b[vsp[spcid],[1;v[cid]]],2)./sum(a_b[vsp[spcid],:],2)) .> athresh)[:,1];
+        prop_n = sum(n_b0[vsp[spcid],[1;v[cid]]],2)./sum(n_b0[vsp[spcid],:],2);
         #If there are no 'need' interactions, proportion filled is always 1, and will always pass
         prop_n[isnan.(prop_n)] = 1;
         n_fill = (prop_n .>= nthresh)[:,1];
         #Build a list of those that pass each individual test
-        a_pass = v[spcid][a_fill];
-        n_pass = v[spcid][n_fill];
+        a_pass = vsp[spcid][a_fill];
+        n_pass = vsp[spcid][n_fill];
+        
         #which species pass?
         survivors = intersect(a_pass,n_pass);
-        spext1 = setdiff(v[spcid],survivors);
+        # spext1 = setdiff(vsp[spcid],survivors);
         
-        
+        vspext = falses(S);
+        vspext[vsp[spcid]] = true;
+        vspext[survivors] = false;
         #Alternative approach
         
         #define subset of smatrix for community at this timestep
-        cmatrix = smatrix[v[spcid],v[cid]];
+        cmatrix = smatrix[vsp[spcid],v[cid]];
         #define max values for community at this timestep
         cmax = vec(findmax(cmatrix,1)[1]);
         
@@ -82,11 +88,11 @@ function assembly(int_m,a_b,n_b,i_b,m_b,n_b0,sp_v,int_id,tp_m,tind_m,
         # m0 = m .* a_b[spcid,cid];
         # spext2 = spcid[vec(findmax(m0,2)[1] .< 1)];
         # 
-        prext_comp = trues(length(v[spcid]));
-        for i=1:length(v[spcid])
+        prext_comp = trues(length(vsp[spcid]));
+        for i=1:length(vsp[spcid])
             ieats = (a_b[i,v[cid]] .== true);
             if any(ieats)
-                if any(strength[v[spcid][i]] .>= cmax[ieats]); #cmax[find(!isnan,cmatrix[i,:])]);
+                if any(strength[vsp[spcid][i]] .>= cmax[ieats]); #cmax[find(!isnan,cmatrix[i,:])]);
                     #species is NOT added to pool
                     prext_comp[i] = false;
                 end
@@ -94,15 +100,17 @@ function assembly(int_m,a_b,n_b,i_b,m_b,n_b0,sp_v,int_id,tp_m,tind_m,
                 prext_comp[i] = false;
             end
         end
-        spext2 = v[spcid][prext_comp];
+        spext2 = vsp[spcid][prext_comp];
         # 
         # spext2 = Array{Int64}(0);
-        spext = unique([spext1;spext2]);
-        lspext = length(spext);
+        # spext = unique([spext1;spext2]);
+        vspext[spext2] = true;
+        lspext = sum(vspext);
+        spext = vsp[vspext];
         
         
         #COUNT POTENTIAL EXTINCT OBJECTS
-        obext = vob[ocid][find(iszero,sum(m_b[v[spcid],vob[ocid]],1))];
+        obext = vob[ocid][find(iszero,sum(m_b[vsp[spcid],vob[ocid]],1))];
         lobext = length(obext);
         
         levents = sum([lcol;lspext;lobext]);
@@ -150,8 +158,8 @@ function assembly(int_m,a_b,n_b,i_b,m_b,n_b0,sp_v,int_id,tp_m,tind_m,
         
         #NOTE - updating CID....
         #CID[t,cid] = true;
-        push!(sprich,length(v[spcid]));
-        push!(rich,length(v[cid));
+        push!(sprich,sum(spcid));
+        push!(rich,sum(cid));
     end #end time steps
     
     return(

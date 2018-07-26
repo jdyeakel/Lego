@@ -1,15 +1,17 @@
 function assembly(int_m,a_b,n_b,i_b,m_b,n_b0,sp_v,int_id,tp_m,tind_m,
-    athresh,nthresh,tmax)
+    athresh,nthresh,maxits)
     
     S = length(sp_v) + 1;
+    N = size(int_m)[1];
     MaxN = convert(Int64,floor(S + S*lambda));
     cid = Array{Int64}(0);
     sprich = Array{Int64}(0);
     rich = Array{Int64}(0;)
     clock = Array{Float64}(0);
+    CID = falses(N,maxits);
     
     #Build the strength matrix apriori
-    strength = (pi*sum(n_b0,2)) .- sum(a_b,2);
+    strength = (pi*sum(n_b0,2)) .- sum(a_b,2) .- sum(a_b,1);
     smatrix = Array{Float64}(copy(a_b));
     for i=1:size(a_b)[1]
         smatrix[i,:] = a_b[i,:] * strength[i];
@@ -20,7 +22,7 @@ function assembly(int_m,a_b,n_b,i_b,m_b,n_b0,sp_v,int_id,tp_m,tind_m,
     
     t=0;
     it = 0;
-    while t < tmax
+    while it < maxits
         
         cid_old = copy(cid);
         #Which are species?
@@ -76,17 +78,22 @@ function assembly(int_m,a_b,n_b,i_b,m_b,n_b0,sp_v,int_id,tp_m,tind_m,
         # m0 = m .* a_b[spcid,cid];
         # spext2 = spcid[vec(findmax(m0,2)[1] .< 1)];
         # 
+        # prext_comp = Array{Bool}(length(spcid));
         prext_comp = trues(length(spcid));
         for i=1:length(spcid)
-            ieats = (a_b[i,cid] .== true);
-            if any(ieats)
-                if any(strength[spcid[i]] .>= cmax[ieats]); #cmax[find(!isnan,cmatrix[i,:])]);
-                    #species is NOT added to pool
-                    prext_comp[i] = false;
-                end
-            else
-                prext_comp[i] = false;
-            end
+            
+            ieats = Array{Bool}(a_b[i,cid]);
+            prext_comp[i] = any(ieats)*(any(strength[spcid[i]] .>= cmax[ieats])==false);
+            
+            # #Skip pure primary producers
+            # if any(ieats)
+            #     if any(strength[spcid[i]] .>= cmax[ieats]); #cmax[find(!isnan,cmatrix[i,:])]);
+            #         #species is NOT added to pool
+            #         prext_comp[i] = false;
+            #     end
+            # else
+            #     prext_comp[i] = false;
+            # end
         end
         spext2 = spcid[prext_comp];
         # 
@@ -142,7 +149,7 @@ function assembly(int_m,a_b,n_b,i_b,m_b,n_b0,sp_v,int_id,tp_m,tind_m,
         end
         
         #NOTE - updating CID....
-        #CID[t,cid] = true;
+        CID[cid,it] = true;
         push!(sprich,length(spcid));
         push!(rich,length(cid));
     end #end time steps
@@ -150,7 +157,8 @@ function assembly(int_m,a_b,n_b,i_b,m_b,n_b0,sp_v,int_id,tp_m,tind_m,
     return(
     sprich,
     rich,
-    clock
+    clock,
+    CID
     )
     
 end
