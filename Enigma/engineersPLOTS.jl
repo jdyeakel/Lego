@@ -131,10 +131,23 @@ rich = SharedArray{Int64}(llamb,reps,maxits);
     end
 end
 
+msprich = Array{Float64}(llamb,maxits-1);
+for t=1:maxits-1
+    for l=1:llamb
+        msprich[l,t] = mean(sprich[l,:,t]);
+    end
+end
+
+    
 namespace = string("$(homedir())/2014_Lego/Enigma/figures/sprichengineers.pdf");
+timeseq = collect(1:maxits-1);
 R"""
+library(RColorBrewer)
+library(fields)
+pal = rev(brewer.pal(9,"Blues"))
+pal = colorRampPalette(rev(brewer.pal(9,"Blues")))(100)
 pdf($namespace,width=8,height=7)
-image($(sprich[:,:,maxits]))
+image.plot(y=$lambdavec,x=$timeseq,z=$(msprich'),ylab='Expected num. objects/species',xlab='Time',log='x',col=pal)
 dev.off()
 """
 
