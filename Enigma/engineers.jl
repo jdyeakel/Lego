@@ -20,7 +20,7 @@ llamb = length(lambdavec);
 reps = 100;
 S = 400;
 
-maxits = 2000;
+maxits = 5000;
 
 # S = 400;
 probs = [
@@ -86,8 +86,6 @@ its = llamb*reps;
     namespace = string("$(homedir())/2014_Lego/Enigma/data/engineers/cid_",r,".jld");
     save(namespace,
     "CID", CID);
-        
-        # println("reps = ",r)
 end
 
 
