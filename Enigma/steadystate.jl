@@ -9,7 +9,7 @@
 @everywhere include("$(homedir())/Dropbox/PostDoc/2014_Lego/Enigma/src/preamble_defs.jl")
 @everywhere include("$(homedir())/Dropbox/PostDoc/2014_Lego/Enigma/src/assembly.jl")
 
-reps = 100;
+reps = 5000;
 S = 400;
 
 maxits = 2000;
@@ -36,14 +36,12 @@ save(namespace,
 "reps", reps,
 "S", S,
 "maxits", maxits,
-"a_thresh", a_thresh,
-"n_thresh", n_thresh,
+"athresh", athresh,
+"nthresh", nthresh,
 "lambda",lambda,
 "probs",probs);
 
-@parallel for r = 1:reps
-    
-    println("reps = ",r)
+@sync @parallel for r = 1:reps
     
     int_m, tp_m, tind_m, mp_m, mind_m = intmatrixv3(S,lambda,probs);
 
@@ -64,7 +62,7 @@ save(namespace,
     "mp_m", mp_m,
     "mind_m", mind_m);
 
-    @time sprich,rich,clock,CID = assembly(
+    sprich,rich,clock,CID = assembly(
         int_m,a_b,n_b,i_b,m_b,n_b0,sp_v,int_id,tp_m,tind_m,
         athresh,nthresh,maxits);
     
@@ -73,6 +71,8 @@ save(namespace,
     # namespace = string("$(homedir())//2014_Lego/Anime/data/simbasic/cid_",r,".jld");
     save(namespace,
     "CID", CID);
+    
+    # println("reps = ",r)
 end
 
 
