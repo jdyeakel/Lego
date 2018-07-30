@@ -36,7 +36,7 @@ nthresh = 0.5;
 
 #Save a small file to record the settings of the simulation
 # namespace = string("$(homedir())/Dropbox/PostDoc/2014_Lego/Enigma/data/engineers/sim_settings.jld");
-namespace = string("/$(homedir())/2014_Lego/Enigma/data/engineers/sim_settings.jld");
+namespace = string("$(homedir())/2014_Lego/Enigma/data/engineers/sim_settings.jld");
 save(namespace,
 "reps", reps,
 "S", S,
@@ -67,7 +67,7 @@ its = llamb*reps;
     int_id = preamble_defs(int_m);
     
     # namespace = string("$(homedir())/Dropbox/PostDoc/2014_Lego/Enigma/data/engineers/int_m_",a,"_",b,".jld");
-    namespace = string("/$(homedir())/2014_Lego/Enigma/data/engineers/int_m_",a,"_",b,".jld");
+    namespace = string("$(homedir())/2014_Lego/Enigma/data/engineers/int_m_",a,"_",b,".jld");
     save(namespace,
     "int_m", int_m,
     "tp_m", tp_m,
