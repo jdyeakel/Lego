@@ -32,9 +32,7 @@ p_a=0.003
 #expected objects per species
 athresh = 0;
 nthresh = 0.5;
-MaxN = convert(Int64,floor(S + S*lambda));
 
-# cidr = SharedArray{Bool}(reps,MaxN,maxits);
 
 #Save a small file to record the settings of the simulation
 # namespace = string("$(homedir())/Dropbox/PostDoc/2014_Lego/Enigma/data/engineers/sim_settings.jld");
