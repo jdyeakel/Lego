@@ -63,7 +63,7 @@ save(namespace,
     "mind_m", mind_m);
 
     sprich,rich,clock,CID = assembly(
-        int_m,a_b,n_b,i_b,m_b,n_b0,sp_v,int_id,tp_m,tind_m,
+        int_m,a_b,n_b,i_b,m_b,n_b0,sp_v,int_id,tp_m,tind_m,lambda,
         athresh,nthresh,maxits);
     
     #Save individually so data can be loaded in parallel
