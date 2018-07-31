@@ -164,3 +164,142 @@ pdf($namespace,width=8,height=7)
 image.plot(y=$lambdavec,x=$timeseq,z=$(mrich),ylab='Expected num. objects+species',xlab='Time',log='x',col=pal,useRaster=TRUE)
 dev.off()
 """
+
+
+
+
+namespace = string("$(homedir())/2014_Lego/Enigma/data/engineers/sim_settings.jld");
+d1 = load(namespace);
+reps = d1["reps"];
+S = d1["S"];
+lambdavec = d1["lambdavec"];
+maxits = d1["maxits"];
+
+
+llamb = length(lambdavec);
+its = llamb*reps;
+
+lcdf = 500;
+EXTCDF = SharedArray{Int64}(its,lcdf);
+extratevec = SharedArray{Float64}(its,lcdf);
+engineers = SharedArray{Int64}(its,maxits);
+sprich = SharedArray{Int64}(its,maxits);
+rich = SharedArray{Int64}(its,maxits);
+
+@sync @parallel for i = 0:(its - 1)    
+    #Across lambdavec
+    a = Int64(floor(i/reps)) + 1;
+    #Across reps
+    b = mod(i,reps) + 1;
+    
+    ii = i + 1;
+    #Read in the interaction matrix
+    # namespace = string("$(homedir())/Dropbox/Postdoc/2014_Lego/Anime/data/simbasic/int_m",r,".jld");
+
+    namespace_rep = string("$(homedir())/2014_Lego/Enigma/data/engineers/int_m_",a,"_",b,".jld");
+    
+    d2 = load(namespace_rep);
+    int_m = d2["int_m"];
+    tp_m = d2["tp_m"];
+    tind_m = d2["tind_m"];
+    mp_m = d2["mp_m"];
+    mind_m = d2["mind_m"];
+    
+    namespace_cid = string("$(homedir())/2014_Lego/Enigma/data/engineers/cid_",a,"_",b,".jld");
+    d3 = load(namespace_cid);
+    CID = d3["CID"];
+    dt = d3["clock"];
+    
+    a_b,
+    n_b,
+    i_b,
+    m_b,
+    n_b0,
+    sp_v,
+    int_id = preamble_defs(int_m);
+    
+    
+    
+    #Calculate CDF of extinction cascade size
+    
+    for t=1:maxits
+        sprich[ii,t] = sum(CID[1:S,t]);
+        rich[ii,t] = sum(CID[:,t]);
+        #how many engineers?
+        spcid = find(isodd,CID[1:S,t]);
+        engineers[ii,t] = sum(sum(m_b[spcid,:],2) .> 0);
+    end
+    
+    spdiff = diff(sprich[ii,:]);
+    rdiff = diff(rich[ii,:]);
+    
+    colpos = find(x->x>0,spdiff);
+    extpos = find(x->x<0,spdiff);
+    extinctions = spdiff[extpos].*-1;
+    colonizations = spdiff[colpos];
+    
+    extrate = extinctions ./ dt[extpos];
+    colrate = colonizations ./ dt[colpos];
+    
+    # extratevec = collect(0:0.0001:maximum(extrate));
+    extratevec[ii,:] = collect(range(0,maximum(extrate)/lcdf,lcdf));
+    
+    extcdf = Array{Int64}(lcdf);
+    for j=1:lcdf
+        extcdf[j] = length(find(x->x<extratevec[ii,j],extrate))
+    end
+    
+    EXTCDF[ii,:] = extcdf;    
+    
+    # if mod(r,1) == 0
+    #     println("reps =",r)
+    # end
+end
+
+objects = rich .- sprich;
+mobj = vec(mean(objects[:,maxits-100:maxits],2));
+obsort = sortperm(mobj);
+meng = vec(mean(engineers[:,maxits-100:maxits],2));
+engsort = sortperm(meng);
+
+#Convert frequencies to probabilities
+EXTCDFpr = Array{Float64}(reps,lcdf);
+for i=1:reps
+    EXTCDFpr[i,:] = Array(EXTCDF[i,:])/maximum(Array(EXTCDF[i,:]));
+end
+
+
+sortalg = engsort;
+namespace = string("$(homedir())/2014_Lego/Enigma/figures/eng/engcdf2.pdf");
+R"""
+library(RColorBrewer)
+pdf($namespace,width=8,height=6)
+pal = colorRampPalette(rev(brewer.pal(9,"Spectral")))($reps)
+plot($(extratevec[sortalg[reps],:]),$(EXTCDFpr[sortalg[reps],:]),type='l',col=paste(pal[$reps],'60',sep=''),xlim=c(0.01,1),ylim=c(0,1),log='x',xlab='Extinction rate',ylab='Cumulative Probability')
+legend(x=0.6,y=0.5,legend=sapply(seq(floor(min($meng)),ceiling(max($meng)),length.out=10),floor),col=colorRampPalette(rev(brewer.pal(9,"Spectral")))(10),cex=0.8,pch=16,bty='n',title='Num. Eng.')
+"""
+for i=reps-1:-1:1
+    R"""
+    lines($(extratevec[sortalg[i],:]),$(EXTCDFpr[sortalg[i],:]),col=paste(pal[$i],'60',sep=''),log='x')
+    """
+end
+R"dev.off()"
+
+
+sortalg = obsort;
+namespace = string("$(homedir())/2014_Lego/Enigma/figures/eng/objcdf2.pdf");
+R"""
+library(RColorBrewer)
+pdf($namespace,width=8,height=6)
+pal = colorRampPalette(rev(brewer.pal(9,"Spectral")))($reps)
+plot($(extratevec[sortalg[reps],:]),$(EXTCDFpr[sortalg[reps],:]),type='l',col=paste(pal[$reps],'60',sep=''),xlim=c(0.01,1),ylim=c(0,1),log='x',xlab='Extinction rate',ylab='Cumulative Probability')
+legend(x=0.6,y=0.5,legend=sapply(seq(floor(min($mobj)),ceiling(max($mobj)),length.out=10),floor),col=colorRampPalette(rev(brewer.pal(9,"Spectral")))(10),cex=0.8,pch=16,bty='n',title='Num. Obj.')
+"""
+for i=reps-1:-1:1
+    R"""
+    lines($(extratevec[sortalg[i],:]),$(EXTCDFpr[sortalg[i],:]),col=paste(pal[$i],'60',sep=''),log='x')
+    """
+end
+R"dev.off()"
+
+

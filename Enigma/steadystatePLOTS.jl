@@ -497,17 +497,42 @@ obsort = sortperm(mobj);
 meng = vec(mean(engineers[:,maxits-100:maxits],2));
 engsort = sortperm(meng);
 
+#Convert frequencies to probabilities
+EXTCDFpr = Array{Float64}(reps,lcdf);
+for i=1:reps
+    EXTCDFpr[i,:] = Array(EXTCDF[i,:])/maximum(Array(EXTCDF[i,:]));
+end
+
+
 sortalg = engsort;
 namespace = string("$(homedir())/Dropbox/PostDoc/2014_Lego/Enigma/figures/engcdf.pdf");
 R"""
 library(RColorBrewer)
 pdf($namespace,width=8,height=6)
 pal = colorRampPalette(rev(brewer.pal(9,"Spectral")))($reps)
-plot($(extratevec[sortalg[reps],:]),$(EXTCDF[sortalg[reps],:]),type='l',col=paste(pal[$reps],'60',sep=''),xlim=c(0.01,1),ylim=c(0,2000),log='x')
+plot($(extratevec[sortalg[reps],:]),$(EXTCDFpr[sortalg[reps],:]),type='l',col=paste(pal[$reps],'60',sep=''),xlim=c(0.01,1),ylim=c(0,1),log='x',xlab='Extinction rate',ylab='Cumulative Probability')
+legend(x=0.6,y=0.5,legend=sapply(seq(floor(min($meng)),ceiling(max($meng)),length.out=10),floor),col=colorRampPalette(rev(brewer.pal(9,"Spectral")))(10),cex=0.8,pch=16,bty='n',title='Num. Eng.')
 """
 for i=reps-1:-1:1
     R"""
-    lines($(extratevec[sortalg[i],:]),$(EXTCDF[sortalg[i],:]),col=paste(pal[$i],'60',sep=''),log='y')
+    lines($(extratevec[sortalg[i],:]),$(EXTCDFpr[sortalg[i],:]),col=paste(pal[$i],'60',sep=''),log='x')
+    """
+end
+R"dev.off()"
+
+
+sortalg = obsort;
+namespace = string("$(homedir())/Dropbox/PostDoc/2014_Lego/Enigma/figures/objcdf.pdf");
+R"""
+library(RColorBrewer)
+pdf($namespace,width=8,height=6)
+pal = colorRampPalette(rev(brewer.pal(9,"Spectral")))($reps)
+plot($(extratevec[sortalg[reps],:]),$(EXTCDFpr[sortalg[reps],:]),type='l',col=paste(pal[$reps],'60',sep=''),xlim=c(0.01,1),ylim=c(0,1),log='x',xlab='Extinction rate',ylab='Cumulative Probability')
+legend(x=0.6,y=0.5,legend=sapply(seq(floor(min($mobj)),ceiling(max($mobj)),length.out=10),floor),col=colorRampPalette(rev(brewer.pal(9,"Spectral")))(10),cex=0.8,pch=16,bty='n',title='Num. Obj.')
+"""
+for i=reps-1:-1:1
+    R"""
+    lines($(extratevec[sortalg[i],:]),$(EXTCDFpr[sortalg[i],:]),col=paste(pal[$i],'60',sep=''),log='x')
     """
 end
 R"dev.off()"

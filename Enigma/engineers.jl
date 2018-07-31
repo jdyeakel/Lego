@@ -83,5 +83,6 @@ its = llamb*reps;
     # namespace = string("$(homedir())/Dropbox/PostDoc/2014_Lego/Enigma/data/engineers/cid_",r,".jld");
     namespace = string("$(homedir())/2014_Lego/Enigma/data/engineers/cid_",a,"_",b,".jld");
     save(namespace,
-    "CID", CID);
+    "CID", CID,
+    "clock",clock);
 end
