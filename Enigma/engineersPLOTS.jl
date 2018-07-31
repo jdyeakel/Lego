@@ -22,21 +22,21 @@ maxits = d1["maxits"];
 llamb = length(lambdavec);
 its = llamb*reps;
 
-seq = [collect(2:50);100;200;1000;2000;];
-tseqmax = length(seq);
-
-rich = SharedArray{Int64}(llamb,reps,tseqmax);
-sprich = SharedArray{Int64}(llamb,reps,tseqmax);
-turnover = SharedArray{Float64}(llamb,reps,tseqmax);
-res_overlap = SharedArray{Float64}(llamb,reps,tseqmax);
-user_overlap = SharedArray{Float64}(llamb,reps,tseqmax);
-conn = SharedArray{Float64}(llamb,reps,tseqmax);
-conn_ind = SharedArray{Float64}(llamb,reps,tseqmax);
-avgdegree = SharedArray{Float64}(llamb,reps,tseqmax);
-res_overlap_dist = SharedArray{Float64}(llamb,reps,tseqmax,S);
-user_overlap_dist = SharedArray{Float64}(llamb,reps,tseqmax,S);
-degrees = SharedArray{Int64}(llamb,reps,tseqmax,S);
-trophic = SharedArray{Float64}(llamb,reps,tseqmax,S);
+# seq = [collect(2:50);100;200;1000;2000;];
+# tseqmax = length(seq);
+# 
+# rich = SharedArray{Int64}(llamb,reps,tseqmax);
+# sprich = SharedArray{Int64}(llamb,reps,tseqmax);
+# turnover = SharedArray{Float64}(llamb,reps,tseqmax);
+# res_overlap = SharedArray{Float64}(llamb,reps,tseqmax);
+# user_overlap = SharedArray{Float64}(llamb,reps,tseqmax);
+# conn = SharedArray{Float64}(llamb,reps,tseqmax);
+# conn_ind = SharedArray{Float64}(llamb,reps,tseqmax);
+# avgdegree = SharedArray{Float64}(llamb,reps,tseqmax);
+# res_overlap_dist = SharedArray{Float64}(llamb,reps,tseqmax,S);
+# user_overlap_dist = SharedArray{Float64}(llamb,reps,tseqmax,S);
+# degrees = SharedArray{Int64}(llamb,reps,tseqmax,S);
+# trophic = SharedArray{Float64}(llamb,reps,tseqmax,S);
 
 # 
 # @sync @parallel for i = 0:(its - 1)
@@ -131,14 +131,16 @@ rich = SharedArray{Int64}(llamb,reps,maxits);
     end
 end
 
-msprich = Array{Float64}(llamb,maxits-1);
+msprich = Array{Float64}(maxits-1,llamb);
+mrich = Array{Float64}(maxits-1,llamb);
 for t=1:maxits-1
     for l=1:llamb
-        msprich[l,t] = mean(sprich[l,:,t]);
+        msprich[t,l] = mean(sprich[l,:,t]);
+        mrich[t,l] = mean(rich[l,:,t]);
     end
 end
 
-    
+
 namespace = string("$(homedir())/2014_Lego/Enigma/figures/sprichengineers.pdf");
 timeseq = collect(1:maxits-1);
 R"""
@@ -147,7 +149,18 @@ library(fields)
 pal = rev(brewer.pal(9,"Blues"))
 pal = colorRampPalette(rev(brewer.pal(9,"Blues")))(100)
 pdf($namespace,width=8,height=7)
-image.plot(y=$lambdavec,x=$timeseq,z=$(msprich'),ylab='Expected num. objects/species',xlab='Time',log='x',col=pal)
+image.plot(y=$lambdavec,x=$timeseq,z=$(msprich),ylab='Expected num. objects/species',xlab='Time',log='x',col=pal)
 dev.off()
 """
 
+namespace = string("$(homedir())/2014_Lego/Enigma/figures/richengineers.pdf");
+timeseq = collect(1:maxits-1);
+R"""
+library(RColorBrewer)
+library(fields)
+pal = rev(brewer.pal(9,"Blues"))
+pal = colorRampPalette(rev(brewer.pal(9,"Blues")))(100)
+pdf($namespace,width=8,height=7)
+image.plot(y=$lambdavec,x=$timeseq,z=$(mrich),ylab='Expected num. objects+species',xlab='Time',log='x',col=pal)
+dev.off()
+"""

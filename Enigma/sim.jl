@@ -20,13 +20,13 @@ maxits = 2000;
 
 # S = 400;
 probs = [
-p_n=0.003,
+p_n=0.001,
 p_a=0.003
 # p_n = 0.02,
 # p_a = 0.02
 ];
 #expected objects per species
-lambda = 0.5;
+lambda = 2;
 athresh = 0;
 nthresh = 0.5;
 MaxN = convert(Int64,floor(S + S*lambda));
@@ -51,10 +51,10 @@ int_id = preamble_defs(int_m);
 
 namespace = "$(homedir())/Dropbox/PostDoc/2014_Lego/Enigma/figures/sprich.pdf"
 R"""
-pdf($namespace,width=6,height=5)
+#pdf($namespace,width=6,height=5)*/
 plot($clock,$sprich,type='l')
 lines($clock,$(rich .- sprich),col='gray')
-dev.off()
+#dev.off()
 """
 
 tstep = maxits;

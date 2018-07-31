@@ -17,14 +17,14 @@
 lambdavec = collect(0:0.1:2.0)
 llamb = length(lambdavec);
 
-reps = 100;
+reps = 200;
 S = 400;
 
 maxits = 5000;
 
 # S = 400;
 probs = [
-p_n=0.003,
+p_n=0.001,
 p_a=0.003
 # p_n = 0.02,
 # p_a = 0.02
@@ -85,5 +85,3 @@ its = llamb*reps;
     save(namespace,
     "CID", CID);
 end
-
-
