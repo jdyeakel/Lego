@@ -9,14 +9,14 @@
 @everywhere include("$(homedir())/Dropbox/PostDoc/2014_Lego/Enigma/src/preamble_defs.jl")
 @everywhere include("$(homedir())/Dropbox/PostDoc/2014_Lego/Enigma/src/assembly.jl")
 
-reps = 5000;
+reps = 1000;
 S = 400;
 
-maxits = 2000;
+maxits = 4000;
 
 # S = 400;
 probs = [
-p_n=0.003,
+p_n=0.001,
 p_a=0.003
 # p_n = 0.02,
 # p_a = 0.02
@@ -24,7 +24,7 @@ p_a=0.003
 #expected objects per species
 lambda = 0.5;
 athresh = 0;
-nthresh = 0.5;
+nthresh = 1.0;
 MaxN = convert(Int64,floor(S + S*lambda));
 
 # cidr = SharedArray{Bool}(reps,MaxN,maxits);
@@ -70,7 +70,8 @@ save(namespace,
     namespace = string("$(homedir())/Dropbox/PostDoc/2014_Lego/Enigma/data/steadystate/cid_",r,".jld");
     # namespace = string("$(homedir())//2014_Lego/Anime/data/simbasic/cid_",r,".jld");
     save(namespace,
-    "CID", CID);
+    "CID", CID,
+    "clock",clock);
     
     # println("reps = ",r)
 end

@@ -149,7 +149,7 @@ library(fields)
 pal = rev(brewer.pal(9,"Blues"))
 pal = colorRampPalette(rev(brewer.pal(9,"Blues")))(100)
 pdf($namespace,width=8,height=7)
-image.plot(y=$lambdavec,x=$timeseq,z=$(msprich),ylab='Expected num. objects/species',xlab='Time',log='x',col=pal)
+image.plot(y=$lambdavec,x=$timeseq,z=$(msprich),ylab='Expected num. objects/species',xlab='Time',log='x',col=pal,useRaster=TRUE)
 dev.off()
 """
 
@@ -161,6 +161,6 @@ library(fields)
 pal = rev(brewer.pal(9,"Blues"))
 pal = colorRampPalette(rev(brewer.pal(9,"Blues")))(100)
 pdf($namespace,width=8,height=7)
-image.plot(y=$lambdavec,x=$timeseq,z=$(mrich),ylab='Expected num. objects+species',xlab='Time',log='x',col=pal)
+image.plot(y=$lambdavec,x=$timeseq,z=$(mrich),ylab='Expected num. objects+species',xlab='Time',log='x',col=pal,useRaster=TRUE)
 dev.off()
 """

@@ -409,3 +409,108 @@ for i=2:length(seq2)
     """
 end
 R"dev.off()"
+
+
+
+#Extinction and colonization rates
+#Number of engineers vs. size of extinction cascade
+
+namespace = string("$(homedir())/Dropbox/PostDoc/2014_Lego/Enigma/data/steadystate/sim_settings.jld");
+d1 = load(namespace);
+reps = d1["reps"];
+S = d1["S"];
+maxits = d1["maxits"];
+
+lcdf = 500;
+EXTCDF = SharedArray{Int64}(reps,lcdf);
+extratevec = SharedArray{Float64}(reps,lcdf);
+engineers = SharedArray{Int64}(reps,maxits);
+sprich = SharedArray{Int64}(reps,maxits);
+rich = SharedArray{Int64}(reps,maxits);
+@sync @parallel for r=1:reps
+    #Read in the interaction matrix
+    # namespace = string("$(homedir())/Dropbox/Postdoc/2014_Lego/Anime/data/simbasic/int_m",r,".jld");
+
+    namespace_rep = string("$(homedir())/Dropbox/Postdoc/2014_Lego/Enigma/data/steadystate/int_m",r,".jld");
+    
+    d2 = load(namespace_rep);
+    int_m = d2["int_m"];
+    tp_m = d2["tp_m"];
+    tind_m = d2["tind_m"];
+    mp_m = d2["mp_m"];
+    mind_m = d2["mind_m"];
+    
+    namespace_cid = string("$(homedir())/Dropbox/Postdoc/2014_Lego/Enigma/data/steadystate/cid_",r,".jld");
+    d3 = load(namespace_cid);
+    CID = d3["CID"];
+    dt = d3["clock"];
+    
+    a_b,
+    n_b,
+    i_b,
+    m_b,
+    n_b0,
+    sp_v,
+    int_id = preamble_defs(int_m);
+    
+    
+    
+    #Calculate CDF of extinction cascade size
+    
+    for t=1:maxits
+        sprich[r,t] = sum(CID[1:S,t]);
+        rich[r,t] = sum(CID[:,t]);
+        #how many engineers?
+        spcid = find(isodd,CID[1:S,t]);
+        engineers[r,t] = sum(sum(m_b[spcid,:],2) .> 0);
+    end
+    
+    spdiff = diff(sprich[r,:]);
+    rdiff = diff(rich[r,:]);
+    
+    colpos = find(x->x>0,spdiff);
+    extpos = find(x->x<0,spdiff);
+    extinctions = spdiff[extpos].*-1;
+    colonizations = spdiff[colpos];
+    
+    extrate = extinctions ./ dt[extpos];
+    colrate = colonizations ./ dt[colpos];
+    
+    # extratevec = collect(0:0.0001:maximum(extrate));
+    extratevec[r,:] = collect(range(0,maximum(extrate)/lcdf,lcdf));
+    
+    extcdf = Array{Int64}(lcdf);
+    for i=1:lcdf
+        extcdf[i] = length(find(x->x<extratevec[r,i],extrate))
+    end
+    
+    EXTCDF[r,:] = extcdf;    
+    
+    # if mod(r,1) == 0
+    #     println("reps =",r)
+    # end
+end
+
+objects = rich .- sprich;
+mobj = vec(mean(objects[:,maxits-100:maxits],2));
+obsort = sortperm(mobj);
+meng = vec(mean(engineers[:,maxits-100:maxits],2));
+engsort = sortperm(meng);
+
+sortalg = engsort;
+namespace = string("$(homedir())/Dropbox/PostDoc/2014_Lego/Enigma/figures/engcdf.pdf");
+R"""
+library(RColorBrewer)
+pdf($namespace,width=8,height=6)
+pal = colorRampPalette(rev(brewer.pal(9,"Spectral")))($reps)
+plot($(extratevec[sortalg[reps],:]),$(EXTCDF[sortalg[reps],:]),type='l',col=paste(pal[$reps],'60',sep=''),xlim=c(0.01,1),ylim=c(0,2000),log='x')
+"""
+for i=reps-1:-1:1
+    R"""
+    lines($(extratevec[sortalg[i],:]),$(EXTCDF[sortalg[i],:]),col=paste(pal[$i],'60',sep=''),log='y')
+    """
+end
+R"dev.off()"
+
+
+
