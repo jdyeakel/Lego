@@ -26,9 +26,9 @@ p_a=0.003
 # p_a = 0.02
 ];
 #expected objects per species
-lambda = 2;
+lambda = 4;
 athresh = 0;
-nthresh = 0.5;
+nthresh = 1.0;
 MaxN = convert(Int64,floor(S + S*lambda));
 
 int_m, tp_m, tind_m, mp_m, mind_m = intmatrixv3(S,lambda,probs);

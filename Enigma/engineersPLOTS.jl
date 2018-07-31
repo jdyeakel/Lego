@@ -141,7 +141,7 @@ for t=1:maxits-1
 end
 
 
-namespace = string("$(homedir())/2014_Lego/Enigma/figures/sprichengineers.pdf");
+namespace = string("$(homedir())/2014_Lego/Enigma/figures/eng/sprichengineers.pdf");
 timeseq = collect(1:maxits-1);
 R"""
 library(RColorBrewer)
@@ -153,7 +153,7 @@ image.plot(y=$lambdavec,x=$timeseq,z=$(msprich),ylab='Expected num. objects/spec
 dev.off()
 """
 
-namespace = string("$(homedir())/2014_Lego/Enigma/figures/richengineers.pdf");
+namespace = string("$(homedir())/2014_Lego/Enigma/figures/eng/richengineers.pdf");
 timeseq = collect(1:maxits-1);
 R"""
 library(RColorBrewer)

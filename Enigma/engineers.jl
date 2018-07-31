@@ -14,7 +14,7 @@
 @everywhere include("$(homedir())/2014_Lego/Enigma/src/assembly.jl")
 
 
-lambdavec = collect(0:0.1:2.0)
+lambdavec = collect(0:0.1:5.0)
 llamb = length(lambdavec);
 
 reps = 200;
@@ -31,7 +31,7 @@ p_a=0.003
 ];
 #expected objects per species
 athresh = 0;
-nthresh = 0.5;
+nthresh = 1.0;
 
 
 #Save a small file to record the settings of the simulation
