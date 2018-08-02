@@ -238,66 +238,75 @@ rich = SharedArray{Int64}(its,maxits);
     extinctions = spdiff[extpos].*-1;
     colonizations = spdiff[colpos];
     
-    extrate = extinctions ./ dt[extpos];
-    colrate = colonizations ./ dt[colpos];
-    
-    # extratevec = collect(0:0.0001:maximum(extrate));
-    extratevec[ii,:] = collect(range(0,maximum(extrate)/lcdf,lcdf));
-    
-    extcdf = Array{Int64}(lcdf);
-    for j=1:lcdf
-        extcdf[j] = length(find(x->x<extratevec[ii,j],extrate))
+    if length(extinctions) > 0
+        extrate = extinctions ./ dt[extpos];
+        colrate = colonizations ./ dt[colpos];
+        
+        # extratevec = collect(0:0.0001:maximum(extrate));
+        extratevec[ii,:] = collect(range(0,maximum(extrate)/lcdf,lcdf));
+        
+        extcdf = Array{Int64}(lcdf);
+        for j=1:lcdf
+            extcdf[j] = length(find(x->x<extratevec[ii,j],extrate));
+        end
+        
+        EXTCDF[ii,:] = extcdf;    
+    else
+        extratevec[ii,:] = repeat([0],inner=lcdf);
+        EXTCDF[ii,:] = repeat([0],inner=lcdf);
     end
-    
-    EXTCDF[ii,:] = extcdf;    
-    
     # if mod(r,1) == 0
     #     println("reps =",r)
     # end
 end
 
+its = reps*llamb;
 objects = rich .- sprich;
 mobj = vec(mean(objects[:,maxits-100:maxits],2));
-obsort = sortperm(mobj);
 meng = vec(mean(engineers[:,maxits-100:maxits],2));
+
+obsort = sortperm(mobj);
 engsort = sortperm(meng);
+# 
+# keepeng = find(x->x>=2,meng);
+# keepob = find(x->x>=2,mobj);
 
 #Convert frequencies to probabilities
-EXTCDFpr = Array{Float64}(reps,lcdf);
-for i=1:reps
+EXTCDFpr = Array{Float64}(its,lcdf);
+for i=1:its
     EXTCDFpr[i,:] = Array(EXTCDF[i,:])/maximum(Array(EXTCDF[i,:]));
 end
 
-
-sortalg = engsort;
+# its = last(keepeng);
+# sortalg = engsort;
 namespace = string("$(homedir())/2014_Lego/Enigma/figures/eng/engcdf2.pdf");
 R"""
 library(RColorBrewer)
 pdf($namespace,width=8,height=6)
-pal = colorRampPalette(rev(brewer.pal(9,"Spectral")))($reps)
-plot($(extratevec[sortalg[reps],:]),$(EXTCDFpr[sortalg[reps],:]),type='l',col=paste(pal[$reps],'60',sep=''),xlim=c(0.01,1),ylim=c(0,1),log='x',xlab='Extinction rate',ylab='Cumulative Probability')
-legend(x=0.6,y=0.5,legend=sapply(seq(floor(min($meng)),ceiling(max($meng)),length.out=10),floor),col=colorRampPalette(rev(brewer.pal(9,"Spectral")))(10),cex=0.8,pch=16,bty='n',title='Num. Eng.')
+pal = colorRampPalette(rev(brewer.pal(9,"Spectral")))($its)
+plot($(extratevec[1,:]),$(EXTCDFpr[1,:]),type='l',col=paste(pal[1],'40',sep=''),xlim=c(0.0001,1),ylim=c(0,1),log='x',xlab='Extinction rate',ylab='Cumulative Probability')
+legend(x=0.4,y=0.5,legend=sapply(seq(floor(min($(meng))),ceiling(max($(meng))),length.out=10),floor),col=colorRampPalette(rev(brewer.pal(9,"Spectral")))(10),cex=0.8,pch=16,bty='n',title='Num. Eng.')
 """
-for i=reps-1:-1:1
+for i=engsort
     R"""
-    lines($(extratevec[sortalg[i],:]),$(EXTCDFpr[sortalg[i],:]),col=paste(pal[$i],'60',sep=''),log='x')
+    lines($(extratevec[i,:]),$(EXTCDFpr[i,:]),col=paste(pal[$i],'40',sep=''))
     """
 end
 R"dev.off()"
 
-
-sortalg = obsort;
+# its = last(keepobj);
+# sortalg = obsort;
 namespace = string("$(homedir())/2014_Lego/Enigma/figures/eng/objcdf2.pdf");
 R"""
 library(RColorBrewer)
 pdf($namespace,width=8,height=6)
-pal = colorRampPalette(rev(brewer.pal(9,"Spectral")))($reps)
-plot($(extratevec[sortalg[reps],:]),$(EXTCDFpr[sortalg[reps],:]),type='l',col=paste(pal[$reps],'60',sep=''),xlim=c(0.01,1),ylim=c(0,1),log='x',xlab='Extinction rate',ylab='Cumulative Probability')
-legend(x=0.6,y=0.5,legend=sapply(seq(floor(min($mobj)),ceiling(max($mobj)),length.out=10),floor),col=colorRampPalette(rev(brewer.pal(9,"Spectral")))(10),cex=0.8,pch=16,bty='n',title='Num. Obj.')
+pal = colorRampPalette(rev(brewer.pal(9,"Spectral")))($its)
+plot($(extratevec[1,:]),$(EXTCDFpr[1,:]),type='l',col=paste(pal[1],'40',sep=''),xlim=c(0.0001,1),ylim=c(0,1),log='x',xlab='Extinction rate',ylab='Cumulative Probability')
+legend(x=0.4,y=0.5,legend=sapply(seq(floor(min($(mobj))),ceiling(max($(mobj))),length.out=10),floor),col=colorRampPalette(rev(brewer.pal(9,"Spectral")))(10),cex=0.8,pch=16,bty='n',title='Num. Obj.')
 """
-for i=reps-1:-1:1
+for i=obsort
     R"""
-    lines($(extratevec[sortalg[i],:]),$(EXTCDFpr[sortalg[i],:]),col=paste(pal[$i],'60',sep=''),log='x')
+    lines($(extratevec[i,:]),$(EXTCDFpr[i,:]),col=paste(pal[$i],'40',sep=''))
     """
 end
 R"dev.off()"

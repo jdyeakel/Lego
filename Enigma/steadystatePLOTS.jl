@@ -17,7 +17,7 @@ reps = d1["reps"];
 S = d1["S"];
 maxits = d1["maxits"];
 
-seq = [collect(2:50);100;200;1000;2000;];
+seq = [collect(2:50);100;200;1000;2000;4000];
 tseqmax = length(seq);
 
 rich = SharedArray{Int64}(reps,tseqmax);
@@ -151,7 +151,7 @@ for r=1:reps
     init_overlap_rm = init_overlap[r,find(x->x>0,init_overlap[r,:])];
     init_overlap_trim[r,1:length(init_overlap_rm)] = init_overlap_rm;
 end
-bins = [2;5;10;50;100;1000;2000];
+bins = [2;5;10;50;100;1000;2000;4000];
 initsteps = bins[bins.<lfseq]; #use these locations for init
 laststeps = bins[bins.>=lfseq]; #use these locations for the rest
 lastbins = indexin(laststeps,seq);
@@ -192,7 +192,7 @@ for r=1:reps
     init_overlap_rm = init_overlap[r,find(x->x>0,init_overlap[r,:])];
     init_overlap_trim[r,1:length(init_overlap_rm)] = init_overlap_rm;
 end
-bins = [2;5;10;50;100;1000;2000];
+bins = [2;5;10;50;100;1000;2000;4000];
 initsteps = bins[bins.<lfseq]; #use these locations for init
 laststeps = bins[bins.>=lfseq]; #use these locations for the rest
 lastbins = indexin(laststeps,seq);
@@ -221,7 +221,7 @@ dev.off()
 
 
 # Somehow display how the *realized* degree distribution changes
-bins = [5;10;25;50;100;200;1000;2000;];
+bins = [5;10;25;50;100;200;1000;2000;4000;];
 seq2 = indexin(bins,seq);
 
 mdegt = Array{Float64}(length(seq2),S)*0;
@@ -303,7 +303,7 @@ dev.off()
 # #####################
 # # Trophic levels NOTE: TODO
 # #####################
-# bins = [10;25;50;100;200;1000;2000;];
+# bins = [10;25;50;100;200;1000;2000;4000;];
 # seq2 = indexin(bins,seq);
 # 
 # R"M_t=list()"
@@ -380,7 +380,7 @@ dev.off()
 
 
 #Species richness vs. connectance
-bins = [5;10;25;50;100;200;1000;2000;];
+bins = [5;10;25;50;100;200;1000;2000;4000];
 seq2 = indexin(bins,seq);
 speciesrichness = Array{Int64}(reps,length(seq2));
 connectance = Array{Float64}(reps,length(seq2));
@@ -409,6 +409,18 @@ for i=2:length(seq2)
     """
 end
 R"dev.off()"
+
+namespace = string("$(homedir())/Dropbox/Postdoc/2014_Lego/Enigma/figures/richconn2.pdf");
+R"""
+pdf($namespace,height=6,width=12)
+par(mfrow=c(1,2))
+plot($(connectance[:,5]),$(speciesrichness[:,5]),pch='.',ylim=c(50,200),xlim=c(0.002,0.006),main=paste(c('t=',$(bins[5])),sep=''),xlab='Connectance',ylab='Richness')
+plot($(connectance[:,9]),$(speciesrichness[:,9]),pch='.',ylim=c(50,200),xlim=c(0.002,0.006),main=paste(c('t=',$(bins[9])),sep=''),xlab='Connectance',ylab='Richness')
+#abline(m)
+dev.off()
+"""
+
+
 
 
 

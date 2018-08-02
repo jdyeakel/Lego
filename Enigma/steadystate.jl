@@ -5,11 +5,16 @@
 @everywhere using HDF5
 @everywhere using JLD
 # 
-@everywhere include("$(homedir())/Dropbox/PostDoc/2014_Lego/Enigma/src/intmatrixv3.jl")
-@everywhere include("$(homedir())/Dropbox/PostDoc/2014_Lego/Enigma/src/preamble_defs.jl")
-@everywhere include("$(homedir())/Dropbox/PostDoc/2014_Lego/Enigma/src/assembly.jl")
+# @everywhere include("$(homedir())/Dropbox/PostDoc/2014_Lego/Enigma/src/intmatrixv3.jl")
+# @everywhere include("$(homedir())/Dropbox/PostDoc/2014_Lego/Enigma/src/preamble_defs.jl")
+# @everywhere include("$(homedir())/Dropbox/PostDoc/2014_Lego/Enigma/src/assembly.jl")
 
-reps = 1000;
+@everywhere include("$(homedir())/2014_Lego/Enigma/src/intmatrixv3.jl")
+@everywhere include("$(homedir())/2014_Lego/Enigma/src/preamble_defs.jl")
+@everywhere include("$(homedir())/2014_Lego/Enigma/src/assembly.jl")
+
+
+reps = 8000;
 S = 400;
 
 maxits = 4000;
@@ -30,7 +35,7 @@ MaxN = convert(Int64,floor(S + S*lambda));
 # cidr = SharedArray{Bool}(reps,MaxN,maxits);
 
 #Save a small file to record the settings of the simulation
-namespace = string("$(homedir())/Dropbox/PostDoc/2014_Lego/Enigma/data/steadystate/sim_settings.jld");
+namespace = string("$(homedir())/2014_Lego/Enigma/data/steadystate/sim_settings.jld");
 # namespace = string("/$(homedir())/2014_Lego/Anime/data/simbasic/int_m",r,".jld");
 save(namespace,
 "reps", reps,
@@ -53,7 +58,7 @@ save(namespace,
     sp_v,
     int_id = preamble_defs(int_m);
     
-    namespace = string("$(homedir())/Dropbox/PostDoc/2014_Lego/Enigma/data/steadystate/int_m",r,".jld");
+    namespace = string("$(homedir())/2014_Lego/Enigma/data/steadystate/int_m",r,".jld");
     # namespace = string("/$(homedir())/2014_Lego/Anime/data/simbasic/int_m",r,".jld");
     save(namespace,
     "int_m", int_m,
@@ -67,7 +72,7 @@ save(namespace,
         athresh,nthresh,maxits);
     
     #Save individually so data can be loaded in parallel
-    namespace = string("$(homedir())/Dropbox/PostDoc/2014_Lego/Enigma/data/steadystate/cid_",r,".jld");
+    namespace = string("$(homedir())/2014_Lego/Enigma/data/steadystate/cid_",r,".jld");
     # namespace = string("$(homedir())//2014_Lego/Anime/data/simbasic/cid_",r,".jld");
     save(namespace,
     "CID", CID,

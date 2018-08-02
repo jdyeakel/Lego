@@ -128,7 +128,8 @@ function assembly(int_m,a_b,n_b,i_b,m_b,n_b0,sp_v,int_id,tp_m,tind_m,lambda,
             colonize = [c_sp;c_ob];
             #Update community
             cid = [cid_old;colonize];
-            
+            #Update species
+            spcid = [spcid;c_sp];
         end
         
         if re > (lcol/levents) && re < ((lcol + lspext)/levents)
@@ -137,7 +138,7 @@ function assembly(int_m,a_b,n_b,i_b,m_b,n_b0,sp_v,int_id,tp_m,tind_m,lambda,
             #select species to go extinct
             sp_bye = rand(spext,1);
             cid = setdiff(cid_old,sp_bye);
-            
+            spcid = setdiff(spcid,sp_bye);
         end
         
         if re > ((lcol + lspext)/levents)
