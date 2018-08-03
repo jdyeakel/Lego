@@ -1,21 +1,14 @@
-@everywhere using Distributions
-@everywhere using SpecialFunctions
-@everywhere using LightGraphs
-@everywhere using RCall
-@everywhere using HDF5
-@everywhere using JLD
-@everywhere include("$(homedir())/Dropbox/PostDoc/2014_Lego/Enigma/src/preamble_defs.jl")
-@everywhere include("$(homedir())/Dropbox/PostDoc/2014_Lego/Enigma/src/structure.jl")
-@everywhere include("$(homedir())/Dropbox/PostDoc/2014_Lego/Enigma/src/dynstructure.jl")
-@everywhere include("$(homedir())/Dropbox/PostDoc/2014_Lego/Enigma/src/trophicalc2.jl")
-@everywhere include("$(homedir())/Dropbox/PostDoc/2014_Lego/Enigma/src/roverlap.jl")
-
+loadfunc = include("$(homedir())/Dropbox/PostDoc/2014_Lego/Enigma/src/loadfuncs.jl");
+# loadfunc = include("$(homedir())/2014_Lego/Enigma/src/loadfuncs.jl");
 
 namespace = string("$(homedir())/Dropbox/PostDoc/2014_Lego/Enigma/data/steadystate/sim_settings.jld");
 d1 = load(namespace);
 reps = d1["reps"];
 S = d1["S"];
 maxits = d1["maxits"];
+athresh = d1["athresh"];
+nthresh = d1["nthresh"];
+
 
 seq = [collect(2:50);100;200;1000;2000;4000];
 tseqmax = length(seq);
@@ -28,6 +21,7 @@ user_overlap = SharedArray{Float64}(reps,tseqmax);
 conn = SharedArray{Float64}(reps,tseqmax);
 conn_ind = SharedArray{Float64}(reps,tseqmax);
 avgdegree = SharedArray{Float64}(reps,tseqmax);
+pc = SharedArray{Int64}(reps,tseqmax);
 res_overlap_dist = SharedArray{Float64}(reps,tseqmax,S);
 user_overlap_dist = SharedArray{Float64}(reps,tseqmax,S);
 degrees = SharedArray{Int64}(reps,tseqmax,S);
@@ -66,7 +60,7 @@ trophic = SharedArray{Float64}(reps,tseqmax,S);
         cid = find(isodd,CID[:,tstep]);
         cid_old = find(isodd,CID[:,tstep-1]); #because we have this, seq can't start at t=1;
         
-        rich[r,t], sprich[r,t], turnover[r,t], res_overlap[r,t], user_overlap[r,t], res_overlap_all, user_overlap_all, conn[r,t], conn_ind[r,t] = dynstructure(cid,cid_old,sp_v,a_b,n_b0,tp_m,tind_m);     
+        rich[r,t], sprich[r,t], turnover[r,t], res_overlap[r,t], user_overlap[r,t], res_overlap_all, user_overlap_all, conn[r,t], conn_ind[r,t], pc[r,t] = dynstructure(cid,cid_old,sp_v,a_b,n_b0,tp_m,tind_m,int_id,athresh,nthresh);     
         
         res_overlap_dist[r,t,1:length(res_overlap_all)] = res_overlap_all;
         #Only save species user-overlap, and not object user-overlap
@@ -550,4 +544,56 @@ end
 R"dev.off()"
 
 
+#POTENTIAL COLONIZERS
+sprich = SharedArray{Int64}(reps,maxits);
+rich = SharedArray{Int64}(reps,maxits);
+pc = SharedArray{Int64}(reps,maxits);
+@sync @parallel for r=1:reps
+    #Read in the interaction matrix
+    # namespace = string("$(homedir())/Dropbox/Postdoc/2014_Lego/Anime/data/simbasic/int_m",r,".jld");
+
+    namespace_rep = string("$(homedir())/Dropbox/Postdoc/2014_Lego/Enigma/data/steadystate/int_m",r,".jld");
+    
+    d2 = load(namespace_rep);
+    int_m = d2["int_m"];
+    tp_m = d2["tp_m"];
+    tind_m = d2["tind_m"];
+    mp_m = d2["mp_m"];
+    mind_m = d2["mind_m"];
+    
+    namespace_cid = string("$(homedir())/Dropbox/Postdoc/2014_Lego/Enigma/data/steadystate/cid_",r,".jld");
+    d3 = load(namespace_cid);
+    CID = d3["CID"];
+    
+    a_b,
+    n_b,
+    i_b,
+    m_b,
+    n_b0,
+    sp_v,
+    int_id = preamble_defs(int_m);
+
+    #Analysis
+    for t = 1:maxits
+        cid = find(isodd,CID[:,t]);
+        sprich[r,t] = sum(CID[1:S,t]);
+        rich[r,t] = sum(CID[:,t]);
+        pc[r,t] = potcol(sp_v,int_id,cid,a_b,n_b0,athresh,nthresh);   
+    end
+end
+
+mpc = vec(mean(pc,1));
+sdpc = vec(std(pc,1));
+propss = vec(mean(sprich,1)) ./ mean(sprich[:,maxits-100:maxits]);
+namespace = string("$(homedir())/Dropbox/PostDoc/2014_Lego/Enigma/figures/potcol.pdf");
+R"""
+library(RColorBrewer)
+pdf($namespace,width=8,height=6)
+pal = brewer.pal(3,'Set1');
+plot($propss,$mpc/$S,type='l',col=pal[1],lwd=3,xlab='Proportion filled',ylab='Available niche space',ylim=c(0.15,0.25))
+polygon(x=c($propss,rev($propss)),y=c(($mpc-$sdpc)/$S,rev(($mpc+$sdpc)/$S)),col=paste(pal[1],50,sep=''),border=NA)
+# polygon(x=c(seq(1,$maxits),rev(seq(1,$maxits))),y=c(($mpc-$sdpc)/$S,rev(($mpc+$sdpc)/$S)),col=paste(pal[1],50,sep=''),border=NA)
+lines($propss,$mpc/$S,col=pal[1],lwd=3)
+dev.off()
+"""
 

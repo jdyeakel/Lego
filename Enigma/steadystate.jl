@@ -1,17 +1,5 @@
-@everywhere using Distributions
-@everywhere using SpecialFunctions
-@everywhere using LightGraphs
-@everywhere using RCall
-@everywhere using HDF5
-@everywhere using JLD
-# 
-# @everywhere include("$(homedir())/Dropbox/PostDoc/2014_Lego/Enigma/src/intmatrixv3.jl")
-# @everywhere include("$(homedir())/Dropbox/PostDoc/2014_Lego/Enigma/src/preamble_defs.jl")
-# @everywhere include("$(homedir())/Dropbox/PostDoc/2014_Lego/Enigma/src/assembly.jl")
-
-@everywhere include("$(homedir())/2014_Lego/Enigma/src/intmatrixv3.jl")
-@everywhere include("$(homedir())/2014_Lego/Enigma/src/preamble_defs.jl")
-@everywhere include("$(homedir())/2014_Lego/Enigma/src/assembly.jl")
+# loadfunc = include("$(homedir())/Dropbox/PostDoc/2014_Lego/Enigma/src/loadfuncs.jl");
+loadfunc = include("$(homedir())/2014_Lego/Enigma/src/loadfuncs.jl");
 
 
 reps = 8000;

@@ -1,4 +1,4 @@
-function dynstructure(cid,cid_old,sp_v,a_b,n_b0,tp_m,tind_m)
+function dynstructure(cid,cid_old,sp_v,a_b,n_b0,tp_m,tind_m,int_id,athresh,nthresh)
     
     spcid = intersect(sp_v,cid);
     spcid_ind = indexin(spcid,[1;sp_v]);
@@ -23,6 +23,9 @@ function dynstructure(cid,cid_old,sp_v,a_b,n_b0,tp_m,tind_m)
     
     muser_overlap = mean(user_overlap[isfinite.(user_overlap)]);
     
-    return(rich,sprich,turnover,mres_overlap,muser_overlap,res_overlap,user_overlap,conn,conn_ind)
+    #Potential colonizers
+    pc = potcol(sp_v,int_id,cid,a_b,n_b0,athresh,nthresh);
+    
+    return(rich,sprich,turnover,mres_overlap,muser_overlap,res_overlap,user_overlap,conn,conn_ind,pc)
     
 end

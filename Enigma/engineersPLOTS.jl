@@ -1,15 +1,5 @@
-@everywhere using Distributions
-@everywhere using SpecialFunctions
-@everywhere using LightGraphs
-@everywhere using RCall
-@everywhere using HDF5
-@everywhere using JLD
-@everywhere include("$(homedir())/2014_Lego/Enigma/src/preamble_defs.jl")
-@everywhere include("$(homedir())/2014_Lego/Enigma/src/structure.jl")
-@everywhere include("$(homedir())/2014_Lego/Enigma/src/dynstructure.jl")
-@everywhere include("$(homedir())/2014_Lego/Enigma/src/trophicalc2.jl")
-@everywhere include("$(homedir())/2014_Lego/Enigma/src/roverlap.jl")
-
+# loadfunc = include("$(homedir())/Dropbox/PostDoc/2014_Lego/Enigma/src/loadfuncs.jl");
+loadfunc = include("$(homedir())/2014_Lego/Enigma/src/loadfuncsYOG.jl");
 
 namespace = string("$(homedir())/2014_Lego/Enigma/data/engineers/sim_settings.jld");
 d1 = load(namespace);
@@ -312,3 +302,98 @@ end
 R"dev.off()"
 
 
+
+
+
+
+
+namespace = string("$(homedir())/2014_Lego/Enigma/data/engineers/sim_settings.jld");
+d1 = load(namespace);
+reps = d1["reps"];
+S = d1["S"];
+lambdavec = d1["lambdavec"];
+maxits = d1["maxits"];
+athresh = d1["athresh"];
+nthresh = d1["nthresh"];
+
+llamb = length(lambdavec);
+its = llamb*reps;
+
+#POTENTIAL COLONIZERS
+pc = SharedArray{Int64}(llamb,reps,maxits);
+@sync @parallel for i = 0:(its - 1)    
+    
+    #Across lambdavec
+    a = Int64(floor(i/reps)) + 1;
+    #Across reps
+    b = mod(i,reps) + 1;
+    
+    ii = i + 1;
+    #Read in the interaction matrix
+    # namespace = string("$(homedir())/Dropbox/Postdoc/2014_Lego/Anime/data/simbasic/int_m",r,".jld");
+
+    namespace_rep = string("$(homedir())/2014_Lego/Enigma/data/engineers/int_m_",a,"_",b,".jld");
+    
+    d2 = load(namespace_rep);
+    int_m = d2["int_m"];
+    tp_m = d2["tp_m"];
+    tind_m = d2["tind_m"];
+    mp_m = d2["mp_m"];
+    mind_m = d2["mind_m"];
+    
+    namespace_cid = string("$(homedir())/2014_Lego/Enigma/data/engineers/cid_",a,"_",b,".jld");
+    d3 = load(namespace_cid);
+    CID = d3["CID"];
+    
+    a_b,
+    n_b,
+    i_b,
+    m_b,
+    n_b0,
+    sp_v,
+    int_id = preamble_defs(int_m);
+
+    #Analysis
+    for t = 1:maxits
+        cid = find(isodd,CID[:,t]);
+        sprich[a,b,t] = sum(CID[1:S,t]);
+        rich[a,b,t] = sum(CID[:,t]);
+        pc[a,b,t] = potcol(sp_v,int_id,cid,a_b,n_b0,athresh,nthresh);   
+    end
+    
+end
+
+#NOTE: This needs changed to work =)
+
+loweng = find(x->x==0.5,lambdavec);
+medeng = find(x->x==1.5,lambdavec);
+higheng = find(x->x==3.0,lambdavec);
+
+mpc = vec(mean(pc[loweng,:,:],1));
+sdpc = vec(std(pc[loweng,:,:],1));
+propss = vec(mean(sprich[loweng,:,:],1)) ./ mean(sprich[loweng,:,maxits-100:maxits]);
+namespace = string("$(homedir())/Dropbox/PostDoc/2014_Lego/Enigma/figures/eng/potcol2.pdf");
+R"""
+library(RColorBrewer)
+pdf($namespace,width=8,height=6)
+pal = brewer.pal(3,'Set1');
+plot($propss,$mpc/$S,type='l',col=pal[1],lwd=2,xlab='Proportion filled',ylab='Available niche space',ylim=c(0.15,0.25))
+polygon(x=c($propss,rev($propss)),y=c(($mpc-$sdpc)/$S,rev(($mpc+$sdpc)/$S)),col=paste(pal[1],50,sep=''),border=NA)
+# polygon(x=c(seq(1,$maxits),rev(seq(1,$maxits))),y=c(($mpc-$sdpc)/$S,rev(($mpc+$sdpc)/$S)),col=paste(pal[1],50,sep=''),border=NA)
+lines($propss,$mpc/$S,col=pal[1],lwd=2)
+"""
+mpc = vec(mean(pc[medeng,:,:],1));
+sdpc = vec(std(pc[medeng,:,:],1));
+propss = vec(mean(sprich[medeng,:,:],1)) ./ mean(sprich[medeng,:,maxits-100:maxits]);
+R"""
+polygon(x=c($propss,rev($propss)),y=c(($mpc-$sdpc)/$S,rev(($mpc+$sdpc)/$S)),col=paste(pal[2],50,sep=''),border=NA)
+lines($propss,$mpc/$S,col=pal[2],lwd=2)
+"""
+mpc = vec(mean(pc[higheng,:,:],1));
+sdpc = vec(std(pc[higheng,:,:],1));
+propss = vec(mean(sprich[higheng,:,:],1)) ./ mean(sprich[higheng,:,maxits-100:maxits]);
+R"""
+polygon(x=c($propss,rev($propss)),y=c(($mpc-$sdpc)/$S,rev(($mpc+$sdpc)/$S)),col=paste(pal[3],50,sep=''),border=NA)
+lines($propss,$mpc/$S,col=pal[3],lwd=2)
+dev.off()
+"""
