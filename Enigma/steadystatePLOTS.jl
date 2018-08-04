@@ -1,7 +1,8 @@
-loadfunc = include("$(homedir())/Dropbox/PostDoc/2014_Lego/Enigma/src/loadfuncs.jl");
-# loadfunc = include("$(homedir())/2014_Lego/Enigma/src/loadfuncs.jl");
+# loadfunc = include("$(homedir())/Dropbox/PostDoc/2014_Lego/Enigma/src/loadfuncs.jl");
+loadfunc = include("$(homedir())/2014_Lego/Enigma/src/loadfuncsYOG.jl");
 
-namespace = string("$(homedir())/Dropbox/PostDoc/2014_Lego/Enigma/data/steadystate/sim_settings.jld");
+# namespace = string("$(homedir())/Dropbox/PostDoc/2014_Lego/Enigma/data/steadystate/sim_settings.jld");
+namespace = string("$(homedir())/2014_Lego/Enigma/data/steadystate/sim_settings.jld");
 d1 = load(namespace);
 reps = d1["reps"];
 S = d1["S"];
@@ -29,9 +30,9 @@ trophic = SharedArray{Float64}(reps,tseqmax,S);
 
 @sync @parallel for r=1:reps
     #Read in the interaction matrix
-    # namespace = string("$(homedir())/Dropbox/Postdoc/2014_Lego/Anime/data/simbasic/int_m",r,".jld");
-
-    namespace_rep = string("$(homedir())/Dropbox/Postdoc/2014_Lego/Enigma/data/steadystate/int_m",r,".jld");
+    
+    # namespace_rep = string("$(homedir())/Dropbox/Postdoc/2014_Lego/Enigma/data/steadystate/int_m",r,".jld");
+    namespace_rep = string("$(homedir())/2014_Lego/Enigma/data/steadystate/int_m",r,".jld");
     
     d2 = load(namespace_rep);
     int_m = d2["int_m"];
@@ -40,7 +41,8 @@ trophic = SharedArray{Float64}(reps,tseqmax,S);
     mp_m = d2["mp_m"];
     mind_m = d2["mind_m"];
     
-    namespace_cid = string("$(homedir())/Dropbox/Postdoc/2014_Lego/Enigma/data/steadystate/cid_",r,".jld");
+    # namespace_cid = string("$(homedir())/Dropbox/Postdoc/2014_Lego/Enigma/data/steadystate/cid_",r,".jld");
+    namespace_cid = string("$(homedir())/2014_Lego/Enigma/data/steadystate/cid_",r,".jld");
     d3 = load(namespace_cid);
     CID = d3["CID"];
     
@@ -77,7 +79,8 @@ trophic = SharedArray{Float64}(reps,tseqmax,S);
 
 end
 
-h = load(string("$(homedir())/Dropbox/Postdoc/2014_Lego/Enigma/data/intm_structure.jld"));
+# h = load(string("$(homedir())/Dropbox/Postdoc/2014_Lego/Enigma/data/intm_structure.jld"));
+h = load(string("$(homedir())/2014_Lego/Enigma/data/intm_structure.jld"));
 Pconn = h["Pconn"];
 Pconn_ind = h["Pconn_ind"];
 Pres_overlap_dist = h["Pres_overlap_dist"];
@@ -114,7 +117,8 @@ conn_stitch = [init_conn_trim[:,initsteps] conn[:,lastbins]];
 meanconn = [mean(conn_stitch[!isnan(conn_stitch[:,i]),i]) for i=1:length(bins)];
 
 
-namespace = string("$(homedir())/Dropbox/Postdoc/2014_Lego/Enigma/figures/conn_time.pdf");
+# namespace = string("$(homedir())/Dropbox/Postdoc/2014_Lego/Enigma/figures/conn_time.pdf");
+namespace = string("$(homedir())/2014_Lego/Enigma/figures/yog/conn_time.pdf");
 R"""
 pdf($namespace,height=5,width=6)
 boxplot($(conn_stitch),ylim=c(0,0.03),outline=FALSE,names=$(seq_stitch),
@@ -155,7 +159,8 @@ seq_stitch = [initsteps;laststeps];
 overlap_stitch = [init_overlap_trim[:,initsteps] res_overlap[:,lastbins]];
 meanoverlap = [mean(overlap_stitch[!isnan(overlap_stitch[:,i]),i]) for i=1:length(bins)];
 
-namespace = string("$(homedir())/Dropbox/Postdoc/2014_Lego/Enigma/figures/trophicoverlap_time.pdf");
+# namespace = string("$(homedir())/Dropbox/Postdoc/2014_Lego/Enigma/figures/trophicoverlap_time.pdf");
+namespace = string("$(homedir())/2014_Lego/Enigma/figures/yog/trophicoverlap_time.pdf");
 R"""
 pdf($namespace,height=5,width=6)
 boxplot($(overlap_stitch),ylim=c(0,0.1),outline=FALSE,names=$(seq_stitch),
@@ -196,7 +201,8 @@ seq_stitch = [initsteps;laststeps];
 overlap_stitch = [init_overlap_trim[:,initsteps] user_overlap[:,lastbins]];
 meanoverlap = [mean(overlap_stitch[!isnan(overlap_stitch[:,i]),i]) for i=1:length(bins)];
 
-namespace = string("$(homedir())/Dropbox/Postdoc/2014_Lego/Enigma/figures/useroverlap_time.pdf");
+# namespace = string("$(homedir())/Dropbox/Postdoc/2014_Lego/Enigma/figures/useroverlap_time.pdf");
+namespace = string("$(homedir())/2014_Lego/Enigma/figures/yog/useroverlap_time.pdf");
 R"""
 pdf($namespace,height=5,width=6)
 boxplot($(overlap_stitch),ylim=c(0,0.02),outline=FALSE,names=$(seq_stitch),
@@ -254,7 +260,8 @@ Psddeg = vec(mapslices(std,Pdegreesort,1));
 Psddeg[firstone:length(Psddeg)] = 0;
 
 
-namespace = string("$(homedir())/Dropbox/Postdoc/2014_Lego/Enigma/figures/degreedist_time2.pdf");
+# namespace = string("$(homedir())/Dropbox/Postdoc/2014_Lego/Enigma/figures/degreedist_time2.pdf");
+namespace = string("$(homedir())/2014_Lego/Enigma/figures/yog/degreedist_time2.pdf");
 i=length(seq2);
 R"""
 library(RColorBrewer)
@@ -383,7 +390,8 @@ for i=1:length(seq2)
     speciesrichness[:,i] = sprich[:,t];
     connectance[:,i] = conn[:,t];
 end
-namespace = string("$(homedir())/Dropbox/Postdoc/2014_Lego/Enigma/figures/richconn.pdf");
+# namespace = string("$(homedir())/Dropbox/Postdoc/2014_Lego/Enigma/figures/richconn.pdf");
+namespace = string("$(homedir())/2014_Lego/Enigma/figures/yog/richconn.pdf");
 R"""
 pdf($namespace,height=10,width=15)
 par(mfrow=c(2,4))
@@ -404,7 +412,8 @@ for i=2:length(seq2)
 end
 R"dev.off()"
 
-namespace = string("$(homedir())/Dropbox/Postdoc/2014_Lego/Enigma/figures/richconn2.pdf");
+# namespace = string("$(homedir())/Dropbox/Postdoc/2014_Lego/Enigma/figures/richconn2.pdf");
+namespace = string("$(homedir())/2014_Lego/Enigma/figures/yog/richconn2.pdf");
 R"""
 pdf($namespace,height=6,width=12)
 par(mfrow=c(1,2))
@@ -421,7 +430,8 @@ dev.off()
 #Extinction and colonization rates
 #Number of engineers vs. size of extinction cascade
 
-namespace = string("$(homedir())/Dropbox/PostDoc/2014_Lego/Enigma/data/steadystate/sim_settings.jld");
+# namespace = string("$(homedir())/Dropbox/PostDoc/2014_Lego/Enigma/data/steadystate/sim_settings.jld");
+namespace = string("$(homedir())/2014_Lego/Enigma/data/steadystate/sim_settings.jld");
 d1 = load(namespace);
 reps = d1["reps"];
 S = d1["S"];
@@ -437,7 +447,8 @@ rich = SharedArray{Int64}(reps,maxits);
     #Read in the interaction matrix
     # namespace = string("$(homedir())/Dropbox/Postdoc/2014_Lego/Anime/data/simbasic/int_m",r,".jld");
 
-    namespace_rep = string("$(homedir())/Dropbox/Postdoc/2014_Lego/Enigma/data/steadystate/int_m",r,".jld");
+    # namespace_rep = string("$(homedir())/Dropbox/Postdoc/2014_Lego/Enigma/data/steadystate/int_m",r,".jld");
+    namespace_rep = string("$(homedir())/2014_Lego/Enigma/data/steadystate/int_m",r,".jld");
     
     d2 = load(namespace_rep);
     int_m = d2["int_m"];
@@ -446,7 +457,8 @@ rich = SharedArray{Int64}(reps,maxits);
     mp_m = d2["mp_m"];
     mind_m = d2["mind_m"];
     
-    namespace_cid = string("$(homedir())/Dropbox/Postdoc/2014_Lego/Enigma/data/steadystate/cid_",r,".jld");
+    # namespace_cid = string("$(homedir())/Dropbox/Postdoc/2014_Lego/Enigma/data/steadystate/cid_",r,".jld");
+    namespace_cid = string("$(homedir())/2014_Lego/Enigma/data/steadystate/cid_",r,".jld");
     d3 = load(namespace_cid);
     CID = d3["CID"];
     dt = d3["clock"];
@@ -511,7 +523,8 @@ end
 
 
 sortalg = engsort;
-namespace = string("$(homedir())/Dropbox/PostDoc/2014_Lego/Enigma/figures/engcdf.pdf");
+# namespace = string("$(homedir())/Dropbox/PostDoc/2014_Lego/Enigma/figures/engcdf.pdf");
+namespace = string("$(homedir())/2014_Lego/Enigma/figures/yog/engcdf.pdf");
 R"""
 library(RColorBrewer)
 pdf($namespace,width=8,height=6)
@@ -528,7 +541,8 @@ R"dev.off()"
 
 
 sortalg = obsort;
-namespace = string("$(homedir())/Dropbox/PostDoc/2014_Lego/Enigma/figures/objcdf.pdf");
+# namespace = string("$(homedir())/Dropbox/PostDoc/2014_Lego/Enigma/figures/objcdf.pdf");
+namespace = string("$(homedir())/2014_Lego/Enigma/figures/yog/objcdf.pdf");
 R"""
 library(RColorBrewer)
 pdf($namespace,width=8,height=6)
@@ -552,7 +566,8 @@ pc = SharedArray{Int64}(reps,maxits);
     #Read in the interaction matrix
     # namespace = string("$(homedir())/Dropbox/Postdoc/2014_Lego/Anime/data/simbasic/int_m",r,".jld");
 
-    namespace_rep = string("$(homedir())/Dropbox/Postdoc/2014_Lego/Enigma/data/steadystate/int_m",r,".jld");
+    # namespace_rep = string("$(homedir())/Dropbox/Postdoc/2014_Lego/Enigma/data/steadystate/int_m",r,".jld");
+    namespace_rep = string("$(homedir())/2014_Lego/Enigma/data/steadystate/int_m",r,".jld");
     
     d2 = load(namespace_rep);
     int_m = d2["int_m"];
@@ -561,7 +576,8 @@ pc = SharedArray{Int64}(reps,maxits);
     mp_m = d2["mp_m"];
     mind_m = d2["mind_m"];
     
-    namespace_cid = string("$(homedir())/Dropbox/Postdoc/2014_Lego/Enigma/data/steadystate/cid_",r,".jld");
+    # namespace_cid = string("$(homedir())/Dropbox/Postdoc/2014_Lego/Enigma/data/steadystate/cid_",r,".jld");
+    namespace_cid = string("$(homedir())/2014_Lego/Enigma/data/steadystate/cid_",r,".jld");
     d3 = load(namespace_cid);
     CID = d3["CID"];
     
@@ -585,7 +601,8 @@ end
 mpc = vec(mean(pc,1));
 sdpc = vec(std(pc,1));
 propss = vec(mean(sprich,1)) ./ mean(sprich[:,maxits-100:maxits]);
-namespace = string("$(homedir())/Dropbox/PostDoc/2014_Lego/Enigma/figures/potcol.pdf");
+# namespace = string("$(homedir())/Dropbox/PostDoc/2014_Lego/Enigma/figures/potcol.pdf");
+namespace = string("$(homedir())/2014_Lego/Enigma/figures/yog/potcol.pdf");
 R"""
 library(RColorBrewer)
 pdf($namespace,width=8,height=6)

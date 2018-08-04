@@ -320,6 +320,8 @@ llamb = length(lambdavec);
 its = llamb*reps;
 
 #POTENTIAL COLONIZERS
+sprich = SharedArray{Int64}(llamb,reps,maxits);
+rich = SharedArray{Int64}(llamb,reps,maxits);
 pc = SharedArray{Int64}(llamb,reps,maxits);
 @sync @parallel for i = 0:(its - 1)    
     
@@ -362,38 +364,81 @@ pc = SharedArray{Int64}(llamb,reps,maxits);
     end
     
 end
+namespace = string("$(homedir())/2014_Lego/Enigma/data/engineers/potcol.jld");
+save(namespace,
+"sprich", sprich,
+"rich", rich,
+"pc", pc
+);
+# 
+# dpc = load(namespace);
+# sprich = dpc["sprich"],
+# rich = dpc["rich"],
+# pc = dpc["pc"], 
+# );
 
 #NOTE: This needs changed to work =)
 
-loweng = find(x->x==0.5,lambdavec);
-medeng = find(x->x==1.5,lambdavec);
-higheng = find(x->x==3.0,lambdavec);
+loweng = find(x->x==0.5,lambdavec)[1];
+medeng = find(x->x==1.0,lambdavec)[1];
+higheng = find(x->x==2.0,lambdavec)[1];
 
 mpc = vec(mean(pc[loweng,:,:],1));
 sdpc = vec(std(pc[loweng,:,:],1));
 propss = vec(mean(sprich[loweng,:,:],1)) ./ mean(sprich[loweng,:,maxits-100:maxits]);
-namespace = string("$(homedir())/Dropbox/PostDoc/2014_Lego/Enigma/figures/eng/potcol2.pdf");
+ns = mean(sprich[loweng,:,maxits-100:maxits]);
+namespace = string("$(homedir())/2014_Lego/Enigma/figures/eng/potcol2.pdf");
 R"""
 library(RColorBrewer)
-pdf($namespace,width=8,height=6)
+pdf($namespace,width=6,height=5)
 pal = brewer.pal(3,'Set1');
-plot($propss,$mpc/$S,type='l',col=pal[1],lwd=2,xlab='Proportion filled',ylab='Available niche space',ylim=c(0.15,0.25))
-polygon(x=c($propss,rev($propss)),y=c(($mpc-$sdpc)/$S,rev(($mpc+$sdpc)/$S)),col=paste(pal[1],50,sep=''),border=NA)
-# polygon(x=c(seq(1,$maxits),rev(seq(1,$maxits))),y=c(($mpc-$sdpc)/$S,rev(($mpc+$sdpc)/$S)),col=paste(pal[1],50,sep=''),border=NA)
-lines($propss,$mpc/$S,col=pal[1],lwd=2)
+plot($propss,$mpc/$ns,type='l',col=pal[1],lwd=2,xlab='Proportion filled',ylab='Available niche space',ylim=c(0.25,1))
+polygon(x=c($propss,rev($propss)),y=c(($mpc-$sdpc)/$ns,rev(($mpc+$sdpc)/$ns)),col=paste(pal[1],50,sep=''),border=NA)
+lines($propss,$mpc/$ns,col=pal[1],lwd=2)
 """
 mpc = vec(mean(pc[medeng,:,:],1));
 sdpc = vec(std(pc[medeng,:,:],1));
 propss = vec(mean(sprich[medeng,:,:],1)) ./ mean(sprich[medeng,:,maxits-100:maxits]);
+ns = mean(sprich[medeng,:,maxits-100:maxits]);
 R"""
-polygon(x=c($propss,rev($propss)),y=c(($mpc-$sdpc)/$S,rev(($mpc+$sdpc)/$S)),col=paste(pal[2],50,sep=''),border=NA)
-lines($propss,$mpc/$S,col=pal[2],lwd=2)
+polygon(x=c($propss,rev($propss)),y=c(($mpc-$sdpc)/$ns,rev(($mpc+$sdpc)/$ns)),col=paste(pal[2],50,sep=''),border=NA)
+lines($propss,$mpc/$ns,col=pal[2],lwd=2)
+# dev.off()
 """
 mpc = vec(mean(pc[higheng,:,:],1));
 sdpc = vec(std(pc[higheng,:,:],1));
 propss = vec(mean(sprich[higheng,:,:],1)) ./ mean(sprich[higheng,:,maxits-100:maxits]);
+ns = mean(sprich[higheng,:,maxits-100:maxits]);
 R"""
-polygon(x=c($propss,rev($propss)),y=c(($mpc-$sdpc)/$S,rev(($mpc+$sdpc)/$S)),col=paste(pal[3],50,sep=''),border=NA)
-lines($propss,$mpc/$S,col=pal[3],lwd=2)
+polygon(x=c($propss,rev($propss)),y=c(($mpc-$sdpc)/$ns,rev(($mpc+$sdpc)/$ns)),col=paste(pal[3],50,sep=''),border=NA)
+lines($propss,$mpc/$ns,col=pal[3],lwd=2)
+dev.off()
+"""
+
+mpc = vec(mean(pc[loweng,:,:],1));
+sdpc = vec(std(pc[loweng,:,:],1));
+propss = vec(mean(sprich[loweng,:,:],1)) ./ mean(sprich[loweng,:,maxits-100:maxits]);
+ns = mean(sprich[loweng,:,maxits-100:maxits]);
+namespace = string("$(homedir())/2014_Lego/Enigma/figures/eng/potcol3.pdf");
+R"""
+library(RColorBrewer)
+pdf($namespace,width=6,height=5)
+pal = brewer.pal(3,'Set1');
+plot($propss,$mpc/$ns,type='l',col=pal[1],lwd=2,xlab='Proportion filled',ylab='Available niche space',ylim=c(0.25,1))
+"""
+mpc = vec(mean(pc[medeng,:,:],1));
+sdpc = vec(std(pc[medeng,:,:],1));
+propss = vec(mean(sprich[medeng,:,:],1)) ./ mean(sprich[medeng,:,maxits-100:maxits]);
+ns = mean(sprich[medeng,:,maxits-100:maxits]);
+R"""
+lines($propss,$mpc/$ns,col=pal[2],lwd=2)
+# dev.off()
+"""
+mpc = vec(mean(pc[higheng,:,:],1));
+sdpc = vec(std(pc[higheng,:,:],1));
+propss = vec(mean(sprich[higheng,:,:],1)) ./ mean(sprich[higheng,:,maxits-100:maxits]);
+ns = mean(sprich[higheng,:,maxits-100:maxits]);
+R"""
+lines($propss,$mpc/$ns,col=pal[3],lwd=2)
 dev.off()
 """

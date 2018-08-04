@@ -11,7 +11,7 @@ function assembly(int_m,a_b,n_b,i_b,m_b,n_b0,sp_v,int_id,tp_m,tind_m,lambda,
     CID = falses(N,maxits);
     
     #Build the strength matrix apriori
-    strength = (pi*sum(n_b0,2)) .- sum(a_b,2) .- sum(a_b,1);
+    strength = (pi*sum(n_b0,2)) .- (sqrt(2)*sum(a_b,2)) .- sum(a_b,1);
     smatrix = Array{Float64}(copy(a_b));
     for i=1:size(a_b)[1]
         smatrix[i,:] = a_b[i,:] * strength[i];
