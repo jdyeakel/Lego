@@ -1,5 +1,5 @@
 # loadfunc = include("$(homedir())/Dropbox/PostDoc/2014_Lego/Enigma/src/loadfuncs.jl");
-loadfunc = include("$(homedir())/2014_Lego/Enigma/src/loadfuncs.jl");
+loadfunc = include("$(homedir())/2014_Lego/Enigma/src/loadfuncsYOG.jl");
 
 
 reps = 100;
@@ -28,6 +28,7 @@ namespace = string("$(homedir())/2014_Lego/Enigma/data/priority/sim_settings.jld
 # namespace = string("/$(homedir())/2014_Lego/Anime/data/simbasic/int_m",r,".jld");
 save(namespace,
 "reps", reps,
+"intreps",intreps,
 "S", S,
 "maxits", maxits,
 "athresh", athresh,
