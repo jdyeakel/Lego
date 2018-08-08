@@ -226,23 +226,33 @@ seq2 = indexin(bins,seq);
 
 mdegt = Array{Float64}(length(seq2),S)*0;
 sddegt = Array{Float64}(length(seq2),S)*0;
+mtlt = Array{Float64}(length(seq2),S)*0;
+sdtlt = Array{Float64}(length(seq2),S)*0;
 t_tic = 0;
 for t = seq2
     t_tic = t_tic + 1;
     deg = degrees[:,t,:];
+    tl = trophic[:,t,:];
     #Sort each row
     degsort = sort(deg,2,rev=true);
+    tlsort = sort(tl,2,rev=true);
     #which column is the last non-zero?
     lastcol = find(iszero,sum(degsort,1))[1]-1;
     mdeg = Array{Float64}(lastcol);
     sddeg = Array{Float64}(lastcol);
+    mtl = Array{Float64}(lastcol);
+    sdtl = Array{Float64}(lastcol);
     #Take means but ignore zeros for each column through lascol
     for i=1:lastcol
         mdeg[i] = mean(degsort[!iszero.(degsort[:,i]),i]);
         sddeg[i] = std(degsort[!iszero.(degsort[:,i]),i]);
+        mtl[i] = mean(tlsort[!iszero.(tlsort[:,i]),i]);
+        sdtl[i] = std(tlsort[!iszero.(tlsort[:,i]),i]);
     end
     mdegt[t_tic,1:length(mdeg)]=mdeg;
     sddegt[t_tic,1:length(mdeg)]=sddeg;
+    mtlt[t_tic,1:length(mtl)]=mtl;
+    sdtlt[t_tic,1:length(mtl)]=sdtl;
 end
 Pdegreesort = sort(Pdegrees,2,rev=true);
 Pmeandegree = vec(mapslices(mean,Pdegreesort,1));
@@ -268,7 +278,7 @@ library(RColorBrewer)
 pdf($namespace,height=5,width=6)
 pal = brewer.pal($(length(seq2)),'Spectral')
 numsp = length($(mdegt[i,!iszero.(mdegt[i,:])]))
-plot($(mdegt[i,!iszero.(mdegt[i,:])]),xlim=c(1,50),ylim=c(1,10),log='y',col=pal[$i],type='l',lwd=2,xlab = 'Number of species', ylab='Mean degree')
+plot($(mdegt[i,!iszero.(mdegt[i,:])]),xlim=c(1,80),ylim=c(1,5),log='y',col=pal[$i],type='l',lwd=2,xlab = 'Species sorted by degree', ylab='Mean degree')
 sdev_pre = $(sddegt[i,find(x->x>0,sddegt[i,:])]);
 sdev = numeric(length($(mdegt[i,find(x->x>0,mdegt[i,:])])))
 sdev[1:length(sdev_pre)]=sdev_pre
@@ -288,6 +298,8 @@ for i=length(seq2)-1:-1:1
     lines($(mdegt[i,!iszero.(mdegt[i,:])]),col=pal[$i],lwd=2)
     """
 end
+R"dev.off()"
+
 R"""
 maxsp = $meanrich;
 sdev = $(Psddeg)[1:maxsp];
@@ -299,6 +311,36 @@ lines($(Pmeandegree)[1:maxsp],col='black',type='l',lwd=2)
 legend(x=215,y=120,legend = c('Pool',$(seq[seq2])),col=c('black',pal),lty=1,lwd=2,title='Time',cex=0.7,bty='n')
 dev.off()
 """
+
+
+namespace = string("$(homedir())/2014_Lego/Enigma/figures/yog/trophiclevel_time.pdf");
+i=length(seq2);
+R"""
+library(RColorBrewer)
+pdf($namespace,height=5,width=6)
+pal = brewer.pal($(length(seq2)),'Spectral')
+numsp = length($(mtlt[i,!iszero.(mtlt[i,:])]))
+plot($(mtlt[i,!iszero.(mtlt[i,:])]),xlim=c(1,125),ylim=c(1,10),log='y',col=pal[$i],type='l',lwd=2,xlab = 'Species sorted by trophic level', ylab='Trophic level')
+sdev_pre = $(sdtlt[i,find(x->x>0,sdtlt[i,:])]);
+sdev = numeric(length($(mtlt[i,find(x->x>0,mtlt[i,:])])))
+sdev[1:length(sdev_pre)]=sdev_pre
+# polygon(x=c(seq(1,length(sdev)),seq(length(sdev),1)),
+# y=c($(mtlt[i,!iszero.(mtlt[i,:])])[1:length(sdev)]+sdev,
+# rev($(mtlt[i,!iszero.(mtlt[i,:])])[1:length(sdev)]-sdev)),col=paste(pal[$i],65,sep=''),border=NA)
+lines($(mtlt[i,!iszero.(mtlt[i,:])]),xlim=c(1,200),ylim=c(0.01,50),col=pal[$i],lwd=2,xlab = 'Number of species', ylab='Median degree')
+"""
+for i=length(seq2)-1:-1:1
+    R"""
+    sdev_pre = $(sdtlt[i,find(x->x>0,sdtlt[i,:])]);
+    sdev = numeric(length($(mtlt[i,find(x->x>0,mtlt[i,:])])))
+    sdev[1:length(sdev_pre)]=sdev_pre
+    # polygon(x=c(seq(1,length(sdev)),seq(length(sdev),1)),
+    # y=c($(mtlt[i,!iszero.(mtlt[i,:])])[1:length(sdev)]+sdev,
+    # rev($(mtlt[i,!iszero.(mtlt[i,:])])[1:length(sdev)]-sdev)),col=paste(pal[$i],65,sep=''),border=NA)
+    lines($(mtlt[i,!iszero.(mtlt[i,:])]),col=pal[$i],lwd=2)
+    """
+end
+R"dev.off()"
 # 
 # 
 # #####################
@@ -597,10 +639,17 @@ pc = SharedArray{Int64}(reps,maxits);
         pc[r,t] = potcol(sp_v,int_id,cid,a_b,n_b0,athresh,nthresh);   
     end
 end
+namespace = string("$(homedir())/2014_Lego/Enigma/data/steadystate/potcol.jld");
+save(namespace,
+"sprich", sprich,
+"rich", rich,
+"pc", pc
+);
 
 mpc = vec(mean(pc,1));
 sdpc = vec(std(pc,1));
 propss = vec(mean(sprich,1)) ./ mean(sprich[:,maxits-100:maxits]);
+
 # namespace = string("$(homedir())/Dropbox/PostDoc/2014_Lego/Enigma/figures/potcol.pdf");
 namespace = string("$(homedir())/2014_Lego/Enigma/figures/yog/potcol.pdf");
 R"""
