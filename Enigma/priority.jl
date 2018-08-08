@@ -24,7 +24,7 @@ MaxN = convert(Int64,floor(S + S*lambda));
 # cidr = SharedArray{Bool}(reps,MaxN,maxits);
 
 #Save a small file to record the settings of the simulation
-namespace = string("$(homedir())/2014_Lego/Enigma/data/steadystate/sim_settings.jld");
+namespace = string("$(homedir())/2014_Lego/Enigma/data/priority/sim_settings.jld");
 # namespace = string("/$(homedir())/2014_Lego/Anime/data/simbasic/int_m",r,".jld");
 save(namespace,
 "reps", reps,
@@ -47,7 +47,7 @@ save(namespace,
     sp_v,
     int_id = preamble_defs(int_m);
     
-    namespace = string("$(homedir())/2014_Lego/Enigma/data/steadystate/int_m",r,".jld");
+    namespace = string("$(homedir())/2014_Lego/Enigma/data/priority/int_m",r,".jld");
     # namespace = string("/$(homedir())/2014_Lego/Anime/data/simbasic/int_m",r,".jld");
     save(namespace,
     "int_m", int_m,
@@ -63,7 +63,7 @@ save(namespace,
             athresh,nthresh,maxits);
         
         #Save individually so data can be loaded in parallel
-        namespace = string("$(homedir())/2014_Lego/Enigma/data/steadystate/cid_",r,"_",rr,".jld");
+        namespace = string("$(homedir())/2014_Lego/Enigma/data/priority/cid_",r,"_",rr,".jld");
         # namespace = string("$(homedir())//2014_Lego/Anime/data/simbasic/cid_",r,".jld");
         save(namespace,
         "CID", CID,
