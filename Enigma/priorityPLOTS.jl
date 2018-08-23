@@ -2,20 +2,23 @@
 loadfunc = include("$(homedir())/2014_Lego/Enigma/src/loadfuncsYOG.jl");
 
 # namespace = string("$(homedir())/Dropbox/PostDoc/2014_Lego/Enigma/data/steadystate/sim_settings.jld");
-namespace = string("$(homedir())/2014_Lego/Enigma/data/steadystate/sim_settings.jld");
+namespace = string("$(homedir())/2014_Lego/Enigma/data/priority/sim_settings.jld");
 d1 = load(namespace);
 reps = d1["reps"];
 S = d1["S"];
 maxits = d1["maxits"];
 athresh = d1["athresh"];
 nthresh = d1["nthresh"];
+intreps = d1["intreps"];
 
+
+occm = SharedArray{Float64}(reps,intreps,S);
 
 @sync @parallel for r=1:reps
     #Read in the interaction matrix
     
     # namespace_rep = string("$(homedir())/Dropbox/Postdoc/2014_Lego/Enigma/data/steadystate/int_m",r,".jld");
-    namespace_rep = string("$(homedir())/2014_Lego/Enigma/data/steadystate/int_m",r,".jld");
+    namespace_rep = string("$(homedir())/2014_Lego/Enigma/data/priority/int_m",r,".jld");
     
     d2 = load(namespace_rep);
     int_m = d2["int_m"];
@@ -41,8 +44,16 @@ nthresh = d1["nthresh"];
     
 
         #Analysis
+        occm[r,rr,:] = vec(sum(CID[1:S,:],2)/ maxits) ;
+        
     
     end
 
 end
-
+sporder = sortperm(vec(mean(occm[1,:,:],1)),rev=true);
+namespace = string("$(homedir())/2014_Lego/Enigma/figures/priority/occurance.pdf");
+R"""
+pdf($namespace,width=15,height=8)
+boxplot($(occm[1,:,sporder]),xlab='Species ordered by persistance',ylab='Persistance')
+dev.off()
+"""
