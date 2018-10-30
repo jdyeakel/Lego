@@ -96,7 +96,7 @@ function intmatrixv3(S, O, probs)
     #Deal with the basal resource
     int_m[1,:] = 'i';
     tp_m[1,:] = 0;
-    int_m[find(x->x=='0',int_m[:,1]),1] = 'i';
+    int_m[findall(x->x=='0',int_m[:,1]),1] = 'i';
 
     
     #NOTE: Interactions BETWEEN SPECIES
@@ -202,7 +202,7 @@ function intmatrixv3(S, O, probs)
     
     #We could assume that any species without recorded trophic interactions is a primary producer
     total_trophic = sum(tp_m,2);
-    prim_prod = deleteat!(find(iszero,total_trophic),1); #eliminate row 1
+    prim_prod = deleteat!(findall(iszero,total_trophic),1); #eliminate row 1
     int_m[prim_prod,1] = 'a';
     tp_m[prim_prod,1] = 1;
     
@@ -257,7 +257,7 @@ function intmatrixv3(S, O, probs)
     int_m[obind,obind] = 'i';
     
     #Force Basal primary producer (Row/Col 2) to not 'need' anything
-    colonizer_n = deleteat!(find(x->x=='n',int_m[2,:]),1);
+    colonizer_n = deleteat!(findall(x->x=='n',int_m[2,:]),1);
     
     int_m[2,colonizer_n] = 'i';
     mp_m[2,:] = 0;
@@ -266,11 +266,11 @@ function intmatrixv3(S, O, probs)
     for i=2:S
         for j=1:O
             if int_m[spind[i],obind[j]] == 'a'
-                makers = find(x->x=='m',int_m[:,obind[j]]);
+                makers = findall(x->x=='m',int_m[:,obind[j]]);
                 tind_m[spind[i],makers] = 1;
             end
             if int_m[spind[i],obind[j]] == 'n'
-                makers = find(x->x=='m',int_m[:,obind[j]]);
+                makers = findall(x->x=='m',int_m[:,obind[j]]);
                 mind_m[spind[i],makers] = 1;
             end
         end

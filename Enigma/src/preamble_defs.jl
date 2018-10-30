@@ -8,10 +8,10 @@ function preamble_defs(int_m)
 
     #copy of need binary matrix with diag = 0
     n_b0 = copy(n_b);
-    n_b0[diagind(n_b0)]=0;
+    n_b0[diagind(n_b0)] .= 0;
 
     #Vector and length of species IDs (over all int_m)
-    sp_v = find(isodd,diag(n_b));
+    sp_v = findall(isodd,diag(n_b));
     l_sp = length(sp_v);
 
     int_id = collect(1:size(int_m)[1]);

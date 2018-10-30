@@ -61,8 +61,8 @@ its = llamb*reps;
 #     for t = 1:tseqmax
 #         #construct
 #         tstep = seq[t];
-#         cid = find(isodd,CID[:,tstep]);
-#         cid_old = find(isodd,CID[:,tstep-1]); #because we have this, seq can't start at t=1;
+#         cid = findall(isodd,CID[:,tstep]);
+#         cid_old = findall(isodd,CID[:,tstep-1]); #because we have this, seq can't start at t=1;
 # 
 #         rich[a,b,t], sprich[a,b,t], turnover[a,b,t], res_overlap[a,b,t], user_overlap[a,b,t], res_overlap_all, user_overlap_all, conn[a,b,t], conn_ind[a,b,t] = dynstructure(cid,cid_old,sp_v,a_b,n_b0,tp_m,tind_m);     
 # 
@@ -216,15 +216,15 @@ rich = SharedArray{Int64}(its,maxits);
         sprich[ii,t] = sum(CID[1:S,t]);
         rich[ii,t] = sum(CID[:,t]);
         #how many engineers?
-        spcid = find(isodd,CID[1:S,t]);
+        spcid = findall(isodd,CID[1:S,t]);
         engineers[ii,t] = sum(sum(m_b[spcid,:],2) .> 0);
     end
     
     spdiff = diff(sprich[ii,:]);
     rdiff = diff(rich[ii,:]);
     
-    colpos = find(x->x>0,spdiff);
-    extpos = find(x->x<0,spdiff);
+    colpos = findall(x->x>0,spdiff);
+    extpos = findall(x->x<0,spdiff);
     extinctions = spdiff[extpos].*-1;
     colonizations = spdiff[colpos];
     
@@ -237,7 +237,7 @@ rich = SharedArray{Int64}(its,maxits);
         
         extcdf = Array{Int64}(lcdf);
         for j=1:lcdf
-            extcdf[j] = length(find(x->x<extratevec[ii,j],extrate));
+            extcdf[j] = length(findall(x->x<extratevec[ii,j],extrate));
         end
         
         EXTCDF[ii,:] = extcdf;    
@@ -258,8 +258,8 @@ meng = vec(mean(engineers[:,maxits-100:maxits],2));
 obsort = sortperm(mobj);
 engsort = sortperm(meng);
 # 
-# keepeng = find(x->x>=2,meng);
-# keepob = find(x->x>=2,mobj);
+# keepeng = findall(x->x>=2,meng);
+# keepob = findall(x->x>=2,mobj);
 
 #Convert frequencies to probabilities
 EXTCDFpr = Array{Float64}(its,lcdf);
@@ -357,7 +357,7 @@ pc = SharedArray{Int64}(llamb,reps,maxits);
 
     #Analysis
     for t = 1:maxits
-        cid = find(isodd,CID[:,t]);
+        cid = findall(isodd,CID[:,t]);
         sprich[a,b,t] = sum(CID[1:S,t]);
         rich[a,b,t] = sum(CID[:,t]);
         pc[a,b,t] = potcol(sp_v,int_id,cid,a_b,n_b0,athresh,nthresh);   
@@ -379,9 +379,9 @@ save(namespace,
 
 #NOTE: This needs changed to work =)
 
-loweng = find(x->x==0.5,lambdavec)[1];
-medeng = find(x->x==1.0,lambdavec)[1];
-higheng = find(x->x==2.0,lambdavec)[1];
+loweng = findall(x->x==0.5,lambdavec)[1];
+medeng = findall(x->x==1.0,lambdavec)[1];
+higheng = findall(x->x==2.0,lambdavec)[1];
 
 mpc = vec(mean(pc[loweng,:,:],1));
 sdpc = vec(std(pc[loweng,:,:],1));

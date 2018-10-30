@@ -59,8 +59,8 @@ trophic = SharedArray{Float64}(reps,tseqmax,S);
         
         #construct
         tstep = seq[t];
-        cid = find(isodd,CID[:,tstep]);
-        cid_old = find(isodd,CID[:,tstep-1]); #because we have this, seq can't start at t=1;
+        cid = findall(isodd,CID[:,tstep]);
+        cid_old = findall(isodd,CID[:,tstep-1]); #because we have this, seq can't start at t=1;
         
         rich[r,t], sprich[r,t], turnover[r,t], res_overlap[r,t], user_overlap[r,t], res_overlap_all, user_overlap_all, conn[r,t], conn_ind[r,t], pc[r,t] = dynstructure(cid,cid_old,sp_v,a_b,n_b0,tp_m,tind_m,int_id,athresh,nthresh);     
         
@@ -94,15 +94,15 @@ Preps = size(Pconn)[1];
 #Connectance
 ############
 
-lfseq = find(x->x>1,diff(seq))[1];
+lfseq = findall(x->x>1,diff(seq))[1];
 #This is the initial assembly process
 init_conn = conn[:,1:lfseq];
 init_conn_ind = conn_ind[:,1:lfseq];
 init_conn_trim = Array{Float64}(reps,lfseq)*0;
 init_conn_ind_trim = Array{Float64}(reps,lfseq)*0;
 for r=1:reps
-    init_conn_rm = init_conn[r,find(!iszero,init_conn[r,:])];
-    init_conn_ind_rm = init_conn_ind[r,find(!iszero,init_conn_ind[r,:])];
+    init_conn_rm = init_conn[r,findall(!iszero,init_conn[r,:])];
+    init_conn_ind_rm = init_conn_ind[r,findall(!iszero,init_conn_ind[r,:])];
     init_conn_trim[r,1:length(init_conn_rm)] = init_conn_rm;
     init_conn_ind_trim[r,1:length(init_conn_ind_rm)] = init_conn_ind_rm;
 end
@@ -141,12 +141,12 @@ for r=1:Preps
     Pmeanoverlap[r] = mean(Pres_overlap_dist[r,!isnan(Pres_overlap_dist[r,:])]);
 end
 
-lfseq = find(x->x>1,diff(seq))[1];
+lfseq = findall(x->x>1,diff(seq))[1];
 #This is the initial assembly process
 init_overlap = res_overlap[:,1:lfseq];
 init_overlap_trim = Array{Float64}(reps,lfseq)*0;
 for r=1:reps
-    init_overlap_rm = init_overlap[r,find(x->x>0,init_overlap[r,:])];
+    init_overlap_rm = init_overlap[r,findall(x->x>0,init_overlap[r,:])];
     init_overlap_trim[r,1:length(init_overlap_rm)] = init_overlap_rm;
 end
 bins = [2;5;10;50;100;1000;2000;4000];
@@ -183,12 +183,12 @@ dev.off()
 #     Pmeanoverlap[r] = mean(Pres_overlap_dist[r,!isnan(Pres_overlap_dist[r,:])]);
 # end
 
-lfseq = find(x->x>1,diff(seq))[1];
+lfseq = findall(x->x>1,diff(seq))[1];
 #This is the initial assembly process
 init_overlap = user_overlap[:,1:lfseq];
 init_overlap_trim = Array{Float64}(reps,lfseq)*0;
 for r=1:reps
-    init_overlap_rm = init_overlap[r,find(x->x>0,init_overlap[r,:])];
+    init_overlap_rm = init_overlap[r,findall(x->x>0,init_overlap[r,:])];
     init_overlap_trim[r,1:length(init_overlap_rm)] = init_overlap_rm;
 end
 bins = [2;5;10;50;100;1000;2000;4000];
@@ -237,7 +237,7 @@ for t = seq2
     degsort = sort(deg,2,rev=true);
     tlsort = sort(tl,2,rev=true);
     #which column is the last non-zero?
-    lastcol = find(iszero,sum(degsort,1))[1]-1;
+    lastcol = findall(iszero,sum(degsort,1))[1]-1;
     mdeg = Array{Float64}(lastcol);
     sddeg = Array{Float64}(lastcol);
     mtl = Array{Float64}(lastcol);
@@ -264,7 +264,7 @@ for i=1:Preps
     Pdegreesort[i,:] = sort(sample(Pdegrees[i,:],meanrich),rev=true);
 end
 Pmeandegree = vec(mapslices(mean,Pdegreesort,1));
-firstone = find(x->x==1,Pmeandegree)[1];
+firstone = findall(x->x==1,Pmeandegree)[1];
 Pmeandegree[firstone:length(Pmeandegree)] = 1;
 Psddeg = vec(mapslices(std,Pdegreesort,1));
 Psddeg[firstone:length(Psddeg)] = 0;
@@ -279,8 +279,8 @@ pdf($namespace,height=5,width=6)
 pal = brewer.pal($(length(seq2)),'Spectral')
 numsp = length($(mdegt[i,!iszero.(mdegt[i,:])]))
 plot($(mdegt[i,!iszero.(mdegt[i,:])]),xlim=c(1,80),ylim=c(1,5),log='y',col=pal[$i],type='l',lwd=2,xlab = 'Species sorted by degree', ylab='Mean degree')
-sdev_pre = $(sddegt[i,find(x->x>0,sddegt[i,:])]);
-sdev = numeric(length($(mdegt[i,find(x->x>0,mdegt[i,:])])))
+sdev_pre = $(sddegt[i,findall(x->x>0,sddegt[i,:])]);
+sdev = numeric(length($(mdegt[i,findall(x->x>0,mdegt[i,:])])))
 sdev[1:length(sdev_pre)]=sdev_pre
 polygon(x=c(seq(1,length(sdev)),seq(length(sdev),1)),
 y=c($(mdegt[i,!iszero.(mdegt[i,:])])[1:length(sdev)]+sdev,
@@ -289,8 +289,8 @@ lines($(mdegt[i,!iszero.(mdegt[i,:])]),xlim=c(1,200),ylim=c(0.01,50),col=pal[$i]
 """
 for i=length(seq2)-1:-1:1
     R"""
-    sdev_pre = $(sddegt[i,find(x->x>0,sddegt[i,:])]);
-    sdev = numeric(length($(mdegt[i,find(x->x>0,mdegt[i,:])])))
+    sdev_pre = $(sddegt[i,findall(x->x>0,sddegt[i,:])]);
+    sdev = numeric(length($(mdegt[i,findall(x->x>0,mdegt[i,:])])))
     sdev[1:length(sdev_pre)]=sdev_pre
     polygon(x=c(seq(1,length(sdev)),seq(length(sdev),1)),
     y=c($(mdegt[i,!iszero.(mdegt[i,:])])[1:length(sdev)]+sdev,
@@ -321,8 +321,8 @@ pdf($namespace,height=5,width=6)
 pal = brewer.pal($(length(seq2)),'Spectral')
 numsp = length($(mtlt[i,!iszero.(mtlt[i,:])]))
 plot($(mtlt[i,!iszero.(mtlt[i,:])]),xlim=c(1,125),ylim=c(1,10),log='y',col=pal[$i],type='l',lwd=2,xlab = 'Species sorted by trophic level', ylab='Trophic level')
-sdev_pre = $(sdtlt[i,find(x->x>0,sdtlt[i,:])]);
-sdev = numeric(length($(mtlt[i,find(x->x>0,mtlt[i,:])])))
+sdev_pre = $(sdtlt[i,findall(x->x>0,sdtlt[i,:])]);
+sdev = numeric(length($(mtlt[i,findall(x->x>0,mtlt[i,:])])))
 sdev[1:length(sdev_pre)]=sdev_pre
 # polygon(x=c(seq(1,length(sdev)),seq(length(sdev),1)),
 # y=c($(mtlt[i,!iszero.(mtlt[i,:])])[1:length(sdev)]+sdev,
@@ -331,8 +331,8 @@ lines($(mtlt[i,!iszero.(mtlt[i,:])]),xlim=c(1,200),ylim=c(0.01,50),col=pal[$i],l
 """
 for i=length(seq2)-1:-1:1
     R"""
-    sdev_pre = $(sdtlt[i,find(x->x>0,sdtlt[i,:])]);
-    sdev = numeric(length($(mtlt[i,find(x->x>0,mtlt[i,:])])))
+    sdev_pre = $(sdtlt[i,findall(x->x>0,sdtlt[i,:])]);
+    sdev = numeric(length($(mtlt[i,findall(x->x>0,mtlt[i,:])])))
     sdev[1:length(sdev_pre)]=sdev_pre
     # polygon(x=c(seq(1,length(sdev)),seq(length(sdev),1)),
     # y=c($(mtlt[i,!iszero.(mtlt[i,:])])[1:length(sdev)]+sdev,
@@ -356,12 +356,12 @@ R"dev.off()"
 #     t = seq2[i];
 #     deg = reshape(degrees[:,t,:],reps*S);
 #     troph = reshape(trophic[:,t,:],reps*S);
-#     # deg_trim = deg[find(!iszero,deg)];
-#     # trophic_trim = troph[find(!iszero,troph)];
+#     # deg_trim = deg[findall(!iszero,deg)];
+#     # trophic_trim = troph[findall(!iszero,troph)];
 #     x = vec(deg);
 #     y = vec(troph);
 #     zpre = [x y];
-#     zkeep = find(!iszero,sum(zpre,2));
+#     zkeep = findall(!iszero,sum(zpre,2));
 #     z = zpre[zkeep,:];
 #     sp = sortperm(z[:,1]);
 #     zsort = [z[sp,1] z[sp,2]];
@@ -380,7 +380,7 @@ R"dev.off()"
 # 
 # Pdeg = reshape(Array(Pdegrees),size(Pdegrees)[1]*size(Pdegrees)[2]);
 # Ptroph = reshape(Array(Ptl),size(Ptl)[1]*size(Ptl)[2]);
-# attached = find(!iszero,Pdeg);
+# attached = findall(!iszero,Pdeg);
 # Pdeg = Pdeg[attached];
 # Ptroph = Ptroph[attached];
 # z = [Pdeg Ptroph];
@@ -521,15 +521,15 @@ rich = SharedArray{Int64}(reps,maxits);
         sprich[r,t] = sum(CID[1:S,t]);
         rich[r,t] = sum(CID[:,t]);
         #how many engineers?
-        spcid = find(isodd,CID[1:S,t]);
+        spcid = findall(isodd,CID[1:S,t]);
         engineers[r,t] = sum(sum(m_b[spcid,:],2) .> 0);
     end
     
     spdiff = diff(sprich[r,:]);
     rdiff = diff(rich[r,:]);
     
-    colpos = find(x->x>0,spdiff);
-    extpos = find(x->x<0,spdiff);
+    colpos = findall(x->x>0,spdiff);
+    extpos = findall(x->x<0,spdiff);
     extinctions = spdiff[extpos].*-1;
     colonizations = spdiff[colpos];
     
@@ -541,7 +541,7 @@ rich = SharedArray{Int64}(reps,maxits);
     
     extcdf = Array{Int64}(lcdf);
     for i=1:lcdf
-        extcdf[i] = length(find(x->x<extratevec[r,i],extrate))
+        extcdf[i] = length(findall(x->x<extratevec[r,i],extrate))
     end
     
     EXTCDF[r,:] = extcdf;    
@@ -633,7 +633,7 @@ pc = SharedArray{Int64}(reps,maxits);
 
     #Analysis
     for t = 1:maxits
-        cid = find(isodd,CID[:,t]);
+        cid = findall(isodd,CID[:,t]);
         sprich[r,t] = sum(CID[1:S,t]);
         rich[r,t] = sum(CID[:,t]);
         pc[r,t] = potcol(sp_v,int_id,cid,a_b,n_b0,athresh,nthresh);   

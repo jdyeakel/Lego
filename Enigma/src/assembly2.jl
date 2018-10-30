@@ -24,7 +24,7 @@ function assembly2(int_m,a_b,n_b,i_b,m_b,n_b0,sp_v,int_id,tp_m,tind_m,
     for i=1:size(a_b)[1]
         smatrix[i,:] = a_b[i,:] * strength[i];
     end
-    # smatrix[find(iszero,a_b)] = NaN;
+    # smatrix[findall(iszero,a_b)] = NaN;
     
     
     t=0;
@@ -92,7 +92,7 @@ function assembly2(int_m,a_b,n_b,i_b,m_b,n_b0,sp_v,int_id,tp_m,tind_m,
         for i=1:length(vsp[spcid])
             ieats = (a_b[i,v[cid]] .== true);
             if any(ieats)
-                if any(strength[vsp[spcid][i]] .>= cmax[ieats]); #cmax[find(!isnan,cmatrix[i,:])]);
+                if any(strength[vsp[spcid][i]] .>= cmax[ieats]); #cmax[findall(!isnan,cmatrix[i,:])]);
                     #species is NOT added to pool
                     prext_comp[i] = false;
                 end
@@ -110,7 +110,7 @@ function assembly2(int_m,a_b,n_b,i_b,m_b,n_b0,sp_v,int_id,tp_m,tind_m,
         
         
         #COUNT POTENTIAL EXTINCT OBJECTS
-        obext = vob[ocid][find(iszero,sum(m_b[vsp[spcid],vob[ocid]],1))];
+        obext = vob[ocid][findall(iszero,sum(m_b[vsp[spcid],vob[ocid]],1))];
         lobext = length(obext);
         
         levents = sum([lcol;lspext;lobext]);
@@ -128,7 +128,7 @@ function assembly2(int_m,a_b,n_b,i_b,m_b,n_b0,sp_v,int_id,tp_m,tind_m,
             #COLONIZATION FUNCTION
             c_sp = rand(col);
             #select made objects as well
-            c_ob_full = find(isodd,m_b[c_sp,:]);
+            c_ob_full = findall(isodd,m_b[c_sp,:]);
             #Only bring in objects that aren't already in the community
             c_ob = setdiff(c_ob_full,v[cid_old]);
             colonize = [c_sp;c_ob];
