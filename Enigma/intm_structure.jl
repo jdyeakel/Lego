@@ -15,12 +15,12 @@
 reps = 50000;
 S = 400;
 # S = 400;
-probs = [
+probs = (
 p_n=0.003,
 p_a=0.003
 # p_n = 0.02,
 # p_a = 0.02
-];
+);
 #expected objects per species
 lambda = 0.5;
 

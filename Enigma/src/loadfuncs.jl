@@ -1,3 +1,5 @@
+using Distributed
+
 @everywhere using LinearAlgebra
 # @everywhere using Distributed
 @everywhere using SharedArrays

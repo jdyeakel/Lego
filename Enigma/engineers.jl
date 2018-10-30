@@ -23,12 +23,12 @@ S = 400;
 maxits = 5000;
 
 # S = 400;
-probs = [
+probs = (
 p_n=0.001,
 p_a=0.003
 # p_n = 0.02,
 # p_a = 0.02
-];
+);
 #expected objects per species
 athresh = 0;
 nthresh = 1.0;

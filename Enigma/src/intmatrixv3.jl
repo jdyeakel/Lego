@@ -2,8 +2,8 @@ function intmatrixv3(S, lambda, probs)
     
     #NOTE In this version, interactions are randomly assigned and there is no inputted distribution for trophic or need interactions
     
-    p_n=copy(probs[1]);
-    p_a=copy(probs[2]);
+    p_n=probs.p_n;
+    p_a=probs.p_a;
     # p_i=copy(probs[3]);
     #Defining paiwise probabilities
     #These are probabilities of pairwise interactions within the whole universe of possible interactions (15)
@@ -59,7 +59,7 @@ function intmatrixv3(S, lambda, probs)
     #Region 3) Lower left OxS are object-species interacions (n only)
     #Region 4) Lower right OxO are object-object interactions (i only)
     int_m = Array{Char}(undef,N,N);
-    int_m[:] .= '0';
+    int_m .= Ref('0');
     
     #Assign the make-need interactions
     #Maybe faster way to do this?
@@ -90,12 +90,12 @@ function intmatrixv3(S, lambda, probs)
     #Indices S+1:N are objects ('i')
     diagindices = diagind(int_m);
 
-    int_m[diagindices[2:S]] .= 'n';
+    int_m[diagindices[2:S]] .= Ref('n');
 
     #Deal with the basal resource
-    int_m[1,:] .= 'i';
+    int_m[1,:] .= Ref('i');
     tp_m[1,:] .= 0;
-    int_m[findall(x->x=='0',int_m[:,1]),1] .= 'i';
+    int_m[findall(x->x=='0',int_m[:,1]),1] .= Ref('i');
 
     
     #NOTE: Interactions BETWEEN SPECIES
@@ -203,7 +203,7 @@ function intmatrixv3(S, lambda, probs)
     #We could assume that any species without recorded trophic interactions is a primary producer
     total_trophic = vec(sum(tp_m,dims=2));
     prim_prod = deleteat!(findall(iszero,total_trophic),1); #eliminate row 1
-    int_m[prim_prod,1] .= 'a';
+    int_m[prim_prod,1] .= Ref('a');
     tp_m[prim_prod,1] .= 1;
     
     #SPECIES-OBJECT INTERACTIONS
@@ -247,7 +247,7 @@ function intmatrixv3(S, lambda, probs)
         end
     end
     #All object-object interactions are 'i-i'
-    int_m[obind,obind] .= 'i';
+    int_m[obind,obind] .= Ref('i');
     
     #A matrix for Direct + Indirect trophic interactions
     tind_m = copy(tp_m);
@@ -255,12 +255,12 @@ function intmatrixv3(S, lambda, probs)
     mind_m = copy(mp_m);
 
     #All object-object interactions are 'i-i'
-    int_m[obind,obind] .= 'i';
+    int_m[obind,obind] .= Ref('i');
     
     #Force Basal primary producer (Row/Col 2) to not 'need' anything
     colonizer_n = deleteat!(findall(x->x=='n',int_m[2,:]),1);
     
-    int_m[2,colonizer_n] .= 'i';
+    int_m[2,colonizer_n] .= Ref('i');
     mp_m[2,:] .= 0;
     
     #Document the indirect interactions

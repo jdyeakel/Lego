@@ -1,5 +1,6 @@
+using Distributed
+
 @everywhere using LinearAlgebra
-@everywhere using Distributed
 @everywhere using SharedArrays
 @everywhere using Distributions
 @everywhere using SpecialFunctions
