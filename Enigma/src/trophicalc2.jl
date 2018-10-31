@@ -7,6 +7,6 @@ function trophicalc(spcid_ind,M)
     """
     @rget rtl;
     #Delete the primary resource and set the lowest trophic level to '1'
-    tl = deleteat!(Array(rtl[1]),1) - 1;
+    tl = deleteat!(Array(rtl[1]),1) .- 1;
     return(tl);
 end
