@@ -48,7 +48,7 @@ function intmatrixv4(S, lambda, SSprobs, SOprobs, OOprobs)
       SOna = SOp_n*(SOp_a/(SOp_a+SOp_n+SOp_i+SOp_m)) + SOp_a*(SOp_n/(SOp_a+SOp_i+SOp_n)),
       SOnn = SOp_n*(SOp_n/(SOp_a+SOp_n+SOp_i+SOp_m)),
       SOni = SOp_n*(SOp_i/(SOp_a+SOp_n+SOp_i+SOp_m)) + SOp_i*(SOp_n/(SOp_a+SOp_n+SOp_i)),
-      SOnm = SOp_n*(p_m/(SOp_a+SOp_n+SOp_i+p_m)) + SOp_m*1, #(SOp_n/SOp_n),
+      SOnm = SOp_n*(SOp_m/(SOp_a+SOp_n+SOp_i+SOp_m)) + SOp_m*1, #(SOp_n/SOp_n),
       SOia = SOp_i*(SOp_a/(SOp_a+SOp_n+SOp_i)) + SOp_a*(SOp_i/(SOp_a+SOp_i+SOp_n)),
       SOii = SOp_i*(SOp_i/(SOp_a+SOp_n+SOp_i)),
       SOaa = SOp_a*(SOp_a/(SOp_i+SOp_n+SOp_a))
