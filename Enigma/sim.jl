@@ -47,7 +47,7 @@ int_id = preamble_defs(int_m);
 
 namespace = "$(homedir())/Dropbox/PostDoc/2014_Lego/Enigma/figures/sprich_web.pdf"
 R"""
-#pdf($namespace,width=10,height=5)
+pdf($namespace,width=10,height=5)
 par(mfrow=c(1,2))
 plot($clock,$sprich,type='l',xlab='Time',ylab='Sp/Ob richness',ylim=c(0,max($([sprich;rich.-sprich]))))
 lines($clock,$(rich .- sprich),col='gray')
@@ -66,7 +66,7 @@ indmatrix = adjmatrix .- tp_m[[1;spcid_ind],[1;spcid_ind]];
 dirmatrix = tp_m[[1;spcid_ind],[1;spcid_ind]];
 
 #Visualize graph
-namespace = "$(homedir())/Dropbox/PostDoc/2014_Lego/Enigma/figures/webnet.pdf"
+#namespace = "$(homedir())/Dropbox/PostDoc/2014_Lego/Enigma/figures/webnet.pdf"
 R"""
 library(igraph)
 library(RColorBrewer)
@@ -85,5 +85,5 @@ plot(fw_g,layout=coords,vertex.size=5,edge.arrow.size=0.25,edge.color='#6495ED',
 #main=ecount(fw_g)/$(size(adjmatrix)[1])^2,
 fw_ind <- graph.adjacency($(indmatrix[keepnodes,keepnodes]'));
 #plot(fw_ind,layout=coords,vertex.size=5,edge.arrow.size=0.25,edge.color='red',vertex.label=NA,vertex.frame.color=NA, vertex.color=c(pal[1],rep(pal[2],vcount(fw_g)-1)),add=TRUE)
-#dev.off()
+dev.off()
 """

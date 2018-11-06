@@ -45,13 +45,13 @@ function intmatrixv4(S, lambda, SSprobs, SOprobs, OOprobs)
 		#SO interactions: E-N-I-M
 		
     SOpwp = (
-      SOna = SOp_n*(SOp_a/(SOp_a+SOp_n+SOp_i+SOp_m)) + SOp_a*(SOp_n/(SOp_a+SOp_i+SOp_n)),
-      SOnn = SOp_n*(SOp_n/(SOp_a+SOp_n+SOp_i+SOp_m)),
-      SOni = SOp_n*(SOp_i/(SOp_a+SOp_n+SOp_i+SOp_m)) + SOp_i*(SOp_n/(SOp_a+SOp_n+SOp_i)),
-      SOnm = SOp_n*(SOp_m/(SOp_a+SOp_n+SOp_i+SOp_m)) + SOp_m*1, #(SOp_n/SOp_n),
-      SOia = SOp_i*(SOp_a/(SOp_a+SOp_n+SOp_i)) + SOp_a*(SOp_i/(SOp_a+SOp_i+SOp_n)),
-      SOii = SOp_i*(SOp_i/(SOp_a+SOp_n+SOp_i)),
-      SOaa = SOp_a*(SOp_a/(SOp_i+SOp_n+SOp_a))
+      na = SOp_n*(SOp_a/(SOp_a+SOp_n+SOp_i+SOp_m)) + SOp_a*(SOp_n/(SOp_a+SOp_i+SOp_n)),
+      nn = SOp_n*(SOp_n/(SOp_a+SOp_n+SOp_i+SOp_m)),
+      ni = SOp_n*(SOp_i/(SOp_a+SOp_n+SOp_i+SOp_m)) + SOp_i*(SOp_n/(SOp_a+SOp_n+SOp_i)),
+      nm = SOp_n*(SOp_m/(SOp_a+SOp_n+SOp_i+SOp_m)) + SOp_m*1, #(SOp_n/SOp_n),
+      ia = SOp_i*(SOp_a/(SOp_a+SOp_n+SOp_i)) + SOp_a*(SOp_i/(SOp_a+SOp_i+SOp_n)),
+      ii = SOp_i*(SOp_i/(SOp_a+SOp_n+SOp_i)),
+      aa = SOp_a*(SOp_a/(SOp_i+SOp_n+SOp_a))
     );
 		
 		#SS interactions: E-N-I
@@ -60,12 +60,12 @@ function intmatrixv4(S, lambda, SSprobs, SOprobs, OOprobs)
 		SSp_i = 1 - SSp_a - SSp_n;
 		
 		SSpwp = (
-      SSna = SSp_n*(SSp_a/(SSp_a+SSp_n+SSp_i)) + SSp_a*(SSp_n/(SSp_a+SSp_i+SSp_n)),
-      SSnn = SSp_n*(SSp_n/(SSp_a+SSp_n+SSp_i)),
-      SSni = SSp_n*(SSp_i/(SSp_a+SSp_n+SSp_i)) + SSp_i*(SSp_n/(SSp_a+SSp_n+SSp_i)),
-      SSia = SSp_i*(SSp_a/(SSp_a+SSp_n+SSp_i)) + SSp_a*(SSp_i/(SSp_a+SSp_i+SSp_n)),
-      SSii = SSp_i*(SSp_i/(SSp_a+SSp_n+SSp_i)),
-      SSaa = SSp_a*(SSp_a/(SSp_i+SSp_n+SSp_a))
+      na = SSp_n*(SSp_a/(SSp_a+SSp_n+SSp_i)) + SSp_a*(SSp_n/(SSp_a+SSp_i+SSp_n)),
+      nn = SSp_n*(SSp_n/(SSp_a+SSp_n+SSp_i)),
+      ni = SSp_n*(SSp_i/(SSp_a+SSp_n+SSp_i)) + SSp_i*(SSp_n/(SSp_a+SSp_n+SSp_i)),
+      ia = SSp_i*(SSp_a/(SSp_a+SSp_n+SSp_i)) + SSp_a*(SSp_i/(SSp_a+SSp_i+SSp_n)),
+      ii = SSp_i*(SSp_i/(SSp_a+SSp_n+SSp_i)),
+      aa = SSp_a*(SSp_a/(SSp_i+SSp_n+SSp_a))
     );
 		
 		#OO interactions: N-I
@@ -73,9 +73,9 @@ function intmatrixv4(S, lambda, SSprobs, SOprobs, OOprobs)
 		OOp_i = 1 - OOp_n;
 		
 		OOpwp = (
-      OOnn = OOp_n*(OOp_n/(OOp_n+OOp_i)),
-      OOni = OOp_n*(OOp_i/(OOp_n+OOp_i)) + OOp_i*(OOp_n/(OOp_n+OOp_i)),
-      OOii = OOp_i*(OOp_i/(OOp_n+OOp_i))
+      nn = OOp_n*(OOp_n/(OOp_n+OOp_i)),
+      ni = OOp_n*(OOp_i/(OOp_n+OOp_i)) + OOp_i*(OOp_n/(OOp_n+OOp_i)),
+      ii = OOp_i*(OOp_i/(OOp_n+OOp_i))
     );
 
     #Create an empty character array with dimensions equal to the number of players
