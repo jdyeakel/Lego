@@ -28,14 +28,10 @@ MaxN = convert(Int64,floor(S + S*lambda));
 #Save a small file to record the settings of the simulation
 namespace = string("$(homedir())/2014_Lego/Enigma/data/steadystate/sim_settings.jld");
 # namespace = string("/$(homedir())/2014_Lego/Anime/data/simbasic/int_m",r,".jld");
-save(namespace,
-"reps", reps,
-"S", S,
-"maxits", maxits,
-"athresh", athresh,
-"nthresh", nthresh,
-"lambda",lambda,
-"probs",probs);
+probs_nolabel = (probs.p_n, probs.p_a);
+
+@save namespace reps S maxits athresh nthresh lambda probs_nolabel;
+
 
 @sync @distributed for r = 1:reps
     
@@ -51,12 +47,7 @@ save(namespace,
     
     namespace = string("$(homedir())/2014_Lego/Enigma/data/steadystate/int_m",r,".jld");
     # namespace = string("/$(homedir())/2014_Lego/Anime/data/simbasic/int_m",r,".jld");
-    save(namespace,
-    "int_m", int_m,
-    "tp_m", tp_m,
-    "tind_m", tind_m,
-    "mp_m", mp_m,
-    "mind_m", mind_m);
+    @save namespace int_m tp_m tind_m mp_m mind_m;
 
     sprich,rich,clock,CID = assembly(
         int_m,a_b,n_b,i_b,m_b,n_b0,sp_v,int_id,tp_m,tind_m,lambda,
@@ -65,9 +56,7 @@ save(namespace,
     #Save individually so data can be loaded in parallel
     namespace = string("$(homedir())/2014_Lego/Enigma/data/steadystate/cid_",r,".jld");
     # namespace = string("$(homedir())//2014_Lego/Anime/data/simbasic/cid_",r,".jld");
-    save(namespace,
-    "CID", CID,
-    "clock",clock);
+    @save namespace CID clock;
     
     # println("reps = ",r)
 end
