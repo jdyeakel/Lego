@@ -13,6 +13,7 @@ using Distributed
 @everywhere using LinearAlgebra
 # @everywhere using Distributed
 @everywhere using SharedArrays
+@everywhere using SparseArrays
 @everywhere using Distributions
 @everywhere using SpecialFunctions
 @everywhere using LightGraphs
@@ -67,19 +68,71 @@ states = states[in.(1,states)];
 nstates = length(states);
 
 #Determine impossible states
+passtest = zeros(Int64,nstates) .+ 1;
 keepstates = Array{Int64}(undef,0);
 for i=1:nstates
     speciesobjects = states[i];
-    adjacencymatrix = a_b[speciesobjects,speciesobjects];
+    adjacencymatrix = a_b[speciesobjects,speciesobjects] .+ m_b[speciesobjects,speciesobjects]';
     g = DiGraph(adjacencymatrix');
     paths = gdistances(g,1)
     if maximum(paths) < N+1;
-        push!(keepstates,i);
+        passtest[i] *= 1;
+    else
+        passtest[i] *= 0;
     end
     
     #NOTE: take out states without complete set of species/object pairs
+    observedspecies = speciesobjects[speciesobjects .<= S];
+    expectedobjects = findall(!iszero,vec(sum(m_b[observedspecies,:],dims=1)));
+    
+    observedobjects = setdiff(speciesobjects,observedspecies);
+    expectedspecies = findall(!iszero,vec(sum(m_b[:,observedobjects],dims=2)));
+    
+    if observedspecies == expectedspecies || observedobjects == expectedobjects
+        passtest[i] *= 1;
+    else
+        passtest[i] *= 0;
+    end
+    
     
 end
-possiblestates = states[keepstates];
 
-colonizers = potcol(sp_v,int_id,speciesobjects,a_b,n_b0,0,1);
+possiblestates = states[findall(!iszero,passtest)];
+statespace = sum(passtest)/nstates
+lstate = length(possiblestates);
+
+# SparseArray
+transm = spzeros(lstate,lstate);
+for i=1:lstate
+    # print(string(i,'_'))
+    statei = copy(possiblestates[i]);
+    deleteat!(statei,1)
+    colonizers = potcol(sp_v,int_id,statei,a_b,n_b0,0,1);
+    # newstates = Array{Array}(undef,length(colonizers));
+    newstatesloc = Array{Int64}(undef,length(colonizers));
+    for j=1:length(colonizers)
+        newstates = sort([1;statei;colonizers[j]]);
+        newstatesloc[j] = findall(x->x==newstates,possiblestates)[1];
+    end
+    transm[i,newstatesloc] .= 1.0;
+end
+
+transg = DiGraph(transm);
+
+R"""
+library(igraph)
+library(RColorBrewer)
+#pdf($namespace,width=6,height=5)
+pal <- brewer.pal(3,"Set1")
+fw_g <- graph.adjacency($(Array(transm)));
+coords <- layout_(fw_g, as_tree(circular=FALSE))
+plot(fw_g,layout=coords,vertex.size=2,edge.arrow.size=0.25,edge.color='#6495ED',vertex.label=NA,vertex.frame.color=NA) 
+#dev.off()
+"""
+
+R"""
+g = graph.adjacency($(Array(transm)));
+plot(g,layout=layout_as_tree(g,circular=TRUE))
+"""
+
+,vertex.size=2,edge.arrow.size=0.25,edge.color='#6495ED',vertex.label=NA,vertex.frame.color=NA

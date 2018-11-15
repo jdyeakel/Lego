@@ -116,6 +116,7 @@ function intmatrixv4(S, lambda, SSprobs, SOprobs, OOprobs)
     diagindices = diagind(int_m);
 
     int_m[diagindices[2:S]] .= Ref('n');
+		int_m[diagindices[S+1:N]] .= Ref('i');
 
     #Deal with the basal resource
     int_m[1,:] .= Ref('i');
@@ -278,15 +279,21 @@ function intmatrixv4(S, lambda, SSprobs, SOprobs, OOprobs)
     oo_pw_prob = oo_pw_prob/sum(oo_pw_prob);
     oo_prob_line = cumsum(oo_pw_prob);
     
-    for i=S+1:N
-        for j=S+1:N
+    for i=(S+1):N
+        for j=(S+1):N
             if int_m[i,j] == '0'
                 r_draw = rand();
                 
                 #need-ignore
                 if r_draw < oo_prob_line[1]
-                    int_m[i,j] = 'n';
-                    int_m[j,i] = 'i';
+                    rr_draw = rand();
+										if rr_draw < 0.5
+                    	int_m[i,j] = 'n';
+                    	int_m[j,i] = 'i';
+										else
+											int_m[i,j] = 'i';
+											int_m[j,i] = 'n';
+										end
                 end
                 
                 #need-need

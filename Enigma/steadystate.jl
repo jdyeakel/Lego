@@ -1,5 +1,8 @@
-# loadfunc = include("$(homedir())/Dropbox/PostDoc/2014_Lego/Enigma/src/loadfuncs.jl");
-loadfunc = include("$(homedir())/2014_Lego/Enigma/src/loadfuncs.jl");
+if homedir() == "/home/z840"
+    loadfunc = include("$(homedir())/2014_Lego/Enigma/src/loadfuncs.jl");
+else
+    loadfunc = include("$(homedir())/Dropbox/PostDoc/2014_Lego/Enigma/src/loadfuncs.jl");
+end
 
 
 reps = 8000;
@@ -15,7 +18,7 @@ p_a=0.003
 # p_a = 0.02
 );
 #expected objects per species
-lambda = 0.5;
+lambda = 0.0;
 athresh = 0;
 nthresh = 1.0;
 MaxN = convert(Int64,floor(S + S*lambda));
@@ -34,7 +37,7 @@ save(namespace,
 "lambda",lambda,
 "probs",probs);
 
-@sync @parallel for r = 1:reps
+@sync @distributed for r = 1:reps
     
     int_m, tp_m, tind_m, mp_m, mind_m = intmatrixv3(S,lambda,probs);
 

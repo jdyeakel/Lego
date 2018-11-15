@@ -636,7 +636,7 @@ pc = SharedArray{Int64}(reps,maxits);
         cid = findall(isodd,CID[:,t]);
         sprich[r,t] = sum(CID[1:S,t]);
         rich[r,t] = sum(CID[:,t]);
-        pc[r,t] = potcol(sp_v,int_id,cid,a_b,n_b0,athresh,nthresh);   
+        pc[r,t] = length(potcol(sp_v,int_id,cid,a_b,n_b0,athresh,nthresh));   
     end
 end
 namespace = string("$(homedir())/2014_Lego/Enigma/data/steadystate/potcol.jld");
