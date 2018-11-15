@@ -5,6 +5,7 @@ using Distributed
 # @everywhere using Distributed
 @everywhere using SharedArrays
 @everywhere using SparseArrays
+@everywhere using DataFrames
 @everywhere using Distributions
 @everywhere using SpecialFunctions
 @everywhere using LightGraphs
