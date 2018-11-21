@@ -68,7 +68,7 @@ end
     
     #Save individually so data can be loaded in parallel
     if homedir() == "/home/z840"
-        namespace = string("$(homedir())2014_Lego/Enigma/data/steadystate/cid_",r,".jld");
+        namespace = string("$(homedir())/2014_Lego/Enigma/data/steadystate/cid_",r,".jld");
     else
         namespace = string("$(homedir())/Dropbox/PostDoc/2014_Lego/Anime/data/simbasic/cid_",r,".jld");
     end
