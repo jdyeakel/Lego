@@ -29,7 +29,13 @@ MaxN = convert(Int64,floor(S + S*lambda));
 
 #Save a small file to record the settings of the simulation
 # namespace = string("$(homedir())/2014_Lego/Enigma/data/steadystate/sim_settings.jld");
-namespace = string("$(homedir())/Dropbox/PostDoc/2014_Lego/Enigma/data/steadystate/sim_settings.jld");
+if homedir() == "/home/z840"
+    namespace = string("$(homedir())/2014_Lego/Enigma/data/steadystate/sim_settings.jld");
+else
+    namespace = string("$(homedir())/Dropbox/PostDoc/2014_Lego/Enigma/data/steadystate/sim_settings.jld");
+end
+
+
 # probs_nolabel = (probs.p_n, probs.p_a);
 
 @save namespace reps S maxits athresh nthresh lambda SSprobs SOprobs OOprobs;
@@ -48,8 +54,12 @@ namespace = string("$(homedir())/Dropbox/PostDoc/2014_Lego/Enigma/data/steadysta
     sp_v,
     int_id = preamble_defs(int_m);
     
-    # namespace = string("$(homedir())/2014_Lego/Enigma/data/steadystate/int_m",r,".jld");
-    namespace = string("$(homedir())/Dropbox/PostDoc/2014_Lego/Anime/data/simbasic/int_m",r,".jld");
+    if homedir() == "/home/z840"
+        namespace = string("$(homedir())/2014_Lego/Enigma/data/steadystate/int_m",r,".jld");
+    else
+        namespace = string("$(homedir())/Dropbox/PostDoc/2014_Lego/Anime/data/simbasic/int_m",r,".jld");
+    end
+    
     @save namespace int_m tp_m tind_m mp_m mind_m;
 
     sprich,rich,clock,CID = assembly(
@@ -57,8 +67,11 @@ namespace = string("$(homedir())/Dropbox/PostDoc/2014_Lego/Enigma/data/steadysta
         athresh,nthresh,maxits);
     
     #Save individually so data can be loaded in parallel
-    # namespace = string("$(homedir())2014_Lego/Enigma/data/steadystate/cid_",r,".jld");
-    namespace = string("$(homedir())/Dropbox/PostDoc/2014_Lego/Anime/data/simbasic/cid_",r,".jld");
+    if homedir() == "/home/z840"
+        namespace = string("$(homedir())2014_Lego/Enigma/data/steadystate/cid_",r,".jld");
+    else
+        namespace = string("$(homedir())/Dropbox/PostDoc/2014_Lego/Anime/data/simbasic/cid_",r,".jld");
+    end
     @save namespace CID clock;
     
     # println("reps = ",r)
