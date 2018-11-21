@@ -16,18 +16,18 @@ SOprobs = (
 p_n=0.001,
 p_a=0.003
 );
-SSmult = 2.0; OOmult = 2.0;
+SSmult = 1.0; OOmult = 0.0;
 SSprobs = (p_n = SSmult .* SOprobs.p_n , p_a = SSmult .* SOprobs.p_a);
 OOprobs = (p_n = OOmult * SOprobs.p_n, p0 = 0.0);
 
 
 #expected objects per species
-lambda = 0.5;
+lambda = 0.0;
 athresh = 0;
 nthresh = 1.0;
 MaxN = convert(Int64,floor(S + S*lambda));
 
-int_m, tp_m, tind_m, mp_m, mind_m = intmatrixv3(S,lambda,probs);
+int_m, tp_m, tind_m, mp_m, mind_m = intmatrixv4(S,lambda,SSprobs,SOprobs,OOprobs);
 
 a_b,
 n_b,

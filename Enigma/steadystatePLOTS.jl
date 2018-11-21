@@ -35,7 +35,7 @@ user_overlap_dist = SharedArray{Float64}(reps,tseqmax,S);
 degrees = SharedArray{Int64}(reps,tseqmax,S);
 trophic = SharedArray{Float64}(reps,tseqmax,S);
 
-@sync @parallel for r=1:reps
+@sync @distributed for r=1:reps
     #Read in the interaction matrix
     
     # namespace_rep = string("$(homedir())/Dropbox/Postdoc/2014_Lego/Enigma/data/steadystate/int_m",r,".jld");

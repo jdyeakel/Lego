@@ -16,13 +16,13 @@ SOprobs = (
 p_n=0.01,
 p_a=0.03
 );
-SSmult = 1.0; OOmult = 1.0;
+SSmult = 1.0; OOmult = 0.0;
 SSprobs = (p_n = SSmult .* SOprobs.p_n , p_a = SSmult .* SOprobs.p_a);
 OOprobs = (p_n = OOmult * SOprobs.p_n, p0 = 0.0);
 
 
 #expected objects per species
-lambda = 1;
+lambda = 0.0;
 MaxN = convert(Int64,floor(S + S*lambda));
 
 int_m, tp_m, tind_m, mp_m, mind_m = intmatrixv4(S,lambda,SSprobs,SOprobs,OOprobs);
@@ -83,8 +83,8 @@ par(mar=c(1,1,1,4))
 int_types=c('e','n','i','m')
 color2D.matplot(xx,extremes=c(1:length(int_types)), border='white', axes=FALSE, xlab='', ylab='',main='',cellcolors=xx2)
 legend(x=num_play+1,y=num_play,legend=int_types,pch=22,pt.bg=pal,xpd=TRUE, bty='n')
-text(x=rep(-0.8,length(objects)),y=num_play-objects+0.5,labels='o', xpd=TRUE,cex=0.6)
-text(x=objects-0.5,y=rep(num_play+0.8,length(objects)),labels='o', xpd=TRUE,cex=0.6)
+#text(x=rep(-0.8,length(objects)),y=num_play-objects+0.5,labels='o', xpd=TRUE,cex=0.6)
+#text(x=objects-0.5,y=rep(num_play+0.8,length(objects)),labels='o', xpd=TRUE,cex=0.6)
 text(x=-0.8,y=num_play-0.8,labels=expression(paste('1',degree)), xpd=TRUE,cex=0.6)
 text(x=0.8,y=num_play+0.8,labels=expression(paste('1',degree)), xpd=TRUE,cex=0.6)
 dev.off()
