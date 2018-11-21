@@ -1,4 +1,5 @@
 using Distributed
+using DataFrames
 
 @everywhere using Combinatorics
 @everywhere using LinearAlgebra
@@ -25,7 +26,8 @@ if homedir() == "/home/z840"
     #Community dynamics
     @everywhere include("$(homedir())/2014_Lego/Enigma/src/preamble_defs.jl")
     @everywhere include("$(homedir())/2014_Lego/Enigma/src/assembly.jl")
-
+    @everywhere include("$(homedir())/2014_Lego/Enigma/src/assemblystate.jl")
+    
     #Analysis Calculations
     @everywhere include("$(homedir())/2014_Lego/Enigma/src/structure.jl")
     @everywhere include("$(homedir())/2014_Lego/Enigma/src/dynstructure.jl")
@@ -48,6 +50,8 @@ else
     #Community dynamics
     @everywhere include("$(homedir())/Dropbox/PostDoc/2014_Lego/Enigma/src/preamble_defs.jl")
     @everywhere include("$(homedir())/Dropbox/PostDoc/2014_Lego/Enigma/src/assembly.jl")
+    @everywhere include("$(homedir())/Dropbox/PostDoc/2014_Lego/Enigma/src/assemblystate.jl")
+
 
     #Analysis Calculations
     @everywhere include("$(homedir())/Dropbox/PostDoc/2014_Lego/Enigma/src/structure.jl")

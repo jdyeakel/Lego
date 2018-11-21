@@ -1,8 +1,15 @@
-# loadfunc = include("$(homedir())/Dropbox/PostDoc/2014_Lego/Enigma/src/loadfuncs.jl");
-loadfunc = include("$(homedir())/2014_Lego/Enigma/src/loadfuncsYOG.jl");
+if homedir() == "/home/z840"
+    loadfunc = include("$(homedir())/2014_Lego/Enigma/src/loadfuncs.jl");
+else
+    loadfunc = include("$(homedir())/Dropbox/PostDoc/2014_Lego/Enigma/src/loadfuncs.jl");
+end
+
 
 # namespace = string("$(homedir())/Dropbox/PostDoc/2014_Lego/Enigma/data/steadystate/sim_settings.jld");
 namespace = string("$(homedir())/2014_Lego/Enigma/data/steadystate/sim_settings.jld");
+# @load namespace
+
+# 
 d1 = load(namespace);
 reps = d1["reps"];
 S = d1["S"];
@@ -34,18 +41,23 @@ trophic = SharedArray{Float64}(reps,tseqmax,S);
     # namespace_rep = string("$(homedir())/Dropbox/Postdoc/2014_Lego/Enigma/data/steadystate/int_m",r,".jld");
     namespace_rep = string("$(homedir())/2014_Lego/Enigma/data/steadystate/int_m",r,".jld");
     
+    # @load namespace_rep;
+    # 
+    # 
     d2 = load(namespace_rep);
     int_m = d2["int_m"];
     tp_m = d2["tp_m"];
     tind_m = d2["tind_m"];
     mp_m = d2["mp_m"];
     mind_m = d2["mind_m"];
-    
+    # 
     # namespace_cid = string("$(homedir())/Dropbox/Postdoc/2014_Lego/Enigma/data/steadystate/cid_",r,".jld");
     namespace_cid = string("$(homedir())/2014_Lego/Enigma/data/steadystate/cid_",r,".jld");
+    # @load namespace_cid;
+    
     d3 = load(namespace_cid);
     CID = d3["CID"];
-    
+    # 
     a_b,
     n_b,
     i_b,
@@ -80,12 +92,14 @@ trophic = SharedArray{Float64}(reps,tseqmax,S);
 end
 
 # h = load(string("$(homedir())/Dropbox/Postdoc/2014_Lego/Enigma/data/intm_structure.jld"));
-h = load(string("$(homedir())/2014_Lego/Enigma/data/intm_structure.jld"));
-Pconn = h["Pconn"];
-Pconn_ind = h["Pconn_ind"];
-Pres_overlap_dist = h["Pres_overlap_dist"];
-Pdegrees = h["Pdegrees"];
-Ptl = h["Ptl"];
+
+@load string("$(homedir())/2014_Lego/Enigma/data/intm_structure.jld")
+# h = load(string("$(homedir())/2014_Lego/Enigma/data/intm_structure.jld"));
+# Pconn = h["Pconn"];
+# Pconn_ind = h["Pconn_ind"];
+# Pres_overlap_dist = h["Pres_overlap_dist"];
+# Pdegrees = h["Pdegrees"];
+# Ptl = h["Ptl"];
 Preps = size(Pconn)[1];
 
 
@@ -98,8 +112,8 @@ lfseq = findall(x->x>1,diff(seq))[1];
 #This is the initial assembly process
 init_conn = conn[:,1:lfseq];
 init_conn_ind = conn_ind[:,1:lfseq];
-init_conn_trim = Array{Float64}(reps,lfseq)*0;
-init_conn_ind_trim = Array{Float64}(reps,lfseq)*0;
+init_conn_trim = Array{Float64}(undef,reps,lfseq)*0;
+init_conn_ind_trim = Array{Float64}(undef,reps,lfseq)*0;
 for r=1:reps
     init_conn_rm = init_conn[r,findall(!iszero,init_conn[r,:])];
     init_conn_ind_rm = init_conn_ind[r,findall(!iszero,init_conn_ind[r,:])];
@@ -136,7 +150,7 @@ dev.off()
 ############
 #Species pool
 Preps = size(Pres_overlap_dist)[1];
-Pmeanoverlap = Array{Float64}(Preps);
+Pmeanoverlap = Array{Float64}(undef,Preps);
 for r=1:Preps
     Pmeanoverlap[r] = mean(Pres_overlap_dist[r,!isnan(Pres_overlap_dist[r,:])]);
 end
@@ -144,7 +158,7 @@ end
 lfseq = findall(x->x>1,diff(seq))[1];
 #This is the initial assembly process
 init_overlap = res_overlap[:,1:lfseq];
-init_overlap_trim = Array{Float64}(reps,lfseq)*0;
+init_overlap_trim = Array{Float64}(undef,reps,lfseq)*0;
 for r=1:reps
     init_overlap_rm = init_overlap[r,findall(x->x>0,init_overlap[r,:])];
     init_overlap_trim[r,1:length(init_overlap_rm)] = init_overlap_rm;
@@ -186,7 +200,7 @@ dev.off()
 lfseq = findall(x->x>1,diff(seq))[1];
 #This is the initial assembly process
 init_overlap = user_overlap[:,1:lfseq];
-init_overlap_trim = Array{Float64}(reps,lfseq)*0;
+init_overlap_trim = Array{Float64}(undef,reps,lfseq)*0;
 for r=1:reps
     init_overlap_rm = init_overlap[r,findall(x->x>0,init_overlap[r,:])];
     init_overlap_trim[r,1:length(init_overlap_rm)] = init_overlap_rm;
@@ -224,10 +238,10 @@ dev.off()
 bins = [5;10;25;50;100;200;1000;2000;4000;];
 seq2 = indexin(bins,seq);
 
-mdegt = Array{Float64}(length(seq2),S)*0;
-sddegt = Array{Float64}(length(seq2),S)*0;
-mtlt = Array{Float64}(length(seq2),S)*0;
-sdtlt = Array{Float64}(length(seq2),S)*0;
+mdegt = Array{Float64}(undef,length(seq2),S)*0;
+sddegt = Array{Float64}(undef,length(seq2),S)*0;
+mtlt = Array{Float64}(undef,length(seq2),S)*0;
+sdtlt = Array{Float64}(undef,length(seq2),S)*0;
 t_tic = 0;
 for t = seq2
     t_tic = t_tic + 1;
@@ -238,10 +252,10 @@ for t = seq2
     tlsort = sort(tl,2,rev=true);
     #which column is the last non-zero?
     lastcol = findall(iszero,sum(degsort,1))[1]-1;
-    mdeg = Array{Float64}(lastcol);
-    sddeg = Array{Float64}(lastcol);
-    mtl = Array{Float64}(lastcol);
-    sdtl = Array{Float64}(lastcol);
+    mdeg = Array{Float64}(undef,lastcol);
+    sddeg = Array{Float64}(undef,lastcol);
+    mtl = Array{Float64}(undef,lastcol);
+    sdtl = Array{Float64}(undef,lastcol);
     #Take means but ignore zeros for each column through lascol
     for i=1:lastcol
         mdeg[i] = mean(degsort[!iszero.(degsort[:,i]),i]);
@@ -259,7 +273,7 @@ Pmeandegree = vec(mapslices(mean,Pdegreesort,1));
 Psddeg = vec(mapslices(std,Pdegreesort,1));
 
 meanrich = convert(Int64,round(mean(sprich[:,tseqmax]),0));
-Pdegreesort = Array{Int64}(Preps,meanrich)*0;
+Pdegreesort = Array{Int64}(undef,Preps,meanrich)*0;
 for i=1:Preps
     Pdegreesort[i,:] = sort(sample(Pdegrees[i,:],meanrich),rev=true);
 end
@@ -425,8 +439,8 @@ R"dev.off()"
 #Species richness vs. connectance
 bins = [5;10;25;50;100;200;1000;2000;4000];
 seq2 = indexin(bins,seq);
-speciesrichness = Array{Int64}(reps,length(seq2));
-connectance = Array{Float64}(reps,length(seq2));
+speciesrichness = Array{Int64}(undef,reps,length(seq2));
+connectance = Array{Float64}(undef,reps,length(seq2));
 for i=1:length(seq2)
     t = seq2[i];
     speciesrichness[:,i] = sprich[:,t];
@@ -539,7 +553,7 @@ rich = SharedArray{Int64}(reps,maxits);
     # extratevec = collect(0:0.0001:maximum(extrate));
     extratevec[r,:] = collect(range(0,maximum(extrate)/lcdf,lcdf));
     
-    extcdf = Array{Int64}(lcdf);
+    extcdf = Array{Int64}(undef,lcdf);
     for i=1:lcdf
         extcdf[i] = length(findall(x->x<extratevec[r,i],extrate))
     end
@@ -558,7 +572,7 @@ meng = vec(mean(engineers[:,maxits-100:maxits],2));
 engsort = sortperm(meng);
 
 #Convert frequencies to probabilities
-EXTCDFpr = Array{Float64}(reps,lcdf);
+EXTCDFpr = Array{Float64}(undef,reps,lcdf);
 for i=1:reps
     EXTCDFpr[i,:] = Array(EXTCDF[i,:])/maximum(Array(EXTCDF[i,:]));
 end
@@ -662,4 +676,3 @@ polygon(x=c($propss,rev($propss)),y=c(($mpc-$sdpc)/$S,rev(($mpc+$sdpc)/$S)),col=
 lines($propss,$mpc/$S,col=pal[1],lwd=3)
 dev.off()
 """
-
