@@ -4,17 +4,15 @@ else
     loadfunc = include("$(homedir())/Dropbox/PostDoc/2014_Lego/Enigma/src/loadfuncs.jl");
 end
 
-loadfunc = include("$(homedir())/Dropbox/PostDoc/2014_Lego/Enigma/src/loadfuncs.jl");
+# loadfunc = include("$(homedir())/Dropbox/PostDoc/2014_Lego/Enigma/src/loadfuncs.jl");
 # @everywhere include("$(homedir())/Dropbox/PostDoc/2014_Lego/Enigma/src/assembly2.jl")
 
 
-S = 400;
-
-maxits = 1000;
-
+S = 200;
+maxits = 4000;
 SOprobs = (
-p_n=0.001,
-p_a=0.003
+p_n=0.004,
+p_a=0.01
 );
 SSmult = 1.0; OOmult = 0.0;
 SSprobs = (p_n = SSmult .* SOprobs.p_n , p_a = SSmult .* SOprobs.p_a);
@@ -65,6 +63,10 @@ adjmatrix = tind_m[[1;spcid_ind],[1;spcid_ind]];
 indmatrix = adjmatrix .- tp_m[[1;spcid_ind],[1;spcid_ind]];
 dirmatrix = tp_m[[1;spcid_ind],[1;spcid_ind]];
 
+# g = DiGraph(adjmatrix');
+# paths = gdistances(g,1);
+# keepnodes = findall(x->x<N+1,paths);
+
 #Visualize graph
 #namespace = "$(homedir())/Dropbox/PostDoc/2014_Lego/Enigma/figures/webnet.pdf"
 R"""
@@ -75,9 +77,11 @@ pal <- brewer.pal(3,"Set1")
 fw_g <- graph.adjacency($(adjmatrix'));
 basal_pos <- 1
 trophic = as.numeric($([0;troph[1:size(adjmatrix)[1]-1]]));
-keepnodes = c(1,which(trophic>0.1))"""; @rget keepnodes; keepnodes = Int64.(keepnodes);
+#trophic = as.numeric($([0;paths[keepnodes[2:length(keepnodes)]]]));
+keepnodes = c(1,which(trophic>0.9))"""; @rget keepnodes; keepnodes = Int64.(keepnodes);
 R"""
-trophic2 = trophic[keepnodes]
+#keepnodes = $keepnodes;
+trophic2 = trophic[keepnodes];
 coords <- cbind(runif(length(keepnodes)),trophic2);
 coords[basal_pos,1] <- 0.5
 fw_g = graph.adjacency($(adjmatrix[keepnodes,keepnodes]'))

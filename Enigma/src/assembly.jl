@@ -24,6 +24,9 @@ function assembly(int_m,a_b,n_b,i_b,m_b,n_b0,sp_v,int_id,tp_m,tind_m,lambda,
     it = 0;
     while it < maxits
         
+        #does sorting CID make a difference?
+        sort!(cid);
+        
         cid_old = copy(cid);
         #Which are species?
         spcid = intersect(sp_v,cid);
@@ -82,7 +85,10 @@ function assembly(int_m,a_b,n_b,i_b,m_b,n_b0,sp_v,int_id,tp_m,tind_m,lambda,
         prext_comp = trues(length(spcid));
         for i=1:length(spcid)
             
+            #catalogue prey for all species/objects in the system (excluding sun)
             ieats = Array{Bool}(a_b[i,cid]);
+            #If you have >= the max strength for any of those prey, you stay
+            #This means that a pure primary producer is not evaluated
             prext_comp[i] = any(ieats)*(any(strength[spcid[i]] .>= cmax[ieats])==false);
             
             # #Skip pure primary producers
