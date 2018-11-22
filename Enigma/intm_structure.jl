@@ -28,7 +28,7 @@ Pdegrees = SharedArray{Int64}(reps,S);
 Ptl = SharedArray{Float64}(reps,S);
 
 
-@time @sync @distributed for r=1:reps
+@sync @distributed for r=1:reps
     
     int_m, tp_m, tind_m, mp_m, mind_m = intmatrixv4(S,lambda,SSprobs,SOprobs,OOprobs);
 

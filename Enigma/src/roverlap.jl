@@ -30,7 +30,7 @@ function roverlap(cid,sp_v,a_b,n_b0)
     user_overlap = user_overlap[1:l_sp];
     
     #species with no users have value nan; set this equal to 0
-    user_overlap[findall(isnan,user_overlap)]=0;
+    user_overlap[findall(isnan,user_overlap)] .= 0;
     
     #Obligate primary producers will be NaN
     #They should be discluded from the measurement so we will keep them NaN
