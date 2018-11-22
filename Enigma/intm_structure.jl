@@ -1,28 +1,25 @@
-@everywhere using Distributions
-@everywhere using SpecialFunctions
-@everywhere using LightGraphs
-@everywhere using RCall
-@everywhere using HDF5
-@everywhere using JLD
-# 
-@everywhere include("$(homedir())/Dropbox/PostDoc/2014_Lego/Enigma/src/intmatrixv3.jl")
-@everywhere include("$(homedir())/Dropbox/PostDoc/2014_Lego/Enigma/src/preamble_defs.jl")
-@everywhere include("$(homedir())/Dropbox/PostDoc/2014_Lego/Enigma/src/assembly.jl")
-@everywhere include("$(homedir())/Dropbox/PostDoc/2014_Lego/Enigma/src/structure.jl")
-@everywhere include("$(homedir())/Dropbox/PostDoc/2014_Lego/Enigma/src/trophicalc2.jl")
-@everywhere include("$(homedir())/Dropbox/PostDoc/2014_Lego/Enigma/src/roverlap.jl")
+if homedir() == "/home/z840"
+    loadfunc = include("$(homedir())/2014_Lego/Enigma/src/loadfuncs.jl");
+else
+    loadfunc = include("$(homedir())/Dropbox/PostDoc/2014_Lego/Enigma/src/loadfuncs.jl");
+end
 
 reps = 50000;
-S = 400;
+S = 200;
 # S = 400;
-probs = (
-p_n=0.003,
-p_a=0.003
-# p_n = 0.02,
-# p_a = 0.02
+SOprobs = (
+p_n=0.001,
+p_a=0.01
 );
+SSmult = 1.0; OOmult = 0.0;
+SSprobs = (p_n = SSmult .* SOprobs.p_n , p_a = SSmult .* SOprobs.p_a);
+OOprobs = (p_n = OOmult * SOprobs.p_n, p0 = 0.0);
+
 #expected objects per species
-lambda = 0.5;
+lambda = 0.0;
+athresh = 0;
+nthresh = 1.0;
+MaxN = convert(Int64,floor(S + S*lambda));
 
 Pconn = SharedArray{Float64}(reps);
 Pconn_ind = SharedArray{Float64}(reps);
@@ -31,9 +28,9 @@ Pdegrees = SharedArray{Int64}(reps,S);
 Ptl = SharedArray{Float64}(reps,S);
 
 
-@time @sync @parallel for r=1:reps
+@time @sync @distributed for r=1:reps
     
-    int_m, tp_m, tind_m, mp_m, mind_m = intmatrixv3(S,lambda,probs);
+    int_m, tp_m, tind_m, mp_m, mind_m = intmatrixv4(S,lambda,SSprobs,SOprobs,OOprobs);
 
     a_b,
     n_b,
@@ -56,7 +53,7 @@ Ptl = SharedArray{Float64}(reps,S);
     res_overlap,user_overlap = roverlap(cid,sp_v,a_b,n_b0);
     Pres_overlap_dist[r,1:length(res_overlap)]=res_overlap;
     
-    degrees = deleteat!(vec(sum(tind_m[[1;spcid_ind],[1;spcid_ind]],2)),1);
+    degrees = deleteat!(vec(sum(tind_m[[1;spcid_ind],[1;spcid_ind]],dims=2)),1);
     #Trophic Level
     #NOTE: if you don't account for indirect-object interactions, there will be trophically disconnected species!
     # tl = trophicalc(spcid_ind,tp_m);
@@ -72,11 +69,19 @@ Ptl = SharedArray{Float64}(reps,S);
     
 end
 
-save(string("$(homedir())/Dropbox/PostDoc/2014_Lego/Enigma/data/intm_structure.jld"),
-"Pconn",Pconn,
-"Pconn_ind",Pconn_ind,
-"Pres_overlap_dist",Pres_overlap_dist,
-"Pdegrees",Pdegrees,
-"Ptl",Ptl
-);    
+if homedir() == "/home/z840"
+    namespace = string("$(homedir())/2014_Lego/Enigma/data/intm_structure.jld");
+else
+    namespace = string("$(homedir())/Dropbox/PostDoc/2014_Lego/Enigma/data/intm_structure.jld");
+end
+
+@save namespace Pconn Pconn_ind Pres_overlap_dist Pdegrees Ptl;
+
+# save(string("$(homedir())/Dropbox/PostDoc/2014_Lego/Enigma/data/intm_structure.jld"),
+# "Pconn",Pconn,
+# "Pconn_ind",Pconn_ind,
+# "Pres_overlap_dist",Pres_overlap_dist,
+# "Pdegrees",Pdegrees,
+# "Ptl",Ptl
+# );    
 

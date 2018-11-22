@@ -5,17 +5,20 @@ else
 end
 
 
-# namespace = string("$(homedir())/Dropbox/PostDoc/2014_Lego/Enigma/data/steadystate/sim_settings.jld");
-namespace = string("$(homedir())/2014_Lego/Enigma/data/steadystate/sim_settings.jld");
-# @load namespace
+if homedir() == "/home/z840"
+    namespace = string("$(homedir())/2014_Lego/Enigma/data/steadystate/sim_settings.jld");
+else
+    namespace = string("$(homedir())/Dropbox/PostDoc/2014_Lego/Enigma/data/steadystate/sim_settings.jld");
+end
+@load namespace reps S maxits athresh nthresh lambda SSprobs SOprobs OOprobs;
 
 # 
-d1 = load(namespace);
-reps = d1["reps"];
-S = d1["S"];
-maxits = d1["maxits"];
-athresh = d1["athresh"];
-nthresh = d1["nthresh"];
+# d1 = load(namespace);
+# reps = d1["reps"];
+# S = d1["S"];
+# maxits = d1["maxits"];
+# athresh = d1["athresh"];
+# nthresh = d1["nthresh"];
 
 
 seq = [collect(2:50);100;200;1000;2000;4000];
@@ -38,25 +41,32 @@ trophic = SharedArray{Float64}(reps,tseqmax,S);
 @sync @distributed for r=1:reps
     #Read in the interaction matrix
     
-    # namespace_rep = string("$(homedir())/Dropbox/Postdoc/2014_Lego/Enigma/data/steadystate/int_m",r,".jld");
-    namespace_rep = string("$(homedir())/2014_Lego/Enigma/data/steadystate/int_m",r,".jld");
+    if homedir() == "/home/z840"
+        namespace = string("$(homedir())/2014_Lego/Enigma/data/steadystate/int_m",r,".jld");
+    else
+        namespace = string("$(homedir())/Dropbox/PostDoc/2014_Lego/Enigma/data/steadystate/int_m",r,".jld");
+    end
+    @load namespace int_m tp_m tind_m mp_m mind_m;
     
     # @load namespace_rep;
     # 
     # 
-    d2 = load(namespace_rep);
-    int_m = d2["int_m"];
-    tp_m = d2["tp_m"];
-    tind_m = d2["tind_m"];
-    mp_m = d2["mp_m"];
-    mind_m = d2["mind_m"];
+    # d2 = load(namespace_rep);
+    # int_m = d2["int_m"];
+    # tp_m = d2["tp_m"];
+    # tind_m = d2["tind_m"];
+    # mp_m = d2["mp_m"];
+    # mind_m = d2["mind_m"];
     # 
-    # namespace_cid = string("$(homedir())/Dropbox/Postdoc/2014_Lego/Enigma/data/steadystate/cid_",r,".jld");
-    namespace_cid = string("$(homedir())/2014_Lego/Enigma/data/steadystate/cid_",r,".jld");
-    # @load namespace_cid;
+    if homedir() == "/home/z840"
+        namespace = string("$(homedir())/2014_Lego/Enigma/data/steadystate/cid_",r,".jld");
+    else
+        namespace = string("$(homedir())/Dropbox/PostDoc/2014_Lego/Enigma/data/steadystate/cid_",r,".jld");
+    end
+    @load namespace CID clock;
     
-    d3 = load(namespace_cid);
-    CID = d3["CID"];
+    # d3 = load(namespace_cid);
+    # CID = d3["CID"];
     # 
     a_b,
     n_b,
@@ -93,7 +103,14 @@ end
 
 # h = load(string("$(homedir())/Dropbox/Postdoc/2014_Lego/Enigma/data/intm_structure.jld"));
 
-@load string("$(homedir())/2014_Lego/Enigma/data/intm_structure.jld")
+if homedir() == "/home/z840"
+    namespace = string("$(homedir())/2014_Lego/Enigma/data/intm_structure.jld");
+else
+    namespace = string("$(homedir())/Dropbox/PostDoc/2014_Lego/Enigma/data/intm_structure.jld");
+end
+@load namespace Pconn Pconn_ind Pres_overlap_dist Pdegrees Ptl
+
+# @load string("$(homedir())/2014_Lego/Enigma/data/intm_structure.jld") 
 # h = load(string("$(homedir())/2014_Lego/Enigma/data/intm_structure.jld"));
 # Pconn = h["Pconn"];
 # Pconn_ind = h["Pconn_ind"];
