@@ -57,7 +57,7 @@ end
     if homedir() == "/home/z840"
         namespace = string("$(homedir())/2014_Lego/Enigma/data/steadystate/int_m",r,".jld");
     else
-        namespace = string("$(homedir())/Dropbox/PostDoc/2014_Lego/Anime/data/simbasic/int_m",r,".jld");
+        namespace = string("$(homedir())/Dropbox/PostDoc/2014_Lego/Enigma/data/steadystate/int_m",r,".jld");
     end
     
     @save namespace int_m tp_m tind_m mp_m mind_m;
@@ -70,7 +70,7 @@ end
     if homedir() == "/home/z840"
         namespace = string("$(homedir())/2014_Lego/Enigma/data/steadystate/cid_",r,".jld");
     else
-        namespace = string("$(homedir())/Dropbox/PostDoc/2014_Lego/Anime/data/simbasic/cid_",r,".jld");
+        namespace = string("$(homedir())/Dropbox/PostDoc/2014_Lego/Enigma/data/steadystate/cid_",r,".jld");
     end
     @save namespace CID clock;
     
