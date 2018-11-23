@@ -31,6 +31,7 @@ if homedir() == "/home/z840"
     #Analysis Calculations
     @everywhere include("$(homedir())/2014_Lego/Enigma/src/structure.jl")
     @everywhere include("$(homedir())/2014_Lego/Enigma/src/dynstructure.jl")
+    @everywhere include("$(homedir())/2014_Lego/Enigma/src/sortassembly.jl")
 
     #Analysis functions
     @everywhere include("$(homedir())/2014_Lego/Enigma/src/trophicalc2.jl")
@@ -56,6 +57,7 @@ else
     #Analysis Calculations
     @everywhere include("$(homedir())/Dropbox/PostDoc/2014_Lego/Enigma/src/structure.jl")
     @everywhere include("$(homedir())/Dropbox/PostDoc/2014_Lego/Enigma/src/dynstructure.jl")
+    @everywhere include("$(homedir())/Dropbox/PostDoc/2014_Lego/Enigma/src/sortassembly.jl")
 
     #Analysis functions
     @everywhere include("$(homedir())/Dropbox/PostDoc/2014_Lego/Enigma/src/trophicalc2.jl")

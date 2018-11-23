@@ -21,7 +21,7 @@ end
 # nthresh = d1["nthresh"];
 
 
-seq = [collect(2:50);100;200;1000;2000;4000];
+seq = [collect(2:50);100;200;500;1000;2000;4000];
 tseqmax = length(seq);
 
 rich = SharedArray{Int64}(reps,tseqmax);
@@ -84,7 +84,9 @@ trophic = SharedArray{Float64}(reps,tseqmax,S);
         cid = findall(isodd,CID[:,tstep]);
         cid_old = findall(isodd,CID[:,tstep-1]); #because we have this, seq can't start at t=1;
         
-        rich[r,t], sprich[r,t], turnover[r,t], res_overlap[r,t], user_overlap[r,t], res_overlap_all, user_overlap_all, conn[r,t], conn_ind[r,t], pc[r,t] = dynstructure(cid,cid_old,sp_v,a_b,n_b0,tp_m,tind_m,int_id,athresh,nthresh);     
+        rich[r,t], sprich[r,t], turnover[r,t], res_overlap[r,t], user_overlap[r,t], res_overlap_all, user_overlap_all, conn[r,t], conn_ind[r,t], pc_cid = dynstructure(cid,cid_old,sp_v,a_b,n_b0,tp_m,tind_m,int_id,athresh,nthresh);     
+        
+        pc[r,t] = length(pc_cid);
         
         res_overlap_dist[r,t,1:length(res_overlap_all)] = res_overlap_all;
         #Only save species user-overlap, and not object user-overlap
@@ -124,35 +126,19 @@ Preps = size(Pconn)[1];
 ############
 #Connectance
 ############
+bins = [2;5;10;20;30;40;50;100;500;1000;2000];
+conn_stitch,seq_stitch = sortassembly(conn,bins,seq);
+meanconn = [mean(conn_stitch[findall(!isnan,conn_stitch[:,i]),i]) for i=1:length(bins)]
 
-lfseq = findall(x->x>1,diff(seq))[1];
-#This is the initial assembly process
-init_conn = conn[:,1:lfseq];
-init_conn_ind = conn_ind[:,1:lfseq];
-init_conn_trim = Array{Float64}(undef,reps,lfseq)*0;
-init_conn_ind_trim = Array{Float64}(undef,reps,lfseq)*0;
-for r=1:reps
-    init_conn_rm = init_conn[r,findall(!iszero,init_conn[r,:])];
-    init_conn_ind_rm = init_conn_ind[r,findall(!iszero,init_conn_ind[r,:])];
-    init_conn_trim[r,1:length(init_conn_rm)] = init_conn_rm;
-    init_conn_ind_trim[r,1:length(init_conn_ind_rm)] = init_conn_ind_rm;
+
+if homedir() == "/home/z840"
+    namespace = string("$(homedir())/2014_Lego/Enigma/figures/yog/conn_time.pdf");
+else
+    namespace = string("$(homedir())/Dropbox/Postdoc/2014_Lego/Enigma/figures/conn_time.pdf");
 end
-bins = [2;5;10;50;100;1000;2000];
-initsteps = bins[bins.<lfseq]; #use these locations for init
-laststeps = bins[bins.>=lfseq]; #use these locations for the rest
-lastbins = indexin(laststeps,seq);
-
-#Stitch together
-seq_stitch = [initsteps;laststeps];
-conn_stitch = [init_conn_trim[:,initsteps] conn[:,lastbins]];
-meanconn = [mean(conn_stitch[!isnan(conn_stitch[:,i]),i]) for i=1:length(bins)];
-
-
-# namespace = string("$(homedir())/Dropbox/Postdoc/2014_Lego/Enigma/figures/conn_time.pdf");
-namespace = string("$(homedir())/2014_Lego/Enigma/figures/yog/conn_time.pdf");
 R"""
 pdf($namespace,height=5,width=6)
-boxplot($(conn_stitch),ylim=c(0,0.03),outline=FALSE,names=$(seq_stitch),
+boxplot($(conn_stitch),ylim=c(0,0.1),outline=FALSE,names=$(seq_stitch),
 xlab='Time',ylab='Connectance',
 pars = list(boxwex = 0.4, staplewex = 0.5, outwex = 0.5),col='lightgray')
 points($(meanconn),ylim=c(0,0.03),pch=16)
