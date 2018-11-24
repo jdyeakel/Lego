@@ -8,39 +8,40 @@ end
 reps = 100;
 S = 200;
 maxits = 4000;
-nvec = collect(0.0:0.2:4.0);
+nvec = collect(0.0:0.1:2.0);
 lnvec = length(nvec);
 
 
 
 
-@sync @distributed for r = 1:reps
+@sync @distributed for v = 1:lnvec
     
-    for v = 1:lnvec
-        
-        avalue = 0.01;
-        nvalue = (avalue/10)*nvec[v];    
-        
-        SOprobs = (
-        p_n=nvalue,
-        p_a=avalue
-        );
-        SSmult = 1.0; OOmult = 0.0;
-        SSprobs = (p_n = SSmult .* SOprobs.p_n , p_a = SSmult .* SOprobs.p_a);
-        OOprobs = (p_n = OOmult * SOprobs.p_n, p0 = 0.0);
+    avalue = 0.01;
+    nvalue = (avalue/10)*nvec[v];    
+    
+    SOprobs = (
+    p_n=nvalue,
+    p_a=avalue
+    );
+    SSmult = 1.0; OOmult = 0.0;
+    SSprobs = (p_n = SSmult .* SOprobs.p_n , p_a = SSmult .* SOprobs.p_a);
+    OOprobs = (p_n = OOmult * SOprobs.p_n, p0 = 0.0);
 
 
-        #expected objects per species
-        lambda = 0.0;
-        athresh = 0;
-        nthresh = 1.0;
-        MaxN = convert(Int64,floor(S + S*lambda));
-        
-        filename = "/data/foodwebs_mutualistwebs/sim_settings.jld";
-        indices = [v];
-        namespace = smartpath(filename,indices);
-        @save namespace reps S maxits lnvec athresh nthresh lambda SSprobs SOprobs OOprobs;
-        
+    #expected objects per species
+    lambda = 0.0;
+    athresh = 0;
+    nthresh = 1.0;
+    MaxN = convert(Int64,floor(S + S*lambda));
+    
+    
+    filename = "/data/foodwebs_mutualistwebs/sim_settings.jld";
+    indices = [v];
+    namespace = smartpath(filename,indices);
+    @save namespace reps S maxits lnvec athresh nthresh lambda SSprobs SOprobs OOprobs;
+    
+    
+    for r = 1:reps
         
         # int_m, tp_m, tind_m, mp_m, mind_m = intmatrixv3(S,lambda,probs);
         int_m, tp_m, tind_m, mp_m, mind_m = intmatrixv4(S,lambda,SSprobs,SOprobs,OOprobs);
