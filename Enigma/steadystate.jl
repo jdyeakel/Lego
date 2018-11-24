@@ -29,12 +29,8 @@ MaxN = convert(Int64,floor(S + S*lambda));
 
 #Save a small file to record the settings of the simulation
 # namespace = string("$(homedir())/2014_Lego/Enigma/data/steadystate/sim_settings.jld");
-if homedir() == "/home/z840"
-    namespace = string("$(homedir())/2014_Lego/Enigma/data/steadystate/sim_settings.jld");
-else
-    namespace = string("$(homedir())/Dropbox/PostDoc/2014_Lego/Enigma/data/steadystate/sim_settings.jld");
-end
-
+filename = "data/steadystate/sim_settings.jld";
+namespace = smartpath(filename);
 
 # probs_nolabel = (probs.p_n, probs.p_a);
 
@@ -54,12 +50,9 @@ end
     sp_v,
     int_id = preamble_defs(int_m);
     
-    if homedir() == "/home/z840"
-        namespace = string("$(homedir())/2014_Lego/Enigma/data/steadystate/int_m",r,".jld");
-    else
-        namespace = string("$(homedir())/Dropbox/PostDoc/2014_Lego/Enigma/data/steadystate/int_m",r,".jld");
-    end
-    
+    filename = "data/steadystate/int_m.jld";
+    indices = [r];
+    namespace = smartpath(filename,indices);
     @save namespace int_m tp_m tind_m mp_m mind_m;
 
     sprich,rich,clock,CID = assembly(
@@ -67,11 +60,9 @@ end
         athresh,nthresh,maxits);
     
     #Save individually so data can be loaded in parallel
-    if homedir() == "/home/z840"
-        namespace = string("$(homedir())/2014_Lego/Enigma/data/steadystate/cid_",r,".jld");
-    else
-        namespace = string("$(homedir())/Dropbox/PostDoc/2014_Lego/Enigma/data/steadystate/cid_",r,".jld");
-    end
+    filename = "data/steadystate/cid.jld";
+    indices = [r];
+    namespace = smartpath(filename,indices);
     @save namespace CID clock;
     
     # println("reps = ",r)

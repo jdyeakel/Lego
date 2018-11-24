@@ -8,11 +8,11 @@ end
 # @everywhere include("$(homedir())/Dropbox/PostDoc/2014_Lego/Enigma/src/assembly2.jl")
 
 
-S = 200;
+S = 10;
 maxits = 4000;
 SOprobs = (
-p_n=0.004,
-p_a=0.01
+p_n=0.01,
+p_a=0.1
 );
 SSmult = 1.0; OOmult = 0.0;
 SSprobs = (p_n = SSmult .* SOprobs.p_n , p_a = SSmult .* SOprobs.p_a);
@@ -91,3 +91,11 @@ fw_ind <- graph.adjacency($(indmatrix[keepnodes,keepnodes]'));
 #plot(fw_ind,layout=coords,vertex.size=5,edge.arrow.size=0.25,edge.color='red',vertex.label=NA,vertex.frame.color=NA, vertex.color=c(pal[1],rep(pal[2],vcount(fw_g)-1)),add=TRUE)
 dev.off()
 """
+
+
+
+R"""
+library(bipartite)
+nest = networklevel($a_b,index="NODF")
+"""
+@rget nest;

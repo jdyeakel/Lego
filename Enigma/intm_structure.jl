@@ -23,6 +23,8 @@ MaxN = convert(Int64,floor(S + S*lambda));
 
 Pconn = SharedArray{Float64}(reps);
 Pconn_ind = SharedArray{Float64}(reps);
+Pmutconn = SharedArray{Float64}(reps);
+Pmutconn_ind = SharedArray{Float64}(reps);
 Pres_overlap_dist = SharedArray{Float64}(reps,S);
 Pdegrees = SharedArray{Int64}(reps,S);
 Ptl = SharedArray{Float64}(reps,S);
@@ -49,9 +51,14 @@ Ptl = SharedArray{Float64}(reps,S);
     Pconn[r] = sum(tp_m[spcid_ind,spcid_ind])/(length(spcid)^2);
     Pconn_ind[r] = sum(tind_m[spcid_ind,spcid_ind])/(length(spcid)^2);
     
+    #Connectance mutualistic
+    Pmutconn[r] = sum(mp_m[spcid_ind,spcid_ind])/(length(spcid)^2);
+    Pmutconn_ind[r] = sum(mind_m[spcid_ind,spcid_ind])/(length(spcid)^2);
+    
     #Resource overlap
     res_overlap,user_overlap = roverlap(cid,sp_v,a_b,n_b0);
     Pres_overlap_dist[r,1:length(res_overlap)]=res_overlap;
+    Puser_overlap_dist[r,1:length(user_overlap)]=user_overlap;
     
     degrees = deleteat!(vec(sum(tind_m[[1;spcid_ind],[1;spcid_ind]],dims=2)),1);
     #Trophic Level
@@ -75,7 +82,7 @@ else
     namespace = string("$(homedir())/Dropbox/PostDoc/2014_Lego/Enigma/data/intm_structure.jld");
 end
 
-@save namespace Pconn Pconn_ind Pres_overlap_dist Pdegrees Ptl;
+@save namespace Pconn Pconn_ind Pmutconn Pmutconn_ind Pres_overlap_dist Puser_overlap_dist Pdegrees Ptl;
 
 # save(string("$(homedir())/Dropbox/PostDoc/2014_Lego/Enigma/data/intm_structure.jld"),
 # "Pconn",Pconn,

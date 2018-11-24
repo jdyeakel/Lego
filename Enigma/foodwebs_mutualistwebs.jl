@@ -36,13 +36,10 @@ lnvec = length(nvec);
         nthresh = 1.0;
         MaxN = convert(Int64,floor(S + S*lambda));
         
-        if homedir() == "/home/z840"
-            namespace = string("$(homedir())/2014_Lego/Enigma/data/foodwebs_mutualistwebs/sim_settings_",v,".jld");
-        else
-            namespace = string("$(homedir())/Dropbox/PostDoc/2014_Lego/Enigma/data/foodwebs_mutualistwebs/sim_settings_",v,".jld");
-        end
-
-        @save namespace reps S maxits athresh nthresh lambda SSprobs SOprobs OOprobs;
+        filename = "/data/steadystate/sim_settings.jld";
+        inidces = [v];
+        namespace = smartpath(filename,indices);
+        @save namespace reps S maxits lnvec athresh nthresh lambda SSprobs SOprobs OOprobs;
         
         
         # int_m, tp_m, tind_m, mp_m, mind_m = intmatrixv3(S,lambda,probs);
@@ -56,25 +53,22 @@ lnvec = length(nvec);
         sp_v,
         int_id = preamble_defs(int_m);
         
-        if homedir() == "/home/z840"
-            namespace = string("$(homedir())/2014_Lego/Enigma/data/foodwebs_mutualistwebs/int_m",v,"_",r,".jld");
-        else
-            namespace = string("$(homedir())/Dropbox/PostDoc/2014_Lego/Enigma/data/foodwebs_mutualistwebs/int_m",v,"_",r,".jld");
-        end
-        
+        filename = "/data/foodwebs_mutualistwebs/int_m.jld";
+        indices = [v,r];
+        namespace = smartpath(filename,indices);
         @save namespace int_m tp_m tind_m mp_m mind_m;
+        
 
         sprich,rich,clock,CID = assembly(
             int_m,a_b,n_b,i_b,m_b,n_b0,sp_v,int_id,tp_m,tind_m,lambda,
             athresh,nthresh,maxits);
         
         #Save individually so data can be loaded in parallel
-        if homedir() == "/home/z840"
-            namespace = string("$(homedir())/2014_Lego/Enigma/data/foodwebs_mutualistwebs/cid_",v,"_",r,".jld");
-        else
-            namespace = string("$(homedir())/Dropbox/PostDoc/2014_Lego/Enigma/data/foodwebs_mutualistwebs/cid_",v,"_",r,".jld");
-        end
+        filename = "/data/foodwebs_mutualistwebs/cid.jld";
+        indices = [v,r];
+        namespace = smartpath(filename,indices);
         @save namespace CID clock;
+        
         
     end
     

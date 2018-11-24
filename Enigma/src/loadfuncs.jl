@@ -16,6 +16,7 @@ using DataFrames
 
 if homedir() == "/home/z840"
     
+    @everywhere include("$(homedir())/2014_Lego/Enigma/src/smartpath.jl")
     
     #Interaction matrix
     @everywhere include("$(homedir())/2014_Lego/Enigma/src/intmatrixv3.jl")
@@ -41,6 +42,7 @@ if homedir() == "/home/z840"
     
 else
     
+    @everywhere include("$(homedir())/Dropbox/PostDoc/2014_Lego/Enigma/src/smartpath.jl")
     
     #Interaction matrix
     @everywhere include("$(homedir())/Dropbox/PostDoc/2014_Lego/Enigma/src/intmatrixv3.jl")
