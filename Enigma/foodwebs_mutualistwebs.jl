@@ -36,8 +36,8 @@ lnvec = length(nvec);
         nthresh = 1.0;
         MaxN = convert(Int64,floor(S + S*lambda));
         
-        filename = "/data/steadystate/sim_settings.jld";
-        inidces = [v];
+        filename = "/data/foodwebs_mutualistwebs/sim_settings.jld";
+        indices = [v];
         namespace = smartpath(filename,indices);
         @save namespace reps S maxits lnvec athresh nthresh lambda SSprobs SOprobs OOprobs;
         
