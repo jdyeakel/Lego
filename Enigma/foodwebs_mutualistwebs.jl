@@ -5,7 +5,7 @@ else
 end
 
 
-reps = 100;
+reps = 1000;
 S = 200;
 maxits = 4000;
 nvec = collect(0.0:0.1:2.0);
@@ -38,7 +38,7 @@ lnvec = length(nvec);
     filename = "/data/foodwebs_mutualistwebs/sim_settings.jld";
     indices = [v];
     namespace = smartpath(filename,indices);
-    @save namespace reps S maxits lnvec athresh nthresh lambda SSprobs SOprobs OOprobs;
+    @save namespace reps S maxits nvec athresh nthresh lambda SSprobs SOprobs OOprobs;
     
     
     for r = 1:reps
