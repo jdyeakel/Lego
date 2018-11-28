@@ -8,10 +8,10 @@ end
 # @everywhere include("$(homedir())/Dropbox/PostDoc/2014_Lego/Enigma/src/assembly2.jl")
 
 
-S = 100;
+S = 200;
 maxits = 4000;
 SOprobs = (
-p_n=0.001*4,
+p_n=0.001*1,
 p_a=0.01
 );
 SSmult = 1.0; OOmult = 0.0;

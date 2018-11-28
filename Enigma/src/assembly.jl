@@ -10,14 +10,15 @@ function assembly(int_m,a_b,n_b,i_b,m_b,n_b0,sp_v,int_id,tp_m,tind_m,lambda,
     clock = Array{Float64}(undef,0);
     CID = falses(N,maxits);
     
-    #Build the strength matrix apriori
-    strength = vec(pi*sum(n_b0,dims=2)) .- vec(sqrt(2)*sum(a_b,dims=2)) .- vec(sum(a_b,dims=1));
-    smatrix = Array{Float64}(copy(a_b));
-    for i=1:size(a_b)[1]
-        smatrix[i,:] .= a_b[i,:] * strength[i];
-    end
-    # smatrix[findall(iszero,a_b)] = NaN;
-    
+    #NOTE strength matrix can't be built a-priori!
+    # #Build the strength matrix apriori
+    # strength = vec(pi*sum(n_b0,dims=2)) .- vec(sqrt(2)*sum(a_b,dims=2)) .- vec(sum(a_b,dims=1));
+    # smatrix = Array{Float64}(copy(a_b));
+    # for i=1:size(a_b)[1]
+    #     smatrix[i,:] .= a_b[i,:] * strength[i];
+    # end
+    # # smatrix[findall(iszero,a_b)] = NaN;
+    # 
     
     
     t=0;
@@ -68,10 +69,24 @@ function assembly(int_m,a_b,n_b,i_b,m_b,n_b0,sp_v,int_id,tp_m,tind_m,lambda,
         spext1 = setdiff(spcid,survivors);
         
         
-        #Alternative approach
+        # Build the strength matrix at each community state
+        strength = vec(pi*sum(n_b0[spcid,cid],dims=2)) .- vec(sqrt(2)*sum(a_b[spcid,cid],dims=2)) .- vec(sum(a_b[spcid,cid],dims=1));
+        cmatrix = Array{Float64}(undef,length(spcid),length(cid));
+        for i=1:length(spcid)
+            cmatrix[i,:] .= a_b[spcid[i],cid] * strength[i];
+        end
         
+        #Don't count sun
+        # cmatrix = smatrix[spcid,cid];
         #define subset of smatrix for community at this timestep
-        cmatrix = smatrix[spcid,cid];
+        
+        # #Do count sun
+        # if length(cid) == 0
+        #     cmatrix = smatrix[spcid,cid];
+        # else
+        #     cmatrix = smatrix[spcid,[1;cid]];
+        # end
+        # 
         #define max values for community at this timestep
         cmax = vec(findmax(cmatrix,dims=1)[1]);
         
@@ -85,11 +100,20 @@ function assembly(int_m,a_b,n_b,i_b,m_b,n_b0,sp_v,int_id,tp_m,tind_m,lambda,
         prext_comp = trues(length(spcid));
         for i=1:length(spcid)
             
+            #Don't count sun
             #catalogue prey for all species/objects in the system (excluding sun)
-            ieats = Array{Bool}(a_b[i,cid]);
+            ieats = Array{Bool}(a_b[spcid[i],cid]);
             #If you have >= the max strength for any of those prey, you stay
             #This means that a pure primary producer is not evaluated
+            #NOTE FIX THIS
             prext_comp[i] = any(ieats)*(any(strength[spcid[i]] .>= cmax[ieats])==false);
+            
+            # #Do count sun
+            # #catalogue prey for all species/objects in the system (INCLUDING sun)
+            # ieats = Array{Bool}(a_b[spcid[i],[1;cid]]);
+            # #If you have >= the max strength for any of those prey, you stay
+            # #This means that a pure primary producer is not evaluated
+            # prext_comp[i] = any(ieats)*(any(strength[spcid[i]] .>= cmax[ieats])==false);
             
             # #Skip pure primary producers
             # if any(ieats)
