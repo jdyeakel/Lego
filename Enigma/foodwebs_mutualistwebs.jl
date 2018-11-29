@@ -5,7 +5,7 @@ else
 end
 
 
-reps = 1000;
+reps = 100;
 S = 200;
 maxits = 4000;
 nvec = collect(0.0:0.1:2.0);
@@ -73,7 +73,8 @@ lnvec = length(nvec);
         
     end
     
-    # println("reps = ",r)
+    println(string("nvec :: ",v,"/",lnvec));
+
 end
 
 

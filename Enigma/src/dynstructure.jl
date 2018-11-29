@@ -9,11 +9,11 @@ function dynstructure(cid,cid_old,sp_v,a_b,n_b0,tp_m,tind_m,mp_m,mind_m,int_id,a
     obrich = rich - sprich;
     
     #Connectance of trophic interactions
-    conn = sum(tp_m[spcid_ind,spcid_ind])/(length(spcid)^2);
-    conn_ind = sum(tind_m[spcid_ind,spcid_ind])/(length(spcid)^2);
+    conn = sum(tp_m[spcid_ind,spcid_ind])/((length(spcid)-1)^2);
+    conn_ind = sum(tind_m[spcid_ind,spcid_ind])/((length(spcid)-1)^2);
     #Connectance of mutualistic interactions?
-    mutconn = sum(mp_m[spcid_ind,spcid_ind])/(length(spcid)^2);
-    mutconn_ind = sum(mind_m[spcid_ind,spcid_ind])/(length(spcid)^2);
+    mutconn = sum(mp_m[spcid_ind,spcid_ind])/((length(spcid)-1)^2);
+    mutconn_ind = sum(mind_m[spcid_ind,spcid_ind])/((length(spcid)-1)^2);
     
     #Turnover
     turnover = 1 - (length(intersect(cid,cid_old)) / length(union(cid,cid_old)));
