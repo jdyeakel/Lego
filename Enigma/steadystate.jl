@@ -11,7 +11,7 @@ S = 200;
 maxits = 4000;
 
 SOprobs = (
-p_n=0.001,
+p_n=0.005,
 p_a=0.01
 );
 SSmult = 1.0; OOmult = 0.0;
