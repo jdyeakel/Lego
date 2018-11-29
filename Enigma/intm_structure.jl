@@ -8,7 +8,7 @@ reps = 100000;
 S = 200;
 # S = 400;
 SOprobs = (
-p_n=0.001,
+p_n=0.002,
 p_a=0.01
 );
 SSmult = 1.0; OOmult = 0.0;
@@ -26,6 +26,7 @@ Pconn_ind = SharedArray{Float64}(reps);
 Pmutconn = SharedArray{Float64}(reps);
 Pmutconn_ind = SharedArray{Float64}(reps);
 Pres_overlap_dist = SharedArray{Float64}(reps,S);
+Puser_overlap_dist = SharedArray{Float64}(reps,S);
 Pdegrees = SharedArray{Int64}(reps,S);
 Ptl = SharedArray{Float64}(reps,S);
 
@@ -76,11 +77,9 @@ Ptl = SharedArray{Float64}(reps,S);
     
 end
 
-if homedir() == "/home/z840"
-    namespace = string("$(homedir())/2014_Lego/Enigma/data/intm_structure.jld");
-else
-    namespace = string("$(homedir())/Dropbox/PostDoc/2014_Lego/Enigma/data/intm_structure.jld");
-end
+
+filename = "data/intm_structure.jld"
+namespace = smartpath(filename);
 
 @save namespace Pconn Pconn_ind Pmutconn Pmutconn_ind Pres_overlap_dist Puser_overlap_dist Pdegrees Ptl;
 

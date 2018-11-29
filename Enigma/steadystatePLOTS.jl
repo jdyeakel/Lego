@@ -4,7 +4,7 @@ else
     loadfunc = include("$(homedir())/Dropbox/PostDoc/2014_Lego/Enigma/src/loadfuncs.jl");
 end
 
-filename = "/data/steadystate/sim_settings.jld";
+filename = "data/steadystate/sim_settings.jld";
 namespace = smartpath(filename);
 @load namespace reps S maxits athresh nthresh lambda SSprobs SOprobs OOprobs;
 
@@ -44,7 +44,7 @@ trophic = SharedArray{Float64}(reps,tseqmax,S);
     # else
     #     namespace = string("$(homedir())/Dropbox/PostDoc/2014_Lego/Enigma/data/steadystate/int_m",r,".jld");
     # end
-    filename = "/data/steadystate/int_m.jld";
+    filename = "data/steadystate/int_m.jld";
     indices = [r];
     namespace = smartpath(filename,indices);
     @load namespace int_m tp_m tind_m mp_m mind_m;
@@ -65,7 +65,7 @@ trophic = SharedArray{Float64}(reps,tseqmax,S);
     #     namespace = string("$(homedir())/Dropbox/PostDoc/2014_Lego/Enigma/data/steadystate/cid_",r,".jld");
     # end
     
-    filename = "/data/steadystate/cid.jld";
+    filename = "data/steadystate/cid.jld";
     indices = [r];
     namespace = smartpath(filename,indices);
     @load namespace CID clock;
@@ -109,7 +109,7 @@ trophic = SharedArray{Float64}(reps,tseqmax,S);
 end
 
 
-filename = "/data/intm_structure.pdf"
+filename = "data/intm_structure.jld"
 namespace = smartpath(filename);
 @load namespace Pconn Pconn_ind Pmutconn Pmutconn_ind Pres_overlap_dist Puser_overlap_dist Pdegrees Ptl;
 
@@ -135,12 +135,12 @@ meanconn = [mean(conn_stitch[findall(!isnan,conn_stitch[:,i]),i]) for i=1:length
 mutconn_stitch,seq_stitch = sortassembly(mutconn,bins,seq);
 meanmutconn = [mean(mutconn_stitch[findall(!isnan,mutconn_stitch[:,i]),i]) for i=1:length(bins)]
 
-filename = "/figures/conn_time.pdf"
+filename = "figures/conn_time.pdf"
 namespace = smartpath(filename);
 
 R"""
-pdf($namespace,height=5,width=6)
-boxplot($(conn_stitch),ylim=c(0.005,0.1),log='y',outline=FALSE,names=$(seq_stitch),
+pdf($namespace,height=5,width=8)
+boxplot($(conn_stitch),ylim=c(0.005,0.2),log='y',outline=FALSE,names=$(seq_stitch),
 xlab='Time',ylab='Connectance',
 pars = list(boxwex = 0.4, staplewex = 0.5, outwex = 0.5),col='lightgray')
 points($(meanconn),ylim=c(0,0.03),pch=16)
@@ -148,14 +148,17 @@ lines($(meanconn),ylim=c(0,0.03),lwd=2)
 lines(seq(0.001,3000),rep(mean($Pconn),3000),lty=3)
 dev.off()
 """
+
+filename = "figures/mutconn_time.pdf"
+namespace = smartpath(filename);
 R"""
 pdf($namespace,height=5,width=6)
-boxplot($(conn_stitch),ylim=c(0.005,0.1),log='y',outline=FALSE,names=$(seq_stitch),
+boxplot($(mutconn_stitch),ylim=c(0.0001,0.005),log='y',outline=FALSE,names=$(seq_stitch),
 xlab='Time',ylab='Connectance',
 pars = list(boxwex = 0.4, staplewex = 0.5, outwex = 0.5),col='lightgray')
-points($(meanconn),ylim=c(0,0.03),pch=16)
-lines($(meanconn),ylim=c(0,0.03),lwd=2)
-lines(seq(0.001,3000),rep(mean($Pconn),3000),lty=3)
+points($(meanmutconn),ylim=c(0,0.03),pch=16)
+lines($(meanmutconn),ylim=c(0,0.03),lwd=2)
+lines(seq(0.001,3000),rep(mean($Pmutconn),3000),lty=3)
 dev.off()
 """
 
@@ -167,17 +170,17 @@ dev.off()
 Preps = size(Pres_overlap_dist)[1];
 Pmeanoverlap = Array{Float64}(undef,Preps);
 for r=1:Preps
-    Pmeanoverlap[r] = mean(Pres_overlap_dist[r,!isnan(Pres_overlap_dist[r,:])]);
+    Pmeanoverlap[r] = mean(Pres_overlap_dist[r,isnan.(Pres_overlap_dist[r,:]).==false]);
 end
 
 overlap_stitch,seq_stitch = sortassembly(res_overlap,bins,seq);
-meanoverlap = [mean(overlap_stitch[!isnan(overlap_stitch[:,i]),i]) for i=1:length(bins)];
+meanoverlap = [mean(overlap_stitch[isnan.(overlap_stitch[:,i]).==false,i]) for i=1:length(bins)];
 
-filename = "/figures/trophicoverlap_time.pdf";
+filename = "figures/trophicoverlap_time.pdf";
 namespace = smartpath(filename);
 R"""
 pdf($namespace,height=5,width=6)
-boxplot($(overlap_stitch),ylim=c(0,0.1),outline=FALSE,names=$(seq_stitch),
+boxplot($(overlap_stitch),ylim=c(0,0.2),outline=FALSE,names=$(seq_stitch),
 xlab='Time',ylab='Resource overlap',
 pars = list(boxwex = 0.4, staplewex = 0.5, outwex = 0.5),col='lightgray')
 points($(meanoverlap),ylim=c(0,0.1),pch=16)
@@ -192,9 +195,9 @@ dev.off()
 ############
 #Species pool
 Preps = size(Pres_overlap_dist)[1];
-Pmeanuseroverlap = Array{Float64}(Preps);
+Pmeanuseroverlap = Array{Float64}(undef,Preps);
 for r=1:Preps
-    Pmeanuseroverlap[r] = mean(Puser_overlap_dist[r,!isnan(Puser_overlap_dist[r,:])]);
+    Pmeanuseroverlap[r] = mean(Puser_overlap_dist[r,isnan.(Puser_overlap_dist[r,:]).==false]);
 end
 
 # lfseq = findall(x->x>1,diff(seq))[1];
@@ -211,8 +214,8 @@ end
 # lastbins = indexin(laststeps,seq);
 
 useroverlap_stitch,seq_stitch = sortassembly(user_overlap,bins,seq);
-meanoverlap = [mean(useroverlap_stitch[!isnan(useroverlap_stitch[:,i]),i]) for i=1:length(bins)];
-filename = "/figures/useroverlap_time.pdf";
+meanoverlap = [mean(useroverlap_stitch[isnan.(useroverlap_stitch[:,i]).==false,i]) for i=1:length(bins)];
+filename = "figures/useroverlap_time.pdf";
 namespace = smartpath(filename);
 R"""
 pdf($namespace,height=5,width=6)

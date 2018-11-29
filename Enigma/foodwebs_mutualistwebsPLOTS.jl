@@ -10,7 +10,7 @@ R"options(warn = -1)"
 # seq = [collect(2:50);100;200;500;1000;2000;4000];
 seq = [2000;4000];
 tseqmax = length(seq);
-reps = 1000;
+reps = 100;
 nvec = collect(0.0:0.1:2.0);
 lnvec = length(nvec);
 
@@ -135,7 +135,7 @@ library(RColorBrewer)
 pal=brewer.pal(3,'Set1')
 pdf($namespace,height=5,width=6)
 plot(jitter($nvecreshaped),$nestall,xlab='Frequency of mutualisms',ylab='NODF',pch='.',cex=1.5,col=pal[2])
-points($nvec,$mnest,pch=16,col='white')
+points($nvec,$mnest,pch=16,col='black')
 lines($nvec,$mnest)
 dev.off()
 """

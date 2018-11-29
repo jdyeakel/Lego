@@ -14,7 +14,7 @@ lnvec = length(nvec);
 
 
 
-@sync @distributed for v = 1:lnvec
+for v = 1:lnvec
     
     avalue = 0.01;
     nvalue = (avalue/10)*nvec[v];    
@@ -35,13 +35,13 @@ lnvec = length(nvec);
     MaxN = convert(Int64,floor(S + S*lambda));
     
     
-    filename = "/data/foodwebs_mutualistwebs/sim_settings.jld";
+    filename = "data/foodwebs_mutualistwebs/sim_settings.jld";
     indices = [v];
     namespace = smartpath(filename,indices);
     @save namespace reps S maxits nvec athresh nthresh lambda SSprobs SOprobs OOprobs;
     
     
-    for r = 1:reps
+    @sync @distributed for r = 1:reps
         
         # int_m, tp_m, tind_m, mp_m, mind_m = intmatrixv3(S,lambda,probs);
         int_m, tp_m, tind_m, mp_m, mind_m = intmatrixv4(S,lambda,SSprobs,SOprobs,OOprobs);
@@ -54,7 +54,7 @@ lnvec = length(nvec);
         sp_v,
         int_id = preamble_defs(int_m);
         
-        filename = "/data/foodwebs_mutualistwebs/int_m.jld";
+        filename = "data/foodwebs_mutualistwebs/int_m.jld";
         indices = [v,r];
         namespace = smartpath(filename,indices);
         @save namespace int_m tp_m tind_m mp_m mind_m;
@@ -65,7 +65,7 @@ lnvec = length(nvec);
             athresh,nthresh,maxits);
         
         #Save individually so data can be loaded in parallel
-        filename = "/data/foodwebs_mutualistwebs/cid.jld";
+        filename = "data/foodwebs_mutualistwebs/cid.jld";
         indices = [v,r];
         namespace = smartpath(filename,indices);
         @save namespace CID clock;
