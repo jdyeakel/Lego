@@ -5,7 +5,7 @@ else
 end
 
 
-reps = 100;
+reps = 1000;
 S = 200;
 maxits = 4000;
 nvec = collect(0.0:0.1:2.0);
