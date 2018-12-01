@@ -14,7 +14,7 @@ lnvec = length(nvec);
 
 
 
-for v = 1:lnvec
+for v = 19:lnvec
     
     avalue = 0.01;
     nvalue = (avalue/10)*nvec[v];    

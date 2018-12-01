@@ -238,69 +238,74 @@ dev.off()
 bins = [5;10;25;50;100;200;1000;2000;4000;];
 seq2 = indexin(bins,seq);
 
-mdegt = Array{Float64}(undef,length(seq2),S)*0;
-sddegt = Array{Float64}(undef,length(seq2),S)*0;
-mtlt = Array{Float64}(undef,length(seq2),S)*0;
-sdtlt = Array{Float64}(undef,length(seq2),S)*0;
+mdegt = zeros(Float64,length(seq2),S);
+sddegt = zeros(Float64,length(seq2),S);
+mtlt = zeros(Float64,length(seq2),S);
+sdtlt = zeros(Float64,length(seq2),S);
 t_tic = 0;
 for t = seq2
-    t_tic = t_tic + 1;
+    global t_tic = t_tic + 1;
     deg = degrees[:,t,:];
     tl = trophic[:,t,:];
     #Sort each row
-    degsort = sort(deg,2,rev=true);
-    tlsort = sort(tl,2,rev=true);
+    degsort = sort(deg,dims=2,rev=true);
+    tlsort = sort(tl,dims=2,rev=true);
     #which column is the last non-zero?
-    lastcol = findall(iszero,sum(degsort,1))[1]-1;
+    lastcol = findall(iszero,vec(sum(degsort,dims=1)))[1]-1;
     mdeg = Array{Float64}(undef,lastcol);
     sddeg = Array{Float64}(undef,lastcol);
     mtl = Array{Float64}(undef,lastcol);
     sdtl = Array{Float64}(undef,lastcol);
     #Take means but ignore zeros for each column through lascol
+    #means and sds of degrees and trophic levels
     for i=1:lastcol
-        mdeg[i] = mean(degsort[!iszero.(degsort[:,i]),i]);
-        sddeg[i] = std(degsort[!iszero.(degsort[:,i]),i]);
-        mtl[i] = mean(tlsort[!iszero.(tlsort[:,i]),i]);
-        sdtl[i] = std(tlsort[!iszero.(tlsort[:,i]),i]);
+        mdeg[i] = mean(degsort[iszero.(degsort[:,i]).==false,i]);
+        sddeg[i] = std(degsort[iszero.(degsort[:,i]).==false,i]);
+        mtl[i] = mean(tlsort[iszero.(tlsort[:,i]).==false,i]);
+        sdtl[i] = std(tlsort[iszero.(tlsort[:,i]).==false,i]);
     end
+    #save the means and sds. There will be zeros for unfilled species
     mdegt[t_tic,1:length(mdeg)]=mdeg;
     sddegt[t_tic,1:length(mdeg)]=sddeg;
     mtlt[t_tic,1:length(mtl)]=mtl;
     sdtlt[t_tic,1:length(mtl)]=sdtl;
 end
-Pdegreesort = sort(Pdegrees,2,rev=true);
-Pmeandegree = vec(mapslices(mean,Pdegreesort,1));
-Psddeg = vec(mapslices(std,Pdegreesort,1));
+Pdegreesort = sort(Pdegrees,dims=2,rev=true);
+Pmeandegree = vec(mapslices(mean,Pdegreesort,dims=1));
+Psddeg = vec(mapslices(std,Pdegreesort,dims=1));
 
-meanrich = convert(Int64,round(mean(sprich[:,tseqmax]),0));
-Pdegreesort = Array{Int64}(undef,Preps,meanrich)*0;
+meanrich = round(Int64,mean(sprich[:,tseqmax]));
+Pdegreesort = zeros(Int64,Preps,meanrich);
 for i=1:Preps
     Pdegreesort[i,:] = sort(sample(Pdegrees[i,:],meanrich),rev=true);
 end
-Pmeandegree = vec(mapslices(mean,Pdegreesort,1));
+Pmeandegree = vec(mapslices(mean,Pdegreesort,dims=1));
+#If mean degree < 1, set equal to 1
 firstone = findall(x->x==1,Pmeandegree)[1];
-Pmeandegree[firstone:length(Pmeandegree)] = 1;
-Psddeg = vec(mapslices(std,Pdegreesort,1));
-Psddeg[firstone:length(Psddeg)] = 0;
+Pmeandegree[firstone:length(Pmeandegree)] .= 1;
+#Where we set the degree = 1, set stdev = 0
+Psddeg = vec(mapslices(std,Pdegreesort,dims=1));
+Psddeg[firstone:length(Psddeg)] .= 0;
 
 #DEGREE DISTRIBUTION
 
+filename = "figures/degreedist_time2.pdf";
+namespace = smartpath(filename);
 # namespace = string("$(homedir())/Dropbox/Postdoc/2014_Lego/Enigma/figures/degreedist_time2.pdf");
-namespace = string("$(homedir())/2014_Lego/Enigma/figures/yog/degreedist_time2.pdf");
 i=length(seq2);
 R"""
 library(RColorBrewer)
 pdf($namespace,height=5,width=6)
 pal = brewer.pal($(length(seq2)),'Spectral')
-numsp = length($(mdegt[i,!iszero.(mdegt[i,:])]))
-plot($(mdegt[i,!iszero.(mdegt[i,:])]),xlim=c(1,80),ylim=c(1,5),log='y',col=pal[$i],type='l',lwd=2,xlab = 'Species sorted by degree', ylab='Mean degree')
+numsp = length($(mdegt[i,iszero.(mdegt[i,:]).==false]))
+plot($(mdegt[i,iszero.(mdegt[i,:]).==false]),xlim=c(1,100),ylim=c(1,6),col=pal[$i],type='l',lwd=2,xlab = 'Species sorted by degree', ylab='Mean degree')
 sdev_pre = $(sddegt[i,findall(x->x>0,sddegt[i,:])]);
 sdev = numeric(length($(mdegt[i,findall(x->x>0,mdegt[i,:])])))
 sdev[1:length(sdev_pre)]=sdev_pre
 polygon(x=c(seq(1,length(sdev)),seq(length(sdev),1)),
-y=c($(mdegt[i,!iszero.(mdegt[i,:])])[1:length(sdev)]+sdev,
-rev($(mdegt[i,!iszero.(mdegt[i,:])])[1:length(sdev)]-sdev)),col=paste(pal[$i],65,sep=''),border=NA)
-lines($(mdegt[i,!iszero.(mdegt[i,:])]),xlim=c(1,200),ylim=c(0.01,50),col=pal[$i],lwd=2,xlab = 'Number of species', ylab='Median degree')
+y=c($(mdegt[i,iszero.(mdegt[i,:]).==false])[1:length(sdev)]+sdev,
+rev($(mdegt[i,iszero.(mdegt[i,:]).==false])[1:length(sdev)]-sdev)),col=paste(pal[$i],65,sep=''),border=NA)
+lines($(mdegt[i,iszero.(mdegt[i,:]).==false]),xlim=c(1,200),ylim=c(0.01,50),col=pal[$i],lwd=2,xlab = 'Number of species', ylab='Median degree')
 """
 for i=length(seq2)-1:-1:1
     R"""
@@ -308,19 +313,19 @@ for i=length(seq2)-1:-1:1
     sdev = numeric(length($(mdegt[i,findall(x->x>0,mdegt[i,:])])))
     sdev[1:length(sdev_pre)]=sdev_pre
     polygon(x=c(seq(1,length(sdev)),seq(length(sdev),1)),
-    y=c($(mdegt[i,!iszero.(mdegt[i,:])])[1:length(sdev)]+sdev,
-    rev($(mdegt[i,!iszero.(mdegt[i,:])])[1:length(sdev)]-sdev)),col=paste(pal[$i],65,sep=''),border=NA)
-    lines($(mdegt[i,!iszero.(mdegt[i,:])]),col=pal[$i],lwd=2)
+    y=c($(mdegt[i,iszero.(mdegt[i,:]).==false])[1:length(sdev)]+sdev,
+    rev($(mdegt[i,iszero.(mdegt[i,:]).==false])[1:length(sdev)]-sdev)),col=paste(pal[$i],65,sep=''),border=NA)
+    lines($(mdegt[i,iszero.(mdegt[i,:]).==false]),col=pal[$i],lwd=2)
     """
 end
-R"dev.off()"
+# R"dev.off()"
 
 R"""
 maxsp = $meanrich;
 sdev = $(Psddeg)[1:maxsp];
-polygon(x=c(seq(1,maxsp),seq(maxsp,1)),
-y=c($(Pmeandegree)[1:maxsp]+sdev[1:maxsp],
-rev($(Pmeandegree)[1:maxsp]-sdev[1:maxsp])),col=paste('#000000',65,sep=''),border=NA)
+#polygon(x=c(seq(1,maxsp),seq(maxsp,1)),
+#y=c($(Pmeandegree)[1:maxsp]+sdev[1:maxsp],
+#rev($(Pmeandegree)[1:maxsp]-sdev[1:maxsp])),col=paste('#000000',65,sep=''),border=NA)
 lines($(Pmeandegree)[1:maxsp],col='black',type='l',lwd=2)
 
 legend(x=215,y=120,legend = c('Pool',$(seq[seq2])),col=c('black',pal),lty=1,lwd=2,title='Time',cex=0.7,bty='n')
