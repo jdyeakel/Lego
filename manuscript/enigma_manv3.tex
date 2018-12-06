@@ -241,12 +241,14 @@ Following the establishment of a suite of autotrophs, both mixotrophs and low tr
 It is with the establishment of higher-trophic level consumers that the rate of extinction begins to approximate the rate of colonization, such that community diversity begins fluctuating around a fixed point, and the amplitude of these fluctuations depends on x, y, and z.
 
 % 1) connectance
-First we find that the connectance of trophic interactions ($C=\sum_{i,j} \rr{e}_{i,j}/(\mathcal{S}-1)^2$ follows a decay-like trajectory to values within the empirical range ($C=0.002-0.02$) yet consistently greater than the connectance of the source pool matrix $\bm{P}$.
-Decaying connectance has been documented in the assembly of a wild community (Peitchnik), however this decay is a statistical inevitability, as a growing food web early in the assembly process undergoes both increasing species richness and - through the establishment of different trophic levels and compartments - a decline in link density relative to a fully connected network.
-
+As the community assembles, we find that the connectance of trophic interactions ($C=\sum_{i,j} \rr{e}_{i,j}/(\mathcal{S}-1)^2$ follows a decay-like trajectory to values close to yet consistently greater than the connectance of the source pool matrix $\bm{P}$.
+Decaying connectance has been documented in the assembly of a wild community (Peitchnik), however this decay is a statistical inevitability, as a growing food web early in the assembly process undergoes both increasing species richness and - through the establishment of different trophic levels and modules - a decline in link density relative to the small, densely connected network at the initiation of assembly.
+That the connectance of assembled communities is greater than the source pool is due to the fact that only species connected by different link types can enter the community to begin with, increasing expected link density compared to the overall pool.
 
 
 % 2) degree distributions
+
+
 
 % 3) trophic levels
 
@@ -268,8 +270,8 @@ $\overrightarrow{n}$ & need & \\
 $\overrightarrow{i}$ & ignore & \\
 $\overrightarrow{m}$ & make & \\
 \hline
-$e \leftrightarrow i$ & Asymmetric Predation & $p_{ei} = p_i(p_e/(p_e+p_n+p_i)) + p_e(p_i/(p_a+p_i+p_n))$ \\
-$e \leftrightarrow e$ & Symmetric predation & $p_{ee} = p_e(p_e/(p_i+p_n+p_e))$\\
+$e \leftrightarrow i$ & Asymmetric consumption & $p_{ei} = p_i(p_e/(p_e+p_n+p_i)) + p_e(p_i/(p_a+p_i+p_n))$ \\
+$e \leftrightarrow e$ & Symmetric consumption & $p_{ee} = p_e(p_e/(p_i+p_n+p_e))$\\
 $e \leftrightarrow n$ & Trophic mutualism & $p_{en} = p_n(p_e/(p_e+p_n+p_i+p_m)) + p_e(p_n/(p_a+p_i+p_n))$ \\
 $n \leftrightarrow n$ & Non-trophic mutualism & $p_{nn} = p_n(p_n/(p_e+p_n+p_i+p_m))$ \\
 $n \leftrightarrow i$ & Commensalism & $p_{ni} = p_n(p_i/(p_e+p_n+p_i+p_m)) + p_i(p_n/(p_e+p_n+p_i))$\\
@@ -279,12 +281,6 @@ $i \leftrightarrow i$ & Null & $p_{ii} = p_i(p_i/(p_e+p_n+p_i))$\\
 $\mathcal{N}$ & Number of species + objects & dyn.\\
 $\mathcal{S}$ & Number of species & dyn.\\
 $\mathcal{O}$ & Number of objects & dyn.\\
-$a_t$ & Assimilate threshold & 0.0\\
-$n_t$ & Need threshold & 0.2\\
-$k$ & Number of consumers interacting with species $i$ & dyn.\\
-$\omega_{\rm b}$ & Background probability of extinction at time $t$\\
-$\omega(t)$ & Cumulative probability of extinction at time $t$ & $\frac{\omega_{\rm b} + \epsilon n}{1 + \epsilon n}$\\
-$1/\epsilon$ & Number of consumers of resource $i$ at which $\omega_i(t)=\frac{1}{2}$ & 1000\\
 \hline
 \end{tabular}
 \end{center}

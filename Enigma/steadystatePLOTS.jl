@@ -135,7 +135,7 @@ meanconn = [mean(conn_stitch[findall(!isnan,conn_stitch[:,i]),i]) for i=1:length
 mutconn_stitch,seq_stitch = sortassembly(mutconn,bins,seq);
 meanmutconn = [mean(mutconn_stitch[findall(!isnan,mutconn_stitch[:,i]),i]) for i=1:length(bins)]
 
-filename = "figures/conn_time.pdf"
+filename = "figures/yog/conn_time.pdf"
 namespace = smartpath(filename);
 
 R"""
@@ -149,7 +149,7 @@ lines(seq(0.001,3000),rep(mean($Pconn),3000),lty=3)
 dev.off()
 """
 
-filename = "figures/mutconn_time.pdf"
+filename = "figures/yog/mutconn_time.pdf"
 namespace = smartpath(filename);
 R"""
 pdf($namespace,height=5,width=6)
@@ -176,7 +176,7 @@ end
 overlap_stitch,seq_stitch = sortassembly(res_overlap,bins,seq);
 meanoverlap = [mean(overlap_stitch[isnan.(overlap_stitch[:,i]).==false,i]) for i=1:length(bins)];
 
-filename = "figures/trophicoverlap_time.pdf";
+filename = "figures/yog/trophicoverlap_time.pdf";
 namespace = smartpath(filename);
 R"""
 pdf($namespace,height=5,width=6)
@@ -215,7 +215,7 @@ end
 
 useroverlap_stitch,seq_stitch = sortassembly(user_overlap,bins,seq);
 meanoverlap = [mean(useroverlap_stitch[isnan.(useroverlap_stitch[:,i]).==false,i]) for i=1:length(bins)];
-filename = "figures/useroverlap_time.pdf";
+filename = "figures/yog/useroverlap_time.pdf";
 namespace = smartpath(filename);
 R"""
 pdf($namespace,height=5,width=6)

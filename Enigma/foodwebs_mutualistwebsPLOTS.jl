@@ -10,7 +10,7 @@ R"options(warn = -1)"
 # seq = [collect(2:50);100;200;500;1000;2000;4000];
 seq = [2000;4000];
 tseqmax = length(seq);
-reps = 100;
+reps = 1000;
 nvec = collect(0.0:0.1:2.0);
 lnvec = length(nvec);
 
@@ -26,19 +26,19 @@ comb_mod = SharedArray{Float64}(lnvec,reps,tseqmax);
 
 for v=1:lnvec
     
-    filename = "/data/foodwebs_mutualistwebs/sim_settings.jld";
+    filename = "data/foodwebs_mutualistwebs/sim_settings.jld";
     indices = [v];
     namespace = smartpath(filename,indices);
     @load namespace reps S maxits athresh nthresh lambda SSprobs SOprobs OOprobs;
     
     for r=1:reps
     
-        filename = "/data/foodwebs_mutualistwebs/int_m.jld";
+        filename = "data/foodwebs_mutualistwebs/int_m.jld";
         indices = [v,r];
         namespace = smartpath(filename,indices);
         @load namespace int_m tp_m tind_m mp_m mind_m;
         
-        filename = "/data/foodwebs_mutualistwebs/cid.jld";
+        filename = "data/foodwebs_mutualistwebs/cid.jld";
         indices = [v,r];
         namespace = smartpath(filename,indices);
         @load namespace CID clock;
@@ -128,7 +128,7 @@ mnest = mean(comb_nest[:,:,teval],dims=2);
 mrich = vec(rich[:,:,teval]);
 mstdrich = std(rich[:,:,teval],dims=2);
 nvecreshaped = repeat(nvec,outer=reps)
-filename = "/figures/mean_nested.pdf";
+filename = "/figures/yog/mean_nested.pdf";
 namespace = smartpath(filename);
 R"""
 library(RColorBrewer)
@@ -159,15 +159,22 @@ mmod = median(comb_mod[:,:,teval],dims=2);
 mrich = vec(rich[:,:,teval]);
 mstdrich = std(rich[:,:,teval],dims=2);
 nvecreshaped = repeat(nvec,outer=reps)
-filename = "/figures/mean_modularity.pdf";
+filename = "/figures/yog/mean_modularity.pdf";
 namespace = smartpath(filename);
 R"""
 library(RColorBrewer)
 pal=brewer.pal(3,'Set1')
 pdf($namespace,height=5,width=6)
-plot(jitter($nvecreshaped),$modall,xlab='Frequency of mutualisms',ylab='NODF',pch='.',cex=1.5,col=pal[3])
-points($nvec,$mmod,pch=16,col='white')
+plot(jitter($nvecreshaped),$modall,xlab='Frequency of mutualisms',ylab='modularity',pch='.',cex=1.5,col=pal[3])
+points($nvec,$mmod,pch=16,col='black')
 lines($nvec,$mmod)
 dev.off()
 """
 
+filename = "/figures/yog/nestmod.pdf";
+namespace = smartpath(filename);
+R"""
+pdf($namespace,height=5,width=6)
+plot($modall,$nestall,pch='.',cex=1.5,col='black',xlab='Modularity',ylab='NODF')
+dev.off()
+"""
