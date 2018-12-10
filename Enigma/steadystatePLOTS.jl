@@ -127,13 +127,9 @@ Preps = size(Pconn)[1];
 ############
 #Connectance
 ############
-bins = [2;5;10;20;30;40;50;100;500;1000;2000];
+bins = [2;5;10;20;30;40;100;500;1000;2000];
 conn_stitch,seq_stitch = sortassembly(conn,bins,seq);
-meanconn = [mean(conn_stitch[findall(!isnan,conn_stitch[:,i]),i]) for i=1:length(bins)]
-
-#mutualistic connectance
-mutconn_stitch,seq_stitch = sortassembly(mutconn,bins,seq);
-meanmutconn = [mean(mutconn_stitch[findall(!isnan,mutconn_stitch[:,i]),i]) for i=1:length(bins)]
+meanconn = [mean(conn_stitch[findall(!isnan,conn_stitch[:,i]),i]) for i=1:length(seq_stitch)]
 
 filename = "figures/yog/conn_time.pdf"
 namespace = smartpath(filename);
@@ -149,11 +145,17 @@ lines(seq(0.001,3000),rep(mean($Pconn),3000),lty=3)
 dev.off()
 """
 
+
+#mutualistic connectance
+mutconn_stitch,seq_stitch = sortassembly(mutconn,bins,seq);
+meanmutconn = [mean(mutconn_stitch[findall(!isnan,mutconn_stitch[:,i]),i]) for i=1:length(seq_stitch)]
+
+
 filename = "figures/yog/mutconn_time.pdf"
 namespace = smartpath(filename);
 R"""
 pdf($namespace,height=5,width=6)
-boxplot($(mutconn_stitch),ylim=c(0.0001,0.005),log='y',outline=FALSE,names=$(seq_stitch),
+boxplot($(mutconn_stitch),ylim=c(0.0001,0.01),log='y',outline=FALSE,names=$(seq_stitch),
 xlab='Time',ylab='Connectance',
 pars = list(boxwex = 0.4, staplewex = 0.5, outwex = 0.5),col='lightgray')
 points($(meanmutconn),ylim=c(0,0.03),pch=16)
@@ -362,6 +364,109 @@ for i=length(seq2)-1:-1:1
     """
 end
 R"dev.off()"
+
+
+#Real degree distribution
+
+bins = [5;10;25;50;100;200;1000;2000;4000;];
+seq2 = indexin(bins,seq);
+global tmaxdegree = zeros(Int64,length(seq2));
+global tmaxtrophic = zeros(Int64,length(seq2));
+freqdegreereps = Array{Array}(undef,reps);
+freqtrophicreps = Array{Array}(undef,reps);
+for r=1:reps
+    global freqdegreetime = Array{Array}(undef,length(seq2));
+    global freqtrophictime = Array{Array}(undef,length(seq2));
+    global tic = 0;
+
+    for t=seq2
+        global tic += 1;
+        alldegrees = degrees[r,t,:][degrees[r,t,:] .> 0];
+        alltrophic = trophic[r,t,:][trophic[r,t,:] .>= 0.9];
+        maxdegree = maximum(alldegrees);
+        maxtrophic = round(Int64,maximum(alltrophic))+1;
+        freqdegree = Array{Float64}(undef,maxdegree);
+        freqtrophic = Array{Float64}(undef,maxtrophic+1);
+        for i=1:maxdegree
+            freqdegree[i] = length(findall(x->x==i,alldegrees))/length(alldegrees);
+        end
+        for i=0:maxtrophic
+            freqtrophic[i+1] = length(findall(x->(x>=i && x<i+1),alltrophic))/length(alltrophic);
+        end
+        freqdegreetime[tic] = freqdegree;
+        freqtrophictime[tic] = freqtrophic;
+        tmaxdegree[tic] = maximum([maxdegree,tmaxdegree[tic]])
+        tmaxtrophic[tic] = maximum([maxtrophic,tmaxtrophic[tic]])
+    end
+    freqdegreereps[r] = freqdegreetime;
+    freqtrophicreps[r] = freqtrophictime;
+end
+maxdegree = maximum(tmaxdegree);
+maxtrophic = maximum(tmaxtrophic)+1;
+#Reorganizing
+degreedistreps = zeros(Float64,reps,length(seq2),maxdegree);
+trophicdistreps = zeros(Float64,reps,length(seq2),maxtrophic);
+for r=1:reps
+    for t=1:length(seq2)
+        degreedistreps[r,t,1:length(freqdegreereps[r][t])] = freqdegreereps[r][t];
+        trophicdistreps[r,t,1:length(freqtrophicreps[r][t])] = freqtrophicreps[r][t];
+    end
+end
+#means over reps
+meandegreedist = Array{Float64}(undef,length(seq2),maxdegree);
+meantrophicdist = Array{Float64}(undef,length(seq2),maxtrophic);
+for t=1:length(seq2)
+    meandegreedist[t,:] = mean(degreedistreps[:,t,:],dims=1);
+    meantrophicdist[t,:] = mean(trophicdistreps[:,t,:],dims=1);
+end
+
+
+filename = "figures/yog/degreedist_time3.pdf";
+namespace = smartpath(filename);
+R"""
+library(RColorBrewer)
+pal = brewer.pal($(length(seq2)),'Spectral')
+pdf($namespace,height=5,width=6)
+plot(seq(1,length($(meandegreedist[1,:]))),$(meandegreedist[1,:]),type='l',xlim=c(1,$(maxdegree)),ylim=c(0.000001,1),col=pal[1],xlab='Species degree',ylab='Probability',log='y')
+points(seq(1,length($(meandegreedist[1,:]))),$(meandegreedist[1,:]),pch=16,col=pal[1])
+"""
+for i=2:length(seq2)
+    R"""
+    lines(seq(1,length($(meandegreedist[i,:]))),$(meandegreedist[i,:]),col=pal[$i])
+    points(seq(1,length($(meandegreedist[i,:]))),$(meandegreedist[i,:]),pch=16,col=pal[$i])
+    """
+end
+R"""
+legend(x=7.5,y=1,legend=$(seq[seq2]),col=colorRampPalette(brewer.pal(9,"Spectral"))(9),cex=0.8,pch=16,bty='n',title='Assembly time')
+dev.off()
+"""
+
+
+
+filename = "figures/yog/trophicdist_time3.pdf";
+namespace = smartpath(filename);
+R"""
+library(RColorBrewer)
+pal = brewer.pal($(length(seq2)),'Spectral')
+pdf($namespace,height=5,width=6)
+plot(seq(1,length($(meantrophicdist[1,:]))),$(meantrophicdist[1,:]),type='l',xlim=c(1,10),ylim=c(0.000000,0.8),col=pal[1],xlab='Trophic level',ylab='Probability')
+points(seq(1,length($(meantrophicdist[1,:]))),$(meantrophicdist[1,:]),pch=16,col=pal[1])
+"""
+for i=2:length(seq2)
+    R"""
+    lines(seq(1,length($(meantrophicdist[i,:]))),$(meantrophicdist[i,:]),col=pal[$i])
+    points(seq(1,length($(meantrophicdist[i,:]))),$(meantrophicdist[i,:]),pch=16,col=pal[$i])
+    """
+end
+R"""
+legend(x=8,y=0.8,legend=$(seq[seq2]),col=colorRampPalette(brewer.pal(9,"Spectral"))(9),cex=0.8,pch=16,bty='n',title='Assembly time')
+dev.off()
+"""
+
+
+
+
+
 # 
 # 
 # #####################

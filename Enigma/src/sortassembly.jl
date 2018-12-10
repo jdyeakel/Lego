@@ -28,7 +28,6 @@ function sortassembly(measure,bins,seq)
     
     lfseqtrim = maxstartmeasure;
     
-    
     initsteps = bins[bins.<lfseqtrim]; #use these locations for init
     laststeps = bins[bins.>=lfseq]; #use these locations for the rest
     lastbins = indexin(laststeps,seq);
