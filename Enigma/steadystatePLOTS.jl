@@ -36,6 +36,16 @@ user_overlap_dist = SharedArray{Float64}(reps,tseqmax,S);
 degrees = SharedArray{Int64}(reps,tseqmax,S);
 trophic = SharedArray{Float64}(reps,tseqmax,S);
 
+realizeddegree = SharedArray{Float64}(reps,tseqmax,S);
+potentialdegree = SharedArray{Float64}(reps,tseqmax,S);
+
+realizedG = SharedArray{Float64}(reps,tseqmax,S);
+realizedGnoprim = SharedArray{Float64}(reps,tseqmax,S);
+
+potentialG = SharedArray{Float64}(reps,tseqmax,S);
+C = SharedArray{Float64}(reps,tseqmax);
+
+
 @sync @distributed for r=1:reps
     #Read in the interaction matrix
     
@@ -103,6 +113,16 @@ trophic = SharedArray{Float64}(reps,tseqmax,S);
         trophic[r,t,1:length(troph)] = troph;
         avgdegree[r,t] = mean(degrees[r,t,1:length(deg)]);
         
+        # realizeddegree[r,t] = mean(vec(sum(a_b[cid,[1;cid]],dims=2)));
+        # potentialdegree[r,t] = mean(vec(sum(a_b[cid,:],dims=2)));
+        realizeddegree[r,t,1:length(cid)] = vec(sum(a_b[cid,[1;cid]],dims=2));
+        potentialdegree[r,t,1:length(cid)] = vec(sum(a_b[cid,:],dims=2));
+
+        C[r,t] = (sum(a_b[cid,[1;cid]]))/((length(cid))^2);
+        realizedG[r,t,1:length(cid)] = vec(sum(a_b[cid,[1;cid]],dims=2)) .* (1/((sum(a_b[cid,[1;cid]]))/(length(cid))));
+        potentialG[r,t,1:length(cid)] = vec(sum(a_b[cid,:],dims=2)) .* (1/((sum(a_b[cid,[1;cid]]))/(length(cid))));
+        
+        realizedGnoprim[r,t,1:length(cid)] = vec(sum(a_b[cid,cid],dims=2)) .* (1/((sum(a_b[cid,cid]))/(length(cid))));
         
     end
 
@@ -366,7 +386,7 @@ end
 R"dev.off()"
 
 
-#Real degree distribution
+#Real degreea and trophic distribution
 
 bins = [5;10;25;50;100;200;1000;2000;4000;];
 seq2 = indexin(bins,seq);
@@ -460,6 +480,97 @@ for i=2:length(seq2)
 end
 R"""
 legend(x=8,y=0.8,legend=$(seq[seq2]),col=colorRampPalette(brewer.pal(9,"Spectral"))(9),cex=0.8,pch=16,bty='n',title='Assembly time')
+dev.off()
+"""
+
+#Cumulative degree and trophic distributions
+cumdegreedist = cumsum(meandegreedist,dims=2,rev=true);
+cumtrophicdist = 
+
+
+#Resource specialization of realized vs. potential niche over time
+
+bins = [5;10;25;50;100;200;1000;2000;4000;];
+# bins=seq;
+seq2 = indexin(bins,seq);
+meanpotentialdegree = Array{Float64}(undef,reps,length(seq2));
+meanrealizeddegree = Array{Float64}(undef,reps,length(seq2));
+rG = Array{Float64}(undef,reps,length(seq2));
+pG = Array{Float64}(undef,reps,length(seq2));
+propG = Array{Float64}(undef,reps,length(seq2));
+propGnoprim = Array{Float64}(undef,reps,length(seq2));
+
+potpropG = Array{Float64}(undef,reps,length(seq2));
+
+for r=1:reps
+    for t=1:length(seq2)
+        
+        meanpotentialdegree[r,t] = mean(potentialdegree[r,seq2[t],:][potentialdegree[r,seq2[t],:].>0]);
+        meanrealizeddegree[r,t] = mean(realizeddegree[r,seq2[t],:][realizeddegree[r,seq2[t],:].>0]);
+        
+        rG[r,t] = mean(realizedG[r,seq2[t],:][realizedG[r,seq2[t],:].>0]);
+        pG[r,t] = mean(potentialG[r,seq2[t],:][potentialG[r,seq2[t],:].>0]);
+        
+        propG[r,t] = sum(realizedG[r,seq2[t],:][realizedG[r,seq2[t],:].>0] .> mean(C[:,seq2[t]]))/length(realizedG[r,seq2[t],:]);
+        
+        propGnoprim[r,t] = sum(realizedGnoprim[r,seq2[t],:][realizedGnoprim[r,seq2[t],:].>0] .> mean(conn[:,seq2[t]]))/length(realizedGnoprim[r,seq2[t],:]);
+        
+        potpropG[r,t] = sum(potentialG[r,seq2[t],:][potentialG[r,seq2[t],:].>0] .> mean(C[:,seq2[t]]))/length(potentialG[r,seq2[t],:]);
+        
+    end
+end
+
+mps = mean(meanpotentialdegree,dims=1);
+mrs = mean(meanrealizeddegree,dims=1);
+
+
+mpG = mean(potpropG,dims=1);
+mrG = mean(propG,dims=1);
+mrGnoprim = mean(propGnoprim,dims=1);
+
+filename = "figures/yog/specialization.pdf"
+namespace = smartpath(filename);
+R"""
+library(RColorBrewer)
+pal = brewer.pal($(length(seq2)),'Spectral')
+pdf($namespace,height=5,width=10)
+par(mfrow=c(1,2))
+plot(jitter($(meanpotentialdegree[:,1])),jitter($(meanrealizeddegree[:,1])),pch='.',col=pal[1],xlim=c(1,4),ylim=c(1,2),xlab='Mean potential trophic links',ylab='Mean realized trophic links')
+"""
+for i=2:length(seq2)
+    R"""
+    points(jitter($(meanpotentialdegree[:,i])),jitter($(meanrealizeddegree[:,i])),pch='.',col=pal[$i])
+    """
+end
+R"""
+legend(x=3.25,y=2,legend=$(seq[seq2]),col=colorRampPalette(brewer.pal(9,"Spectral"))(9),cex=0.8,pch=16,bty='n',title='Assembly time')
+lines(seq(-1,5),seq(-1,5))
+lines($mps,$mrs)
+points($mps,$mrs,pch=21,col='black',bg=pal)
+plot(jitter($(repeat([seq[seq2[1]]],reps))),1-($(propG[:,1])),pch='.',col=pal[1],xlim=c(5,4000),ylim=c(0,1),xlab='Time',ylab='Proportion specialists',log='x')
+"""
+for i=2:length(seq2)
+    R"""
+    points(jitter($(repeat([seq[seq2[i]]],reps))),1-($(propG[:,i])),pch='.',col=pal[$i])
+    """
+end
+R"""
+lines($(seq[seq2]),1-$mrG)
+points($(seq[seq2]),1-$mrG,pch=21,col='black',bg=pal)
+lines($(seq[seq2]),1-$mrGnoprim)
+points($(seq[seq2]),1-$mrGnoprim,pch=22,col='black',bg=pal)
+dev.off()
+"""
+
+
+filename = "figures/yog/specialization2.pdf"
+namespace = smartpath(filename);
+R"""
+library(RColorBrewer)
+pal = colorRampPalette(brewer.pal(9,"Spectral"))(length($seq))
+pdf($namespace,height=5,width=5)
+plot($(seq[seq2]),$mps,type='l',ylim=c(1,3),log='x')
+points($(seq[seq2]),$mps,pch=16,col=pal,cex=0.8)
 dev.off()
 """
 
