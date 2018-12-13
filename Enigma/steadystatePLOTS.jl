@@ -123,6 +123,7 @@ C = SharedArray{Float64}(reps,tseqmax);
         potentialG[r,t,1:length(cid)] = vec(sum(a_b[cid,:],dims=2)) .* (1/((sum(a_b[cid,[1;cid]]))/(length(cid))));
         
         realizedGnoprim[r,t,1:length(cid)] = vec(sum(a_b[cid,cid],dims=2)) .* (1/((sum(a_b[cid,cid]))/(length(cid))));
+
         
     end
 
@@ -499,7 +500,7 @@ rG = Array{Float64}(undef,reps,length(seq2));
 pG = Array{Float64}(undef,reps,length(seq2));
 propG = Array{Float64}(undef,reps,length(seq2));
 propGnoprim = Array{Float64}(undef,reps,length(seq2));
-
+uppertrophicpropG = Array{Float64}(undef,reps,length(seq2));
 potpropG = Array{Float64}(undef,reps,length(seq2));
 
 for r=1:reps
@@ -511,11 +512,13 @@ for r=1:reps
         rG[r,t] = mean(realizedG[r,seq2[t],:][realizedG[r,seq2[t],:].>0]);
         pG[r,t] = mean(potentialG[r,seq2[t],:][potentialG[r,seq2[t],:].>0]);
         
-        propG[r,t] = sum(realizedG[r,seq2[t],:][realizedG[r,seq2[t],:].>0] .> mean(C[:,seq2[t]]))/length(realizedG[r,seq2[t],:]);
+        propG[r,t] = sum(realizedG[r,seq2[t],:][realizedG[r,seq2[t],:].>0] .> (C[r,seq2[t]]))/sum(realizedG[r,seq2[t],:][realizedG[r,seq2[t],:].>0]);
         
-        propGnoprim[r,t] = sum(realizedGnoprim[r,seq2[t],:][realizedGnoprim[r,seq2[t],:].>0] .> mean(conn[:,seq2[t]]))/length(realizedGnoprim[r,seq2[t],:]);
+        propGnoprim[r,t] = sum(realizedGnoprim[r,seq2[t],:][realizedGnoprim[r,seq2[t],:].>0] .> (C[r,seq2[t]]))/sum(realizedG[r,seq2[t],:][realizedG[r,seq2[t],:].>0]);
         
-        potpropG[r,t] = sum(potentialG[r,seq2[t],:][potentialG[r,seq2[t],:].>0] .> mean(C[:,seq2[t]]))/length(potentialG[r,seq2[t],:]);
+        potpropG[r,t] = sum(potentialG[r,seq2[t],:][potentialG[r,seq2[t],:].>0] .> (C[r,seq2[t]]))/sum(potentialG[r,seq2[t],:][potentialG[r,seq2[t],:].>0]);
+        
+        uppertrophicpropG[r,t] = sum(realizedG[r,seq2[t],findall(x->x>1,trophic[r,seq2[t],:])][realizedG[r,seq2[t],findall(x->x>1,trophic[r,seq2[t],:])].>0] .> (C[r,seq2[t]]))/sum(realizedG[r,seq2[t],findall(x->x>1,trophic[r,seq2[t],:])][realizedG[r,seq2[t],findall(x->x>1,trophic[r,seq2[t],:])].>0]);
         
     end
 end
@@ -525,8 +528,9 @@ mrs = mean(meanrealizeddegree,dims=1);
 
 
 mpG = mean(potpropG,dims=1);
-mrG = mean(propG,dims=1);
-mrGnoprim = mean(propGnoprim,dims=1);
+mrG = meanfinite(propG,1);
+mrGnoprim = meanfinite(propGnoprim,1);
+mrGuppertrophic = meanfinite(uppertrophicpropG,1);
 
 filename = "figures/yog/specialization.pdf"
 namespace = smartpath(filename);
@@ -559,6 +563,10 @@ lines($(seq[seq2]),1-$mrG)
 points($(seq[seq2]),1-$mrG,pch=21,col='black',bg=pal)
 lines($(seq[seq2]),1-$mrGnoprim)
 points($(seq[seq2]),1-$mrGnoprim,pch=22,col='black',bg=pal)
+lines($(seq[seq2]),1-$mrGuppertrophic)
+points($(seq[seq2]),1-$mrGuppertrophic,pch=23,col='black',bg=pal)
+lines($(seq[seq2]),1-$mpG)
+points($(seq[seq2]),1-$mpG,pch=24,col='black',bg=pal)
 dev.off()
 """
 

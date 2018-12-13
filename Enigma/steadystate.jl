@@ -5,7 +5,7 @@ else
 end
 
 
-reps = 5000;
+reps = 10000;
 S = 200;
 
 maxits = 4000;
