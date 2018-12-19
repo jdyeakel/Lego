@@ -22,6 +22,9 @@ tseqmax = length(seq);
 
 rich = SharedArray{Int64}(reps,tseqmax);
 sprich = SharedArray{Int64}(reps,tseqmax);
+sprichinweb = SharedArray{Int64}(reps,tseqmax);
+sprichinwebnoprim = SharedArray{Int64}(reps,tseqmax);
+
 turnover = SharedArray{Float64}(reps,tseqmax);
 res_overlap = SharedArray{Float64}(reps,tseqmax);
 user_overlap = SharedArray{Float64}(reps,tseqmax);
@@ -41,6 +44,7 @@ potentialdegree = SharedArray{Float64}(reps,tseqmax,S);
 
 realizedG = SharedArray{Float64}(reps,tseqmax,S);
 realizedGnoprim = SharedArray{Float64}(reps,tseqmax,S);
+realizedGavgc = SharedArray{Float64}(reps,tseqmax,S);
 
 potentialG = SharedArray{Float64}(reps,tseqmax,S);
 C = SharedArray{Float64}(reps,tseqmax);
@@ -117,20 +121,41 @@ C = SharedArray{Float64}(reps,tseqmax);
         # potentialdegree[r,t] = mean(vec(sum(a_b[cid,:],dims=2)));
         realizeddegree[r,t,1:length(cid)] = vec(sum(a_b[cid,[1;cid]],dims=2));
         potentialdegree[r,t,1:length(cid)] = vec(sum(a_b[cid,:],dims=2));
-
-        C[r,t] = (sum(a_b[cid,[1;cid]]))/((length(cid))^2);
-        realizedG[r,t,1:length(cid)] = vec(sum(a_b[cid,[1;cid]],dims=2)) .* (1/((sum(a_b[cid,[1;cid]]))/(length(cid))));
-        potentialG[r,t,1:length(cid)] = vec(sum(a_b[cid,:],dims=2)) .* (1/((sum(a_b[cid,[1;cid]]))/(length(cid))));
         
-        realizedGnoprim[r,t,1:length(cid)] = vec(sum(a_b[cid,cid],dims=2)) .* (1/((sum(a_b[cid,cid]))/(length(cid))));
-
+        
+        #NOTE species disconnected from web can be counted
+        
+        #this are species that are connected to the foodweb in any way
+        cidinweb = sort(cid[findall(!iszero,vec(sum(a_b[cid,[1;cid]],dims=2)))]);
+        
+        sprichinweb[r,t] = length(cidinweb);
+        
+        C[r,t] = (sum(a_b[cidinweb,[1;cid]]))/((length(cidinweb))^2);
+        
+        realizedG[r,t,1:length(cidinweb)] = vec(sum(a_b[cidinweb,[1;cid]],dims=2)) .* (1/((sum(a_b[cidinweb,[1;cid]]))/(length(cidinweb))));
+        
+        potentialG[r,t,1:length(cidinweb)] = vec(sum(a_b[cidinweb,:],dims=2)) .* (1/((sum(a_b[cidinweb,[1;cid]]))/(length(cidinweb))));
+        
+        cidinwebnoprim = sort(cid[findall(!iszero,vec(sum(a_b[cid,cid],dims=2)))]);
+        sprichinwebnoprim[r,t] = length(cidinwebnoprim);
+        
+        if sprichinwebnoprim[r,t] > 0
+            realizedGnoprim[r,t,1:length(cidinwebnoprim)] = vec(sum(a_b[cidinwebnoprim,cid],dims=2)) .* (1/((sum(a_b[cidinwebnoprim,cid]))/(length(cidinwebnoprim))));
+        end
+        
+        #compared to steady state C averaged across webs
+        #AS CLOSE TO PIETCHNICK AS POSSIBLE
+        SSC = 0.0108;
+        if sprichinwebnoprim[r,t] > 0
+            realizedGavgc[r,t,1:length(cidinweb)] = vec(sum(a_b[cidinweb,[1;cid]],dims=2)) .* (1/(SSC*length(cidinweb)));
+        end
         
     end
 
 end
 
 
-filename = "data/intm_structure.jld"
+filename = "data/intm_structure.jld";
 namespace = smartpath(filename);
 @load namespace Pconn Pconn_ind Pmutconn Pmutconn_ind Pres_overlap_dist Puser_overlap_dist Pdegrees Ptl;
 
@@ -148,7 +173,7 @@ Preps = size(Pconn)[1];
 ############
 #Connectance
 ############
-bins = [2;5;10;20;30;40;100;500;1000;2000];
+bins = [2;5;10;20;30;40;100;1000;4000];
 conn_stitch,seq_stitch = sortassembly(conn,bins,seq);
 meanconn = [mean(conn_stitch[findall(!isnan,conn_stitch[:,i]),i]) for i=1:length(seq_stitch)]
 
@@ -156,10 +181,20 @@ filename = "figures/yog/conn_time.pdf"
 namespace = smartpath(filename);
 
 R"""
-pdf($namespace,height=5,width=8)
-boxplot($(conn_stitch),ylim=c(0.005,0.2),log='y',outline=FALSE,names=$(seq_stitch),
-xlab='Time',ylab='Connectance',
-pars = list(boxwex = 0.4, staplewex = 0.5, outwex = 0.5),col='lightgray')
+library(RColorBrewer)
+pal = brewer.pal(3,'Set1')
+pdf($namespace,height=5,width=5)
+plot(jitter(rep(1,$reps)),jitter($(conn_stitch[:,1])),pch='.',col=pal[2],xlim=c(1,length($seq_stitch)),ylim=c(0.0,0.2),xaxt='n',
+xlab='Time',ylab=expression(Connectance ~~ L/S^{2}))
+"""
+for t=2:length(seq_stitch)
+    R"""
+    points(jitter(rep($(t),$reps)),jitter($(conn_stitch[:,t])),pch='.',col=pal[2])
+    """
+end
+R"""
+boxplot($(conn_stitch),outline=FALSE,names=$(seq_stitch),xlab='',ylab='',
+pars = list(boxwex = 0.2, staplewex = 0.5, outwex = 0.5,whisklty=1),add=TRUE)
 points($(meanconn),ylim=c(0,0.03),pch=16)
 lines($(meanconn),ylim=c(0,0.03),lwd=2)
 lines(seq(0.001,3000),rep(mean($Pconn),3000),lty=3)
@@ -197,7 +232,7 @@ for r=1:Preps
 end
 
 overlap_stitch,seq_stitch = sortassembly(res_overlap,bins,seq);
-meanoverlap = [mean(overlap_stitch[isnan.(overlap_stitch[:,i]).==false,i]) for i=1:length(bins)];
+meanoverlap = [mean(overlap_stitch[isnan.(overlap_stitch[:,i]).==false,i]) for i=1:length(seq_stitch)];
 
 filename = "figures/yog/trophicoverlap_time.pdf";
 namespace = smartpath(filename);
@@ -237,7 +272,7 @@ end
 # lastbins = indexin(laststeps,seq);
 
 useroverlap_stitch,seq_stitch = sortassembly(user_overlap,bins,seq);
-meanoverlap = [mean(useroverlap_stitch[isnan.(useroverlap_stitch[:,i]).==false,i]) for i=1:length(bins)];
+meanoverlap = [mean(useroverlap_stitch[isnan.(useroverlap_stitch[:,i]).==false,i]) for i=1:length(seq_stitch)];
 filename = "figures/yog/useroverlap_time.pdf";
 namespace = smartpath(filename);
 R"""
@@ -312,9 +347,9 @@ Psddeg[firstone:length(Psddeg)] .= 0;
 
 #DEGREE DISTRIBUTION
 
-filename = "figures/degreedist_time2.pdf";
+filename = "figures/yog/degreedist_time2.pdf";
 namespace = smartpath(filename);
-# namespace = string("$(homedir())/Dropbox/Postdoc/2014_Lego/Enigma/figures/degreedist_time2.pdf");
+# namespace = string("$(homedir())/Dropbox/Postdoc/2014_Lego/Enigma/figures/yog/degreedist_time2.pdf");
 i=length(seq2);
 R"""
 library(RColorBrewer)
@@ -390,6 +425,7 @@ R"dev.off()"
 #Real degreea and trophic distribution
 
 bins = [5;10;25;50;100;200;1000;2000;4000;];
+bins = [5;50;100;4000;];
 seq2 = indexin(bins,seq);
 global tmaxdegree = zeros(Int64,length(seq2));
 global tmaxtrophic = zeros(Int64,length(seq2));
@@ -448,7 +484,7 @@ R"""
 library(RColorBrewer)
 pal = brewer.pal($(length(seq2)),'Spectral')
 pdf($namespace,height=5,width=6)
-plot(seq(1,length($(meandegreedist[1,:]))),$(meandegreedist[1,:]),type='l',xlim=c(1,$(maxdegree)),ylim=c(0.000001,1),col=pal[1],xlab='Species degree',ylab='Probability',log='y')
+plot(seq(1,length($(meandegreedist[1,:]))),$(meandegreedist[1,:]),type='l',xlim=c(1,10),ylim=c(0.000001,1),col=pal[1],xlab='Species degree',ylab='Probability',log='y')
 points(seq(1,length($(meandegreedist[1,:]))),$(meandegreedist[1,:]),pch=16,col=pal[1])
 """
 for i=2:length(seq2)
@@ -458,7 +494,7 @@ for i=2:length(seq2)
     """
 end
 R"""
-legend(x=7.5,y=1,legend=$(seq[seq2]),col=colorRampPalette(brewer.pal(9,"Spectral"))(9),cex=0.8,pch=16,bty='n',title='Assembly time')
+legend(x=8,y=1,legend=$(seq[seq2]),col=colorRampPalette(brewer.pal(9,"Spectral"))(9),cex=0.8,pch=16,bty='n',title='Assembly time')
 dev.off()
 """
 
@@ -484,9 +520,33 @@ legend(x=8,y=0.8,legend=$(seq[seq2]),col=colorRampPalette(brewer.pal(9,"Spectral
 dev.off()
 """
 
-#Cumulative degree and trophic distributions
-cumdegreedist = cumsum(meandegreedist,dims=2,rev=true);
-cumtrophicdist = 
+
+
+filename = "figures/yog/trophicdist_time4.pdf";
+namespace = smartpath(filename);
+R"""
+library(RColorBrewer)
+pal = colorRampPalette(brewer.pal(9,"Spectral"))(length($seq2))
+pdf($namespace,height=5,width=6)
+plot($(meantrophicdist[1,:]),seq(1,length($(meantrophicdist[1,:]))),type='l',xlim=c(0,0.8),ylim=c(1,12),col=pal[1],xlab='Frequency',ylab='Trophic level')
+points($(meantrophicdist[1,:]),seq(1,length($(meantrophicdist[1,:]))),pch=16,col=pal[1])
+"""
+for i=1:12
+    R"""
+    rect(0,$i-0.5,$(meantrophicdist[length(seq2),i]),$i+0.5,col=paste(pal[length($seq2)],50,sep=''),border=NA)
+    """
+end
+for i=1:length(seq2)
+    R"""
+    lines($(meantrophicdist[i,:]),seq(1,length($(meantrophicdist[i,:]))),col=pal[$i])
+    points($(meantrophicdist[i,:]),seq(1,length($(meantrophicdist[i,:]))),pch=16,col=pal[$i])
+    """
+end
+R"""
+legend(x=0.65,y=12,legend=$(seq[seq2]),col=pal,cex=0.8,pch=16,bty='n',title='Assembly time')
+dev.off()
+"""
+
 
 
 #Resource specialization of realized vs. potential niche over time
@@ -499,9 +559,12 @@ meanrealizeddegree = Array{Float64}(undef,reps,length(seq2));
 rG = Array{Float64}(undef,reps,length(seq2));
 pG = Array{Float64}(undef,reps,length(seq2));
 propG = Array{Float64}(undef,reps,length(seq2));
+propGavgc = Array{Float64}(undef,reps,length(seq2));
 propGnoprim = Array{Float64}(undef,reps,length(seq2));
 uppertrophicpropG = Array{Float64}(undef,reps,length(seq2));
 potpropG = Array{Float64}(undef,reps,length(seq2));
+meantrophic = Array{Float64}(undef,reps,length(seq2));
+meandegrees = Array{Float64}(undef,reps,length(seq2));
 
 for r=1:reps
     for t=1:length(seq2)
@@ -512,16 +575,29 @@ for r=1:reps
         rG[r,t] = mean(realizedG[r,seq2[t],:][realizedG[r,seq2[t],:].>0]);
         pG[r,t] = mean(potentialG[r,seq2[t],:][potentialG[r,seq2[t],:].>0]);
         
-        propG[r,t] = sum(realizedG[r,seq2[t],:][realizedG[r,seq2[t],:].>0] .> (C[r,seq2[t]]))/sum(realizedG[r,seq2[t],:][realizedG[r,seq2[t],:].>0]);
+        # propG[r,t] = sum((realizedG[r,seq2[t],:][realizedG[r,seq2[t],:].>0] .* C[r,seq2[t]]) .> (C[r,seq2[t]]))/sum(realizedG[r,seq2[t],:][realizedG[r,seq2[t],:].>0]);
         
-        propGnoprim[r,t] = sum(realizedGnoprim[r,seq2[t],:][realizedGnoprim[r,seq2[t],:].>0] .> (C[r,seq2[t]]))/sum(realizedG[r,seq2[t],:][realizedG[r,seq2[t],:].>0]);
+        # propG[r,t] = sum((realizedG[r,seq2[t],:][realizedG[r,seq2[t],:].>0] ) .> (1))/sum(realizedG[r,seq2[t],:][realizedG[r,seq2[t],:].>0]);
         
-        potpropG[r,t] = sum(potentialG[r,seq2[t],:][potentialG[r,seq2[t],:].>0] .> (C[r,seq2[t]]))/sum(potentialG[r,seq2[t],:][potentialG[r,seq2[t],:].>0]);
+        propG[r,t] = sum((realizedG[r,seq2[t],1:sprichinweb[r,seq2[t]]]) .> (1))/sprichinweb[r,seq2[t]];
         
-        uppertrophicpropG[r,t] = sum(realizedG[r,seq2[t],findall(x->x>1,trophic[r,seq2[t],:])][realizedG[r,seq2[t],findall(x->x>1,trophic[r,seq2[t],:])].>0] .> (C[r,seq2[t]]))/sum(realizedG[r,seq2[t],findall(x->x>1,trophic[r,seq2[t],:])][realizedG[r,seq2[t],findall(x->x>1,trophic[r,seq2[t],:])].>0]);
+        propGnoprim[r,t] = sum((realizedGnoprim[r,seq2[t],1:sprichinwebnoprim[r,seq2[t]]]) .> (1))/sprichinwebnoprim[r,seq2[t]];
+        
+        propGavgc[r,t] = sum((realizedGavgc[r,seq2[t],1:sprichinwebnoprim[r,seq2[t]]]) .> (1))/sprichinwebnoprim[r,seq2[t]];
+        
+        potpropG[r,t] = sum((potentialG[r,seq2[t],1:sprichinweb[r,seq2[t]]]) .> (1))/sprichinweb[r,seq2[t]];
+        
+        uppertrophicpropG[r,t] = sum((realizedG[r,seq2[t],findall(x->x<2,trophic[r,seq2[t],:])][realizedG[r,seq2[t],findall(x->x<2,trophic[r,seq2[t],:])].>0]) .> (1))/sum(realizedG[r,seq2[t],findall(x->x<2,trophic[r,seq2[t],:])][realizedG[r,seq2[t],findall(x->x<2,trophic[r,seq2[t],:])].>0]);
+        
+        meantrophic[r,t] = mean(trophic[r,seq2[t],:][trophic[r,seq2[t],:] .> 0]);
+        meandegrees[r,t] = mean(degrees[r,seq2[t],:][degrees[r,seq2[t],:] .> 0]);
         
     end
 end
+
+#which reps have low values of propG durin timesteps 1:100?
+earlygen = unique([findall(x->x<0.5,1 .- propG[:,3]);findall(x->x<0.5,1 .- propG[:,3])]);
+earlysp = setdiff(collect(1:reps),earlygen);
 
 mps = mean(meanpotentialdegree,dims=1);
 mrs = mean(meanrealizeddegree,dims=1);
@@ -529,8 +605,16 @@ mrs = mean(meanrealizeddegree,dims=1);
 
 mpG = mean(potpropG,dims=1);
 mrG = meanfinite(propG,1);
+mrGgen = meanfinite(propG[earlygen,:],1);
 mrGnoprim = meanfinite(propGnoprim,1);
-mrGuppertrophic = meanfinite(uppertrophicpropG,1);
+mrGavgc = meanfinite(propGavgc,1);
+minmrGnoprim = Array{Float64}(undef,length(seq2));
+maxmrGnoprim = Array{Float64}(undef,length(seq2));
+for i=1:length(seq2)
+    minmrGnoprim[i]=quantile(propGnoprim[isnan.(propGnoprim[:,i]).==false,i],0.05);
+    maxmrGnoprim[i]=quantile(propGnoprim[isnan.(propGnoprim[:,i]).==false,i],0.95);
+end
+# mrGuppertrophic = meanfinite(uppertrophicpropG,1);
 
 filename = "figures/yog/specialization.pdf"
 namespace = smartpath(filename);
@@ -539,34 +623,45 @@ library(RColorBrewer)
 pal = brewer.pal($(length(seq2)),'Spectral')
 pdf($namespace,height=5,width=10)
 par(mfrow=c(1,2))
-plot(jitter($(meanpotentialdegree[:,1])),jitter($(meanrealizeddegree[:,1])),pch='.',col=pal[1],xlim=c(1,4),ylim=c(1,2),xlab='Mean potential trophic links',ylab='Mean realized trophic links')
+plot(jitter($(meanrealizeddegree[:,1])),jitter($(meanpotentialdegree[:,1])),pch='.',col=pal[1],xlim=c(1,2),ylim=c(1,4),xlab='Mean realized trophic links',ylab='Mean potential trophic links')
+# points(jitter($(meanpotentialdegree[earlygen,1])),jitter($(meanrealizeddegree[earlygen,1])),pch='.',col='black')
 """
 for i=2:length(seq2)
     R"""
-    points(jitter($(meanpotentialdegree[:,i])),jitter($(meanrealizeddegree[:,i])),pch='.',col=pal[$i])
+    points(jitter($(meanrealizeddegree[:,i])),jitter($(meanpotentialdegree[:,i])),pch='.',col=pal[$i])
+    # points(jitter($(meanpotentialdegree[earlygen,i])),jitter($(meanrealizeddegree[earlygen,i])),pch='.',col='black')
     """
 end
 R"""
-legend(x=3.25,y=2,legend=$(seq[seq2]),col=colorRampPalette(brewer.pal(9,"Spectral"))(9),cex=0.8,pch=16,bty='n',title='Assembly time')
+legend(x=1.8,y=4.05,legend=$(seq[seq2]),col=colorRampPalette(brewer.pal(9,"Spectral"))(9),cex=0.7,pch=16,bty='n',title='Assembly time')
 lines(seq(-1,5),seq(-1,5))
-lines($mps,$mrs)
-points($mps,$mrs,pch=21,col='black',bg=pal)
-plot(jitter($(repeat([seq[seq2[1]]],reps))),1-($(propG[:,1])),pch='.',col=pal[1],xlim=c(5,4000),ylim=c(0,1),xlab='Time',ylab='Proportion specialists',log='x')
+lines($mrs,$mps)
+points($mrs,$mps,pch=21,col='black',bg=pal)
+plot(jitter($(repeat([seq[seq2[1]]],reps))),1-($(propGnoprim[:,1])),pch='.',cex=2,col=pal[1],xlim=c(5,4000),ylim=c(0,1),xlab='Time',ylab='Proportion specialists',log='x')
 """
 for i=2:length(seq2)
     R"""
-    points(jitter($(repeat([seq[seq2[i]]],reps))),1-($(propG[:,i])),pch='.',col=pal[$i])
+    points(jitter($(repeat([seq[seq2[i]]],reps))),1-($(propGnoprim[:,i])),pch='.',cex=2,col=pal[$i])
     """
+    # nona = 1 .- propGnoprim[isnan.(propGnoprim[:,i]).==false,i];
+    # qrs = nona[findall(x->x<quantile(nona,0.05),nona)];
+    # R"""
+    # points(jitter($(repeat([seq[seq2[i]]],length(qrs)))),$qrs,pch=1,col=pal[$i])
+    # """
 end
 R"""
 lines($(seq[seq2]),1-$mrG)
 points($(seq[seq2]),1-$mrG,pch=21,col='black',bg=pal)
 lines($(seq[seq2]),1-$mrGnoprim)
 points($(seq[seq2]),1-$mrGnoprim,pch=22,col='black',bg=pal)
-lines($(seq[seq2]),1-$mrGuppertrophic)
-points($(seq[seq2]),1-$mrGuppertrophic,pch=23,col='black',bg=pal)
-lines($(seq[seq2]),1-$mpG)
-points($(seq[seq2]),1-$mpG,pch=24,col='black',bg=pal)
+lines($(seq[seq2]),1-$mrGavgc)
+points($(seq[seq2]),1-$mrGavgc,pch=23,col='black',bg=pal)
+# lines($(seq[seq2]),1-$mrGgen)
+# points($(seq[seq2]),1-$mrGgen,pch=21,col='black',bg=pal)
+# lines($(seq[seq2]),1-$mrGuppertrophic)
+# points($(seq[seq2]),1-$mrGuppertrophic,pch=23,col='black',bg=pal)
+# lines($(seq[seq2]),1-$mpG)
+# points($(seq[seq2]),1-$mpG,pch=24,col='black',bg=pal)
 dev.off()
 """
 
@@ -581,6 +676,223 @@ plot($(seq[seq2]),$mps,type='l',ylim=c(1,3),log='x')
 points($(seq[seq2]),$mps,pch=16,col=pal,cex=0.8)
 dev.off()
 """
+
+
+lategensample = sample(setdiff(collect(1:reps),earlygen),100);
+earlygensample = sample(earlygen,100)
+r=earlygensample[1];
+# r=1;
+filename = "data/steadystate/int_m.jld";
+indices = [r];
+namespace = smartpath(filename,indices);
+@load namespace int_m tp_m tind_m mp_m mind_m;
+filename = "data/steadystate/cid.jld";
+indices = [r];
+namespace = smartpath(filename,indices);
+@load namespace CID clock;
+filename = "figures/yog/assembly_time.pdf"
+namespace = smartpath(filename);
+R"""
+library(RColorBrewer)
+pal = brewer.pal(3,'Set1');
+colpal = c(rep(pal[1],100),rep(pal[2],100))
+pdf($namespace,height=5,width=8)
+plot($(clock),$(vec(sum(CID,dims=1))),type='l',log='x',col=paste(colpal[1],40,sep=''),ylim=c(0,180))
+"""
+for i=2:200
+    r=[earlygensample;lategensample][i];
+    filename = "data/steadystate/int_m.jld";
+    indices = [r];
+    namespace = smartpath(filename,indices);
+    @load namespace int_m tp_m tind_m mp_m mind_m;
+    filename = "data/steadystate/cid.jld";
+    indices = [r];
+    namespace = smartpath(filename,indices);
+    @load namespace CID clock;
+    filename = "figures/yog/assembly_time.pdf"
+    namespace = smartpath(filename);
+    R"""
+    lines($(clock),$(vec(sum(CID,dims=1))),type='l',col=paste(colpal[$i],40,sep=''))
+    """
+end
+R"""
+legend(0.05,140,legend=c('Early Gen', 'Early Spec'),col=c(pal[1],pal[2]),cex=0.8,pch=16)
+dev.off()
+"""
+
+
+mearlysp = mean(sprich[setdiff(collect(1:reps),earlygen),:],dims=1)
+mearlygen = mean(sprich[earlygen,:],dims=1)
+
+minrealizedG = Array{Float64}(undef,reps,length(seq2));
+maxrealizedG = Array{Float64}(undef,reps,length(seq2));
+for r=1:reps
+    for t=1:length(seq2)
+        minrealizedG[r,t] = minimum(realizedG[r,seq2[t],realizedG[r,seq2[t],:].>0]);
+        maxrealizedG[r,t] = maximum(realizedG[r,seq2[t],realizedG[r,seq2[t],:].>0]);
+    end
+end
+
+filename = "figures/yog/meanassembly_time.pdf"
+namespace = smartpath(filename);
+R"""
+library(RColorBrewer)
+pal = brewer.pal(3,'Set1');
+colpal = c(rep(pal[1],100),rep(pal[2],100))
+pdf($namespace,height=10,width=8)
+par(mfrow=c(3,1))
+plot($seq,$(vec(mearlygen)),type='l',col=pal[1],ylim=c(0,150),log='x')
+lines($seq,$(vec(mearlysp)),col=pal[2])
+legend(2,150,legend=c('Early Gen', 'Early Spec'),col=c(pal[1],pal[2]),cex=0.8,pch=16)
+plot($(seq[seq2]),$(vec(mean(rG[earlygen,:],dims=1))),ylim=c(0,2),type='l',col=pal[1],log='x')
+points(jitter($(repeat(seq[seq2],outer=length(earlygen)))),$(vec(rG[earlygen,:])),pch='.',col=pal[1])
+lines($(seq[seq2]),$(vec(mean(rG[earlysp,:],dims=1))),col=pal[2])
+points(jitter($(repeat(seq[seq2],outer=length(earlysp)))),$(vec(rG[earlysp,:])),pch='.',col=pal[2])
+plot(jitter($(repeat(seq[seq2],outer=length(earlygen)))),$(vec(minrealizedG[earlygen,:])),ylim=c(0,2),pch='.',col=pal[1],log='x')
+points(jitter($(repeat(seq[seq2],outer=length(earlysp)))),$(vec(minrealizedG[earlysp,:])),pch='.',col=pal[2])
+dev.off()
+"""
+
+
+filename = "figures/yog/specialistsvsgeneralists.pdf"
+namespace = smartpath(filename);
+R"""
+library(RColorBrewer)
+pal = brewer.pal(3,'Set1');
+colpal = c(rep(pal[1],100),rep(pal[2],100))
+pdf($namespace,height=5,width=6)
+par(mfrow=c(1,1))
+plot($(seq[seq2]),$(mean(minrealizedG[earlygen,:],dims=1)),type='l',col='black',log='xy',ylim=c(0.5,4))
+points($(seq[seq2]),$(mean(minrealizedG[earlygen,:],dims=1)),pch=21,col='black',bg=pal[1])
+lines($(seq[seq2]),$(mean(minrealizedG[earlysp,:],dims=1)))
+points($(seq[seq2]),$(mean(minrealizedG[earlysp,:],dims=1)),pch=21,col='black',bg=pal[2])
+
+lines($(seq[seq2]),$(mean(maxrealizedG[earlygen,:],dims=1)))
+points($(seq[seq2]),$(mean(maxrealizedG[earlygen,:],dims=1)),pch=21,col='black',bg=pal[1])
+lines($(seq[seq2]),$(mean(maxrealizedG[earlysp,:],dims=1)))
+points($(seq[seq2]),$(mean(maxrealizedG[earlysp,:],dims=1)),pch=21,col='black',bg=pal[2])
+
+# boxplot($(minrealizedG[earlygen,:]),pch='.',col=pal[1],xlim=c(0,10),ylim=c(0,2))
+# boxplot($(minrealizedG[earlysp,:]),pch='.',col=pal[2],add=TRUE)
+# boxplot($(maxrealizedG[earlygen,:]),pch='.',col=pal[1],add=TRUE)
+# boxplot($(maxrealizedG[earlysp,:]),pch='.',col=pal[2],add=TRUE)
+dev.off()
+"""
+
+
+i=2;
+#Visualize food web
+r=earlygen[i];
+tstep = seq[seq2[3]];
+filename = "data/steadystate/int_m.jld";
+indices = [r];
+namespace = smartpath(filename,indices);
+@load namespace int_m tp_m tind_m mp_m mind_m;
+a_b,n_b,i_b,m_b,n_b0,sp_v,int_id = preamble_defs(int_m);
+filename = "data/steadystate/cid.jld";
+indices = [r];
+namespace = smartpath(filename,indices);
+@load namespace CID clock;
+
+cid = findall(isodd,CID[:,tstep]);
+deg,troph = structure(S,cid,sp_v,tind_m);
+spcid = intersect(sp_v,cid);
+spcid_ind = indexin(spcid,[1;sp_v]);
+#Degree distribution
+# degrees = vec(sum(tind_m[spcid_ind,spcid_ind],2));
+adjmatrix = tind_m[[1;spcid_ind],[1;spcid_ind]];
+indmatrix = adjmatrix .- tp_m[[1;spcid_ind],[1;spcid_ind]];
+dirmatrix = tp_m[[1;spcid_ind],[1;spcid_ind]];
+
+filename = "figures/yog/foodweb_time2.pdf"
+namespace = smartpath(filename);
+R"""
+library(igraph)
+library(RColorBrewer)
+pdf($namespace,width=8,height=5)
+par(mfrow=c(1,2))
+pal <- brewer.pal(3,"Set1")
+fw_g <- graph.adjacency($(adjmatrix'));
+basal_pos <- 1
+trophic = as.numeric($([0;troph[1:size(adjmatrix)[1]-1]]));
+#trophic = as.numeric($([0;paths[keepnodes[2:length(keepnodes)]]]));
+keepnodes = c(1,which(trophic>0.9))"""; @rget keepnodes; keepnodes = Int64.(keepnodes);
+R"""
+#keepnodes = $keepnodes;
+trophic2 = trophic[keepnodes];
+coords <- cbind(runif(length(keepnodes)),trophic2);
+coords[basal_pos,1] <- 0.5
+fw_g = graph.adjacency($(adjmatrix[keepnodes,keepnodes]'))
+plot(fw_g,layout=coords,vertex.size=5,edge.arrow.size=0.25,edge.color='#6495ED',vertex.label=NA,vertex.frame.color=NA, vertex.color=c(pal[1],rep(pal[2],vcount(fw_g)-1)),main='Gen') 
+#main=ecount(fw_g)/$(size(adjmatrix)[1])^2,
+fw_ind <- graph.adjacency($(indmatrix[keepnodes,keepnodes]'));
+#plot(fw_ind,layout=coords,vertex.size=5,edge.arrow.size=0.25,edge.color='red',vertex.label=NA,vertex.frame.color=NA, vertex.color=c(pal[1],rep(pal[2],vcount(fw_g)-1)),add=TRUE)
+# dev.off()
+"""
+r=earlysp[i];
+tstep = seq[seq2[3]];
+filename = "data/steadystate/int_m.jld";
+indices = [r];
+namespace = smartpath(filename,indices);
+@load namespace int_m tp_m tind_m mp_m mind_m;
+a_b,n_b,i_b,m_b,n_b0,sp_v,int_id = preamble_defs(int_m);
+filename = "data/steadystate/cid.jld";
+indices = [r];
+namespace = smartpath(filename,indices);
+@load namespace CID clock;
+
+cid = findall(isodd,CID[:,tstep]);
+deg,troph = structure(S,cid,sp_v,tind_m);
+spcid = intersect(sp_v,cid);
+spcid_ind = indexin(spcid,[1;sp_v]);
+#Degree distribution
+# degrees = vec(sum(tind_m[spcid_ind,spcid_ind],2));
+adjmatrix = tind_m[[1;spcid_ind],[1;spcid_ind]];
+indmatrix = adjmatrix .- tp_m[[1;spcid_ind],[1;spcid_ind]];
+dirmatrix = tp_m[[1;spcid_ind],[1;spcid_ind]];
+R"""
+library(igraph)
+library(RColorBrewer)
+# pdf($namespace,width=6,height=5)
+pal <- brewer.pal(3,"Set1")
+fw_g <- graph.adjacency($(adjmatrix'));
+basal_pos <- 1
+trophic = as.numeric($([0;troph[1:size(adjmatrix)[1]-1]]));
+#trophic = as.numeric($([0;paths[keepnodes[2:length(keepnodes)]]]));
+keepnodes = c(1,which(trophic>0.9))"""; @rget keepnodes; keepnodes = Int64.(keepnodes);
+R"""
+#keepnodes = $keepnodes;
+trophic2 = trophic[keepnodes];
+coords <- cbind(runif(length(keepnodes)),trophic2);
+coords[basal_pos,1] <- 0.5
+fw_g = graph.adjacency($(adjmatrix[keepnodes,keepnodes]'))
+plot(fw_g,layout=coords,vertex.size=5,edge.arrow.size=0.25,edge.color='#6495ED',vertex.label=NA,vertex.frame.color=NA, vertex.color=c(pal[1],rep(pal[2],vcount(fw_g)-1)),main='Spec') 
+#main=ecount(fw_g)/$(size(adjmatrix)[1])^2,
+fw_ind <- graph.adjacency($(indmatrix[keepnodes,keepnodes]'));
+#plot(fw_ind,layout=coords,vertex.size=5,edge.arrow.size=0.25,edge.color='red',vertex.label=NA,vertex.frame.color=NA, vertex.color=c(pal[1],rep(pal[2],vcount(fw_g)-1)),add=TRUE)
+dev.off()
+"""
+
+#WHAT IS GOING ON?
+r=86
+tstep = seq[seq2[3]];
+filename = "data/steadystate/int_m.jld";
+indices = [r];
+namespace = smartpath(filename,indices);
+@load namespace int_m tp_m tind_m mp_m mind_m;
+a_b,n_b,i_b,m_b,n_b0,sp_v,int_id = preamble_defs(int_m);
+filename = "data/steadystate/cid.jld";
+indices = [r];
+namespace = smartpath(filename,indices);
+@load namespace CID clock;
+
+cid = findall(isodd,CID[:,tstep]);
+deg,troph = structure(S,cid,sp_v,tind_m);
+spcid = intersect(sp_v,cid);
+spcid_ind = indexin(spcid,[1;sp_v]);
+
+
+
 
 
 
@@ -642,7 +954,7 @@ dev.off()
 # """
 # 
 # 
-# namespace = string("$(homedir())/Dropbox/Postdoc/2014_Lego/Enigma/figures/trophic_degrees_time.pdf");
+# namespace = string("$(homedir())/Dropbox/Postdoc/2014_Lego/Enigma/figures/yog/trophic_degrees_time.pdf");
 # R"""
 # library(RColorBrewer)
 # pdf($namespace,height=5,width=6)
@@ -677,7 +989,7 @@ for i=1:length(seq2)
     speciesrichness[:,i] = sprich[:,t];
     connectance[:,i] = conn[:,t];
 end
-# namespace = string("$(homedir())/Dropbox/Postdoc/2014_Lego/Enigma/figures/richconn.pdf");
+# namespace = string("$(homedir())/Dropbox/Postdoc/2014_Lego/Enigma/figures/yog/richconn.pdf");
 namespace = string("$(homedir())/2014_Lego/Enigma/figures/yog/richconn.pdf");
 R"""
 pdf($namespace,height=10,width=15)
@@ -699,7 +1011,7 @@ for i=2:length(seq2)
 end
 R"dev.off()"
 
-# namespace = string("$(homedir())/Dropbox/Postdoc/2014_Lego/Enigma/figures/richconn2.pdf");
+# namespace = string("$(homedir())/Dropbox/Postdoc/2014_Lego/Enigma/figures/yog/richconn2.pdf");
 namespace = string("$(homedir())/2014_Lego/Enigma/figures/yog/richconn2.pdf");
 R"""
 pdf($namespace,height=6,width=12)
@@ -810,7 +1122,7 @@ end
 
 
 sortalg = engsort;
-# namespace = string("$(homedir())/Dropbox/PostDoc/2014_Lego/Enigma/figures/engcdf.pdf");
+# namespace = string("$(homedir())/Dropbox/PostDoc/2014_Lego/Enigma/figures/yog/engcdf.pdf");
 namespace = string("$(homedir())/2014_Lego/Enigma/figures/yog/engcdf.pdf");
 R"""
 library(RColorBrewer)
@@ -828,7 +1140,7 @@ R"dev.off()"
 
 
 sortalg = obsort;
-# namespace = string("$(homedir())/Dropbox/PostDoc/2014_Lego/Enigma/figures/objcdf.pdf");
+# namespace = string("$(homedir())/Dropbox/PostDoc/2014_Lego/Enigma/figures/yog/objcdf.pdf");
 namespace = string("$(homedir())/2014_Lego/Enigma/figures/yog/objcdf.pdf");
 R"""
 library(RColorBrewer)
@@ -895,7 +1207,7 @@ mpc = vec(mean(pc,1));
 sdpc = vec(std(pc,1));
 propss = vec(mean(sprich,1)) ./ mean(sprich[:,maxits-100:maxits]);
 
-# namespace = string("$(homedir())/Dropbox/PostDoc/2014_Lego/Enigma/figures/potcol.pdf");
+# namespace = string("$(homedir())/Dropbox/PostDoc/2014_Lego/Enigma/figures/yog/potcol.pdf");
 namespace = string("$(homedir())/2014_Lego/Enigma/figures/yog/potcol.pdf");
 R"""
 library(RColorBrewer)

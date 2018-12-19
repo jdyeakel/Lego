@@ -1,5 +1,6 @@
 using Distributed
 using DataFrames
+using Images
 
 @everywhere using Combinatorics
 @everywhere using LinearAlgebra
@@ -8,6 +9,7 @@ using DataFrames
 @everywhere using SparseArrays
 @everywhere using DataFrames
 @everywhere using Distributions
+@everywhere using Images
 @everywhere using SpecialFunctions
 @everywhere using LightGraphs
 @everywhere using RCall
