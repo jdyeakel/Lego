@@ -15,7 +15,7 @@
 \usepackage{anyfontsize}
 
 
-\graphicspath{{../Anime/figures/}}
+\graphicspath{{../Enigma/figures/}}
 \newcommand{\rr}[1]{{\rm #1}}
 
 %\usepackage{epstopdf}
@@ -105,9 +105,8 @@
 
 
 
-
-
-
+What do we gain by focusing on community dynamics rather than population dynamics?
+By assuming that all species present in a community have achieved a steady state, we focus instead on those factors that
 
 \section*{Model Description}
 
@@ -116,11 +115,11 @@
 % The underlying dynamic that determines whether a species can colonize the community lies in the extent to which its various interactions with other species are satisfied.
 % As such, the ANIMe model tracks the presence/absence of species over time, but does not incorporate changes in abundance.
 % We assume that the abundance of all species in a given community are $>0$ and infer persistence based on the combination of interactions between species.
-\textbf{The ENIgMa Model} We seek to understand the compound nature of species interactions by disentangling their often complex forms into a limited set of elementary, directional relationships.
+\textbf{The ENIgMa Model} We seek to understand the compound nature of species interactions by describing them by a limited set of directional interactions that are combined to represent an ecological relationship.
 We aim to examine how these interdependencies between species in communities either aid or inhibit both assembly and extinction over long timescales, and specifically how ecosystem engineers contribute to these dynamics.
 We approach these questions by considering multiple types of directional interactions between species, which, when paired represent specific ecological relationships including trophic interactions, service-resource and service-service mutualisms, and commensalisms.
 We also introduce two types of nodes in our depiction of ecological networks: species and objects.
-Objects are made my species (here and henceforth refereed to as engineers) and represent a modification to the available niche-space for other species in the community, including but not limited to: an introduced compound, metabolite, or alteration to the environment.
+Objects are made by species (here and henceforth refereed to as engineers) and represent a modification to the available niche-space for other species in the community, including but not limited to: an introduced compound, metabolite, or alteration to the habitat/environment.
 
 
 
@@ -137,37 +136,40 @@ An example of the source pool interaction matrix where $\mathcal{S} = 50$. Speci
 
 The ENIgMa model consists of four directed interactions:
 $\rr{e}$: eat, which specifies a dependency involving the exchange of biomass,
-$\rr{n}$: need, which specifies a dependency (e.g. reproductive) that does not involve biomass flow,
+$\rr{n}$: need, which specifies a dependency that does not involve biomass flow (e.g. a reproductive service),
 $\rr{i}$: ignore, the null interaction, and
 $\rr{m}$: make, which connects a species to an object that it engineers. 
 `Objects' are interactive components that can be made by $\geq 1$ species, and eaten, needed, or ignored by the others.
-The four directed interaction types describe specific dependencies that one species/object has on another, however it is the coupling of two opposing directed interactions that describe traditional and familiar ecological relationships (listed in Table 1).
+The four directed interaction types describe specific dependencies that one species/object has on another, however it is the coupling of two opposing directed interactions that describe familiar ecological relationships (Table 1).
 
-The $\rr{e} \leftrightarrow \rr{i}$ interaction describes a typical predator-prey relationship, where species 1 eats species 2, whereas species 2 ignores species 1.
+The $\rr{e} \leftrightarrow \rr{i}$ interaction describes a typical predator-prey relationship, where species 1 eats species 2, whereas aside from serving as a resource, species 2 does not interact with (ignores) species 1.
 Of course, a prey's abundance does not \emph{ignore} the effects of predation, however our framework operates at the scale of presence/absence rather than abundance, and we assume that if both species co-occur, they have positive population densities, such that the prey's state (presence/absence) ignores the predator.
-A second type of trophic interaction is described by $\rr{e} \leftrightarrow \rr{e}$, where consumption is symmetric, and 
+A second type of trophic interaction is described by $\rr{e} \leftrightarrow \rr{e}$, where consumption is symmetric, which could be do to changing roles over the lifetime of an individual.
 The $\rr{e} \leftrightarrow \rr{n}$ and $\rr{n} \leftrightarrow \rr{n}$ interactions describe service-resource and service-service mutualisms, respectively.
 In the case of the former, one species interacts by way of a trophic interaction, whereas the other is provided a non-trophic need, such is the case in a plant-pollinator relationship.
-Unique to models of ecological networks, the $\rr{m} \leftrightarrow \rr{n}$ interaction describes ecosystem engineering, where a species makes an object, whereas the presence of the object `needs' the presence of the species that makes it to exist.
+Unique to models of ecological networks, the $\rr{m} \leftrightarrow \rr{n}$ interaction describes ecosystem engineering, where a species makes an object, whereas the presence of the object `needs' the presence of the species that makes it.
 Objects can be utilized by other species in the community, providing an indirect dependency that could be facilitated by multiple species (many engineers make the same object) and/or used by multiple species (many species eat or need the same object).
+As we will describe below, engineers modify the niche space available to the community on timescales that last longer than the species themselves.
 
 We explore the assembly of a novel community that emerges from a species source pool, which is represented by a source pool interaction matrix where all eat, need, ignore, make interactions are established between all species and objects.
-As such, a species' set of interactions defines how it interacts with any other \emph{a priori}, thereby establishing its potential interaction niche space.
-The source pool is used to seed a novel community, which arises as the result of colonization and extinction rules operating on the interactions established in the source pool matrix, the details of which we describe below.
+As such, a set of interactions for a particular species defines how it interacts with any other \emph{a priori}, thereby establishing its potential interaction niche space.
+The source pool is used to seed a novel community, which arises as the result of colonization and extinction rules, the details of which we describe below.
 
 
 
-\textbf{Building the source pool} The source pool interaction matrix $\bm P$ is generated by first setting the number of species $\mathcal{S}$ and determining the number of objects $\mathcal{O}$ that are made by ecosystem engineers.
-The resulting matrix is $\mathcal{N}\times\mathcal{N}$ where $\mathcal{N}=\mathcal{S}+\mathcal{O}$, and is subdivided into four quadrants, only two of which play a role here: species-species interactions and species-object interactions (see Fig. \ref{fig:matrix}).
-In each quadrant, the frequency of eat interactions ${\rm E}\{p_\rr{e}\}$ and the frequency of need interactions ${\rm E}\{p_\rr{n}\}$ are free parameters, as is the expected number of objects made per species ${\rm E}\{\mathcal{O}_i\}=\eta$.
+\textbf{Building the source pool} The source pool interaction matrix $\bm P$ is generated by first setting the number of species in the pool $\mathcal{S}_{\bm P}$ and determining the number of objects $\mathcal{O}_{\bm P}$ that are made by ecosystem engineers.
+The resulting matrix is $\mathcal{N}_{\bm P}\times\mathcal{N}_{\bm P}$ where $\mathcal{N}_{\bm P}=\mathcal{S}_{\bm P}+\mathcal{O}_{\bm P}$, and is subdivided into four quadrants, only two of which play a role here: species-species interactions and species-object interactions (see Fig. \ref{fig:matrix}).
+In each quadrant, the expected frequency of eat interactions ${\rm E}\{p_\rr{e}\}$ and the expected frequency of need interactions ${\rm E}\{p_\rr{n}\}$ are free parameters, as is the expected number of objects made per species ${\rm E}\{\mathcal{O}_i\}=\eta$.
+Here and throughout, we simplify this parameter space by assuming that the frequency of eat and need interactions for species-species (SS) interactions and species-object (SO) interactions scale as $\phi$, such that ${\rm E_{SS}}\{p_\rr{e}\} = \phi{\rm E_{SO}}\{p_\rr{e}\}$ and ${\rm E_{SS}}\{p_\rr{n}\} = \phi{\rm E_{SO}}\{p_\rr{n}\}$.
 % is given by the parameter ${\rm E}\{\mathcal{O}_i\}=\eta$, which determines how many objects will be present in the source pool.
 % The source pool interaction matrix $\bm P$ is generated by first setting the number of species $\mathcal{S}$ and the expected number of objects that are engineered per species ${\rm E}\{\mathcal{O}_i\}=\eta$.
-For each species, a set number of objects is drawn from ${\rm Poiss}(\eta)$, such that the expected proportion of species that are engineers (species that make objects) is $1-{\rm e}^{-\eta}$. 
-If a particular object is drawn for a given engineer from a complete list of all possible objects (assuming each engineer created unique objects), the expected number of objects is
+For each species, a set number of objects is drawn from ${\rm Poiss}(\eta)$, such that the expected proportion of species that are engineers (species that make objects) is $1-{e}^{-\eta}$. 
+If a particular object is randomly and independently drawn for a given engineer from a complete list of all possible objects, such that multiple species -- with some probability -- can make the same object, the expected number of objects is
 \begin{equation}
-{\rm E}\{\mathcal{O}\} = \mathcal{S}\eta\left(1 - \frac{1}{{\rm e}}\right),
+{\rm E}\{\mathcal{O}_{\bm P}\} = \mathcal{S}_{\bm P}\eta\left(1 - \frac{1}{{e}}\right),
 \end{equation}
-thus permitting multiple species can make a single object, where $\rm e$ is Euler's number.
+where $e$ is Euler's number.
+% This allows multiple species to make the same object.
 % If each species makes unique objects, the number of expected objects is $\mathcal{O} = \mathcal{S}\eta$, however because multiple species can make the same object, the realized number of objects will be lower.
 % % To determine whether objects are uniquely made or made by multiple engineers, we assign objects by randomly drawing independently object IDs from $[1:\mathcal{O}_{\rm max}]$ without replacement for each engineer; unassigned objects are discarded.
 % Each engineer is randomly assigned an object, which permits a single object to be made by multiple engineers, such that
@@ -177,22 +179,22 @@ thus permitting multiple species can make a single object, where $\rm e$ is Eule
 % where $\rm e$ is Euler's number.
 The frequency of $m \leftrightarrow n$ interactions is then calculated as
 \begin{equation}
-{\rm E}\{p_\rr{m}\} = \frac{\eta}{S\left(1 + \eta - \frac{\eta}{\rm e}\right)^2}.
+{\rm E}\{p_\rr{m}\} = \frac{\eta}{\mathcal{S}_{\bm P}\left(1 + \eta - \frac{\eta}{e}\right)^2}.
 \end{equation}
-Finally the frequency of the ignore interaction is calculated as $p_\rr{i} = 1 - p_\rr{e} + p_\rr{n} + p_\rr{m}$.
+Finally the frequency of the ignore interaction is calculated as $\rr{E_{SS}}\{p_\rr{i}\} = 1 - \rr{E_{SS}}\{p_\rr{e}\} + \rr{E_{SS}}\{p_\rr{n}\}$ and  $\rr{E_{SO}}\{p_\rr{i}\} = 1 - \rr{E_{SO}}\{p_\rr{e}\} + \rr{E_{SO}}\{p_\rr{n}\}+ \rr{E_{SO}}\{p_\rr{m}\}$ for species-species and species-object interactions, respectively.
 Pairwise interaction probabilities between both species and objects are then calculated as shown in Table \ref{table:param}.
 These pairwise interactions are assigned randomly between species and objects independently in both quadrant, such that the source pool matrix has no imbued structure apart from the number of species, the number of objects, and the frequency of each directional interaction type.
 Each source pool is provided a \emph{basal resource} (the first row/column).
-A single trophic interaction between a species and this resource is identified as a primary producer (Fig. \ref{fig:matrix}), however the basal resource does not have eat, need, or make interactions itself.
+A species with a single trophic interaction to this resource is identified as a primary producer (Fig. \ref{fig:matrix}), however the basal resource does not have eat, need, or make interactions itself.
 
 
 \textbf{Colonization and Extinction} Assembly of a species community is the result of both local colonization and extinction of species that are drawn from the source pool.
-The realized interactions within the assembled community $\bm C$ are thus a subset of the potential interactions observed if every species were present (as recorded in the source pool $\bm P$), though not all species can necessarily coexist in an assembled community at a given time.
-We determine the colonization potential for a given species into a community as a function of two conditions:
-1) the colonizing species must eat \emph{at least one} species/object including the basal resource, and
-2) the colonizing species must satisfy all of its need interactions.
-If these conditions are both satisfied, colonization is possible.
-At each time-step, one potential colonizer is selected at random and added to the community, as well as the objects that it makes if it is an engineer.
+The realized interactions within the assembled community $\bm A$ are thus a subset of the potential interactions observed if every species were present (as recorded in the source pool $\bm P$). 
+% though not all species can necessarily coexist in an assembled community at a given time.
+We determine the ability of a species to colonize a community as a function of two conditions:
+1) the colonizing species must eat \emph{at least one} species/object in the community, and
+2) the colonizing species must satisfy all of its need interactions; if these conditions are both satisfied, colonization is possible.
+At each time-step, one potential colonizer that fulfills these conditions is selected at random and added to the community, as well as the objects that it makes if it is an engineer.
 Thus, in the first time-step, only species that consume the primary resource (row 1; figure \ref{fig:matrix}) and do not have any `need' interactions can initiate the assembly process.
 
 % \begin{figure}
@@ -210,40 +212,46 @@ Extinction due to competitive exclusion is determined by violation of a single c
 % This requires a definition of a species' competitive strength $\sigma_i$.
 In a given community, each species $i$ has a competition strength $\sigma_i$ that is compared to that for every species $j$ that shares its resources.
 If $\sigma_i$ is not the highest $\sigma$ for at least one its resources, then species $i$ is competitively excluded from the community along with all unique objects that it makes.
-Competition strength is a function of the number of a species' mutualisms, to what extent it is a generalist or specialist consumer, and its vulnerability to predation.
+The competition strength for species $i$, $\sigma_i$, increases as the sum of its potential need interactions, and decreases as both the sum of its potential eat interactions and the sum of its realized predators, such that 
+\begin{equation}
+  \sigma_i = \pi \sum_{j=1}^{\mathcal{N}_{\bm P}} \rr{n}_{{\bm P}(i,j)} - \sqrt{2}\sum_{j=1}^{\mathcal{N}_{\bm P}} \rr{e}_{{\bm P}(i,j)} - \sum_{i=1}^{\mathcal{N}_{\bm A}} \rr{e}_{{\bm A}(i,j)},
+\end{equation}
+where the summations describe the number of need interactions, eat interactions, and predators, respectively, and $\mathcal{N}_{\bm A} = \mathcal{S}_{\bm A} + \mathcal{O}_{\bm A}$ is the size of the assembled community $\bm A$ as the sum of the number of species and objects. 
+The coefficients serve only to prevent the substitution of different interaction types.
+Why do we assume that mutualisms increase a species' comepetitive strength?
 Although mutualisms serve to tie the existence of one species to another, which increases its risk exposure, we assume that this dependency evolved as the consequence of a fitness advantage inherent in the interaction, providing a competitive edge.
 % For example, a plant dispersing pollen through a pollinator compared to a plant dispersing pollen by air would be expected -- all else equal -- to have a competitive advantage.
 Conversely, we assume that specialists (species with fewer trophic interactions) are competitively superior to generalists (ref), and that as a species spends more energy avoiding predation, it spends less energy competing.
-Importantly, the role of mutualisms and trophic interactions in determining a species' competition strength is with respect to its \emph{potential} interaction niche, and thus calculated from the source pool matrix $\bm P$, whereas its vulnerability to predation is determined by a species' predators within the assembled community $\bm C$.
-Taken together, competition strength for species $i$, $\sigma_i$, increases as the sum of a species' potential need interactions, and decreases as both the sum of its potential eat interactions and the sum of its realized predators, such that 
-\begin{equation}
-  \sigma_i = \pi \sum_{j=1}^\mathcal{N} \rr{n}_{{\bm P}(i,j)} - \sqrt{2}\sum_{j=1}^\mathcal{N} \rr{e}_{{\bm P}(i,j)} - \sum_{j=1}^\mathcal{R} \rr{e}_{{\bm C}(j,i)},
-\end{equation}
-where the summations describe the number of need interactions, eat interactions, and predators, respectively, and $\mathcal{R}$ is the species richness of the assembled community $\bm C$. 
-The coefficients serve only to prevent the substitution of different interaction types.
-We note that due to the threshold conditions for colonization, $\sum_{j=1}^\mathcal{N} \rr{n}_{{\bm P}(i,j)} = \sum_{j=1}^\mathcal{N} \rr{n}_{{\bm C}(i,j)}$.
+Importantly, we emphasize that the role of mutualisms and trophic interactions in determining a species' competition strength is with respect to its \emph{potential} interaction niche, and thus calculated from the source pool matrix $\bm P$, whereas its vulnerability to predation is determined by a species' predators within the assembled community $\bm A$.
+Therefore, the first two factors of $\sigma_i$ (the influence of its need and eat interactions) are independent of the community, whereas its vulnerability changes with community structure.
+We note that due to the threshold conditions for colonization, $\sum_{j=1}^{\mathcal{N}_{\bm P}} \rr{n}_{{\bm P}(i,j)} = \sum_{j=1}^{\mathcal{S}_{\bm A}} \rr{n}_{{\bm A}(i,j)}$.
 
-We integrate these colonization and extinction conditions to simulate community assembly over time using a Gillespie algorithm.
-At each time-step a single event is chosen at random to iterate the simulation forward, where possible events include: 1) species colonization, 2) species extinction, and 3) object extinction.
-The likelihood of drawing each event increases with the number of potential colonizers or species/objects that meet the conditions required for extinction.
-The change in time $\rr{dt}$ at each point in the simulation is therefore dynamic, where $\rr{dt} = 1/k(t)$ where $k(t)$ is the number of possible events at time $t$.
-Because each event is selected at random, this means that when a species is competitively excluded, it may remain in the system for some time before it is chosen for removal.
-Similarly, objects can remain in the system long after the engineers that made them were excluded.
-As we will discuss, this is an important attribute of ecosystem engineering that this particular framework allows us to explore.
+We integrate these colonization and extinction rules to simulate community assembly over time using a Gillespie algorithm.
+At each time-step a single event is chosen at random to iterate the simulation forward, where possible event types include: 1) species colonization, 2) species extinction, and 3) object extinction.
+The likelihood of drawing each event increases with the number of potential colonizers ($n_c$) or the number of species ($n_e$) and objects ($n_o$) that meet the conditions required for extinction.
+The change in time $\rr{dt}$ at each step in the simulation is therefore dynamic, where $\rr{dt} = 1/\sum_i k_i(t)$ where $k_i(t)$ is the number of possible events of type $i$ at time $t$.
+This algorithm allows, with some probability, that both species and objects to remain in the system after they are selected for extinction, however this probability declines as the rate of colonization (number of potential colonization events, $n_c$) decreases and the rate of extinction (number of potential extinction events, $n_e + n_o$) increases.
+To incorporate the idea that the timescale of objects in a system should be longer than the timescale of the engineers that made them, we bias the algorithm to select a colonization or species extinction event with weight $\tau$.
+If $\pi_e = n_e/n$ and $\pi_o = n_o/n$, species extinction occurs with probability $\tau \pi_e/(\tau \pi_e + (1-\tau)n_o)$ vs. an object extinction event that occurs with probability $(1-\tau) n_o/(\tau n_e + (1-\tau)n_o)$: as $\tau$ increases, the likelihood that an object is eliminated from the system declines.
+% As we will discuss, this is an important attribute of ecosystem engineering that this particular framework allows us to explore.
 
 
-\section*{Results \& Discussion}
+\section*{Results}
 %Food webs
-Simulation of the assembly process in the absence of engineers ($\eta=0$) reveals the emergence of food web and mutualistic web properties consistent with observations of empirical systems.
-Because only primary producers that do not have service-side mutualisms (outgoing need interactions) can colonize initially, a diverse base of these autotrophs typically constitutes the early assembly process.
-In order for communities to have a diverse base of autotrophs, we do not consider competitive exclusion of the basal resource, such that all autotrophs from the source pool have the potential to coexist.
+
+\textbf{Diverse interactions without engineers} Community assembly in the absence of engineers ($\eta=0$) reveals the emergence of food web and mutualistic web properties consistent with observations of steady state and assembling empirical systems.
+We set $S_{\bm P}=200$, $p_\rr{e}=0.01$, $p_\rr{n}=0.002$, and $t_\rr{max}=4000$.
+Because only primary producers that do not have outgoing need interactions can colonize initially, a diverse base of these autotrophs typically constitutes the early assembly process.
+In order for communities to have $>1$ pure autotroph, we do not consider competitive exclusion of the basal resource, such that all non-mutualistic pure autotrophs have the potential to coexist.
 Following the establishment of a suite of autotrophs, both mixotrophs and low trophic-level heterotrophs assemble into the community, and competitive exclusion begins to increase the extinction rate.
-It is with the establishment of higher-trophic level consumers that the rate of extinction begins to approximate the rate of colonization, such that community diversity begins fluctuating around a fixed point, and the amplitude of these fluctuations depends on x, y, and z.
+It is with the establishment of higher-trophic level consumers that the rate of extinction begins to approximate the rate of colonization, such that community diversity begins fluctuating around a steady state.
+This community steady state increases as the number of mutualisms established in the source pool decreases (lower $\rr{E}\{p_\rr{n}\}$) because mutualisms introduce dependencies that prevent colonization.
 
 % 1) connectance
-As the community assembles, we find that the connectance of trophic interactions ($C=\sum_{i,j} \rr{e}_{i,j}/(\mathcal{S}-1)^2$ follows a decay-like trajectory to values close to yet consistently greater than the connectance of the source pool matrix $\bm{P}$.
-Decaying connectance has been documented in the assembly of a wild community (Peitchnik), however this decay is a statistical inevitability, as a growing food web early in the assembly process undergoes both increasing species richness and - through the establishment of different trophic levels and modules - a decline in link density relative to the small, densely connected network at the initiation of assembly.
-That the connectance of assembled communities is greater than the source pool is due to the fact that only species connected by different link types can enter the community to begin with, increasing expected link density compared to the overall pool.
+As the community assembles, we find that the connectance of trophic interactions ($C=L/S^2)$ where in our case $L=\sum_{i,j} \rr{e}_{{\bm A}(i,j)}$ and $S = \mathcal{S}_{\bm A}$) follows a decay-like trajectory to values similar to -- but on average 9\% greater than -- the connectance of the source pool $\bm{P}$.
+% The species richness of the community increases to $S_{\bm A}=130$.
+Decaying connectance has been documented in the assembly of mangrove communities (Piechnik), however this decay is a statistical inevitability, as a growing food web early in the assembly process undergoes both increasing species richness (to a mean steady state value of $S^*_{\bm A}=130$ species) and - through the establishment of different trophic levels and compartments - a decline in link density relative to the small, densely connected network at the beginning of assembly.
+That the connectance of assembled communities is greater than the source pool is due to the fact that only species connected by trophic interactions can enter the community to begin with, increasing expected link density compared to the overall pool.
 
 
 % 2) degree distributions
@@ -252,8 +260,62 @@ That the connectance of assembled communities is greater than the source pool is
 % c) generalist interactions become more prevalent as the system grows
 % d) The mature food web has a skewed degree distribution with many specialists and a longer tail of generalist interactors
 
-At the beginning of the assembly process, only primary producers without outgoing mutualistic interactions can enter the community.
-These initial colonizers are functionally specialists on the basal resource, however we observe that initial colonizers frequently display a generalist potential niche?
+% Because only primary producers without outgoing mutualistic interactions can enter the community at the beginning of the assembly process, trophic specialists (as measured by the number of trophic interactions) are initially dominant.
+% Because species are drawn from a source pool they possess both realized trophic interactions as well \emph{potential} trophic interactions, which defines their potential dietary flexibility as species colonize the system.
+% Early in assembly, the mean number of realized trophic interactions among species is unity due to autotrophic bias, however the trophic potential of these early colonizers is highly variable (Fig. \ref{fig:spec}a).
+% Thus although species assembling into the nascent community are functionally specialists, their potential trophic breadth is more broadly distributed than those species that colonize later in assembly.
+
+% As the community assembles, we observe that the mean number of realized trophic interactions of species increases as a larger proportion of each species' trophic potential is realized with community size.
+% However it is desirable to scale the definition of a specialist/generalist consumer to the link density of the food web.
+
+% Prior observations have suggested that generalists dominate the initial assembly process, and specialists colonize later, causing food web connectance to decline. 
+The trophic breadth of species is thought to play an important role in community assembly, and while many measure exist, trophic generality can be defined as $G_i = \sum_j \rr{e}_{{\bm A}(i,j)}(L/S)^{-1}$, such that the number of trophic interactions for a consumer is scaled by the average number of trophic interactions per species in the community $L/S$.
+A species is classified as a generalist if the number of its trophic interactions is greater than the average number of links per species, or $G_i > 1$, and a specialist if $G_i < 1$, where a community can be described by its proportion of specialists $\rho_\rr{s}(G)$.
+Thus, $G_i$ is scaled to the average number of trophic links among species, such that the trophic breadth of species in communities of difference size and/or connectance can be directly compared.
+Piechnik et al. scales trophic breadth to a standard steady state value of $L^*/S^* = 0.2$ averaged across 102 food webs, and we refer to this measure of generality as $G_i^*$.
+However, if we assume that $L/S$ is measured with respect to current community composition, $S = \mathcal{S}_{\bm A}$ and $L=\sum_{i,j} \rr{e}_{{\bm A}(i,j)}$ [MORE HERE].
+% Piechnik et al. (2008) report the proportion of specialists in assembling communities over time, but where a species' trophic interactions are scaled by the steady state $L/S = L^*/S^*$ averaged across 102 food webs.
+% Because communities early in the assembly process are by definition small, the value of $G_i$ is particularly sensitive to the scalar $L/S$: in the case of an assembling system, we could either employ a measure of $L/S$ representative of the current state of the system, or the steady state of the system.
+% To compare our measure of generality with that employed by Piechnik et al. (2008), we must additionally consider which species are included in the measure of $S$ and $L$, as five autotrophic taxa were included in their empirical data, whereas our asssembly model may permit greater autotrophic diversity.
+To address differences in scaling generalism against the average number of trophic links per species, we employ three different measures of $L/S$ to calculate $G_i$ and determine changes in the proportion of specialists in food webs over the course of assembly:
+1) $G_i^{\rr{all}}$, where $L$ accounts for all links in the food web and $S$ accounts for all species relative to each time interval in the assembly process (circles; Fig. \ref{fig:spec}b);
+2) $G_i^{\rr{hetero}}$, where we consider only the links and species richness of heterotrophs, excluding autotrophs (points; Fig. \ref{fig:spec}b);
+3) $G_i^*$, where $L$ and $S$ are measured with respect to the communities at steady state (closest to Piechnik et al., 2008; diamonds; Fig. \ref{fig:spec}b).
+
+
+Whether trophic breadth is scaled to the current state of $L/S$ or the steady state value of $L^*/S^*$ has a large effect on the estimated proportion of generalists in the community, particularly when the size of the system is small.
+We observe that for $G_i^{\rr{all}}$, the system is initially assembled by specialist species, but where the proportion of specialists relative to generalists declines to ca. 60\% by the time the community reaches steady state.
+If only the trophic links between heterotrophs are considered as in $G_i^{\rr{hetero}}$, specialists still dominate early in assembly, but there is a greater range, such that some systems can be described by a mixed proportion of specialists and generalists.
+If generalism is measured with respect to the steady state $L^*/S^*$ as in $G_i^*$, we observe that generalists dominate early in assembly.
+% In all cases, we observe that the colonization/extinction dynamic employed by the ENIgMa model results in a similar proportion of generalists and specialists as observed in Piechnik et al. (2008).
+
+%Trophic Levels & degree dists
+The role of specialists early in assembly is primarily due to the accumulation of autotrophs specializing on the basal resource.
+Additional consumers arrive in the form of both mixotrophs (consuming the basal resource and one or more autotrophs) and heterotrophs, thus establishing higher trophic levels.
+While species richness is low, there is little resource competition between species and colonization dominates assembly.
+On average by $t=50$, four trophic levels have been established, competition for resources increase, and we observe an increase in the extinction rate until species richness reaches a steady state.
+On average, steady state communities are characterized by 10 trophic levels, where autotrophs are assumed to occupy trophic level 1.
+The distribution of trophic levels at steady state across $10^4$ replicates
+
+
+% Importantly, [role of generalists in early assembly is overemphasized and biased by basing the measure on steady state L/S... we observe that most early colonizers are functionally specialists, although many can later become generalist feeders based on their \emph{potential} trophic breadth (Supplementary figure)].
+% Measure of $G_i$ in 2) and 3) are more similar to that employed by Piechnik et al. (2008), where they show that assembly is initiated by generalists.
+
+
+
+
+
+
+\begin{figure}
+\centering
+\includegraphics[width=0.5\textwidth]{specialization.pdf}
+\caption{
+a)
+b)
+}
+\label{fig:spec}
+\end{figure} 
+
 
 
 % 3) trophic levels
@@ -262,7 +324,11 @@ These initial colonizers are functionally specialists on the basal resource, how
 % 4) Increased mutualisms => greater nestedness
 
 
-
+\section*{Discussion}
+%NOTE: THIS IS DISCUSSION MATERIAL
+The small to non-existant role of specialist species early in the assembly process if generality is measured with respect to the steady state value of $L^*/S^*$, as well as the increase the proportion of specialist consumers to ca. 60\% based on all measures of $G_i$, is consistent with observations of empirical systems (Piechnick et al. 2008).
+However, we find the perspective of generalists dominating early assembly is very much dependent on scaling generality to the steady state $L^*/S^*$, and if we instead scale generality to a changing $L/S$ over the course of assembly, it is specialists that initiate assembly, and this is particularly true if we account for both heterotrophs and autotrophs.
+If only heterotrophs are accounted for, 
 
 
 \begin{table*}[!t]

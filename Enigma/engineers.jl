@@ -1,53 +1,43 @@
-@everywhere using Distributions
-@everywhere using SpecialFunctions
-@everywhere using LightGraphs
-@everywhere using RCall
-@everywhere using HDF5
-@everywhere using JLD
-# 
-# @everywhere include("$(homedir())/Dropbox/PostDoc/2014_Lego/Enigma/src/intmatrixv3.jl")
-# @everywhere include("$(homedir())/Dropbox/PostDoc/2014_Lego/Enigma/src/preamble_defs.jl")
-# @everywhere include("$(homedir())/Dropbox/PostDoc/2014_Lego/Enigma/src/assembly.jl")
-
-@everywhere include("$(homedir())/2014_Lego/Enigma/src/intmatrixv3.jl")
-@everywhere include("$(homedir())/2014_Lego/Enigma/src/preamble_defs.jl")
-@everywhere include("$(homedir())/2014_Lego/Enigma/src/assembly.jl")
+if homedir() == "/home/z840"
+    loadfunc = include("$(homedir())/2014_Lego/Enigma/src/loadfuncs.jl");
+else
+    loadfunc = include("$(homedir())/Dropbox/PostDoc/2014_Lego/Enigma/src/loadfuncs.jl");
+end
 
 
-lambdavec = collect(0:0.1:5.0)
+lambdavec = collect(0:0.1:5.0);
 llamb = length(lambdavec);
 
-reps = 200;
-S = 400;
+reps = 1000;
+S = 200;
 
-maxits = 5000;
+maxits = 4000;
 
-# S = 400;
-probs = (
-p_n=0.001,
-p_a=0.003
-# p_n = 0.02,
-# p_a = 0.02
+SOprobs = (
+p_n=0.002,
+p_a=0.01
 );
+SSmult = 1.0; OOmult = 0.0;
+SSprobs = (p_n = SSmult .* SOprobs.p_n , p_a = SSmult .* SOprobs.p_a);
+OOprobs = (p_n = OOmult * SOprobs.p_n, p0 = 0.0);
+
+
 #expected objects per species
+# lambda = 0.0;
 athresh = 0;
 nthresh = 1.0;
+MaxN = convert(Int64,floor(S + S*lambda));
 
 
 #Save a small file to record the settings of the simulation
 # namespace = string("$(homedir())/Dropbox/PostDoc/2014_Lego/Enigma/data/engineers/sim_settings.jld");
-namespace = string("$(homedir())/2014_Lego/Enigma/data/engineers/sim_settings.jld");
-save(namespace,
-"reps", reps,
-"S", S,
-"maxits", maxits,
-"athresh", athresh,
-"nthresh", nthresh,
-"lambdavec",lambdavec,
-"probs",probs);
+filename = "data/engineers/sim_settings.jld";
+namespace = smartpath(filename);
+@save namespace reps S maxits athresh nthresh lambdavec SSprobs SOprobs OOprobs;
+
 
 its = llamb*reps;
-@sync @parallel for i = 0:(its - 1)
+@sync @distributed for i = 0:(its - 1)
     
     #Across lambdavec
     a = Int64(floor(i/reps)) + 1;
@@ -66,23 +56,19 @@ its = llamb*reps;
     sp_v,
     int_id = preamble_defs(int_m);
     
-    # namespace = string("$(homedir())/Dropbox/PostDoc/2014_Lego/Enigma/data/engineers/int_m_",a,"_",b,".jld");
-    namespace = string("$(homedir())/2014_Lego/Enigma/data/engineers/int_m_",a,"_",b,".jld");
-    save(namespace,
-    "int_m", int_m,
-    "tp_m", tp_m,
-    "tind_m", tind_m,
-    "mp_m", mp_m,
-    "mind_m", mind_m);
-
+    filename = "data/engineers/int_m.jld";
+    indices = [a,b];
+    namespace = smartpath(filename,indices); 
+    @save namespace int_m tp_m tind_m mp_m mind_m;
+    
     sprich,rich,clock,CID = assembly(
         int_m,a_b,n_b,i_b,m_b,n_b0,sp_v,int_id,tp_m,tind_m,lambda,
         athresh,nthresh,maxits);
-    
+
     #Save individually so data can be loaded in parallel
-    # namespace = string("$(homedir())/Dropbox/PostDoc/2014_Lego/Enigma/data/engineers/cid_",r,".jld");
-    namespace = string("$(homedir())/2014_Lego/Enigma/data/engineers/cid_",a,"_",b,".jld");
-    save(namespace,
-    "CID", CID,
-    "clock",clock);
+    filename = "data/engineers/cid.jld";
+    indices = [a,b];
+    namespace = smartpath(filename,indices);
+    @save namespace CID clock;
+    
 end
