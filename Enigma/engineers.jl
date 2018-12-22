@@ -46,7 +46,7 @@ its = llamb*reps;
     
     lambda = lambdavec[a];
         
-    int_m, tp_m, tind_m, mp_m, mind_m = intmatrixv3(S,lambda,probs);
+    int_m, tp_m, tind_m, mp_m, mind_m = intmatrixv4(S,lambda,SSprobs,SOprobs,OOprobs);
 
     a_b,
     n_b,
