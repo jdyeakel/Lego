@@ -26,7 +26,7 @@ OOprobs = (p_n = OOmult * SOprobs.p_n, p0 = 0.0);
 # lambda = 0.0;
 athresh = 0;
 nthresh = 1.0;
-MaxN = convert(Int64,floor(S + S*lambda));
+# MaxN = convert(Int64,floor(S + S*lambda));
 
 
 #Save a small file to record the settings of the simulation
