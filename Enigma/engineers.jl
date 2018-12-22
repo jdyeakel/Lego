@@ -3,7 +3,7 @@ if homedir() == "/home/z840"
 else
     loadfunc = include("$(homedir())/Dropbox/PostDoc/2014_Lego/Enigma/src/loadfuncs.jl");
 end
-
+#git
 
 lambdavec = collect(0:0.1:5.0);
 llamb = length(lambdavec);
