@@ -190,7 +190,7 @@ filename = "data/steadystate/cid.jld";
 indices = [r];
 namespace = smartpath(filename,indices);
 @load namespace CID clock;
-filename = "figures/conn_time2.pdf"
+filename = "figures/yog/conn_time2.pdf"
 namespace = smartpath(filename);
 R"""
 library(RColorBrewer)
@@ -209,7 +209,7 @@ for i=2:length(rsample)
     indices = [r];
     namespace = smartpath(filename,indices);
     @load namespace CID clock;
-    # filename = "figures/assembly_time.pdf"
+    # filename = "figures/yog/assembly_time.pdf"
     # namespace = smartpath(filename);
     R"""
     lines($(collect(1:4000)),$(vec(sum(CID,dims=1))),type='l',col=paste(pal[2],40,sep=''))
@@ -235,7 +235,7 @@ dev.off()
 
 
 
-filename = "figures/conn_time.pdf"
+filename = "figures/yog/conn_time.pdf"
 namespace = smartpath(filename);
 
 R"""
@@ -267,7 +267,7 @@ mutconn_stitch,seq_stitch = sortassembly(mutconn,bins,seq);
 meanmutconn = [mean(mutconn_stitch[findall(!isnan,mutconn_stitch[:,i]),i]) for i=1:length(seq_stitch)]
 
 
-filename = "figures/mutconn_time.pdf"
+filename = "figures/yog/mutconn_time.pdf"
 namespace = smartpath(filename);
 R"""
 pdf($namespace,height=5,width=6)
@@ -294,7 +294,7 @@ end
 overlap_stitch,seq_stitch = sortassembly(res_overlap,bins,seq);
 meanoverlap = [mean(overlap_stitch[isnan.(overlap_stitch[:,i]).==false,i]) for i=1:length(seq_stitch)];
 
-filename = "figures/trophicoverlap_time.pdf";
+filename = "figures/yog/trophicoverlap_time.pdf";
 namespace = smartpath(filename);
 R"""
 pdf($namespace,height=5,width=6)
@@ -333,7 +333,7 @@ end
 
 useroverlap_stitch,seq_stitch = sortassembly(user_overlap,bins,seq);
 meanoverlap = [mean(useroverlap_stitch[isnan.(useroverlap_stitch[:,i]).==false,i]) for i=1:length(seq_stitch)];
-filename = "figures/useroverlap_time.pdf";
+filename = "figures/yog/useroverlap_time.pdf";
 namespace = smartpath(filename);
 R"""
 pdf($namespace,height=5,width=6)
@@ -407,9 +407,9 @@ Psddeg[firstone:length(Psddeg)] .= 0;
 
 #DEGREE DISTRIBUTION
 
-filename = "figures/degreedist_time2.pdf";
+filename = "figures/yog/degreedist_time2.pdf";
 namespace = smartpath(filename);
-# namespace = string("$(homedir())/Dropbox/Postdoc/2014_Lego/Enigma/figures/degreedist_time2.pdf");
+# namespace = string("$(homedir())/Dropbox/Postdoc/2014_Lego/Enigma/figures/yog/degreedist_time2.pdf");
 i=length(seq2);
 R"""
 library(RColorBrewer)
@@ -452,7 +452,7 @@ dev.off()
 
 #TROPHIC DISTRIBUTION
 
-namespace = string("$(homedir())/2014_Lego/Enigma/figures/trophiclevel_time.pdf");
+namespace = string("$(homedir())/2014_Lego/Enigma/figures/yog/trophiclevel_time.pdf");
 i=length(seq2);
 R"""
 library(RColorBrewer)
@@ -484,8 +484,8 @@ R"dev.off()"
 
 #Real degreea and trophic distribution
 
-bins = [5;10;25;50;100;200;1000;2000;4000;];
-bins = [5;50;100;4000;];
+bins = [5;10;25;50;100;200;500;1000;2000;4000;];
+# bins = [5;50;100;4000;];
 seq2 = indexin(bins,seq);
 global tmaxdegree = zeros(Int64,length(seq2));
 global tmaxtrophic = zeros(Int64,length(seq2));
@@ -538,7 +538,7 @@ for t=1:length(seq2)
 end
 
 
-filename = "figures/degreedist_time3.pdf";
+filename = "figures/yog/degreedist_time3.pdf";
 namespace = smartpath(filename);
 R"""
 library(RColorBrewer)
@@ -560,7 +560,7 @@ dev.off()
 
 
 
-filename = "figures/trophicdist_time3.pdf";
+filename = "figures/yog/trophicdist_time3.pdf";
 namespace = smartpath(filename);
 R"""
 library(RColorBrewer)
@@ -582,11 +582,11 @@ dev.off()
 
 
 
-filename = "figures/trophicdist_time4.pdf";
+filename = "figures/yog/trophicdist_time4.pdf";
 namespace = smartpath(filename);
 R"""
 library(RColorBrewer)
-pal = colorRampPalette(brewer.pal(9,"Spectral"))(length($seq2))
+pal = colorRampPalette(brewer.pal(11,"Spectral"))(length($seq2))
 pdf($namespace,height=5,width=6)
 plot($(meantrophicdist[1,:]),seq(1,length($(meantrophicdist[1,:]))),type='l',xlim=c(0,0.8),ylim=c(1,12),col=pal[1],xlab='Frequency',ylab='Trophic level')
 points($(meantrophicdist[1,:]),seq(1,length($(meantrophicdist[1,:]))),pch=21,bg=pal[1],col='black')
@@ -611,7 +611,7 @@ dev.off()
 
 #Resource specialization of realized vs. potential niche over time
 
-bins = [5;10;25;50;100;1000;4000;];
+bins = [5;10;25;50;100;200;500;1000;2000;4000;];
 # bins=seq;
 seq2 = indexin(bins,seq);
 meanpotentialdegree = Array{Float64}(undef,reps,length(seq2));
@@ -676,7 +676,7 @@ for i=1:length(seq2)
 end
 # mrGuppertrophic = meanfinite(uppertrophicpropG,1);
 
-filename = "figures/specialization.pdf"
+filename = "figures/yog/specialization.pdf"
 namespace = smartpath(filename);
 # R"""
 # library(RColorBrewer)
@@ -732,7 +732,7 @@ dev.off()
 """
 
 
-filename = "figures/specialization2.pdf"
+filename = "figures/yog/specialization2.pdf"
 namespace = smartpath(filename);
 R"""
 library(RColorBrewer)
@@ -754,7 +754,7 @@ filename = "data/steadystate/cid.jld";
 indices = [r];
 namespace = smartpath(filename,indices);
 @load namespace CID clock;
-filename = "figures/conn_time2.pdf"
+filename = "figures/yog/conn_time2.pdf"
 namespace = smartpath(filename);
 R"""
 library(RColorBrewer)
@@ -773,7 +773,7 @@ for i=2:length(rsample)
     indices = [r];
     namespace = smartpath(filename,indices);
     @load namespace CID clock;
-    # filename = "figures/assembly_time.pdf"
+    # filename = "figures/yog/assembly_time.pdf"
     # namespace = smartpath(filename);
     R"""
     lines($(clock),$(vec(sum(CID,dims=1))),type='l',col=paste(pal[2],40,sep=''))
@@ -809,7 +809,7 @@ for r=1:reps
     end
 end
 
-filename = "figures/meanassembly_time.pdf"
+filename = "figures/yog/meanassembly_time.pdf"
 namespace = smartpath(filename);
 R"""
 library(RColorBrewer)
@@ -830,7 +830,7 @@ dev.off()
 """
 
 
-filename = "figures/specialistsvsgeneralists.pdf"
+filename = "figures/yog/specialistsvsgeneralists.pdf"
 namespace = smartpath(filename);
 R"""
 library(RColorBrewer)
@@ -880,7 +880,7 @@ adjmatrix = tind_m[[1;spcid_ind],[1;spcid_ind]];
 indmatrix = adjmatrix .- tp_m[[1;spcid_ind],[1;spcid_ind]];
 dirmatrix = tp_m[[1;spcid_ind],[1;spcid_ind]];
 
-filename = "figures/foodweb_time2.pdf"
+filename = "figures/yog/foodweb_time2.pdf"
 namespace = smartpath(filename);
 R"""
 library(igraph)
@@ -1030,7 +1030,7 @@ spcid_ind = indexin(spcid,[1;sp_v]);
 # """
 # 
 # 
-# namespace = string("$(homedir())/Dropbox/Postdoc/2014_Lego/Enigma/figures/trophic_degrees_time.pdf");
+# namespace = string("$(homedir())/Dropbox/Postdoc/2014_Lego/Enigma/figures/yog/trophic_degrees_time.pdf");
 # R"""
 # library(RColorBrewer)
 # pdf($namespace,height=5,width=6)
@@ -1065,8 +1065,8 @@ for i=1:length(seq2)
     speciesrichness[:,i] = sprich[:,t];
     connectance[:,i] = conn[:,t];
 end
-# namespace = string("$(homedir())/Dropbox/Postdoc/2014_Lego/Enigma/figures/richconn.pdf");
-namespace = string("$(homedir())/2014_Lego/Enigma/figures/richconn.pdf");
+# namespace = string("$(homedir())/Dropbox/Postdoc/2014_Lego/Enigma/figures/yog/richconn.pdf");
+namespace = string("$(homedir())/2014_Lego/Enigma/figures/yog/richconn.pdf");
 R"""
 pdf($namespace,height=10,width=15)
 par(mfrow=c(2,4))
@@ -1087,8 +1087,8 @@ for i=2:length(seq2)
 end
 R"dev.off()"
 
-# namespace = string("$(homedir())/Dropbox/Postdoc/2014_Lego/Enigma/figures/richconn2.pdf");
-namespace = string("$(homedir())/2014_Lego/Enigma/figures/richconn2.pdf");
+# namespace = string("$(homedir())/Dropbox/Postdoc/2014_Lego/Enigma/figures/yog/richconn2.pdf");
+namespace = string("$(homedir())/2014_Lego/Enigma/figures/yog/richconn2.pdf");
 R"""
 pdf($namespace,height=6,width=12)
 par(mfrow=c(1,2))
@@ -1198,8 +1198,8 @@ end
 
 
 sortalg = engsort;
-# namespace = string("$(homedir())/Dropbox/PostDoc/2014_Lego/Enigma/figures/engcdf.pdf");
-namespace = string("$(homedir())/2014_Lego/Enigma/figures/engcdf.pdf");
+# namespace = string("$(homedir())/Dropbox/PostDoc/2014_Lego/Enigma/figures/yog/engcdf.pdf");
+namespace = string("$(homedir())/2014_Lego/Enigma/figures/yog/engcdf.pdf");
 R"""
 library(RColorBrewer)
 pdf($namespace,width=8,height=6)
@@ -1216,8 +1216,8 @@ R"dev.off()"
 
 
 sortalg = obsort;
-# namespace = string("$(homedir())/Dropbox/PostDoc/2014_Lego/Enigma/figures/objcdf.pdf");
-namespace = string("$(homedir())/2014_Lego/Enigma/figures/objcdf.pdf");
+# namespace = string("$(homedir())/Dropbox/PostDoc/2014_Lego/Enigma/figures/yog/objcdf.pdf");
+namespace = string("$(homedir())/2014_Lego/Enigma/figures/yog/objcdf.pdf");
 R"""
 library(RColorBrewer)
 pdf($namespace,width=8,height=6)
@@ -1283,8 +1283,8 @@ mpc = vec(mean(pc,1));
 sdpc = vec(std(pc,1));
 propss = vec(mean(sprich,1)) ./ mean(sprich[:,maxits-100:maxits]);
 
-# namespace = string("$(homedir())/Dropbox/PostDoc/2014_Lego/Enigma/figures/potcol.pdf");
-namespace = string("$(homedir())/2014_Lego/Enigma/figures/potcol.pdf");
+# namespace = string("$(homedir())/Dropbox/PostDoc/2014_Lego/Enigma/figures/yog/potcol.pdf");
+namespace = string("$(homedir())/2014_Lego/Enigma/figures/yog/potcol.pdf");
 R"""
 library(RColorBrewer)
 pdf($namespace,width=8,height=6)

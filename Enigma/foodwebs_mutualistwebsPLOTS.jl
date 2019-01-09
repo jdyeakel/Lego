@@ -134,7 +134,7 @@ R"""
 library(RColorBrewer)
 pal=brewer.pal(3,'Set1')
 pdf($namespace,height=5,width=6)
-plot(jitter($nvecreshaped),$nestall,xlab='Frequency of mutualisms',ylab='NODF',pch='.',cex=1.5,col=pal[2])
+plot(jitter($nvecreshaped),$nestall,xlab='Frequency of mutualisms',ylab='NODF',pch='.',cex=1.5,col=pal[2],ylim=c(min($nestall),3))
 points($nvec,$mnest,pch=16,col='black')
 lines($nvec,$mnest)
 dev.off()

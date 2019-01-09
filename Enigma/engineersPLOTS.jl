@@ -1,5 +1,8 @@
-# loadfunc = include("$(homedir())/Dropbox/PostDoc/2014_Lego/Enigma/src/loadfuncs.jl");
-loadfunc = include("$(homedir())/2014_Lego/Enigma/src/loadfuncsYOG.jl");
+if homedir() == "/home/z840"
+    loadfunc = include("$(homedir())/2014_Lego/Enigma/src/loadfuncs.jl");
+else
+    loadfunc = include("$(homedir())/Dropbox/PostDoc/2014_Lego/Enigma/src/loadfuncs.jl");
+end
 
 namespace = string("$(homedir())/2014_Lego/Enigma/data/engineers/sim_settings.jld");
 d1 = load(namespace);
