@@ -5,10 +5,10 @@ else
 end
 #git
 
-lambdavec = collect(0:0.1:5.0);
+lambdavec = collect(0:0.1:2.0);
 llamb = length(lambdavec);
 
-reps = 1000;
+reps = 500;
 S = 200;
 
 maxits = 4000;
