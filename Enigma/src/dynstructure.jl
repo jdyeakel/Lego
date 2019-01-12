@@ -26,7 +26,7 @@ function dynstructure(cid,cid_old,sp_v,a_b,n_b0,tp_m,tind_m,mp_m,mind_m,int_id,a
     muser_overlap = mean(user_overlap[isfinite.(user_overlap)]);
     
     #Potential colonizers
-    pc = potcol(sp_v,int_id,cid,a_b,n_b0,athresh,nthresh);
+    pc, lpc = potcol(sp_v,int_id,cid,a_b,n_b0,athresh,nthresh);
     
     return(rich,sprich,turnover,mres_overlap,muser_overlap,res_overlap,user_overlap,conn,conn_ind,mutconn,mutconn_ind,pc)
     

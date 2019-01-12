@@ -2,6 +2,7 @@ using Distributed
 using DataFrames
 using Images
 
+@everywhere using AxisArrays
 @everywhere using Combinatorics
 @everywhere using LinearAlgebra
 # @everywhere using Distributed

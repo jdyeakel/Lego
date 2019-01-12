@@ -22,5 +22,5 @@ function potcol(sp_v,int_id,cid,a_b,n_b0,athresh,nthresh)
     #Count the number that pass
     lcol = length(col);
     
-    return col
+    return col,lcol
 end

@@ -4,13 +4,9 @@ else
     loadfunc = include("$(homedir())/Dropbox/PostDoc/2014_Lego/Enigma/src/loadfuncs.jl");
 end
 
-namespace = string("$(homedir())/2014_Lego/Enigma/data/engineers/sim_settings.jld");
-d1 = load(namespace);
-reps = d1["reps"];
-S = d1["S"];
-lambdavec = d1["lambdavec"];
-maxits = d1["maxits"];
-
+filename = "data/engineers/sim_settings.jld";
+namespace = smartpath(filename);
+@load namespace reps S maxits athresh nthresh lambdavec SSprobs SOprobs OOprobs;
 
 llamb = length(lambdavec);
 its = llamb*reps;
@@ -87,25 +83,18 @@ its = llamb*reps;
 sprich = SharedArray{Int64}(llamb,reps,maxits);
 rich = SharedArray{Int64}(llamb,reps,maxits);
 #Extinction casades
-@sync @parallel for i = 0:(its - 1)
+@sync @distributed for i = 0:(its - 1)
     
     #Across lambdavec
     a = Int64(floor(i/reps)) + 1;
     #Across reps
     b = mod(i,reps) + 1;
     
-    # namespace_rep = string("$(homedir())/2014_Lego/Enigma/data/engineers/int_m_",a,"_",b,".jld");
+    filename = "data/engineers/int_m.jld";
+    indices = [a,b];
+    namespace = smartpath(filename,indices);
+    @load namespace int_m tp_m tind_m mp_m mind_m;
     
-    # d2 = load(namespace_rep);
-    # int_m = d2["int_m"];
-    # tp_m = d2["tp_m"];
-    # tind_m = d2["tind_m"];
-    # mp_m = d2["mp_m"];
-    # mind_m = d2["mind_m"];
-    
-    namespace_cid = string("$(homedir())/2014_Lego/Enigma/data/engineers/cid_",a,"_",b,".jld");
-    d3 = load(namespace_cid);
-    CID = d3["CID"];
     
     # a_b,
     # n_b,
@@ -114,6 +103,13 @@ rich = SharedArray{Int64}(llamb,reps,maxits);
     # n_b0,
     # sp_v,
     # int_id = preamble_defs(int_m);
+    
+    
+    filename = "data/engineers/cid.jld";
+    indices = [a,b];
+    namespace = smartpath(filename,indices);
+    @load namespace CID clock;
+    
     
     for t=2:maxits
         cid = CID[:,t];
@@ -124,8 +120,8 @@ rich = SharedArray{Int64}(llamb,reps,maxits);
     end
 end
 
-msprich = Array{Float64}(maxits-1,llamb);
-mrich = Array{Float64}(maxits-1,llamb);
+msprich = Array{Float64}(undef,maxits-1,llamb);
+mrich = Array{Float64}(undef,maxits-1,llamb);
 for t=1:maxits-1
     for l=1:llamb
         msprich[t,l] = mean(sprich[l,:,t]);
@@ -134,7 +130,8 @@ for t=1:maxits-1
 end
 
 
-namespace = string("$(homedir())/2014_Lego/Enigma/figures/eng/sprichengineers.pdf");
+filename = "figures/eng/sprichengineers.pdf";
+namespace = smartpath(filename);
 timeseq = collect(1:maxits-1);
 R"""
 library(RColorBrewer)
@@ -146,7 +143,8 @@ image.plot(y=$lambdavec,x=$timeseq,z=$(msprich),ylab='Expected num. objects/spec
 dev.off()
 """
 
-namespace = string("$(homedir())/2014_Lego/Enigma/figures/eng/richengineers.pdf");
+filename = "figures/eng/richengineers.pdf";
+namespace = smartpath(filename);
 timeseq = collect(1:maxits-1);
 R"""
 library(RColorBrewer)
@@ -161,16 +159,14 @@ dev.off()
 
 
 
-namespace = string("$(homedir())/2014_Lego/Enigma/data/engineers/sim_settings.jld");
-d1 = load(namespace);
-reps = d1["reps"];
-S = d1["S"];
-lambdavec = d1["lambdavec"];
-maxits = d1["maxits"];
 
+filename = "data/engineers/sim_settings.jld";
+namespace = smartpath(filename);
+@load namespace reps S maxits athresh nthresh lambdavec SSprobs SOprobs OOprobs;
 
 llamb = length(lambdavec);
 its = llamb*reps;
+
 
 lcdf = 500;
 EXTCDF = SharedArray{Int64}(its,lcdf);
@@ -189,19 +185,16 @@ rich = SharedArray{Int64}(its,maxits);
     #Read in the interaction matrix
     # namespace = string("$(homedir())/Dropbox/Postdoc/2014_Lego/Anime/data/simbasic/int_m",r,".jld");
 
-    namespace_rep = string("$(homedir())/2014_Lego/Enigma/data/engineers/int_m_",a,"_",b,".jld");
+    filename = "data/engineers/int_m.jld";
+    indices = [a,b];
+    namespace = smartpath(filename,indices);
+    @load namespace int_m tp_m tind_m mp_m mind_m;
+
     
-    d2 = load(namespace_rep);
-    int_m = d2["int_m"];
-    tp_m = d2["tp_m"];
-    tind_m = d2["tind_m"];
-    mp_m = d2["mp_m"];
-    mind_m = d2["mind_m"];
-    
-    namespace_cid = string("$(homedir())/2014_Lego/Enigma/data/engineers/cid_",a,"_",b,".jld");
-    d3 = load(namespace_cid);
-    CID = d3["CID"];
-    dt = d3["clock"];
+    filename = "data/engineers/cid.jld";
+    indices = [a,b];
+    namespace = smartpath(filename,indices);
+    @load namespace CID clock;
     
     a_b,
     n_b,
@@ -210,7 +203,6 @@ rich = SharedArray{Int64}(its,maxits);
     n_b0,
     sp_v,
     int_id = preamble_defs(int_m);
-    
     
     
     #Calculate CDF of extinction cascade size
@@ -310,17 +302,14 @@ R"dev.off()"
 
 
 
-namespace = string("$(homedir())/2014_Lego/Enigma/data/engineers/sim_settings.jld");
-d1 = load(namespace);
-reps = d1["reps"];
-S = d1["S"];
-lambdavec = d1["lambdavec"];
-maxits = d1["maxits"];
-athresh = d1["athresh"];
-nthresh = d1["nthresh"];
+
+filename = "data/engineers/sim_settings.jld";
+namespace = smartpath(filename);
+@load namespace reps S maxits athresh nthresh lambdavec SSprobs SOprobs OOprobs;
 
 llamb = length(lambdavec);
 its = llamb*reps;
+
 
 #POTENTIAL COLONIZERS
 sprich = SharedArray{Int64}(llamb,reps,maxits);
@@ -337,18 +326,16 @@ pc = SharedArray{Int64}(llamb,reps,maxits);
     #Read in the interaction matrix
     # namespace = string("$(homedir())/Dropbox/Postdoc/2014_Lego/Anime/data/simbasic/int_m",r,".jld");
 
-    namespace_rep = string("$(homedir())/2014_Lego/Enigma/data/engineers/int_m_",a,"_",b,".jld");
+    filename = "data/engineers/int_m.jld";
+    indices = [a,b];
+    namespace = smartpath(filename,indices);
+    @load namespace int_m tp_m tind_m mp_m mind_m;
+
     
-    d2 = load(namespace_rep);
-    int_m = d2["int_m"];
-    tp_m = d2["tp_m"];
-    tind_m = d2["tind_m"];
-    mp_m = d2["mp_m"];
-    mind_m = d2["mind_m"];
-    
-    namespace_cid = string("$(homedir())/2014_Lego/Enigma/data/engineers/cid_",a,"_",b,".jld");
-    d3 = load(namespace_cid);
-    CID = d3["CID"];
+    filename = "data/engineers/cid.jld";
+    indices = [a,b];
+    namespace = smartpath(filename,indices);
+    @load namespace CID clock;
     
     a_b,
     n_b,
@@ -363,16 +350,22 @@ pc = SharedArray{Int64}(llamb,reps,maxits);
         cid = findall(isodd,CID[:,t]);
         sprich[a,b,t] = sum(CID[1:S,t]);
         rich[a,b,t] = sum(CID[:,t]);
-        pc[a,b,t] = potcol(sp_v,int_id,cid,a_b,n_b0,athresh,nthresh);   
+        pcid, lpc = potcol(sp_v,int_id,cid,a_b,n_b0,athresh,nthresh);
+        pc[a,b,t] = lpc;   
     end
     
 end
-namespace = string("$(homedir())/2014_Lego/Enigma/data/engineers/potcol.jld");
-save(namespace,
-"sprich", sprich,
-"rich", rich,
-"pc", pc
-);
+
+
+filename = "data/engineers/potcol.jld";
+namespace = smarthpath(filename);
+@save namespace sprich rich pc;
+# 
+# save(namespace,
+# "sprich", sprich,
+# "rich", rich,
+# "pc", pc
+# );
 # 
 # dpc = load(namespace);
 # sprich = dpc["sprich"],
