@@ -52,6 +52,7 @@ rich = SharedArray{Int64}(llamb,reps,maxits);
     end
 end
 
+#Mean sprichness and richness across reps (index b)
 msprich = Array{Float64}(undef,maxits-1,llamb);
 mrich = Array{Float64}(undef,maxits-1,llamb);
 for t=1:maxits-1
@@ -90,7 +91,7 @@ dev.off()
 
 
 
-
+#EXTINCTION SIZE CDF
 
 filename = "data/engineers/sim_settings.jld";
 namespace = smartpath(filename);
@@ -100,14 +101,18 @@ llamb = length(lambdavec);
 its = llamb*reps;
 
 
-lcdf = 500;
+lcdf = 50;
 EXTCDF = SharedArray{Int64}(its,lcdf);
 extratevec = SharedArray{Float64}(its,lcdf);
 engineers = SharedArray{Int64}(its,maxits);
 sprich = SharedArray{Int64}(its,maxits);
 rich = SharedArray{Int64}(its,maxits);
+clocks = SharedArray{Float64}(its,maxits);
 
-@sync @parallel for i = 0:(its - 1)
+mextrate = SharedArray{Float64}(its);
+stdextrate = SharedArray{Float64}(its);
+
+@sync @distributed for i = 0:(its - 1)
     #Across lambdavec
     a = Int64(floor(i/reps)) + 1;
     #Across reps
@@ -139,36 +144,57 @@ rich = SharedArray{Int64}(its,maxits);
 
     #Calculate CDF of extinction cascade size
 
+    #species richness over time
+    #species + objects over time
+    #engineers over time
     for t=1:maxits
         sprich[ii,t] = sum(CID[1:S,t]);
         rich[ii,t] = sum(CID[:,t]);
         #how many engineers?
         spcid = findall(isodd,CID[1:S,t]);
-        engineers[ii,t] = sum(sum(m_b[spcid,:],2) .> 0);
+        engineers[ii,t] = sum(sum(m_b[spcid,:],dims=2) .> 0);
     end
 
+    clocks[ii,:] = copy(clock);
+
+    #Delta species and richness over time
     spdiff = diff(sprich[ii,:]);
     rdiff = diff(rich[ii,:]);
 
+    dt = diff(clock);
+
+    #Where Delta species > 0 (+1) is a colonization (position)
     colpos = findall(x->x>0,spdiff);
+    #Where Delta species < 0 (-1 or less) is an extinction (position)
     extpos = findall(x->x<0,spdiff);
+    #Extinction size (but make it positive)
     extinctions = spdiff[extpos].*-1;
+    #Colonization size
     colonizations = spdiff[colpos];
 
+    #Only loop if there are extinctions
     if length(extinctions) > 0
+
+        #Number of extinctions / dt
         extrate = extinctions ./ dt[extpos];
+        mextrate[ii] = mean(extrate);
+        stdextrate[ii] = std(extrate);
+
+        #Number of colonizations / dt
         colrate = colonizations ./ dt[colpos];
 
         # extratevec = collect(0:0.0001:maximum(extrate));
-        extratevec[ii,:] = collect(range(0,maximum(extrate)/lcdf,lcdf));
+        extratevec[ii,:] = collect(range(0,step=maximum(extrate)/lcdf,length=lcdf));
 
-        extcdf = Array{Int64}(lcdf);
+        extcdf = Array{Int64}(undef,lcdf);
         for j=1:lcdf
             extcdf[j] = length(findall(x->x<extratevec[ii,j],extrate));
         end
 
         EXTCDF[ii,:] = extcdf;
     else
+        mextrate[ii] = 0;
+        stdextrate[ii] = 0;
         extratevec[ii,:] = repeat([0],inner=lcdf);
         EXTCDF[ii,:] = repeat([0],inner=lcdf);
     end
@@ -177,62 +203,137 @@ rich = SharedArray{Int64}(its,maxits);
     # end
 end
 
+#SO WE DON'T HAVE TO RUN THE ABOVE ANALYSIS EVERY TIME (takes long time)
+filename = "data/engineers/cdf50.jld";
+namespace = smartpath(filename);
+@save namespace reps lambdavec llamb sprich rich clocks engineers maxits EXTCDF extratevec mextrate stdextrate lcdf;
+
+#Load the CDF data
+filename = "data/engineers/cdf50.jld";
+namespace = smartpath(filename);
+@load namespace reps lambdavec llamb sprich rich clocks engineers maxits EXTCDF extratevec mextrate stdextrate lcdf;
+
+
+
 its = reps*llamb;
 objects = rich .- sprich;
-mobj = vec(mean(objects[:,maxits-100:maxits],2));
-meng = vec(mean(engineers[:,maxits-100:maxits],2));
 
+#Mean steady state number of objects and engineers
+mobj = vec(mean(objects[:,maxits-100:maxits],dims=2));
+meng = vec(mean(engineers[:,maxits-100:maxits],dims=2));
+mss = vec(mean(sprich[:,maxits-100:maxits],dims=2));
+
+#steady state number of objects and engineers, sorted POSITIONS
+#So this gives the positions from smallest to largest # of S.S. objects and engineers
 obsort = sortperm(mobj);
 engsort = sortperm(meng);
-#
-# keepeng = findall(x->x>=2,meng);
-# keepob = findall(x->x>=2,mobj);
+
 
 #Convert frequencies to probabilities
-EXTCDFpr = Array{Float64}(its,lcdf);
+EXTCDFpr = Array{Float64}(undef,its,lcdf);
 for i=1:its
-    EXTCDFpr[i,:] = Array(EXTCDF[i,:])/maximum(Array(EXTCDF[i,:]));
+    EXTCDFpr[i,:] = EXTCDF[i,:] ./ maximum(EXTCDF[i,:]);
 end
 
-# its = last(keepeng);
-# sortalg = engsort;
-namespace = string("$(homedir())/2014_Lego/Enigma/figures/eng/engcdf22.pdf");
+#SORT AND COLOR BY THE MEAN STEADY STATE NUMBER OF ENGINEERS
+#reverse spectral = Blues <=> Greens <=> Oranges <=> Reds
+filename = "figures/eng/engcdf2.pdf";
+namespace = smartpath(filename);
+minrate = unique(sort(vec(extratevec)))[2]; #minimum nonzero rate
+maxrate = maximum(extratevec); #maximumrate
 R"""
 library(RColorBrewer)
 pdf($namespace,width=8,height=6)
 pal = colorRampPalette(rev(brewer.pal(9,"Spectral")))($its)
-plot($(extratevec[1,:]),$(EXTCDFpr[1,:]),type='l',col=paste(pal[1],'40',sep=''),xlim=c(0.0001,1),ylim=c(0,1),log='x',xlab='Extinction rate',ylab='Cumulative Probability')
-legend(x=0.4,y=0.5,legend=sapply(seq(floor(min($(meng))),ceiling(max($(meng))),length.out=10),floor),col=colorRampPalette(rev(brewer.pal(9,"Spectral")))(10),cex=0.8,pch=16,bty='n',title='Num. Eng.')
+plot($(extratevec[1,:]),$(EXTCDFpr[1,:]),type='l',col=paste(pal[1],'40',sep=''),xlim=c(10,$maxrate),ylim=c(0,1),log='x',xlab='Extinction rate',ylab='Cumulative Probability')
+legend(x=80,y=0.5,legend=sapply(seq(floor(min($(meng))),ceiling(max($(meng))),length.out=10),floor),col=colorRampPalette(rev(brewer.pal(9,"Spectral")))(10),cex=0.8,pch=16,bty='n',title='Num. Eng.')
 """
-for i=engsort
+#plot sequence sorted by average number of steady state engineers
+for i=reverse(engsort)
     R"""
     lines($(extratevec[i,:]),$(EXTCDFpr[i,:]),col=paste(pal[$i],'40',sep=''))
     """
 end
 R"dev.off()"
 
-# its = last(keepobj);
-# sortalg = obsort;
-namespace = string("$(homedir())/2014_Lego/Enigma/figures/eng/objcdf22.pdf");
+#SORT AND COLOR BY THE MEAN STEADY STATE NUMBER OF OBJECTS
+#reverse spectral = Blues <=> Greens <=> Oranges <=> Reds
+filename = "figures/eng/objcdf2.pdf";
+namespace = smartpath(filename);
 R"""
 library(RColorBrewer)
 pdf($namespace,width=8,height=6)
 pal = colorRampPalette(rev(brewer.pal(9,"Spectral")))($its)
-plot($(extratevec[1,:]),$(EXTCDFpr[1,:]),type='l',col=paste(pal[1],'40',sep=''),xlim=c(0.0001,1),ylim=c(0,1),log='x',xlab='Extinction rate',ylab='Cumulative Probability')
-legend(x=0.4,y=0.5,legend=sapply(seq(floor(min($(mobj))),ceiling(max($(mobj))),length.out=10),floor),col=colorRampPalette(rev(brewer.pal(9,"Spectral")))(10),cex=0.8,pch=16,bty='n',title='Num. Obj.')
+plot($(extratevec[1,:]),$(EXTCDFpr[1,:]),type='l',col=paste(pal[1],'40',sep=''),xlim=c(10,$maxrate),ylim=c(0,1),log='x',xlab='Extinction rate',ylab='Cumulative Probability')
+legend(x=80,y=0.5,legend=sapply(seq(floor(min($(mobj))),ceiling(max($(mobj))),length.out=10),floor),col=colorRampPalette(rev(brewer.pal(9,"Spectral")))(10),cex=0.8,pch=16,bty='n',title='Num. Obj.')
 """
-for i=obsort
+#plot sequence by average number of objects
+for i=reverse(obsort)
     R"""
     lines($(extratevec[i,:]),$(EXTCDFpr[i,:]),col=paste(pal[$i],'40',sep=''))
     """
 end
 R"dev.off()"
 
+#isolate diverse systems to minimize effects of s.s. richness
+diverse = findall(x->x>120,mss);
+
+#Mean extinction rate vs. SS engineers
+filename = "figures/eng/mean_extrate.pdf"
+namespace = smartpath(filename);
+R"""
+pdf($namespace,width=8,height=4)
+par(mfrow=c(1,2))
+plot($(meng[diverse]),$(mextrate[diverse]),pch='.',ylab='Mean extinction rate',xlab='Mean num. engineers')
+plot($(mss[diverse]),$(mextrate[diverse]),pch='.',ylab='Mean extinction rate',xlab='S.S. species richness')
+dev.off()
+"""
+
+#Mean extinction rate vs. SS engineers
+filename = "figures/eng/mean_box_extrate.pdf"
+namespace = smartpath(filename);
+R"""
+pdf($namespace,width=8,height=4)
+par(mfrow=c(1,2))
+plot($(meng[diverse]),$(mextrate[diverse]),pch='.',ylab='Mean extinction rate',xlab='Mean num. engineers')
+boxplot($mextarray,names = $lambdavec,xlab='Mean num. objects/species',ylab='Mean extinction rate',outline=F,col='gray')
+dev.off()
+"""
+
+
+mextarray = reshape(mextrate,reps,llamb);
+filename = "figures/eng/boxplot_extrate.pdf"
+namespace = smartpath(filename)
+R"""
+pdf($namespace,width=6,height=5)
+boxplot($mextarray,names = $lambdavec,xlab='Mean number of objects/species',ylab='Extinciton rate',outline=F,col='gray')
+dev.off()
+"""
+
+mextarray = reshape(mextrate,reps,llamb);
+stdextarray = reshape(stdextrate,reps,llamb);
+filename = "figures/eng/boxplot_std_extrate.pdf"
+namespace = smartpath(filename)
+R"""
+pdf($namespace,width=6,height=5)
+boxplot($stdextarray,names = $lambdavec,xlab='Mean number of objects/species',ylab='Extinciton rate',outline=F,col='gray')
+dev.off()
+"""
+
+mextarray = reshape(mextrate,reps,llamb);
+stdextarray = reshape(stdextrate,reps,llamb);
+filename = "figures/eng/boxplot_cv_extrate.pdf"
+namespace = smartpath(filename)
+R"""
+pdf($namespace,width=6,height=5)
+boxplot($stdextarray / $mextarray,names = $lambdavec,xlab='Mean number of objects/species',ylab='Extinciton rate',outline=F,col='gray')
+dev.off()
+"""
 
 
 
 
-
+#POTENTIAL COLONIZERS
 
 
 filename = "data/engineers/sim_settings.jld";
@@ -247,7 +348,7 @@ its = llamb*reps;
 sprich = SharedArray{Int64}(llamb,reps,maxits);
 rich = SharedArray{Int64}(llamb,reps,maxits);
 pc = SharedArray{Int64}(llamb,reps,maxits);
-@sync @parallel for i = 0:(its - 1)
+@sync @distributed for i = 0:(its - 1)
 
     #Across lambdavec
     a = Int64(floor(i/reps)) + 1;
@@ -290,7 +391,7 @@ end
 
 
 filename = "data/engineers/potcol.jld";
-namespace = smarthpath(filename);
+namespace = smartpath(filename);
 @save namespace sprich rich pc;
 #
 # save(namespace,
@@ -311,31 +412,32 @@ loweng = findall(x->x==0.5,lambdavec)[1];
 medeng = findall(x->x==1.0,lambdavec)[1];
 higheng = findall(x->x==2.0,lambdavec)[1];
 
-mpc = vec(mean(pc[loweng,:,:],1));
-sdpc = vec(std(pc[loweng,:,:],1));
-propss = vec(mean(sprich[loweng,:,:],1)) ./ mean(sprich[loweng,:,maxits-100:maxits]);
+mpc = vec(mean(pc[loweng,:,:],dims=1));
+sdpc = vec(std(pc[loweng,:,:],dims=1));
+propss = vec(mean(sprich[loweng,:,:],dims=1)) ./ mean(sprich[loweng,:,maxits-100:maxits]);
 ns = mean(sprich[loweng,:,maxits-100:maxits]);
-namespace = string("$(homedir())/2014_Lego/Enigma/figures/eng/potcol22.pdf");
+filename = "figures/eng/potcol22.pdf";
+namespace = smartpath(filename);
 R"""
 library(RColorBrewer)
 pdf($namespace,width=6,height=5)
 pal = brewer.pal(3,'Set1');
-plot($propss,$mpc/$ns,type='l',col=pal[1],lwd=2,xlab='Proportion filled',ylab='Available niche space',ylim=c(0.25,1))
+plot($propss,$mpc/$ns,type='l',col=pal[1],lwd=2,xlab='Proportion filled',ylab='Available niche space',ylim=c(0,0.5))
 polygon(x=c($propss,rev($propss)),y=c(($mpc-$sdpc)/$ns,rev(($mpc+$sdpc)/$ns)),col=paste(pal[1],50,sep=''),border=NA)
 lines($propss,$mpc/$ns,col=pal[1],lwd=2)
 """
-mpc = vec(mean(pc[medeng,:,:],1));
-sdpc = vec(std(pc[medeng,:,:],1));
-propss = vec(mean(sprich[medeng,:,:],1)) ./ mean(sprich[medeng,:,maxits-100:maxits]);
+mpc = vec(mean(pc[medeng,:,:],dims=1));
+sdpc = vec(std(pc[medeng,:,:],dims=1));
+propss = vec(mean(sprich[medeng,:,:],dims=1)) ./ mean(sprich[medeng,:,maxits-100:maxits]);
 ns = mean(sprich[medeng,:,maxits-100:maxits]);
 R"""
 polygon(x=c($propss,rev($propss)),y=c(($mpc-$sdpc)/$ns,rev(($mpc+$sdpc)/$ns)),col=paste(pal[2],50,sep=''),border=NA)
 lines($propss,$mpc/$ns,col=pal[2],lwd=2)
 # dev.off()
 """
-mpc = vec(mean(pc[higheng,:,:],1));
-sdpc = vec(std(pc[higheng,:,:],1));
-propss = vec(mean(sprich[higheng,:,:],1)) ./ mean(sprich[higheng,:,maxits-100:maxits]);
+mpc = vec(mean(pc[higheng,:,:],dims=1));
+sdpc = vec(std(pc[higheng,:,:],dims=1));
+propss = vec(mean(sprich[higheng,:,:],dims=1)) ./ mean(sprich[higheng,:,maxits-100:maxits]);
 ns = mean(sprich[higheng,:,maxits-100:maxits]);
 R"""
 polygon(x=c($propss,rev($propss)),y=c(($mpc-$sdpc)/$ns,rev(($mpc+$sdpc)/$ns)),col=paste(pal[3],50,sep=''),border=NA)
@@ -343,30 +445,68 @@ lines($propss,$mpc/$ns,col=pal[3],lwd=2)
 dev.off()
 """
 
-mpc = vec(mean(pc[loweng,:,:],1));
-sdpc = vec(std(pc[loweng,:,:],1));
-propss = vec(mean(sprich[loweng,:,:],1)) ./ mean(sprich[loweng,:,maxits-100:maxits]);
+#BOTH MEASURES NORMALIZED TO STEADY STATE
+mpc = vec(mean(pc[loweng,:,:],dims=1));
+sdpc = vec(std(pc[loweng,:,:],dims=1));
+propss = vec(mean(sprich[loweng,:,:],dims=1)) ./ mean(sprich[loweng,:,maxits-100:maxits]);
 ns = mean(sprich[loweng,:,maxits-100:maxits]);
-namespace = string("$(homedir())/2014_Lego/Enigma/figures/eng/potcol32.pdf");
+filename = "figures/eng/potcol32.pdf";
+namespace = smartpath(filename);
 R"""
 library(RColorBrewer)
 pdf($namespace,width=6,height=5)
 pal = brewer.pal(3,'Set1');
-plot($propss,$mpc/$ns,type='l',col=pal[1],lwd=2,xlab='Proportion filled',ylab='Available niche space',ylim=c(0.25,1))
+plot($propss,$mpc/$ns,type='l',col=pal[1],lwd=2,xlab='Proportion filled',ylab='Available niche space',ylim=c(0,0.5))
 """
-mpc = vec(mean(pc[medeng,:,:],1));
-sdpc = vec(std(pc[medeng,:,:],1));
-propss = vec(mean(sprich[medeng,:,:],1)) ./ mean(sprich[medeng,:,maxits-100:maxits]);
+mpc = vec(mean(pc[medeng,:,:],dims=1));
+sdpc = vec(std(pc[medeng,:,:],dims=1));
+propss = vec(mean(sprich[medeng,:,:],dims=1)) ./ mean(sprich[medeng,:,maxits-100:maxits]);
 ns = mean(sprich[medeng,:,maxits-100:maxits]);
 R"""
 lines($propss,$mpc/$ns,col=pal[2],lwd=2)
 # dev.off()
 """
-mpc = vec(mean(pc[higheng,:,:],1));
-sdpc = vec(std(pc[higheng,:,:],1));
-propss = vec(mean(sprich[higheng,:,:],1)) ./ mean(sprich[higheng,:,maxits-100:maxits]);
+mpc = vec(mean(pc[higheng,:,:],dims=1));
+sdpc = vec(std(pc[higheng,:,:],dims=1));
+propss = vec(mean(sprich[higheng,:,:],dims=1)) ./ mean(sprich[higheng,:,maxits-100:maxits]);
 ns = mean(sprich[higheng,:,maxits-100:maxits]);
 R"""
 lines($propss,$mpc/$ns,col=pal[3],lwd=2)
+dev.off()
+"""
+
+
+#The 'diverse' code currently won't work as written
+mss = vec(mean(sprich[:,:,maxits-100:maxits],dims=2));
+diverse = findall(x->x>120,mss);
+
+
+#UN-NORMALIZED
+mpc = vec(mean(pc[loweng,:,:],dims=1));
+sdpc = vec(std(pc[loweng,:,:],dims=1));
+propss = vec(mean(sprich[loweng,:,:],dims=1)) ./ mean(sprich[loweng,:,maxits-100:maxits]);
+ns = mean(sprich[loweng,:,maxits-100:maxits]);
+filename = "figures/eng/potcol32_unnorm.pdf";
+namespace = smartpath(filename);
+R"""
+library(RColorBrewer)
+pdf($namespace,width=6,height=5)
+pal = brewer.pal(3,'Set1');
+plot($propss,$mpc,type='l',col=pal[1],lwd=2,xlab='Proportion filled',ylab='Available niche space',ylim=c(0,0.5))
+"""
+mpc = vec(mean(pc[medeng,:,:],dims=1));
+sdpc = vec(std(pc[medeng,:,:],dims=1));
+propss = vec(mean(sprich[medeng,:,:],dims=1)) ./ mean(sprich[medeng,:,maxits-100:maxits]);
+ns = mean(sprich[medeng,:,maxits-100:maxits]);
+R"""
+lines($propss,$mpc,col=pal[2],lwd=2)
+# dev.off()
+"""
+mpc = vec(mean(pc[higheng,:,:],dims=1));
+sdpc = vec(std(pc[higheng,:,:],dims=1));
+propss = vec(mean(sprich[higheng,:,:],dims=1)) ./ mean(sprich[higheng,:,maxits-100:maxits]);
+ns = mean(sprich[higheng,:,maxits-100:maxits]);
+R"""
+lines($propss,$mpc,col=pal[3],lwd=2)
 dev.off()
 """

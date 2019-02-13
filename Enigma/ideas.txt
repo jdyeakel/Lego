@@ -1,0 +1,4 @@
+Compare results with niche model food webs
+
+Figure with extinctions over a trajectories for lambda = 0, 0.5, 2
+

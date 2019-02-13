@@ -35,7 +35,7 @@
 
 
 
-\title{Quantization of ecological interactions yields insights into food web assembly and dynamics}
+\title{Quantization of ecological interactions yields insights into ecosystem assembly and dynamics}
 % Use letters for affiliations, numbers to show equal authorship (if applicable) and to indicate the corresponding author
 \author[a,b]{Justin D. Yeakel}
 % \author[a,b]{Hattie}
@@ -91,26 +91,73 @@ In this paper we investigate the effects of heterogeneity in food available on t
 
 %structure is the result of dynamics
 Simplifying the abundant complexity and idiosyncrasies of nature is necessary to unravel their secrets.
-The layers of natural history giving rise to an ecological community can be simplified to the set of species from which it is composed and the set of interactions binding those species, and their populations, together.
-An ecological network, where nodes represent species and links represent interactions between species, is a formalism that is 
-This minimalist perspective provides insight into community structure, and consequently, the dynamics of species' populations and the fortunes of the system as a whole.
+The layers of natural history giving rise to an ecological community can be simplified to a network, where nodes represent species and links represent interactions between them.
+% to the set of species and the interactions binding those species, and their populations, together.
+% An ecological network, where nodes represent species and links represent interactions between species, is
+This minimalist perspective provides insight into community structure, and consequently, the dynamics of species' populations and the stability of the system as a whole (refs).
 Community structure can directly impact the ability of the system to absorb external perturbations \cite{Yeakel:2014kd,Novak:2016hr}, the existence and ubiquity of tipping points that can cause sudden long-term changes in species' populations \cite{Lade:2011vb,Boettiger:2012jc}, and promote or inhibit extinction cascades \cite{Stouffer:2011kd}.
 Importantly, community structure is the result of a dynamical process that takes place over time, where species are added to or removed from the community in succession.
 This process is generally referred to as community assembly (ref), and though it is an engine for much that we observe in nature, is not well understood.
 
 %multiple interaction types
-The building blocks of ecological networks are interactions, and although specific networks typically entertain a single type of interaction, nature has no such constraints.
-For example, trophic interactions form the foundation of food webs, while mutualistic interactions - which are often trophic in one direction and a reproductive service in the other - for the foundation of mutualistic networks.
-More recently, there has been a growing interest in understanding community structure by taking into account multiple types of interactions \cite{Kefi:2016gq}.
+Ecological networks are generally constructed and analyzed with respect to a single type of interaction.
+For example, mutualisms form the foundation of mutualistic networks, whereas trophic interactions form the foundation of food webs. %- which are often trophic in one direction and a reproductive service in the other -
+More recently, there has been a growing interest in understanding community structure by taking into account diverse interaction types, where multiple unique interactions are included in a multilayer network \cite{Kefi:2016gq}.
+However, interactions between two species are inherently compound in nature, such that both species in an interaction experiences different effects.
+For example, in a mutualistic interaction, there is often biomass flow in one direction and a reproductive service in the other; in a trophic interaction there is biomass flow from the prey to the predator and this effect is asymmetric.
+While this asymmetry is generally not encoded in the structure of ecological networks, it becomes central with description of network dynamics (May, Allesina, Gross, etc).
 
+
+%Ecosystem engineering
+Diverse interactions occur directly between species, but also indirectly through the effect that species have on their environment.
+If these environmental effects have timescales longer than that of the instigating species, we call those species ecosystem engineers (ref).
+For example, burrowing rodents both create shelter for non-burrowing organisms and aerate the soil, promoting the growth of primary production.
+Terrestrial plants have altered the stoichiometry of the atmosphere, providing the molecular stores required for respiration (refs).
+Elephants root out large saplings and small trees, enabling the formation and maintenance of grasslands (refs) on which grass specialists depend.
+These example describe indirect interactions between ecosystem engineers and species that rely on their engineering, through an environmental intermediary.
+By way of their indirectness, these interactions are difficult to document.
+And while the importance of ecosystem engineers is celebrated, explorations of their effects on community dynamics occupy a very limited role in theory (Hastings refs), and are absent in models of ecological networks.
+
+%HERE WE...
+Here we model an ecological system with a network where nodes represent ecological entities, including non-engineering species, engineering species, and the effects of the latter on the environment, which we call \emph{objects}.
+The links of the network that connect both species and objects represent resource, service, and engineering dependencies, respectively.
+Following Pillai (REF), we do not track the abundances of entities but only track their presence or absence.
+We use this framework to explore the dynamics of ecosystem assembly, where the colonization and extinction of species within a community depends on the constraints imposed by the resource, service, and engineering dependencies connecting both species and objects.
+
+
+We show that our framework reproduces many features of empirical systems both over the course of assembly and at steady state.
+First, (assembly) proportion generalists
+Second, (assembly) trophic levels and degree distributions
+Third, (SS) limited trophic levels,
+Fourth (SS) increasing mutualisms increases nestedness.
+
+Because we include ecosystem engineering explicitly, we can examine directly the effects of engineers on the assembly of communities.
+Ecosystem engineers play important roles in assembly processes such as succession, and the maintenance of biodiversity (refs).
+However, explorations of their effects on community dynamics occupy a very limited role in theory (Hastings refs), and are absent in models of ecological networks.
+% Network theory provides the mathematical tools needed to ass where the reticulate nature of species interactions .
+Our framework provides three key insights on the role of ecosystem engineers on ecological communities.
+First,
+Second,
+Third.\\
+
+%Model description: Pool, colonization, extinction (interaction strength), objects
+\noindent \textbf{Assembly of the ENIgMa network}\\
+A combination of two directional interactions between a pair of species defines the ecological relationship linking both.
+% As such, the trophic and mutualistic interactions mentioned above can be deconstructed into two directional interactions.
+A mutualistic interaction between plant x and pollinator y can thus be deconstructed into an `eat' interaction from species x to y and a \emph{need} interaction from species y to x.
+The former represents a directional trophic interaction, or a resource dependency, whereas the latter represents a reproductive service, or a dependency that does not involve biomass flow.
+Another type of mutualism is one defined by non-resource dependencies for both species, often called a service-service mutualism.
+In this case, each species would be connected to the other by directional \emph{need} interactions.
+A trophic interaction between species x and y can be deconstructed by an \emph{eat} interaction from the consumer x to the prey y, but the absence of an interaction from prey y to the consumer x, as the prey does not interact meaningfully with the consumer.
+Some species pairs may participate in bi-directional trophic interactions, where the consumer/resource role changes over the course of each species' life history.
+In this case, each species would be connected to the other by directional \emph{eat} interactions.
 
 
 %Interactions with both species and the environment (engineering)
-
-%HERE WE...
-
-%Model description: Pool, colonization, extinction (interaction strength), objects
-\noindent \text{The ENIgMa Model}
+Ecosystem engineering can be formalized by the creation of an object by an engineering species that can be interacted with by other members of a community.
+Objects made by ecosystem engineers represent any alteration made to the environment, whether this be changes to the stoichiometry of the atmosphere (e.g. primary producers; refs), physical modifications to the landscape (e.g. beavers, salmon; refs), or the production of unique habitats for other organisms (e.g. tree trunks; refs).
+Objects can be represented in ecological network alongside species as nodes, but where they must be connected to engineering species by a \emph{make} interaction.
+The \emph{make} interaction between an engineering species and the engineered object denotes the dependency of the environmental effect on the effector.
 
 
 
@@ -128,20 +175,20 @@ More recently, there has been a growing interest in understanding community stru
 % These qualities both excite our curiosity and present enormous challenges in characterizing these systems in simple ways that lend themselves to understanding.
 % Ecology has a rich tradition of describing the composition of ecological communities, from the associational relationships ascribed to plant species (Charles Flahault) to the Clementonian descriptions of communities as superorganisms.
 
-The structure of communities can be described by the number and types of organisms from which they are composed, organismal physiological constraints (Hempson, Science 2015) and functional traits (McGill et al. 2006), external environmental conditions (ref), and the structure of species interactions (Dunne 2002).
-Although these structures can be described statistically (Diamond, Williams and Martinez), such structures are products of a dynamic assembly process that includes but is not limited to colonization and extinction (MacArthur and Wilson, Simberloff), and evolutionary change (Gillespie, Rominger).
-Understanding the underlying mechanisms driving community assembly is necessary to know
-A dynamic perspective of communities, taking into account not only the structure of these systems, but the processes from which such structures arise (MacArthur and Wilson, Diamond), serves to provide a mechanistic understanding of ecological communities.
-Consequently, an understanding of community structure cannot be uncoupled from its assembly (Simberloff) and disassembly (Yeakel), via colonization and extinction, respectively.
-
-Though theoretical examinations of community dynamics
-Many interaction: trophic to mutualistic.
-
-Absent from ecological network theory is any consideration of how species presence within a community impacts the local environment.
-Engineering...
-
-
-Here we...
+% The structure of communities can be described by the number and types of organisms from which they are composed, organismal physiological constraints (Hempson, Science 2015) and functional traits (McGill et al. 2006), external environmental conditions (ref), and the structure of species interactions (Dunne 2002).
+% Although these structures can be described statistically (Diamond, Williams and Martinez), such structures are products of a dynamic assembly process that includes but is not limited to colonization and extinction (MacArthur and Wilson, Simberloff), and evolutionary change (Gillespie, Rominger).
+% Understanding the underlying mechanisms driving community assembly is necessary to know
+% A dynamic perspective of communities, taking into account not only the structure of these systems, but the processes from which such structures arise (MacArthur and Wilson, Diamond), serves to provide a mechanistic understanding of ecological communities.
+% Consequently, an understanding of community structure cannot be uncoupled from its assembly (Simberloff) and disassembly (Yeakel), via colonization and extinction, respectively.
+%
+% Though theoretical examinations of community dynamics
+% Many interaction: trophic to mutualistic.
+%
+% Absent from ecological network theory is any consideration of how species presence within a community impacts the local environment.
+% Engineering...
+%
+%
+% Here we...
 
 
 %Food webs and mutualistic nets are components of larger communities
@@ -255,6 +302,9 @@ Nestedness (measured as NODF) as a function of the frequency of need interaction
 \end{figure}
 
 \noindent \textbf{The role of engineers}
+
+%Intermediate number of engineers maximizes extinction rates (CDFs increase at high rates)
+%Large number of engineers minimizes extinctions (CDFs increase at low rates)
 
 \noindent \textbf{Beyond engineering}
 %NOTE: THIS IS DISCUSSION MATERIAL
