@@ -27,13 +27,13 @@ function nichemodelweb(S,C)
 
 
     ladj = size(adjmatrix)[1];
-    keep = findall(!iszero,vec(sum(adjmatrix,dims=2))+vec(sum(adjmatrix,dims=1)));
+    keep = findall(!iszero,vec(sum(adjmatrix,dims=2)));
     niche = n;
 
 
     while length(keep) < ladj
         ladj = size(adjmatrix)[1];
-        keep = findall(!iszero,vec(sum(adjmatrix,dims=2))+vec(sum(adjmatrix,dims=1)));
+        keep = findall(!iszero,vec(sum(adjmatrix,dims=2)));
         adjmatrix = adjmatrix[keep,keep];
         niche = niche[keep];
     end

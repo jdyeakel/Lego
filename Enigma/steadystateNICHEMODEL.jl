@@ -166,7 +166,7 @@ else
 end
 
 #Search for parameters that match niche model
-annealtime = 50;
+annealtime = 1000;
 global cn = pi;
 global ce = sqrt(2);
 global cp = 1;
@@ -179,13 +179,14 @@ conn = Array{Float64}(undef,annealtime,2);
 mdegree = Array{Float64}(undef,annealtime,2);
 stdindegree = Array{Float64}(undef,annealtime,2);
 stdoutdegree = Array{Float64}(undef,annealtime,2);
-global zmean_old = 100.;
-global zvec_old = [100,100,100,100,100];
+global errmean_old = 100.;
+global errvec_old = [100,100,100,100,100];
 global temperature = [0.5,0.5,0.5,0.5,0.5];
 
 mtemp = Array{Float64}(undef,annealtime);
 tempvec = Array{Float64}(undef,annealtime,5);
-zscore = Array{Float64}(undef,annealtime);
+error = Array{Float64}(undef,annealtime,5);
+errscore = Array{Float64}(undef,annealtime);
 cnvec = Array{Float64}(undef,annealtime);
 cevec = Array{Float64}(undef,annealtime);
 cpvec = Array{Float64}(undef,annealtime);
@@ -193,19 +194,20 @@ pnvec = Array{Float64}(undef,annealtime);
 pevec = Array{Float64}(undef,annealtime);
 
 
-temperature = tempvec[50,:];
-global cn = cnvec[50];
-global ce = cevec[5];
-global cp = cpvec[50];
-global p_n = pnvec[50];
-global p_a = pevec[50];
-global tic = 1;
-
+# temperature = tempvec[50,:];
+# global cn = cnvec[50];
+# global ce = cevec[5];
+# global cp = cpvec[50];
+# global p_n = pnvec[50];
+# global p_a = pevec[50];
+# global tic = 1;
+#
 
 
 for r=1:annealtime
 
     tempvec[r,:] = temperature;
+
 
     altdist = Normal.(0,temperature);
     altvec = rand.(altdist);
@@ -234,7 +236,7 @@ for r=1:annealtime
     nthresh = 1.0;
     MaxN = convert(Int64,floor(S + S*lambda));
 
-    enigmareps=30;
+    enigmareps=50;
     jspecies = SharedArray{Float64}(enigmareps);
     jconn = SharedArray{Float64}(enigmareps);
     jmdegree = SharedArray{Float64}(enigmareps);
@@ -331,31 +333,46 @@ for r=1:annealtime
 
 
     #Calculate error
-    z_sp = sqrt((species[r,2] - mean(ispecies))^2); #/std(ispecies);
-    z_conn = sqrt((conn[r,2] - mean(iconn))^2); #/std(iconn);
-    z_md = sqrt((mdegree[r,2] - mean(imdegree))^2); #/std(imdegree);
-    z_sdin = sqrt((stdindegree[r,2] - mean(istdindegree))^2); #/std(istdindegree);
-    z_sdout = sqrt((stdoutdegree[r,2] - mean(istdoutdegree))^2); #/std(istdoutdegree);
+    err_sp = sqrt((species[r,2] - mean(ispecies))^2); #/std(ispecies);
+    err_conn = sqrt((conn[r,2] - mean(iconn))^2); #/std(iconn);
+    err_md = sqrt((mdegree[r,2] - mean(imdegree))^2); #/std(imdegree);
+    err_sdin = sqrt((stdindegree[r,2] - mean(istdindegree))^2); #/std(istdindegree);
+    err_sdout = sqrt((stdoutdegree[r,2] - mean(istdoutdegree))^2); #/std(istdoutdegree);
 
-    global zvec = [z_sp,z_conn,z_md,z_sdin,z_sdout];
+    global errvec = [err_sp,err_conn,err_md,err_sdin,err_sdout];
 
-    zmean = mean(zvec);
+    error[r,:] = errvec;
+    errmean = mean(errvec);
 
-    #temperature goes down as zvec gets smaller
-    # global temperature = temperature .* (zvec ./ zvec_old);
+    #temperature goes down as errvec gets smaller
+    # global temperature = temperature .* (errvec ./ errvec_old);
 
-    #Only lower temperature if
-    for i=1:length(zvec)
-        if zvec[i] < zvec_old[i]
-            temperature[i] = temperature[i] * (zvec[i]/zvec_old[i])
+
+    for i=1:length(errvec)
+
+        #If errvec[i] < errvec_old[i],
+        prob_accept = exp((1/temperature[i])*(errvec[i]-errvec_old[i]));
+        rdraw = rand();
+
+        #Accept new draw
+        if rdraw < prob_accept
+            global errvec_old = copy(errvec);
+            #Lower the temperature
+            temperature[i] = temperature[i] * (1 - (errvec[i]/errvec_old[i]));
         end
+            #Otherwise errvec and temperature stay the same
+
+
+        # if errvec[i] < errvec_old[i]
+        #     temperature[i] = temperature[i] * (errvec[i]/errvec_old[i])
+        # end
     end
 
     mtemp[r] = mean(temperature);
 
 
-    global zmean_old = copy(zmean);
-    global zvec_old = copy(zvec);
+    global errmean_old = copy(errmean);
+
 
     cnvec[r] = cn;
     cevec[r] = ce;
@@ -363,18 +380,18 @@ for r=1:annealtime
     pnvec[r] = SOprobs.p_n;
     pevec[r] = SOprobs.p_a;
 
-    zscore[r] = abs(zmean);
+    errscore[r] = abs(errmean);
 
     println(r)
 end
 
-filename = "figures/niche/annealingtemp.pdf"
+filename = "figures/niche/annealingtemp_yog.pdf"
 namespace = smartpath(filename);
 R"""
 library(RColorBrewer)
 pal = brewer.pal(5,'Set1')
 pdf($namespace,height=5,width=6)
-plot($(tempvec[:,1]),type='l',ylim=c(0.0000001,0.5),log='y',col=pal[1])
+plot($(tempvec[:,1]),type='l',ylim=c(0.00000000001,0.5),log='y',col=pal[1])
 """
 for i=2:5
     R"""
