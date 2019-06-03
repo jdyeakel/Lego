@@ -185,8 +185,8 @@ global temperature = [0.5,0.5,0.5,0.5,0.5];
 
 mtemp = Array{Float64}(undef,annealtime);
 tempvec = Array{Float64}(undef,annealtime,5);
-error = Array{Float64}(undef,annealtime,5);
-errscore = Array{Float64}(undef,annealtime);
+# error = Array{Float64}(undef,annealtime,5);
+zscore = Array{Float64}(undef,annealtime);
 cnvec = Array{Float64}(undef,annealtime);
 cevec = Array{Float64}(undef,annealtime);
 cpvec = Array{Float64}(undef,annealtime);
@@ -336,48 +336,31 @@ for r=1:annealtime
 
 
     #Calculate error
-    err_sp = sqrt((species[r,2] - mean(ispecies))^2); #/std(ispecies);
-    err_conn = sqrt((conn[r,2] - mean(iconn))^2); #/std(iconn);
-    err_md = sqrt((mdegree[r,2] - mean(imdegree))^2); #/std(imdegree);
-    err_sdin = sqrt((stdindegree[r,2] - mean(istdindegree))^2); #/std(istdindegree);
-    err_sdout = sqrt((stdoutdegree[r,2] - mean(istdoutdegree))^2); #/std(istdoutdegree);
+    z_sp = sqrt((species[r,2] - mean(ispecies))^2); #/std(ispecies);
+    z_conn = sqrt((conn[r,2] - mean(iconn))^2); #/std(iconn);
+    z_md = sqrt((mdegree[r,2] - mean(imdegree))^2); #/std(imdegree);
+    z_sdin = sqrt((stdindegree[r,2] - mean(istdindegree))^2); #/std(istdindegree);
+    z_sdout = sqrt((stdoutdegree[r,2] - mean(istdoutdegree))^2); #/std(istdoutdegree);
 
-    global errvec = [err_sp,err_conn,err_md,err_sdin,err_sdout];
+    global zvec = [z_sp,z_conn,z_md,z_sdin,z_sdout];
 
-    error[r,:] = errvec;
-    errmean = mean(errvec);
+    zmean = mean(zvec);
 
-    #temperature goes down as errvec gets smaller
-    # global temperature = temperature .* (errvec ./ errvec_old);
+    #temperature goes down as zvec gets smaller
+    # global temperature = temperature .* (zvec ./ zvec_old);
 
-
-    for i=1:length(errvec)
-
-        #If errvec[i] < errvec_old[i],
-        prob_accept = exp((1/temperature[i])*(errvec[i]-errvec_old[i]));
-        rdraw = rand();
-
-        #Accept new draw
-        if rdraw < prob_accept
-            #Lower the temperature
-            temperature[i] = maximum([temperature[i] * (1 - (errvec[i]/errvec_old[i])),0.0001]);
-            
+    #Only lower temperature if
+    for i=1:length(zvec)
+        if zvec[i] < zvec_old[i]
+            temperature[i] = temperature[i] * (zvec[i]/zvec_old[i])
         end
-            #Otherwise errvec and temperature stay the same
-
-
-        # if errvec[i] < errvec_old[i]
-        #     temperature[i] = temperature[i] * (errvec[i]/errvec_old[i])
-        # end
     end
-    
-    global errvec_old = copy(errvec);
 
     mtemp[r] = mean(temperature);
 
 
-    global errmean_old = copy(errmean);
-
+    global zmean_old = copy(zmean);
+    global zvec_old = copy(zvec);
 
     cnvec[r] = cn;
     cevec[r] = ce;
@@ -385,7 +368,8 @@ for r=1:annealtime
     pnvec[r] = SOprobs.p_n;
     pevec[r] = SOprobs.p_a;
 
-    errscore[r] = abs(errmean);
+    zscore[r] = abs(zmean);
+
 
     println(string(r,": errscore=",errscore[r]))
 end
