@@ -39,7 +39,7 @@ MaxN = convert(Int64,floor(S + S*lambda));
 
 #Save a small file to record the settings of the simulation
 # namespace = string("$(homedir())/2014_Lego/Enigma/data/steadystate/sim_settings.jld");
-filename = "data/steadystate/sim_settings.jld";
+filename = "data/steadystate2/sim_settings.jld";
 namespace = smartpath(filename);
 
 # probs_nolabel = (probs.p_n, probs.p_a);
@@ -60,7 +60,7 @@ namespace = smartpath(filename);
     sp_v,
     int_id = preamble_defs(int_m);
     
-    filename = "data/steadystate/int_m.jld";
+    filename = "data/steadystate2/int_m.jld";
     indices = [r];
     namespace = smartpath(filename,indices);
     @save namespace int_m tp_m tind_m mp_m mind_m;
@@ -70,7 +70,7 @@ namespace = smartpath(filename);
         athresh,nthresh,maxits,cn,ce,cp);
     
     #Save individually so data can be loaded in parallel
-    filename = "data/steadystate/cid.jld";
+    filename = "data/steadystate2/cid.jld";
     indices = [r];
     namespace = smartpath(filename,indices);
     @save namespace CID clock;
