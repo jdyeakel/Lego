@@ -171,7 +171,7 @@ global cn = pi;
 global ce = sqrt(2);
 global cp = 1;
 global p_n = 0.002;
-global p_a = 0.01;
+global p_a = 0.02;
 global tic = 1;
 
 species = Array{Float64}(undef,annealtime,2);
@@ -283,7 +283,6 @@ for r=1:annealtime
 
 
 
-
     nichereps = 100;
     ispecies = Array{Float64}(undef,nichereps);
     iconn = Array{Float64}(undef,nichereps);
@@ -293,6 +292,8 @@ for r=1:annealtime
 
     for i=1:nichereps
         #NICHE MODEL COMPARISON
+        #NOTE: C CANNOT BE EQUAL TO OR GREATER THAN 0.5
+        #NOTE Violates beta parameters!
         Aniche, n = nichemodelweb(Int64(floor(species[r,2])),conn[r,2]);
 
         #make measurements
@@ -315,6 +316,8 @@ for r=1:annealtime
         istdoutdegree[i] = std(sum(Aniche,dims=1));
     end
 
+    #ignore NAN
+    
     species[r,1] = mean(ispecies);
 
     #Connectance
@@ -385,7 +388,7 @@ for r=1:annealtime
     println(r)
 end
 
-filename = "figures/niche/annealingtemp_yog.pdf"
+filename = "figures/niche/annealingtemp.pdf"
 namespace = smartpath(filename);
 R"""
 library(RColorBrewer)
