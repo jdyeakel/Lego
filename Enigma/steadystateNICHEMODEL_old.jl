@@ -185,8 +185,8 @@ global temperature = [0.5,0.5,0.5,0.5,0.5];
 
 mtemp = Array{Float64}(undef,annealtime);
 tempvec = Array{Float64}(undef,annealtime,5);
-# error = Array{Float64}(undef,annealtime,5);
-zscore = Array{Float64}(undef,annealtime);
+error = Array{Float64}(undef,annealtime,5);
+errscore = Array{Float64}(undef,annealtime);
 cnvec = Array{Float64}(undef,annealtime);
 cevec = Array{Float64}(undef,annealtime);
 cpvec = Array{Float64}(undef,annealtime);

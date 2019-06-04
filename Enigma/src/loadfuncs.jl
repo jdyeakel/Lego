@@ -43,6 +43,7 @@ if homedir() == "/home/z840"
     @everywhere include("$(homedir())/2014_Lego/Enigma/src/potcol.jl")
 
     @everywhere include("$(homedir())/2014_Lego/Enigma/src/nichemodelweb.jl")
+    @everywhere include("$(homedir())/2014_Lego/Enigma/src/proposal.jl")
 
 
 else
@@ -72,4 +73,5 @@ else
     @everywhere include("$(homedir())/Dropbox/PostDoc/2014_Lego/Enigma/src/potcol.jl")
 
     @everywhere include("$(homedir())/Dropbox/PostDoc/2014_Lego/Enigma/src/nichemodelweb.jl")
+    @everywhere include("$(homedir())/Dropbox/PostDoc/2014_Lego/Enigma/src/proposal.jl")
 end
