@@ -165,8 +165,6 @@ else
     loadfunc = include("$(homedir())/Dropbox/PostDoc/2014_Lego/Enigma/src/loadfuncs.jl");
 end
 
-#Search for parameters that match niche model
-annealtime = 50;
 
 species = Array{Float64}(undef,annealtime,2);
 conn = Array{Float64}(undef,annealtime,2);
@@ -179,7 +177,7 @@ stdoutdegree = Array{Float64}(undef,annealtime,2);
 
 mtemp = Array{Float64}(undef,annealtime);
 tempvec = Array{Float64}(undef,annealtime);
-error = Array{Float64}(undef,annealtime,5);
+error = Array{Float64}(undef,annealtime);
 errscore = Array{Float64}(undef,annealtime);
 cnvec = Array{Float64}(undef,annealtime);
 cevec = Array{Float64}(undef,annealtime);
@@ -195,12 +193,15 @@ pevec = Array{Float64}(undef,annealtime);
 # global p_a = pevec[50];
 # global tic = 1;
 
+#Search for parameters that match niche model
+annealtime = 50;
+
 #The range of values to explore
-cnvec = collect(0.1:(10-.1)/999:10);
-cevec = collect(0.1:(10-.1)/999:10);
-cpvec = collect(0.1:(10-.1)/999:10);
-p_nvec = collect(0.0001:(0.2-0.0001)/999:0.2);
-p_avec = collect(0.0001:(0.3-0.0001)/999:0.3);
+cnrange = collect(0.1:(10-.1)/999:10);
+cerange = collect(0.1:(10-.1)/999:10);
+cprange = collect(0.1:(10-.1)/999:10);
+p_nrange = collect(0.0005:(0.003-0.0005)/999:0.003);
+p_arange = collect(0.005:(0.03-0.005)/999:0.03);
 
 
 # cn = cnvec[208];
@@ -212,12 +213,18 @@ p_avec = collect(0.0001:(0.3-0.0001)/999:0.3);
 # temperature = 1.0;
 # tic = 1;
 
-let cn = cnvec[208], 
-    ce = cevec[134], 
-    cp = cpvec[92],
-    p_n = p_nvec[11],
-    p_a = p_avec[75],
-    errmean_old = 5.,
+cn_init = 3.14;
+ce_init = 1.41;
+cp_init = 1.0;
+p_n_init = 0.002;
+p_a_init = 0.01;
+
+let cn = cnrange[findall(x->x==minimum(abs.(cnrange .- cn_init)),abs.(cnrange .- cn_init))[1]], 
+    ce = cerange[findall(x->x==minimum(abs.(cerange .- ce_init)),abs.(cerange .- ce_init))[1]], 
+    cp = cprange[findall(x->x==minimum(abs.(cprange .- cp_init)),abs.(cprange .- cp_init))[1]],
+    p_n = p_nrange[findall(x->x==minimum(abs.(p_nrange .- p_n_init)),abs.(p_nrange .- p_n_init))[1]],
+    p_a = p_arange[findall(x->x==minimum(abs.(p_arange .- p_a_init)),abs.(p_arange .- p_a_init))[1]],
+    errmean_old = 1.,
     temperature = 1.0,
     tic = 1
 
@@ -233,11 +240,11 @@ let cn = cnvec[208],
         tempvec[r] = copy(temperature);
         
         #Select proposed value from predefined range with uniform selection over a smaller range determined by temperature
-        cn_prop = proposal(temperature/10,cn,cnvec);
-        ce_prop = proposal(temperature/10,ce,cevec);
-        cp_prop = proposal(temperature/10,cp,cpvec);
-        p_n_prop = proposal(temperature/10,p_n,p_nvec);
-        p_a_prop = proposal(temperature/10,p_a,p_avec);
+        cn_prop = proposal(temperature/2,cn,cnrange);
+        ce_prop = proposal(temperature/2,ce,cerange);
+        cp_prop = proposal(temperature/2,cp,cprange);
+        p_n_prop = proposal(temperature/2,p_n,p_nrange);
+        p_a_prop = proposal(temperature/2,p_a,p_arange);
         
         
         S = 200;
@@ -357,29 +364,24 @@ let cn = cnvec[208],
 
 
         #Calculate error
-        err_sp = sqrt((species[r,2] - species[r,1])^2)/mean(species[r,:]); #/std(ispecies);
-        err_conn = sqrt((conn[r,2] - conn[r,1])^2)/mean(conn[r,:]); #/std(iconn);
-        err_md = sqrt((mdegree[r,2] -mdegree[r,1])^2)/mean(mdegree[r,:]); #/std(imdegree);
-        err_sdin = sqrt((stdindegree[r,2] - stdindegree[r,1])^2)/mean(stdindegree[r,:]); #/std(istdindegree);
-        err_sdout = sqrt((stdoutdegree[r,2] - stdoutdegree[r,1])^2)/mean(stdoutdegree[r,:]); #/std(istdoutdegree);
+        # err_sp = sqrt((species[r,2] - species[r,1])^2)/mean(species[r,1]); #/std(ispecies);
+        # err_conn = sqrt((conn[r,2] - conn[r,1])^2)/mean(conn[r,1]); #/std(iconn);
+        # err_md = sqrt((mdegree[r,2] -mdegree[r,1])^2)/mean(mdegree[r,1]); #/std(imdegree);
+        # err_sdin = sqrt((stdindegree[r,2] - stdindegree[r,1])^2)/mean(stdindegree[r,1]); #/std(istdindegree);
+        # err_sdout = sqrt((stdoutdegree[r,2] - stdoutdegree[r,1])^2)/mean(stdoutdegree[r,1]); #/std(istdoutdegree);
 
-        global errvec = [err_sp,err_conn,err_md,err_sdin,err_sdout];
+        errvec = sqrt((mdegree[r,2] -mdegree[r,1])^2); #/std(imdegree);
+        # errvec = [err_sp,err_conn,err_md,err_sdin,err_sdout];
+        
+        # errvec = [err_md,err_sdin,err_sdout]
 
-        error[r,:] = copy(errvec);
+        error[r] = copy(errvec);
         errmean = mean(errvec);
         
         
 
         errscore[r] = errmean;
 
-        #temperature goes down as errvec gets smaller
-        # global temperature = temperature .* (errvec ./ errvec_old);
-        
-        # if errmean < errmean_old
-            # global temperature = temperature * (errmean/errmean_old);
-            # print("!")
-        # end
-        
         prob_accept = exp(-(errmean-errmean_old)/temperature);
         rdraw = rand();
         
@@ -392,17 +394,19 @@ let cn = cnvec[208],
             p_a = copy(p_a_prop);
             
             temperature = temperature*(errmean/errmean_old);
-        elseif rdraw < prob_accept
-            #Accept and lower the temperature
-            cn = copy(cn_prop);
-            ce = copy(ce_prop);
-            cp = copy(cp_prop);
-            p_n = copy(p_n_prop);
-            p_a = copy(p_a_prop);
-            
-            temperature = temperature*(errmean/errmean_old);
         end
+        # elseif rdraw < prob_accept
+        #     #Accept and lower the temperature
+        #     cn = copy(cn_prop);
+        #     ce = copy(ce_prop);
+        #     cp = copy(cp_prop);
+        #     p_n = copy(p_n_prop);
+        #     p_a = copy(p_a_prop);
+        # 
+        #     temperature = temperature*(errmean/errmean_old);
+        # end
         
+        println(string(r,": error=",round(errmean,digits=3),"; temp=",round(temperature,digits=3),"; P=",round(prob_accept,digits=3)))
         
         cnvec[r] = cn;
         cevec[r] = ce;
@@ -410,40 +414,11 @@ let cn = cnvec[208],
         pnvec[r] = p_n;
         pevec[r] = p_a;
         
-        # prob_accept = exp.((1 ./ tempvec[2:size(tempvec)[1]]) .* (errscore[2:size(tempvec)[1]] .- errscore[1:size(tempvec)[1]-1]))
-
-
-        # for i=1:length(errvec)
-        # 
-        #     #If errvec[i] < errvec_old[i],
-        #     prob_accept = exp((1/temperature[i])*(errvec[i]-errvec_old[i]));
-        #     rdraw = rand();
-        # 
-        #     #Accept new draw
-        #     if errvec[i] < errvec_old[i]
-        #     # if rdraw < prob_accept
-        #         #Lower the temperature
-        #         # temperature[i] = maximum([temperature[i] * (1 - (errvec[i]/errvec_old[i])),10^(-20)]);
-        #         temperature[i] = temperature[i] * (errvec[i]/errvec_old[i]);
-        # 
-        #         print("!")
-        # 
-        #     end
-        #         #Otherwise errvec and temperature stay the same
-        # 
-        # 
-        #     # if errvec[i] < errvec_old[i]
-        #     #     temperature[i] = temperature[i] * (errvec[i]/errvec_old[i])
-        #     # end
-        # end
-        
         #update error
         errvec_old = copy(errvec);
         errmean_old = copy(errmean);
 
 
-
-        println(string(r,": errscore=",errscore[r],"; temp=",temperature))
     end
 end
 
@@ -454,6 +429,16 @@ library(RColorBrewer)
 pal = brewer.pal(5,'Set1')
 pdf($namespace,height=5,width=6)
 plot($(tempvec),type='l',ylim=c(10^(-4),0.5),log='y',col=pal[1])
+"""
+R"dev.off()"
+
+filename = "figures/niche/errorscore.pdf"
+namespace = smartpath(filename);
+R"""
+library(RColorBrewer)
+pal = brewer.pal(5,'Set1')
+pdf($namespace,height=5,width=6)
+plot($(error),type='l',col=pal[1])
 """
 R"dev.off()"
 
@@ -483,5 +468,19 @@ library(RColorBrewer)
 pal = brewer.pal(5,'Set1')
 pdf($namespace,height=5,width=6)
 plot($(tempvec[2:size(tempvec)[1]]),$(prob_accept),ylim=c(0,2))
+"""
+R"dev.off()"
+
+
+
+filename = "figures/niche/vec.pdf"
+namespace = smartpath(filename);
+R"""
+library(RColorBrewer)
+pal = brewer.pal(5,'Set1')
+pdf($namespace,height=5,width=6)
+plot($(cnvec),type='l',ylim=c(0,3),lty=1)
+lines($cevec,lty=2)
+lines($cpvec,lty=3)
 """
 R"dev.off()"
