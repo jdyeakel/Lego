@@ -8,9 +8,9 @@ end
 # ce = 1.83;
 # cp = 0.954;
 
-cn = 4.195216435170081;
-ce = 1.8682437375935583;
-cp = 0.6511860914279262;
+cn = 2.3198198198198203;
+ce = 5.62972972972973;
+cp = 3.330630630630631;
 
 #How much more does a mutualism benefit relative to the penalty of a trophic link?
 cn_ce = cn/ce;
@@ -23,8 +23,8 @@ maxits = 4000;
 SOprobs = (
 # p_n=0.00228,
 # p_a=0.0129
-p_n = 0.0030274490082625636,
-p_a =  0.014690692329311795
+p_n =  0.06713353353353355,
+p_a =  0.10392392392392392
 );
 SSmult = 1.0; OOmult = 0.0;
 SSprobs = (p_n = SSmult .* SOprobs.p_n , p_a = SSmult .* SOprobs.p_a);

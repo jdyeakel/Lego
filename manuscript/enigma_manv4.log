@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.18 (TeX Live 2017/Debian) (preloaded format=pdflatex 2019.2.5)  13 FEB 2019 08:56
+This is pdfTeX, Version 3.14159265-2.6-1.40.18 (TeX Live 2017/Debian) (preloaded format=pdflatex 2019.2.5)  6 JUN 2019 17:02
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1936,31 +1936,6 @@ LaTeX Font Info:    Font shape `T1/phv/bx/n' in size <8> not available
 (Font)              Font shape `T1/phv/b/n' tried instead on input line 89.
 LaTeX Font Info:    Font shape `T1/phv/b/n' will be
 (Font)              scaled to size 7.59998pt on input line 89.
-
-
-Package natbib Warning: Citation `Yeakel:2014kd' on page 1 undefined on input l
-ine 98.
-
-
-Package natbib Warning: Citation `Novak:2016hr' on page 1 undefined on input li
-ne 98.
-
-
-Package natbib Warning: Citation `Lade:2011vb' on page 1 undefined on input lin
-e 98.
-
-
-Package natbib Warning: Citation `Boettiger:2012jc' on page 1 undefined on inpu
-t line 98.
-
-
-Package natbib Warning: Citation `Stouffer:2011kd' on page 1 undefined on input
- line 98.
-
-
-Package natbib Warning: Citation `Kefi:2016gq' on page 1 undefined on input lin
-e 105.
-
 Package mdframed Info: mdframed works in twoside mode on input line 112.
 LaTeX Font Info:    Font shape `T1/phv/m/n' will be
 (Font)              scaled to size 9.49997pt on input line 112.
@@ -1975,10 +1950,10 @@ Package mdframed Info: mdframed inside a box
 LaTeX Font Info:    Font shape `T1/phv/m/n' will be
 (Font)              scaled to size 5.69998pt on input line 112.
 LaTeX Font Info:    Font shape `T1/phv/bx/n' in size <7> not available
-(Font)              Font shape `T1/phv/b/n' tried instead on input line 126.
+(Font)              Font shape `T1/phv/b/n' tried instead on input line 133.
 LaTeX Font Info:    Font shape `T1/phv/b/n' will be
-(Font)              scaled to size 6.64998pt on input line 126.
-[1{/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}
+(Font)              scaled to size 6.64998pt on input line 133.
+ [1{/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}
 
 
 ]
@@ -1993,7 +1968,7 @@ LaTeX Warning: Reference `fig:conn' on page 2 undefined on input line 224.
 LaTeX Warning: Reference `fig:conn' on page 2 undefined on input line 231.
 
 [2]
-<../Enigma/figures/trophicdist_time4.pdf, id=44, 433.62pt x 361.35pt>
+<../Enigma/figures/trophicdist_time4.pdf, id=56, 433.62pt x 361.35pt>
 File: ../Enigma/figures/trophicdist_time4.pdf Graphic file (type pdf)
 <use ../Enigma/figures/trophicdist_time4.pdf>
 Package pdftex.def Info: ../Enigma/figures/trophicdist_time4.pdf  used on input
@@ -2004,7 +1979,7 @@ Overfull \hbox (6.75pt too wide) in paragraph at lines 263--267
  [][] 
  []
 
-<../Enigma/figures/mean_nested.pdf, id=47, 433.62pt x 361.35pt>
+<../Enigma/figures/mean_nested.pdf, id=59, 433.62pt x 361.35pt>
 File: ../Enigma/figures/mean_nested.pdf Graphic file (type pdf)
 <use ../Enigma/figures/mean_nested.pdf>
 Package pdftex.def Info: ../Enigma/figures/mean_nested.pdf  used on input line 
@@ -2015,7 +1990,10 @@ Overfull \hbox (6.75pt too wide) in paragraph at lines 297--300
  [][] 
  []
 
-[3 <../Enigma/figures/trophicdist_time4.pdf>]
+
+Underfull \vbox (badness 2856) has occurred while \output is active []
+
+ [3 <../Enigma/figures/trophicdist_time4.pdf>]
 LaTeX Font Info:    Font shape `T1/phv/m/n' will be
 (Font)              scaled to size 7.12497pt on input line 373.
 LaTeX Font Info:    Calculating math sizes for size <7.5> on input line 373.
@@ -2027,7 +2005,7 @@ LaTeX Font Info:    External font `lmex10' loaded for size
 (Font)              <3.75> on input line 373.
 LaTeX Font Info:    Font shape `T1/phv/m/n' will be
 (Font)              scaled to size 7.59998pt on input line 396.
-<../Enigma/figures/specialization.pdf, id=68, 433.62pt x 361.35pt>
+<../Enigma/figures/specialization.pdf, id=80, 433.62pt x 361.35pt>
 File: ../Enigma/figures/specialization.pdf Graphic file (type pdf)
 <use ../Enigma/figures/specialization.pdf>
 Package pdftex.def Info: ../Enigma/figures/specialization.pdf  used on input li
@@ -2038,21 +2016,20 @@ Overfull \hbox (6.75pt too wide) in paragraph at lines 404--411
  [][] 
  []
 
-<../Enigma/figures/matrix.pdf, id=69, 433.62pt x 361.35pt>
+<../Enigma/figures/matrix.pdf, id=81, 433.62pt x 361.35pt>
 File: ../Enigma/figures/matrix.pdf Graphic file (type pdf)
 <use ../Enigma/figures/matrix.pdf>
 Package pdftex.def Info: ../Enigma/figures/matrix.pdf  used on input line 460.
 (pdftex.def)             Requested size: 211.38832pt x 176.1588pt.
-No file enigma_manv4.bbl.
-
-Package natbib Warning: There were undefined citations.
-
-
+(./enigma_manv4.bbl
+LaTeX Font Info:    Font shape `T1/phv/m/it' in size <6> not available
+(Font)              Font shape `T1/phv/m/sl' tried instead on input line 5.
+LaTeX Font Info:    Font shape `T1/phv/m/sl' will be
+(Font)              scaled to size 5.69998pt on input line 5.
+ [4 <../Enigma/figures/mean_nested.pdf> <../Enigma/figures/specialization.pdf>]
+) 
 AED: lastpage setting LastPage
-[4 <../Enigma/figures/mean_nested.pdf> <../Enigma/figures/specialization.pdf>]
-[5
-
- <../Enigma/figures/matrix.pdf>]
+[5 <../Enigma/figures/matrix.pdf>]
 Package atveryend Info: Empty hook `BeforeClearDocument' on input line 495.
 Package atveryend Info: Empty hook `AfterLastShipout' on input line 495.
  (./enigma_manv4.aux)
@@ -2064,23 +2041,20 @@ Package rerunfilecheck Info: File `enigma_manv4.out' has not changed.
 
 LaTeX Warning: There were undefined references.
 
-
-LaTeX Warning: Label(s) may have changed. Rerun to get cross-references right.
-
 Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 495.
  ) 
 Here is how much of TeX's memory you used:
- 33184 strings out of 492982
- 616350 string characters out of 6134897
- 722304 words of memory out of 5000000
- 35944 multiletter control sequences out of 15000+600000
- 655727 words of font info for 213 fonts, out of 8000000 for 9000
+ 33215 strings out of 492982
+ 616874 string characters out of 6134897
+ 724394 words of memory out of 5000000
+ 35965 multiletter control sequences out of 15000+600000
+ 658743 words of font info for 215 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  62i,23n,73p,10454b,1035s stack positions out of 5000i,500n,10000p,200000b,80000s
 {/usr/share/texmf/fonts/enc/dvips/lm/lm-rm.enc}{/usr/share/texmf/fonts/enc/dv
 ips/lm/lm-mathit.enc}{/usr/share/texmf/fonts/enc/dvips/lm/lm-mathsy.enc}{/usr/s
-hare/texmf/fonts/enc/dvips/lm/lm-ec.enc}{/usr/share/texmf/fonts/enc/dvips/lm/lm
--mathex.enc}{/usr/share/texlive/texmf-dist/fonts/enc/dvips/base/8r.enc}</usr/sh
+hare/texlive/texmf-dist/fonts/enc/dvips/base/8r.enc}{/usr/share/texmf/fonts/enc
+/dvips/lm/lm-ec.enc}{/usr/share/texmf/fonts/enc/dvips/lm/lm-mathex.enc}</usr/sh
 are/texmf/fonts/type1/public/lm/lmbx9.pfb></usr/share/texmf/fonts/type1/public/
 lm/lmex10.pfb></usr/share/texmf/fonts/type1/public/lm/lmmi5.pfb></usr/share/tex
 mf/fonts/type1/public/lm/lmmi6.pfb></usr/share/texmf/fonts/type1/public/lm/lmmi
@@ -2096,11 +2070,12 @@ ype1/public/lm/lmsy5.pfb></usr/share/texmf/fonts/type1/public/lm/lmsy6.pfb></us
 r/share/texmf/fonts/type1/public/lm/lmsy7.pfb></usr/share/texmf/fonts/type1/pub
 lic/lm/lmsy8.pfb></usr/share/texmf/fonts/type1/public/lm/lmsy9.pfb></usr/share/
 texlive/texmf-dist/fonts/type1/urw/helvetic/uhvb8a.pfb></usr/share/texlive/texm
-f-dist/fonts/type1/urw/helvetic/uhvr8a.pfb>
-Output written on enigma_manv4.pdf (5 pages, 824139 bytes).
+f-dist/fonts/type1/urw/helvetic/uhvr8a.pfb></usr/share/texlive/texmf-dist/fonts
+/type1/urw/helvetic/uhvro8a.pfb>
+Output written on enigma_manv4.pdf (5 pages, 833492 bytes).
 PDF statistics:
- 192 PDF objects out of 1000 (max. 8388607)
- 151 compressed objects within 2 object streams
- 12 named destinations out of 1000 (max. 500000)
- 39457 words of extra memory for PDF output out of 42996 (max. 10000000)
+ 209 PDF objects out of 1000 (max. 8388607)
+ 167 compressed objects within 2 object streams
+ 18 named destinations out of 1000 (max. 500000)
+ 39969 words of extra memory for PDF output out of 42996 (max. 10000000)
 

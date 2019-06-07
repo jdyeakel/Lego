@@ -166,6 +166,9 @@ else
 end
 
 
+#Search for parameters that match niche model
+annealtime = 200;
+
 species = Array{Float64}(undef,annealtime,2);
 conn = Array{Float64}(undef,annealtime,2);
 mdegree = Array{Float64}(undef,annealtime,2);
@@ -193,8 +196,6 @@ pevec = Array{Float64}(undef,annealtime);
 # global p_a = pevec[50];
 # global tic = 1;
 
-#Search for parameters that match niche model
-annealtime = 50;
 
 #The range of values to explore
 cnrange = collect(0.1:(10-.1)/999:10);
@@ -222,11 +223,15 @@ p_a_init = 0.01;
 let cn = cnrange[findall(x->x==minimum(abs.(cnrange .- cn_init)),abs.(cnrange .- cn_init))[1]], 
     ce = cerange[findall(x->x==minimum(abs.(cerange .- ce_init)),abs.(cerange .- ce_init))[1]], 
     cp = cprange[findall(x->x==minimum(abs.(cprange .- cp_init)),abs.(cprange .- cp_init))[1]],
-    p_n = p_nrange[findall(x->x==minimum(abs.(p_nrange .- p_n_init)),abs.(p_nrange .- p_n_init))[1]],
-    p_a = p_arange[findall(x->x==minimum(abs.(p_arange .- p_a_init)),abs.(p_arange .- p_a_init))[1]],
+    # p_n = p_nrange[findall(x->x==minimum(abs.(p_nrange .- p_n_init)),abs.(p_nrange .- p_n_init))[1]],
+    # p_a = p_arange[findall(x->x==minimum(abs.(p_arange .- p_a_init)),abs.(p_arange .- p_a_init))[1]],
     errmean_old = 1.,
     temperature = 1.0,
     tic = 1
+    
+    p_n = p_n_init;
+    p_a = p_a_init;
+
 
     # global cn = 4.195216435170081;
     # global ce = 1.8682437375935583;
@@ -240,11 +245,11 @@ let cn = cnrange[findall(x->x==minimum(abs.(cnrange .- cn_init)),abs.(cnrange .-
         tempvec[r] = copy(temperature);
         
         #Select proposed value from predefined range with uniform selection over a smaller range determined by temperature
-        cn_prop = proposal(temperature/2,cn,cnrange);
-        ce_prop = proposal(temperature/2,ce,cerange);
-        cp_prop = proposal(temperature/2,cp,cprange);
-        p_n_prop = proposal(temperature/2,p_n,p_nrange);
-        p_a_prop = proposal(temperature/2,p_a,p_arange);
+        cn_prop = proposal(temperature/1,cn,cnrange);
+        ce_prop = proposal(temperature/1,ce,cerange);
+        cp_prop = proposal(temperature/1,cp,cprange);
+        p_n_prop = p_n_init;
+        p_a_prop = p_n_init;
         
         
         S = 200;
@@ -382,7 +387,7 @@ let cn = cnrange[findall(x->x==minimum(abs.(cnrange .- cn_init)),abs.(cnrange .-
 
         errscore[r] = errmean;
 
-        prob_accept = exp(-(errmean-errmean_old)/temperature);
+        prob_accept = exp(-(errmean-errmean_old)/(temperature/2));
         rdraw = rand();
         
         if errmean < errmean_old
@@ -394,17 +399,20 @@ let cn = cnrange[findall(x->x==minimum(abs.(cnrange .- cn_init)),abs.(cnrange .-
             p_a = copy(p_a_prop);
             
             temperature = temperature*(errmean/errmean_old);
+            
+            errmean_old = errmean;
+        
+        elseif rdraw < prob_accept
+            #Accept and lower the temperature
+            cn = copy(cn_prop);
+            ce = copy(ce_prop);
+            cp = copy(cp_prop);
+            p_n = copy(p_n_prop);
+            p_a = copy(p_a_prop);
+        
+            temperature = temperature*(errmean/errmean_old);
+            errmean_old = errmean;
         end
-        # elseif rdraw < prob_accept
-        #     #Accept and lower the temperature
-        #     cn = copy(cn_prop);
-        #     ce = copy(ce_prop);
-        #     cp = copy(cp_prop);
-        #     p_n = copy(p_n_prop);
-        #     p_a = copy(p_a_prop);
-        # 
-        #     temperature = temperature*(errmean/errmean_old);
-        # end
         
         println(string(r,": error=",round(errmean,digits=3),"; temp=",round(temperature,digits=3),"; P=",round(prob_accept,digits=3)))
         
@@ -415,8 +423,8 @@ let cn = cnrange[findall(x->x==minimum(abs.(cnrange .- cn_init)),abs.(cnrange .-
         pevec[r] = p_a;
         
         #update error
-        errvec_old = copy(errvec);
-        errmean_old = copy(errmean);
+        # errvec_old = copy(errvec);
+        # errmean_old = copy(errmean);
 
 
     end
@@ -441,6 +449,22 @@ pdf($namespace,height=5,width=6)
 plot($(error),type='l',col=pal[1])
 """
 R"dev.off()"
+
+filename = "figures/niche/vec.pdf"
+namespace = smartpath(filename);
+R"""
+library(RColorBrewer)
+pal = brewer.pal(5,'Set1')
+pdf($namespace,height=5,width=6)
+plot($(cnvec),type='l',ylim=c(0,10),lty=1)
+lines($cevec,lty=2)
+lines($cpvec,lty=3)
+"""
+R"dev.off()"
+
+
+
+
 
 
 filename = "figures/niche/annealingerror.pdf"

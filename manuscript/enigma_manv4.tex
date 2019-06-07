@@ -90,39 +90,40 @@ In this paper we investigate the effects of heterogeneity in food available on t
 
 
 %structure is the result of dynamics
-Simplifying the abundant complexity and idiosyncrasies of nature is necessary to unravel their secrets.
-The layers of natural history giving rise to an ecological community can be simplified to a network, where nodes represent species and links represent interactions between them.
+Simplifying the abundant complexities and eccentricities of nature is necessary to unravel its secrets.
+The layers of natural history giving rise to an ecological community can be distilled -- among many possible forms -- into a network, where nodes represent species and links represent interactions between them.
 % to the set of species and the interactions binding those species, and their populations, together.
 % An ecological network, where nodes represent species and links represent interactions between species, is
-This minimalist perspective provides insight into community structure, and consequently, the dynamics of species' populations and the stability of the system as a whole (refs).
-Community structure can directly impact the ability of the system to absorb external perturbations \cite{Yeakel:2014kd,Novak:2016hr}, the existence and ubiquity of tipping points that can cause sudden long-term changes in species' populations \cite{Lade:2011vb,Boettiger:2012jc}, and promote or inhibit extinction cascades \cite{Stouffer:2011kd}.
+This minimalist perspective provides insight into community structure, and consequently, the dynamics of populations and system stability \cite{May1972}.
+Community structure can directly impact the ability of the system to absorb external perturbations \cite{Yeakel2014,Novak2016}, the existence and ubiquity of tipping points that can cause sudden long-term changes in species' populations \cite{Lade2011,Boettiger2012}, and promote or inhibit extinction cascades \cite{Stouffer2011}.
 Importantly, community structure is the result of a dynamical process that takes place over time, where species are added to or removed from the community in succession.
-This process is generally referred to as community assembly (ref), and though it is an engine for much that we observe in nature, is not well understood.
+This process is generally referred to as community assembly (Diamond,Brown,Loreau,Book), and though it is an engine for much that we observe in nature, is not well understood.
 
 %multiple interaction types
 Ecological networks are generally constructed and analyzed with respect to a single type of interaction.
-For example, mutualisms form the foundation of mutualistic networks, whereas trophic interactions form the foundation of food webs. %- which are often trophic in one direction and a reproductive service in the other -
-More recently, there has been a growing interest in understanding community structure by taking into account diverse interaction types, where multiple unique interactions are included in a multilayer network \cite{Kefi:2016gq}.
-However, interactions between two species are inherently compound in nature, such that both species in an interaction experiences different effects.
-For example, in a mutualistic interaction, there is often biomass flow in one direction and a reproductive service in the other; in a trophic interaction there is biomass flow from the prey to the predator and this effect is asymmetric.
-While this asymmetry is generally not encoded in the structure of ecological networks, it becomes central with description of network dynamics (May, Allesina, Gross, etc).
+For example, beneficial relationships between species form the foundation of mutualistic networks, whereas antagonistic interactions form the foundation of trophic networks, or food webs. %- which are often trophic in one direction and a reproductive service in the other -
+More recently, there has been a growing interest in understanding community structure by taking into account diverse interaction types, where multiple unique interactions are included, sometimes in a multi-layer network \cite{Kefi2016,Pilosof2017}.
+Importantly, interactions between two species are inherently compound in nature, such that both species in an interaction experiences different effects.
+For example, in a mutualistic interaction, there is often flow of biomass in one direction and a reproductive service in the other; in a trophic interaction there is a flow of biomass from the prey to the predator but not the other way around.
+While this asymmetry is generally not encoded in ecological network structure, it is central to the dynamics directed by this structure \cite{Gross2009,Allesina2012}.
 
 
 %Ecosystem engineering
-Diverse interactions occur directly between species, but also indirectly through the effect that species have on their environment.
-If these environmental effects have timescales longer than that of the instigating species, we call those species ecosystem engineers (ref).
+Diverse interactions occur directly between species, and indirectly through the effects species have on their environment.
+If these environmental effects have timescales longer than that of the instigating species, we call those species ecosystem engineers (Hastings).
 For example, burrowing rodents both create shelter for non-burrowing organisms and aerate the soil, promoting the growth of primary production.
-Terrestrial plants have altered the stoichiometry of the atmosphere, providing the molecular stores required for respiration (refs).
-Elephants root out large saplings and small trees, enabling the formation and maintenance of grasslands (refs) on which grass specialists depend.
-These example describe indirect interactions between ecosystem engineers and species that rely on their engineering, through an environmental intermediary.
-By way of their indirectness, these interactions are difficult to document.
-And while the importance of ecosystem engineers is celebrated, explorations of their effects on community dynamics occupy a very limited role in theory (Hastings refs), and are absent in models of ecological networks.
+Photosynthetic primary producers have altered the stoichiometry of both the atmosphere and the oceans, providing the molecular stores required for respiration (refs), and the ratios of life-sustaining elements in the sea (Redfield ratio ref).
+Elephants root out large saplings and small trees, enabling the formation and maintenance of grasslands (refs) on which grazers depend (ref).
+% These example describe indirect interactions between ecosystem engineers and species that rely on their engineering, through an environmental intermediary.
+% By way of their indirectness, these interactions are difficult to document.
+While the importance of ecosystem engineers is celebrated, explorations of their effects on community dynamics occupy a very limited role in theory \cite{Hastings2007,OdlingSmee2013}, and are absent in models of ecological networks.
 
 %HERE WE...
 Here we model an ecological system with a network where nodes represent ecological entities, including non-engineering species, engineering species, and the effects of the latter on the environment, which we call \emph{objects}.
-The links of the network that connect both species and objects represent resource, service, and engineering dependencies, respectively.
-Following Pillai (REF), we do not track the abundances of entities but only track their presence or absence.
-We use this framework to explore the dynamics of ecosystem assembly, where the colonization and extinction of species within a community depends on the constraints imposed by the resource, service, and engineering dependencies connecting both species and objects.
+The links of the network that connect both species and objects represent resource, service, and engineering dependencies, respectively (Figure 1; see Methods for a full description).
+This model roughly follows the heuristic outlined by Odling-Smee \cite{OdlingSmee2013}, where species can interact indirectly by way of changes to the environment, which in our model is mediated by direct interactions with objects.
+Following Pillai et al. \cite{Pillai2011}, we do not track the abundances of entities but only track their presence or absence.
+We use this framework to explore the dynamics of ecosystem assembly, where the colonization and extinction of species within a community depends on the constraints imposed by the resource, service, and engineering dependencies connecting species.
 
 
 We show that our framework reproduces many features of empirical systems both over the course of assembly and at steady state.
@@ -320,7 +321,7 @@ Nestedness (measured as NODF) as a function of the frequency of need interaction
   % \noindent \textbf{The ENIgMa Model}\\
   We model an ecological system with a network where nodes represent \emph{ecological entities} such as populations of species and or the presence of inanimate objects affecting species such as (examples).
    % and links represent interactions between them.
-  Following Pillai (REF), we do not track the abundances of entities but only track their presence or absence.
+  Following Pilai et al. \cite{Pillai2011}, we do not track the abundances of entities but only track their presence or absence.
   The links of the network represent interactions between pairs of entities (x,y).
   We distinguish three types of such interactions: x eats y, x needs y to be present, x makes object y.
 
@@ -363,7 +364,7 @@ Nestedness (measured as NODF) as a function of the frequency of need interaction
   One then selects the time at which the next event happens by drawing a random number from an exponential distribution with mean $1/\sum_j{r_j}$.
   At this time, an event occurs that is randomly selected from the set of possible events such that the probability of event $a$ is $r_a/\sum_j{r_j}$.
   Then the effect of the event is realized and the list of possible events is updated for the next step.
-  This algorithm is known to offer a much better approximation to the true stochastic continuous time process than a simulation in discrete time steps, while providing a much higher numerical efficiency (Gillespie, 1974ish).}
+  This algorithm is known to offer a much better approximation to the true stochastic continuous time process than a simulation in discrete time steps, while providing a much higher numerical efficiency \cite{Gillespie1977}.}
 % \end{matmethods}
 
 
