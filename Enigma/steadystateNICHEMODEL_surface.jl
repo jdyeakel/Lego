@@ -21,8 +21,8 @@ end
 
 
 #The range of values to explore
-cnrange = collect(0.1:(20-.1)/20:20);
-cerange = collect(0.1:(20-.1)/20:20);
+cnrange = collect(-5:(5- -5)/20:5);
+cerange = collect(-5:(5- -5)/20:5);
 # cprange = collect(0.1:(10-.1)/999:10);
 # p_nrange = collect(0.0005:(0.003-0.0005)/999:0.003);
 # p_arange = collect(0.005:(0.03-0.005)/999:0.03);
@@ -109,7 +109,7 @@ for r=1:size(cnrange)[1]
 
             sprich,rich,clock,CID = assembly(
                 int_m,a_b,n_b,i_b,m_b,n_b0,sp_v,int_id,tp_m,tind_m,lambda,
-                athresh,nthresh,maxits,cn_prop,ce_prop,cp_prop);
+                athresh,nthresh,maxits,cn,ce,cp);
 
             Aenigma = a_b[CID[:,maxits],CID[:,maxits]];
             Senigma = size(Aenigma)[1];
@@ -148,7 +148,7 @@ for r=1:size(cnrange)[1]
             #NICHE MODEL COMPARISON
             #NOTE: C CANNOT BE EQUAL TO OR GREATER THAN 0.5
             #NOTE Violates beta parameters!
-            Aniche, n = nichemodelweb(Int64(floor(species[r,2])),conn[r,2]);
+            Aniche, n = nichemodelweb(Int64(floor(enig_species)),enig_conn);
 
             #make measurements
             Aniche = Array{Int64}(Aniche);

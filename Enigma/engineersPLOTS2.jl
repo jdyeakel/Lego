@@ -91,7 +91,13 @@ dev.off()
 
 
 
-#EXTINCTION SIZE CDF
+#EXTINCTION RATES
+if homedir() == "/home/z840"
+    loadfunc = include("$(homedir())/2014_Lego/Enigma/src/loadfuncs.jl");
+else
+    loadfunc = include("$(homedir())/Dropbox/PostDoc/2014_Lego/Enigma/src/loadfuncs.jl");
+end
+
 
 filename = "data/engineers/sim_settings.jld";
 namespace = smartpath(filename);
@@ -100,10 +106,6 @@ namespace = smartpath(filename);
 llamb = length(lambdavec);
 its = llamb*reps;
 
-
-lcdf = 50;
-EXTCDF = SharedArray{Int64}(its,lcdf);
-extratevec = SharedArray{Float64}(its,lcdf);
 engineers = SharedArray{Int64}(its,maxits);
 sprich = SharedArray{Int64}(its,maxits);
 rich = SharedArray{Int64}(its,maxits);
@@ -111,6 +113,12 @@ clocks = SharedArray{Float64}(its,maxits);
 
 mextrate = SharedArray{Float64}(its);
 stdextrate = SharedArray{Float64}(its);
+
+totalcolonizations = SharedArray{Float64}(its);
+totalextinctions = SharedArray{Float64}(its);
+
+mpersistance = SharedArray{Float64}(its);
+stdpersistance = SharedArray{Float64}(its);
 
 @sync @distributed for i = 0:(its - 1)
     #Across lambdavec
@@ -171,6 +179,13 @@ stdextrate = SharedArray{Float64}(its);
     extinctions = spdiff[extpos].*-1;
     #Colonization size
     colonizations = spdiff[colpos];
+    
+    totalextinctions[ii] = sum(extinctions);
+    totalcolonizations[ii] = sum(colonizations);
+    
+    tstepsincom = sum(CID[2:S,:],dims=2) ./ maxits;
+    mpersistance[ii] = mean(tstepsincom[vec(findall(!iszero,tstepsincom))]);
+    stdpersistance[ii] = std(tstepsincom[vec(findall(!iszero,tstepsincom))]);
 
     #Only loop if there are extinctions
     if length(extinctions) > 0
@@ -184,19 +199,19 @@ stdextrate = SharedArray{Float64}(its);
         colrate = colonizations ./ dt[colpos];
 
         # extratevec = collect(0:0.0001:maximum(extrate));
-        extratevec[ii,:] = collect(range(0,step=maximum(extrate)/lcdf,length=lcdf));
+        # extratevec[ii,:] = collect(range(0,step=maximum(extrate)/lcdf,length=lcdf));
 
-        extcdf = Array{Int64}(undef,lcdf);
-        for j=1:lcdf
-            extcdf[j] = length(findall(x->x<extratevec[ii,j],extrate));
-        end
-
-        EXTCDF[ii,:] = extcdf;
+        # extcdf = Array{Int64}(undef,lcdf);
+        # for j=1:lcdf
+        #     extcdf[j] = length(findall(x->x<extratevec[ii,j],extrate));
+        # end
+        # 
+        # EXTCDF[ii,:] = extcdf;
     else
         mextrate[ii] = 0;
         stdextrate[ii] = 0;
-        extratevec[ii,:] = repeat([0],inner=lcdf);
-        EXTCDF[ii,:] = repeat([0],inner=lcdf);
+        # extratevec[ii,:] = repeat([0],inner=lcdf);
+        # EXTCDF[ii,:] = repeat([0],inner=lcdf);
     end
     # if mod(r,1) == 0
     #     println("reps =",r)
@@ -204,14 +219,14 @@ stdextrate = SharedArray{Float64}(its);
 end
 
 #SO WE DON'T HAVE TO RUN THE ABOVE ANALYSIS EVERY TIME (takes long time)
-filename = "data/engineers/cdf50.jld";
+filename = "data/engineers/meanrates.jld";
 namespace = smartpath(filename);
-@save namespace reps lambdavec llamb sprich rich clocks engineers maxits EXTCDF extratevec mextrate stdextrate lcdf;
+@save namespace reps lambdavec llamb sprich rich clocks engineers maxits mextrate stdextrate totalextinctions totalcolonizations mpersistance stdpersistance;
 
 #Load the CDF data
-filename = "data/engineers/cdf50.jld";
+filename = "data/engineers/meanrates.jld";
 namespace = smartpath(filename);
-@load namespace reps lambdavec llamb sprich rich clocks engineers maxits EXTCDF extratevec mextrate stdextrate lcdf;
+@load namespace reps lambdavec llamb sprich rich clocks engineers maxits mextrate stdextrate totalextinctions totalcolonizations;
 
 
 
@@ -223,57 +238,6 @@ mobj = vec(mean(objects[:,maxits-100:maxits],dims=2));
 meng = vec(mean(engineers[:,maxits-100:maxits],dims=2));
 mss = vec(mean(sprich[:,maxits-100:maxits],dims=2));
 
-#steady state number of objects and engineers, sorted POSITIONS
-#So this gives the positions from smallest to largest # of S.S. objects and engineers
-obsort = sortperm(mobj);
-engsort = sortperm(meng);
-
-
-#Convert frequencies to probabilities
-EXTCDFpr = Array{Float64}(undef,its,lcdf);
-for i=1:its
-    EXTCDFpr[i,:] = EXTCDF[i,:] ./ maximum(EXTCDF[i,:]);
-end
-
-#SORT AND COLOR BY THE MEAN STEADY STATE NUMBER OF ENGINEERS
-#reverse spectral = Blues <=> Greens <=> Oranges <=> Reds
-filename = "figures/eng/engcdf2.pdf";
-namespace = smartpath(filename);
-minrate = unique(sort(vec(extratevec)))[2]; #minimum nonzero rate
-maxrate = maximum(extratevec); #maximumrate
-R"""
-library(RColorBrewer)
-pdf($namespace,width=8,height=6)
-pal = colorRampPalette(rev(brewer.pal(9,"Spectral")))($its)
-plot($(extratevec[1,:]),$(EXTCDFpr[1,:]),type='l',col=paste(pal[1],'40',sep=''),xlim=c(10,$maxrate),ylim=c(0,1),log='x',xlab='Extinction rate',ylab='Cumulative Probability')
-legend(x=80,y=0.5,legend=sapply(seq(floor(min($(meng))),ceiling(max($(meng))),length.out=10),floor),col=colorRampPalette(rev(brewer.pal(9,"Spectral")))(10),cex=0.8,pch=16,bty='n',title='Num. Eng.')
-"""
-#plot sequence sorted by average number of steady state engineers
-for i=reverse(engsort)
-    R"""
-    lines($(extratevec[i,:]),$(EXTCDFpr[i,:]),col=paste(pal[$i],'40',sep=''))
-    """
-end
-R"dev.off()"
-
-#SORT AND COLOR BY THE MEAN STEADY STATE NUMBER OF OBJECTS
-#reverse spectral = Blues <=> Greens <=> Oranges <=> Reds
-filename = "figures/eng/objcdf2.pdf";
-namespace = smartpath(filename);
-R"""
-library(RColorBrewer)
-pdf($namespace,width=8,height=6)
-pal = colorRampPalette(rev(brewer.pal(9,"Spectral")))($its)
-plot($(extratevec[1,:]),$(EXTCDFpr[1,:]),type='l',col=paste(pal[1],'40',sep=''),xlim=c(10,$maxrate),ylim=c(0,1),log='x',xlab='Extinction rate',ylab='Cumulative Probability')
-legend(x=80,y=0.5,legend=sapply(seq(floor(min($(mobj))),ceiling(max($(mobj))),length.out=10),floor),col=colorRampPalette(rev(brewer.pal(9,"Spectral")))(10),cex=0.8,pch=16,bty='n',title='Num. Obj.')
-"""
-#plot sequence by average number of objects
-for i=reverse(obsort)
-    R"""
-    lines($(extratevec[i,:]),$(EXTCDFpr[i,:]),col=paste(pal[$i],'40',sep=''))
-    """
-end
-R"dev.off()"
 
 #isolate diverse systems to minimize effects of s.s. richness
 diverse = findall(x->x>120,mss);
@@ -345,6 +309,61 @@ pdf($namespace,width=6,height=5)
 boxplot($stdextarray / $mextarray,names = $lambdavec,xlab='Mean number of objects/species',ylab='Extinciton rate CV',outline=F,col='gray')
 dev.off()
 """
+
+#Bulk number of extinctions
+extarray = reshape(Array(totalextinctions),reps,llamb);
+colarray = reshape(Array(totalcolonizations),reps,llamb);
+filename = "figures/eng/boxplot_col_ext.pdf"
+namespace = smartpath(filename)
+R"""
+pdf($namespace,width=6,height=10)
+par(mfrow=c(2,1))
+boxplot($colarray/$(reshape(Array(mss),reps,llamb)),names = $lambdavec,xlab='Mean number of objects/species',ylab='Total colonizations',outline=F,col='gray')
+boxplot($extarray/$(reshape(Array(mss),reps,llamb)),names = $lambdavec,xlab='Mean number of objects/species',ylab='Total Extinctions',outline=F,col='gray')
+dev.off()
+"""
+
+filename = "figures/eng/boxplot_persistance.pdf"
+namespace = smartpath(filename)
+R"""
+pdf($namespace,width=6,height=5)
+boxplot($(reshape(Array(mpersistance),reps,llamb)),names = $lambdavec,xlab='Mean number of objects/species',ylab='Mean persistance (%)',outline=F,col='gray',ylim=c(0.5,1))
+dev.off()
+"""
+
+
+filename = "figures/eng/boxplot_sdpersistance.pdf"
+namespace = smartpath(filename)
+R"""
+pdf($namespace,width=6,height=5)
+boxplot($(reshape(Array(stdpersistance),reps,llamb)),names = $lambdavec,xlab='Mean number of objects/species',ylab='Persistance SD (%)',outline=F,col='gray',ylim=c(0,0.5))
+dev.off()
+"""
+
+filename = "figures/eng/boxplot_cvpersistance.pdf"
+namespace = smartpath(filename)
+R"""
+pdf($namespace,width=6,height=5)
+boxplot($(reshape(Array(stdpersistance),reps,llamb))/$(reshape(Array(mpersistance),reps,llamb)),names = $lambdavec,xlab='Mean number of objects/species',ylab='Persistance CV',outline=F,col='gray',ylim=c(0,1))
+dev.off()
+"""
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

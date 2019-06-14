@@ -13,6 +13,10 @@ S = 200;
 
 maxits = 4000;
 
+cn = pi;
+ce = sqrt(2);
+cp = 1.0;
+
 SOprobs = (
 p_n=0.002,
 p_a=0.01
@@ -33,7 +37,7 @@ nthresh = 1.0;
 # namespace = string("$(homedir())/Dropbox/PostDoc/2014_Lego/Enigma/data/engineers/sim_settings.jld");
 filename = "data/engineers/sim_settings.jld";
 namespace = smartpath(filename);
-@save namespace reps S maxits athresh nthresh lambdavec SSprobs SOprobs OOprobs;
+@save namespace reps S maxits athresh nthresh lambdavec SSprobs SOprobs OOprobs cn ce cp;
 
 
 its = llamb*reps;
@@ -63,7 +67,7 @@ its = llamb*reps;
 
     sprich,rich,clock,CID = assembly(
         int_m,a_b,n_b,i_b,m_b,n_b0,sp_v,int_id,tp_m,tind_m,lambda,
-        athresh,nthresh,maxits);
+        athresh,nthresh,maxits,cn,ce,cp);
 
     #Save individually so data can be loaded in parallel
     filename = "data/engineers/cid.jld";

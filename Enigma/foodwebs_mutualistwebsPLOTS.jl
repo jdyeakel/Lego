@@ -6,6 +6,7 @@ end
 
 R"library(bipartite)"
 R"options(warn = -1)"
+R"library(igraph)"
 
 # seq = [collect(2:50);100;200;500;1000;2000;4000];
 seq = [2000;4000];
