@@ -40,7 +40,7 @@ for v = 1:lnvec
         
         
         filename = "data/engineers_mutualisms/sim_settings.jld";
-        indices = [v];
+        indices = [v,w];
         namespace = smartpath(filename,indices);
         @save namespace reps S maxits nvec athresh nthresh lambda SSprobs SOprobs OOprobs;
         
@@ -59,7 +59,7 @@ for v = 1:lnvec
             int_id = preamble_defs(int_m);
             
             filename = "data/engineers_mutualisms/int_m.jld";
-            indices = [v,r];
+            indices = [v,w,r];
             namespace = smartpath(filename,indices);
             @save namespace int_m tp_m tind_m mp_m mind_m;
             
