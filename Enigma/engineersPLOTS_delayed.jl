@@ -304,7 +304,7 @@ library(RColorBrewer)
 pal = brewer.pal(3,'Set1')
 pdf($namespace,width=6,height=5)
 boxplot($mextarray,names = $lambdavec,xlab='Mean number of objects/species',ylab='Extinciton rate mean',outline=F,col='gray')
-boxplot($dmextarray,names = $dlambdavec,xlab='Mean number of objects/species',ylab='Extinciton rate mean',outline=F,col=pal[2],add=TRUE)
+boxplot($dmextarray,names = $dlambdavec,xlab='Mean number of objects/species',ylab='Extinciton rate mean',outline=F,col=paste(pal[2],50,sep=''),add=TRUE)
 dev.off()
 """
 

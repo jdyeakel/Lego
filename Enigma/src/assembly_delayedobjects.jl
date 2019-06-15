@@ -173,7 +173,7 @@ function assembly_delayedobjects(int_m,a_b,n_b,i_b,m_b,n_b0,sp_v,int_id,tp_m,tin
             #What is the probability that it is eliminated?
             #This is to institute a 'delay' in object extinction
             #without biasing the Gillespie algorithm
-            prob_elim = 0.5;
+            prob_elim = 0.1;
             if rand() < prob_elim
                 #OBJECT EXTINCTION FUNCTION
                 ob_bye = rand(obext,1);

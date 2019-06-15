@@ -77,7 +77,7 @@ function assembly(int_m,a_b,n_b,i_b,m_b,n_b0,sp_v,int_id,tp_m,tind_m,lambda,
             #NOTE: Needs won't change; Eats is based on POTENTIAL niche; Vuln changes per timestep
             strength = vec(cn*sum(n_b0[spcid,cid],dims=2)) .- vec(ce*sum(a_b[spcid,:],dims=2)) .- (vec(cp*sum(a_b[spcid,cid],dims=1))[1:length(spcid)]);
 
-            #This matrix applies the strength values across foraging interactions for each species in an spcid x spcid array
+            #This matrix applies the strength values across foraging interactions for each species in an spcid x cid array
             #It does NOT include foraging interactions on the sun!
             cmatrix = zeros(Float64,length(spcid),length(cid));
             for i=1:length(spcid)

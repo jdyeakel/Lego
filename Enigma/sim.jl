@@ -4,13 +4,10 @@ else
     loadfunc = include("$(homedir())/Dropbox/PostDoc/2014_Lego/Enigma/src/loadfuncs.jl");
 end
 
-# cn = 8.949;
-# ce = 1.83;
-# cp = 0.954;
+cn = pi;
+ce = sqrt(2);
+cp = 1;
 
-cn = 2.3198198198198203;
-ce = 5.62972972972973;
-cp = 3.330630630630631;
 
 #How much more does a mutualism benefit relative to the penalty of a trophic link?
 cn_ce = cn/ce;
@@ -19,12 +16,12 @@ cn_cp = cn/cp;
 
 
 S = 200;
-maxits = 4000;
+maxits = 2000;
 SOprobs = (
 # p_n=0.00228,
 # p_a=0.0129
-p_n =  0.06713353353353355,
-p_a =  0.10392392392392392
+p_n =  0.002,
+p_a =  0.01
 );
 SSmult = 1.0; OOmult = 0.0;
 SSprobs = (p_n = SSmult .* SOprobs.p_n , p_a = SSmult .* SOprobs.p_a);
@@ -59,9 +56,12 @@ namespace = "$(homedir())/Dropbox/PostDoc/2014_Lego/Enigma/figures/sprich_web.pd
 R"""
 #pdf($namespace,width=10,height=5)
 par(mfrow=c(1,1))
-plot($clock,$sprich,type='l',lwd=3,xlab='Time',ylab='Sp/Ob richness',ylim=c(0,max($([sprich;rich.-sprich]))),col='black')
+plot($clock,$sprich,type='l',lwd=3,xlab='Time',ylab='Sp/Ob richness',ylim=c(0,200),col='black')
+lines($clock,$(rich .- sprich),lty=3)
 #dev.off()
 """
+
+cid = findall(!iszero,CID[:,maxits])
 
 extinctions = findall(x->x==-1,diff(sprich));
 dt = diff(clock)[extinctions];

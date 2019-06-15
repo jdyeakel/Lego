@@ -22,11 +22,11 @@ end
 
 cn = 3.14;
 ce = 1.41;
-cp = 1.0;
+cp = 0; #1.0;
 p_n = 0.002;
 p_a = 0.01;
 
-reps = 10000;
+reps = 1000;
 # 
 # enig_species = Array{Float64}(undef,reps);
 # enig_conn = Array{Float64}(undef,reps);
@@ -170,11 +170,11 @@ for r=1:reps
     err_stdoutdegree[r] = sqrt((enig_stdoutdegree[r] - niche_stdoutdegree[r])^2); #/mean(stdoutdegree[r,1]); #/std(istdoutdegree);
 end
 
-namespace = "data/niche/errordist.jld";
+namespace = "data/niche/errordist_cp0.jld";
 filename = smartpath(namespace);
 @save filename enig_species enig_conn enig_mdegree enig_stdindegree enig_stdoutdegree niche_species niche_conn niche_mdegree niche_stdindegree niche_stdoutdegree err_species err_conn err_mdegree err_stdindegree err_stdoutdegree;
 
-namespace = "data/niche/errordist.jld";
+namespace = "data/niche/errordist_ce0.jld";
 filename = smartpath(namespace);
 @load filename enig_species enig_conn enig_mdegree enig_stdindegree enig_stdoutdegree niche_species niche_conn niche_mdegree niche_stdindegree niche_stdoutdegree err_species err_conn err_mdegree err_stdindegree err_stdoutdegree;
 
@@ -207,7 +207,7 @@ hist($(err_stdoutdegree ./ std(enig_stdoutdegree)),main="",xlab="Normalized Erro
 dev.off()
 """
 
-filename = "figures/niche/errorscatter.pdf";
+filename = "figures/niche/errorscatter_cp0.pdf";
 namespace = smartpath(filename);
 R"""
 pdf($namespace,height = 10,width=10)
