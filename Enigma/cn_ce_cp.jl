@@ -17,7 +17,7 @@ lvec = length(cnvec);
 
 for v = 1:lvec
     
-    pn = pnvec[v];    
+    cn = cnvec[v];    
     
     SOprobs = (
     p_n=0.002,
@@ -29,7 +29,7 @@ for v = 1:lvec
 
     for w=1:lvec
         
-        pe = pevec[w];
+        ce = cevec[w];
         
         #expected objects per species
         lambda = 0.0;
