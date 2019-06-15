@@ -30,6 +30,7 @@ if homedir() == "/home/z840"
     #Community dynamics
     @everywhere include("$(homedir())/2014_Lego/Enigma/src/preamble_defs.jl")
     @everywhere include("$(homedir())/2014_Lego/Enigma/src/assembly.jl")
+    @everywhere include("$(homedir())/2014_Lego/Enigma/src/assembly_delayedobjects.jl")
     @everywhere include("$(homedir())/2014_Lego/Enigma/src/assemblystate.jl")
 
     #Analysis Calculations
@@ -59,6 +60,7 @@ else
     #Community dynamics
     @everywhere include("$(homedir())/Dropbox/PostDoc/2014_Lego/Enigma/src/preamble_defs.jl")
     @everywhere include("$(homedir())/Dropbox/PostDoc/2014_Lego/Enigma/src/assembly.jl")
+    @everywhere include("$(homedir())/Dropbox/PostDoc/2014_Lego/Enigma/src/assembly_delayedobjects.jl")
     @everywhere include("$(homedir())/Dropbox/PostDoc/2014_Lego/Enigma/src/assemblystate.jl")
 
 

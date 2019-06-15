@@ -75,7 +75,7 @@ for v=1:lnvec
             R"""
             options(warn = -1)
             library(bipartite)
-            comb_nestvalue=networklevel($comb_amatrix,index='NODF2')
+            comb_nestvalue=networklevel($comb_amatrix,index='NODF')
             """
             @rget comb_nestvalue;
             if ismissing(comb_nestvalue)
@@ -123,12 +123,21 @@ for v=1:lnvec
     end
 end
 
+filename = "data/foodwebs_mutualistwebs/nestedmod.jld";
+namespace = smartpath(filename);
+@save namespace seq tseqmax reps nvec lnvec rich comb_nest comb_mod;
+
+
+filename = "data/foodwebs_mutualistwebs/nestedmod.jld";
+namespace = smartpath(filename);
+@load namespace seq tseqmax reps nvec lnvec rich comb_nest comb_mod;
+
 teval = length(seq);
 nestall = vec(comb_nest[:,:,teval]);
 mnest = mean(comb_nest[:,:,teval],dims=2);
 mrich = vec(rich[:,:,teval]);
 mstdrich = std(rich[:,:,teval],dims=2);
-nvecreshaped = repeat(nvec,outer=reps)
+nvecreshaped = repeat(nvec,outer=reps);
 filename = "/figures/yog/mean_nested.pdf";
 namespace = smartpath(filename);
 R"""
@@ -142,15 +151,33 @@ dev.off()
 """
 
 
-nestreps = vec(comb_nest[11,:,teval]);
-richreps = vec(rich[11,:,teval]);
+nestreps = vec(comb_nest[:,:,teval]);
+richreps = vec(rich[:,:,teval]);
 filename = "/figures/mean_nestedvsize.pdf";
 namespace = smartpath(filename);
 R"""
 pdf($namespace,height=5,width=6)
-plot($richreps,$nestreps,xlab='Species richness',ylab='NODF',pch='.')
+plot(jitter($richreps),$nestreps,xlab='Species richness',ylab='NODF',pch='.')
 dev.off()
 """
+
+
+nestreps1 = vec(comb_nest[1,:,teval]);
+richreps1 = vec(rich[1,:,teval]);
+nestreps21 = vec(comb_nest[21,:,teval]);
+richreps21 = vec(rich[21,:,teval]);
+filename = "/figures/mean_nestedvsize2.pdf";
+namespace = smartpath(filename);
+R"""
+library(RColorBrewer)
+pal = brewer.pal(3,'Set1')
+pdf($namespace,height=5,width=6)
+plot(jitter($richreps1),$nestreps1,xlab='Species richness',ylab='Nestedness (NODF)',pch='.',col=pal[1],ylim=c(0,3),xlim=c(100,200),cex=2)
+points(jitter($richreps21),$nestreps21,pch='.',col=pal[2],cex=2)
+legend(180,3,legend=c("Low pr(n)","High pr(n)"),col=pal[1:2],cex=0.8,bty='n',pch=16)
+dev.off()
+"""
+
 
 #Modularity
 

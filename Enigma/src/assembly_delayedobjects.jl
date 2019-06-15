@@ -1,4 +1,4 @@
-function assembly(int_m,a_b,n_b,i_b,m_b,n_b0,sp_v,int_id,tp_m,tind_m,lambda,
+function assembly_delayedobjects(int_m,a_b,n_b,i_b,m_b,n_b0,sp_v,int_id,tp_m,tind_m,lambda,
     athresh,nthresh,maxits,cn,ce,cp)
 
     S = length(sp_v) + 1;
@@ -128,11 +128,6 @@ function assembly(int_m,a_b,n_b,i_b,m_b,n_b0,sp_v,int_id,tp_m,tind_m,lambda,
         #COUNT POTENTIAL EXTINCT OBJECTS
         obext = ocid[findall(iszero,vec(sum(m_b[spcid,ocid],dims=1)))];
         lobext = length(obext);
-        
-        #Reduce likelihood that objects are eliminated
-        skipobjectweight = 0.5;
-        lobext = Int64(floor(lobext*skipobjectweight));
-
         levents = sum([lcol;lspext;lobext]);
 
         dt = 1/levents;
@@ -140,6 +135,11 @@ function assembly(int_m,a_b,n_b,i_b,m_b,n_b0,sp_v,int_id,tp_m,tind_m,lambda,
         t += dt;
         it += 1;
         push!(clock,t);
+        
+        #NOTE: Reduce probability that objects are chosen to be eliminated
+        skipobjectweight = 0.1;
+        lobext = Int64(floor(lobext*skipobjectweight));
+        levents = sum([lcol;lspext;lobext]);
 
         #Choose a random event
         re = rand();
@@ -190,3 +190,5 @@ function assembly(int_m,a_b,n_b,i_b,m_b,n_b0,sp_v,int_id,tp_m,tind_m,lambda,
     )
 
 end
+
+
