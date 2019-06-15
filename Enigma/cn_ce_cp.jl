@@ -41,7 +41,7 @@ for v = 1:lvec
         filename = "data/cn_ce_cp/sim_settings.jld";
         indices = [v,w];
         namespace = smartpath(filename,indices);
-        @save namespace reps S maxits nvec athresh nthresh lambda SSprobs SOprobs OOprobs;
+        @save namespace reps S maxits cnvec athresh nthresh lambda SSprobs SOprobs OOprobs;
         
         
         @sync @distributed for r = 1:reps
