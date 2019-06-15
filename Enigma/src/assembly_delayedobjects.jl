@@ -137,9 +137,9 @@ function assembly_delayedobjects(int_m,a_b,n_b,i_b,m_b,n_b0,sp_v,int_id,tp_m,tin
         push!(clock,t);
         
         #NOTE: Reduce probability that objects are chosen to be eliminated
-        skipobjectweight = 0.1;
-        lobext = Int64(floor(lobext*skipobjectweight));
-        levents = sum([lcol;lspext;lobext]);
+        # skipobjectweight = 0.1;
+        # lobext = Int64(floor(lobext*skipobjectweight));
+        # levents = sum([lcol;lspext;lobext]);
 
         #Choose a random event
         re = rand();
@@ -169,10 +169,16 @@ function assembly_delayedobjects(int_m,a_b,n_b,i_b,m_b,n_b0,sp_v,int_id,tp_m,tin
         end
 
         if re > ((lcol + lspext)/levents)
-
-            #OBJECT EXTINCTION FUNCTION
-            ob_bye = rand(obext,1);
-            cid = setdiff(cid_old,ob_bye);
+            
+            #What is the probability that it is eliminated?
+            #This is to institute a 'delay' in object extinction
+            #without biasing the Gillespie algorithm
+            prob_elim = 0.5;
+            if rand() < prob_elim
+                #OBJECT EXTINCTION FUNCTION
+                ob_bye = rand(obext,1);
+                cid = setdiff(cid_old,ob_bye);
+            end
 
         end
 

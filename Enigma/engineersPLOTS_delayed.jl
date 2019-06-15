@@ -6,13 +6,23 @@ else
 end
 
 #NOTE: Same for normal and DELAYED, so don't need to load 2x
+filename = "data/engineers_delayedobjects/sim_settings.jld";
+namespace = smartpath(filename);
+@load namespace reps S maxits athresh nthresh lambdavec SSprobs SOprobs OOprobs;
+dreps = copy(reps);
+dS = copy(S);
+dmaxits = copy(maxits);
+dathresh = copy(athresh);
+dnthresh = copy(nthresh);
+dlambdavec = copy(lambdavec);
+# dSSprobs = copy(SSprobs);
+# dSOprobs = copy(SOprobs);
+# dOOprobs = copy(OOprobs);
+
 filename = "data/engineers/sim_settings.jld";
 namespace = smartpath(filename);
 @load namespace reps S maxits athresh nthresh lambdavec SSprobs SOprobs OOprobs;
 
-filename = "data/engineers_delayed/sim_settings.jld";
-namespace = smartpath(filename);
-@load namespace dreps dS dmaxits dathresh dnthresh dlambdavec dSSprobs dSOprobs dOOprobs;
 
 llamb = length(lambdavec);
 its = llamb*reps;
@@ -30,6 +40,7 @@ totalextinctions = SharedArray{Float64}(its);
 
 mpersistance = SharedArray{Float64}(its);
 stdpersistance = SharedArray{Float64}(its);
+
 
 #NOTE: Delayed
 dllamb = length(lambdavec);
@@ -89,8 +100,7 @@ dstdpersistance = SharedArray{Float64}(dits);
     end
 
     clocks[ii,:] = copy(clock);
-    dclocks[ii,:] = copy(dclock);
-    
+
     #Delta species and richness over time
     spdiff = diff(sprich[ii,:]);
     rdiff = diff(rich[ii,:]);
@@ -138,17 +148,24 @@ end
 
     ii = i + 1;
 
-    filename = "data/engineers_delayed/int_m.jld";
+    filename = "data/engineers_delayedobjects/int_m.jld";
     indices = [a,b];
     namespace = smartpath(filename,indices);
-    @load namespace dint_m dtp_m dtind_m dmp_m dmind_m;
+    @load namespace int_m tp_m tind_m mp_m mind_m;
+    dint_m = copy(int_m);
+    dtp_m = copy(tp_m);
+    dtind_m = copy(tind_m);
+    dmp_m = copy(mp_m);
+    dmind_m = copy(mind_m);
 
-
-    filename = "data/engineers_delayed/cid.jld";
+    filename = "data/engineers_delayedobjects/cid.jld";
     indices = [a,b];
     namespace = smartpath(filename,indices);
-    @load namespace dCID dclock;
-
+    @load namespace CID clock;
+    
+    dCID = copy(CID);
+    dclock = copy(clock);
+    
     da_b,
     dn_b,
     di_b,
@@ -215,12 +232,12 @@ objects = rich .- sprich;
 dobjects = drich .- dsprich;
 
 #SO WE DON'T HAVE TO RUN THE ABOVE ANALYSIS EVERY TIME (takes long time)
-filename = "data/engineers_delayed/meanrates.jld";
+filename = "data/engineers_delayedobjects/meanrates.jld";
 namespace = smartpath(filename);
-@save namespace reps lambdavec llamb sprich rich clocks engineers maxits mextrate stdextrate totalextinctions totalcolonizations mpersistance stdpersistance dsprich drich dclocks dengineers maxits dmextrate dstdextrate dtotalextinctions dtotalcolonizations dmpersistance dstdpersistance its dits objects dobjects;
+@save namespace reps lambdavec llamb sprich rich clocks engineers maxits mextrate stdextrate totalextinctions totalcolonizations mpersistance stdpersistance dsprich drich dclocks dengineers dmaxits dmextrate dstdextrate dtotalextinctions dtotalcolonizations dmpersistance dstdpersistance its dits objects dobjects;
 
 #Load the CDF data
-filename = "data/engineers_delayed/meanrates.jld";
+filename = "data/engineers_delayedobjects/meanrates.jld";
 namespace = smartpath(filename);
 @load namespace reps lambdavec llamb sprich rich clocks engineers maxits mextrate stdextrate totalextinctions totalcolonizations mpersistance stdpersistance dsprich drich dclocks dengineers maxits dmextrate dstdextrate dtotalextinctions dtotalcolonizations dmpersistance dstdpersistance its dits objects dobjects;
 
@@ -280,12 +297,14 @@ end
 
 mextarray = reshape(Array(mextrate),reps,llamb);
 dmextarray = reshape(Array(dmextrate),dreps,dllamb);
-filename = "figures/eng/boxplot_extrate.pdf"
+filename = "figures/eng/boxplot_extrate_delayed.pdf"
 namespace = smartpath(filename)
 R"""
+library(RColorBrewer)
+pal = brewer.pal(3,'Set1')
 pdf($namespace,width=6,height=5)
 boxplot($mextarray,names = $lambdavec,xlab='Mean number of objects/species',ylab='Extinciton rate mean',outline=F,col='gray')
-boxplot($dmextarray,names = $dlambdavec,xlab='Mean number of objects/species',ylab='Extinciton rate mean',outline=F,col='gray',add=TRUE)
+boxplot($dmextarray,names = $dlambdavec,xlab='Mean number of objects/species',ylab='Extinciton rate mean',outline=F,col=pal[2],add=TRUE)
 dev.off()
 """
 
