@@ -15,122 +15,141 @@ reps = 1000;
 nvec = collect(0.0:0.1:2.0);
 lnvec = length(nvec);
 
+its = lnvec*reps;
 
 # food_nest = SharedArray{Float64}(lnvec,reps,tseqmax);
 # mutual_nest = SharedArray{Float64}(lnvec,reps,tseqmax);
 comb_nest = SharedArray{Float64}(lnvec,reps,tseqmax);
 rich = SharedArray{Float64}(lnvec,reps,tseqmax);
-
+sdrich = SharedArray{Float64}(lnvec,reps,tseqmax);
 # food_mod = SharedArray{Float64}(lnvec,reps,tseqmax);
 # mutual_mod = SharedArray{Float64}(lnvec,reps,tseqmax);
 comb_mod = SharedArray{Float64}(lnvec,reps,tseqmax);
 
-for v=1:lnvec
+@sync @distributed for i = 0:(its - 1)
+
+    #Across lambdavec
+    v = Int64(floor(i/reps)) + 1;
+    #Across reps
+    r = mod(i,reps) + 1;
+
 
     filename = "data/foodwebs_mutualistwebs/sim_settings.jld";
     indices = [v];
     namespace = smartpath(filename,indices);
-    @load namespace reps S maxits athresh nthresh lambda SSprobs SOprobs OOprobs;
-
-    for r=1:reps
-
-        filename = "data/foodwebs_mutualistwebs/int_m.jld";
-        indices = [v,r];
-        namespace = smartpath(filename,indices);
-        @load namespace int_m tp_m tind_m mp_m mind_m;
-
-        filename = "data/foodwebs_mutualistwebs/cid.jld";
-        indices = [v,r];
-        namespace = smartpath(filename,indices);
-        @load namespace CID clock;
+    @load namespace S maxits athresh nthresh lambda SSprobs SOprobs OOprobs;
 
 
-        #Analysis
-        for t = 1:tseqmax
 
-            #construct
-            tstep = seq[t];
-            cid = findall(isodd,CID[:,tstep]);
-            cid_old = findall(isodd,CID[:,tstep-1]); #because we have this, seq can't start at t=1;
+    filename = "data/foodwebs_mutualistwebs/int_m.jld";
+    indices = [v,r];
+    namespace = smartpath(filename,indices);
+    @load namespace int_m tp_m tind_m mp_m mind_m;
 
-            # food_amatrix = tp_m[[1;cid],[1;cid]];
-            # mutual_amatrix = mp_m[[1;cid],[1;cid]];
-            comb_amatrix = tp_m[[1;cid],[1;cid]] .+ mp_m[[1;cid],[1;cid]];
-
-            #CALCULATE METRICS
-            rich[v,r,t] = length(cid);
+    filename = "data/foodwebs_mutualistwebs/cid.jld";
+    indices = [v,r];
+    namespace = smartpath(filename,indices);
+    @load namespace CID clock;
 
 
-            # R"""
-            # options(warn = -1)
-            # library(bipartite)
-            # food_nestvalue=networklevel($food_amatrix,index='NODF')
-            # """
-            # @rget food_nestvalue;
-            # if ismissing(food_nestvalue)
-            #     food_nestvalue = NaN;
-            # end
-            # food_nest[v,r,t] = food_nestvalue;
+    #Analysis
+    for t = 1:tseqmax
 
-            R"""
-            options(warn = -1)
-            library(bipartite)
-            comb_nestvalue=networklevel($comb_amatrix,index='NODF')
-            """
-            @rget comb_nestvalue;
-            if ismissing(comb_nestvalue)
-                comb_nestvalue = NaN;
-            end
-            comb_nest[v,r,t] = comb_nestvalue;
+        #construct
+        tstep = seq[t];
+        cid = findall(isodd,CID[:,tstep]);
+        cid_old = findall(isodd,CID[:,tstep-1]); #because we have this, seq can't start at t=1;
 
-            # if sum(mutual_amatrix) > 0
-            #     R"""
-            #     options(warn = -1)
-            #     library(bipartite)
-            #     mutual_nestvalue=networklevel($mutual_amatrix,index='NODF')
-            #     """
-            #     @rget mutual_nestvalue;
-            #     if ismissing(mutual_nestvalue)
-            #         mutual_nestvalue = NaN;
-            #     end
-            #     mutual_nest[v,r,t] = mutual_nestvalue;
-            # else
-            #     mutual_nest[v,r,t] = 0;
-            # end
-            #
-            #Modularity
-            R"""
-            library(igraph)
-            # g_food <- graph.adjacency($food_amatrix);
-            # g_mutual <- graph.adjacency($mutual_amatrix);
-            g_comb <- as.undirected(graph.adjacency($comb_amatrix));
+        # food_amatrix = tp_m[[1;cid],[1;cid]];
+        # mutual_amatrix = mp_m[[1;cid],[1;cid]];
+        comb_amatrix = tp_m[[1;cid],[1;cid]] .+ mp_m[[1;cid],[1;cid]];
 
-            # food_modvalue <- modularity(g_food);
-            # mutual_modvalue <- modularity(g_mutual);
-            wtc <- cluster_walktrap(g_comb)
-            comb_modvalue <- modularity(g_comb,membership(wtc));
-            """
-            # @rget food_modvalue;
-            # @rget mutual_modvalue;
-            @rget comb_modvalue;
-
-            # food_mod[v,r,t] = food_modvalue;
-            # mutual_mod[v,r,t] = mutual_modvalue;
-            comb_mod[v,r,t] = comb_modvalue;
-
-
+        #CALCULATE METRICS
+        # rich[v,r,t] = length(cid);
+        
+        #look at last 100 timesteps and take means for
+        #richness and sd richness
+        richs = Array{Int64}(undef,100);
+        for s=1:100
+            richs[s] = sum(CID[:,tstep-s]);
         end
-    end
+        
+        rich[v,r,t] = mean(richs);
+        sdrich[v,r,t] = std(richs);
+
+        # R"""
+        # options(warn = -1)
+        # library(bipartite)
+        # food_nestvalue=networklevel($food_amatrix,index='NODF')
+        # """
+        # @rget food_nestvalue;
+        # if ismissing(food_nestvalue)
+        #     food_nestvalue = NaN;
+        # end
+        # food_nest[v,r,t] = food_nestvalue;
+
+        R"""
+        options(warn = -1)
+        library(bipartite)
+        comb_nestvalue=networklevel($comb_amatrix,index='NODF')
+        """
+        @rget comb_nestvalue;
+        if ismissing(comb_nestvalue)
+            comb_nestvalue = NaN;
+        end
+        comb_nest[v,r,t] = comb_nestvalue;
+
+        # if sum(mutual_amatrix) > 0
+        #     R"""
+        #     options(warn = -1)
+        #     library(bipartite)
+        #     mutual_nestvalue=networklevel($mutual_amatrix,index='NODF')
+        #     """
+        #     @rget mutual_nestvalue;
+        #     if ismissing(mutual_nestvalue)
+        #         mutual_nestvalue = NaN;
+        #     end
+        #     mutual_nest[v,r,t] = mutual_nestvalue;
+        # else
+        #     mutual_nest[v,r,t] = 0;
+        # end
+        #
+        #Modularity
+        R"""
+        library(igraph)
+        # g_food <- graph.adjacency($food_amatrix);
+        # g_mutual <- graph.adjacency($mutual_amatrix);
+        g_comb <- as.undirected(graph.adjacency($comb_amatrix));
+
+        # food_modvalue <- modularity(g_food);
+        # mutual_modvalue <- modularity(g_mutual);
+        wtc <- cluster_walktrap(g_comb)
+        comb_modvalue <- modularity(g_comb,membership(wtc));
+        """
+        # @rget food_modvalue;
+        # @rget mutual_modvalue;
+        @rget comb_modvalue;
+
+        # food_mod[v,r,t] = food_modvalue;
+        # mutual_mod[v,r,t] = mutual_modvalue;
+        comb_mod[v,r,t] = comb_modvalue;
+        
+        
+        
+
+
+    end 
+    
 end
 
 filename = "data/foodwebs_mutualistwebs/nestedmod.jld";
 namespace = smartpath(filename);
-@save namespace seq tseqmax reps nvec lnvec rich comb_nest comb_mod;
+@save namespace seq tseqmax reps nvec lnvec rich sdrich comb_nest comb_mod;
 
 
 filename = "data/foodwebs_mutualistwebs/nestedmod.jld";
 namespace = smartpath(filename);
-@load namespace seq tseqmax reps nvec lnvec rich comb_nest comb_mod;
+@load namespace seq tseqmax reps nvec lnvec rich sdrich comb_nest comb_mod;
 
 teval = length(seq);
 nestall = vec(comb_nest[:,:,teval]);
