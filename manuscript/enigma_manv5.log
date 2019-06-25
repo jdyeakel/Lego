@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.18 (TeX Live 2017/Debian) (preloaded format=pdflatex 2019.2.5)  17 JUN 2019 16:44
+This is pdfTeX, Version 3.14159265-2.6-1.40.18 (TeX Live 2017/Debian) (preloaded format=pdflatex 2019.2.5)  24 JUN 2019 20:23
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1961,138 +1961,147 @@ LaTeX Font Info:    Font shape `T1/phv/b/n' will be
 LaTeX Warning: Reference `fig:model' on page 2 undefined on input line 147.
 
 
-Underfull \hbox (badness 1057) in paragraph at lines 165--170
+Underfull \hbox (badness 10000) in paragraph at lines 160--165
+
+ []
+
+
+LaTeX Warning: Reference `fig:conn' on page 2 undefined on input line 192.
+
+
+LaTeX Warning: Reference `fig:conn' on page 2 undefined on input line 196.
+
+<fig_model.pdf, id=93, 722.7pt x 361.35pt>
+File: fig_model.pdf Graphic file (type pdf)
+<use fig_model.pdf>
+Package pdftex.def Info: fig_model.pdf  used on input line 202.
+(pdftex.def)             Requested size: 234.8775pt x 117.43735pt.
+
+Overfull \hbox (6.75pt too wide) in paragraph at lines 202--205
+ [][] 
+ []
+
+[2]
+
+LaTeX Warning: Reference `fig:spec' on page 3 undefined on input line 252.
+
+
+Underfull \hbox (badness 1152) in paragraph at lines 259--266
+\T1/lmr/m/n/9 (+20) with fre-quen-cies tak-ing on an hour-glass struc-ture.
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 259--266
+
+ []
+
+<fig_trophic.pdf, id=119, 361.35pt x 578.16pt>
+File: fig_trophic.pdf Graphic file (type pdf)
+<use fig_trophic.pdf>
+Package pdftex.def Info: fig_trophic.pdf  used on input line 270.
+(pdftex.def)             Requested size: 187.89914pt x 300.63611pt.
+
+Underfull \vbox (badness 3364) has occurred while \output is active []
+
+ [3 <./fig_model.pdf> <./fig_trophic.pdf>]
+
+LaTeX Warning: Reference `fig:model' on page 4 undefined on input line 304.
+
+
+LaTeX Warning: Reference `fig:motif' on page 4 undefined on input line 314.
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 322--329
+
+ []
+
+<fig_nested.pdf, id=179, 433.62pt x 361.35pt>
+File: fig_nested.pdf Graphic file (type pdf)
+<use fig_nested.pdf>
+Package pdftex.def Info: fig_nested.pdf  used on input line 334.
+(pdftex.def)             Requested size: 234.8775pt x 195.7326pt.
+
+Overfull \hbox (6.75pt too wide) in paragraph at lines 334--337
+ [][] 
+ []
+
+
+Package natbib Warning: Citation `Kidwell1986' on page 4 undefined on input lin
+e 354.
+
+[4 <./fig_nested.pdf>]
+Underfull \hbox (badness 1057) in paragraph at lines 369--373
 \T1/lmr/m/n/9 (+20) im-por-tance of con-sid-er-ing di-verse in-ter-ac-tions bot
 h
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 165--170
+Underfull \hbox (badness 10000) in paragraph at lines 369--373
 
  []
 
-
-LaTeX Warning: Reference `fig:conn' on page 2 undefined on input line 198.
-
-
-LaTeX Warning: Reference `fig:conn' on page 2 undefined on input line 202.
-
-[2]
-<../Enigma/figures/trophicdist_time4.pdf, id=116, 433.62pt x 361.35pt>
-File: ../Enigma/figures/trophicdist_time4.pdf Graphic file (type pdf)
-<use ../Enigma/figures/trophicdist_time4.pdf>
-Package pdftex.def Info: ../Enigma/figures/trophicdist_time4.pdf  used on input
- line 237.
-(pdftex.def)             Requested size: 234.8775pt x 195.7326pt.
-
-Overfull \hbox (6.75pt too wide) in paragraph at lines 237--241
- [][] 
- []
-
-
-Underfull \hbox (badness 1152) in paragraph at lines 247--254
-\T1/lmr/m/n/9 (+20) with fre-quen-cies tak-ing on an hour-glass struc-ture.
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 247--254
-
- []
-
-
-LaTeX Warning: Reference `fig:model' on page 3 undefined on input line 278.
-
-
-LaTeX Warning: Reference `fig:motif' on page 3 undefined on input line 288.
-
-[3 <../Enigma/figures/trophicdist_time4.pdf>]
-Underfull \hbox (badness 10000) in paragraph at lines 296--303
-
- []
-
-<../Enigma/figures/mean_nested.pdf, id=175, 433.62pt x 361.35pt>
-File: ../Enigma/figures/mean_nested.pdf Graphic file (type pdf)
-<use ../Enigma/figures/mean_nested.pdf>
-Package pdftex.def Info: ../Enigma/figures/mean_nested.pdf  used on input line 
-308.
-(pdftex.def)             Requested size: 234.8775pt x 195.7326pt.
-
-Overfull \hbox (6.75pt too wide) in paragraph at lines 308--311
- [][] 
- []
-
-[4 <../Enigma/figures/mean_nested.pdf>]
 LaTeX Font Info:    Font shape `T1/phv/m/n' will be
-(Font)              scaled to size 7.12497pt on input line 396.
-LaTeX Font Info:    Calculating math sizes for size <7.5> on input line 396.
+(Font)              scaled to size 7.12497pt on input line 432.
+LaTeX Font Info:    Calculating math sizes for size <7.5> on input line 432.
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <7.5> on input line 396.
+(Font)              <7.5> on input line 432.
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <5.24997> on input line 396.
+(Font)              <5.24997> on input line 432.
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <3.75> on input line 396.
+(Font)              <3.75> on input line 432.
 LaTeX Font Info:    Font shape `T1/phv/m/n' will be
-(Font)              scaled to size 7.59998pt on input line 419.
-<../Enigma/figures/specialization.pdf, id=198, 433.62pt x 361.35pt>
-File: ../Enigma/figures/specialization.pdf Graphic file (type pdf)
-<use ../Enigma/figures/specialization.pdf>
-Package pdftex.def Info: ../Enigma/figures/specialization.pdf  used on input li
-ne 427.
-(pdftex.def)             Requested size: 234.8775pt x 195.7326pt.
-
-Overfull \hbox (6.75pt too wide) in paragraph at lines 427--434
- [][] 
- []
-
-<../Enigma/figures/matrix.pdf, id=199, 433.62pt x 361.35pt>
-File: ../Enigma/figures/matrix.pdf Graphic file (type pdf)
-<use ../Enigma/figures/matrix.pdf>
-Package pdftex.def Info: ../Enigma/figures/matrix.pdf  used on input line 483.
-(pdftex.def)             Requested size: 211.38832pt x 176.1588pt.
+(Font)              scaled to size 7.59998pt on input line 455.
 (./enigma_manv5.bbl
 LaTeX Font Info:    Font shape `T1/phv/m/it' in size <6> not available
 (Font)              Font shape `T1/phv/m/sl' tried instead on input line 6.
 LaTeX Font Info:    Font shape `T1/phv/m/sl' will be
 (Font)              scaled to size 5.69998pt on input line 6.
- [5 <../Enigma/figures/specialization.pdf>]
+
 Underfull \hbox (badness 1237) in paragraph at lines 23--25
 []\T1/phv/m/n/6 Allesina S, Tang S (2012) Sta-bil-ity cri-te-ria for com-plex e
 cosys-tems.  \T1/phv/m/sl/6 Na-ture
  []
 
-
+[5]
 Underfull \hbox (badness 1087) in paragraph at lines 176--179
 []\T1/phv/m/n/6 Getz WM (2011) Biomass trans-for-ma-tion webs pro-vide a uni-fi
 ed ap-proach to
  []
 
-) 
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+)
+
+Package natbib Warning: There were undefined citations.
+
+
 AED: lastpage setting LastPage
-[6 <../Enigma/figures/matrix.pdf>]
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 518.
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 518.
+[6]
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 531.
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 531.
  (./enigma_manv5.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 518.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 518.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 531.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 531.
 Package rerunfilecheck Info: File `enigma_manv5.out' has not changed.
 (rerunfilecheck)             Checksum: D41D8CD98F00B204E9800998ECF8427E;0.
 
 
 LaTeX Warning: There were undefined references.
 
-Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 518.
+Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 531.
  ) 
 Here is how much of TeX's memory you used:
- 33459 strings out of 492982
- 621282 string characters out of 6134897
- 726183 words of memory out of 5000000
- 36163 multiletter control sequences out of 15000+600000
- 658562 words of font info for 213 fonts, out of 8000000 for 9000
+ 33451 strings out of 492982
+ 620805 string characters out of 6134897
+ 728704 words of memory out of 5000000
+ 36160 multiletter control sequences out of 15000+600000
+ 658396 words of font info for 211 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  62i,23n,73p,10454b,1035s stack positions out of 5000i,500n,10000p,200000b,80000s
-{/usr/share/texlive/texmf-dist/fonts/enc/dvips/base/8r.enc}{/usr/share/texmf/
-fonts/enc/dvips/lm/lm-rm.enc}{/usr/share/texmf/fonts/enc/dvips/lm/lm-mathit.enc
-}{/usr/share/texmf/fonts/enc/dvips/lm/lm-mathsy.enc}{/usr/share/texmf/fonts/enc
+{/usr/share/texmf/fonts/enc/dvips/lm/lm-rm.enc}{/usr/share/texmf/fonts/enc/dv
+ips/lm/lm-mathit.enc}{/usr/share/texmf/fonts/enc/dvips/lm/lm-mathsy.enc}{/usr/s
+hare/texlive/texmf-dist/fonts/enc/dvips/base/8r.enc}{/usr/share/texmf/fonts/enc
 /dvips/lm/lm-ec.enc}{/usr/share/texmf/fonts/enc/dvips/lm/lm-mathex.enc}</usr/sh
 are/texmf/fonts/type1/public/lm/lmbx9.pfb></usr/share/texmf/fonts/type1/public/
 lm/lmex10.pfb></usr/share/texmf/fonts/type1/public/lm/lmmi5.pfb></usr/share/tex
@@ -2106,14 +2115,14 @@ r9.pfb></usr/share/texmf/fonts/type1/public/lm/lmri7.pfb></usr/share/texmf/font
 s/type1/public/lm/lmri9.pfb></usr/share/texmf/fonts/type1/public/lm/lmssbx10.pf
 b></usr/share/texmf/fonts/type1/public/lm/lmsy5.pfb></usr/share/texmf/fonts/typ
 e1/public/lm/lmsy6.pfb></usr/share/texmf/fonts/type1/public/lm/lmsy7.pfb></usr/
-share/texmf/fonts/type1/public/lm/lmsy8.pfb></usr/share/texlive/texmf-dist/font
-s/type1/urw/helvetic/uhvb8a.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/
-helvetic/uhvr8a.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/helvetic/uhv
-ro8a.pfb>
-Output written on enigma_manv5.pdf (6 pages, 842305 bytes).
+share/texmf/fonts/type1/public/lm/lmsy8.pfb></usr/share/texmf/fonts/type1/publi
+c/lm/lmsy9.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/helvetic/uhvb8a.p
+fb></usr/share/texlive/texmf-dist/fonts/type1/urw/helvetic/uhvr8a.pfb></usr/sha
+re/texlive/texmf-dist/fonts/type1/urw/helvetic/uhvro8a.pfb>
+Output written on enigma_manv5.pdf (6 pages, 684180 bytes).
 PDF statistics:
  326 PDF objects out of 1000 (max. 8388607)
- 284 compressed objects within 3 object streams
- 68 named destinations out of 1000 (max. 500000)
- 39969 words of extra memory for PDF output out of 42996 (max. 10000000)
+ 285 compressed objects within 3 object streams
+ 67 named destinations out of 1000 (max. 500000)
+ 39964 words of extra memory for PDF output out of 42996 (max. 10000000)
 

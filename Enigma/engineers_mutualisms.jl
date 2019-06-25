@@ -4,7 +4,7 @@ else
     loadfunc = include("$(homedir())/Dropbox/PostDoc/2014_Lego/Enigma/src/loadfuncs.jl");
 end
 
-reps = 50;
+reps = 100;
 S = 200;
 maxits = 4000;
 

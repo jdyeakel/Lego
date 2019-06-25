@@ -31,7 +31,7 @@
 % \usepackage{color}
 
 
-\graphicspath{{../Enigma/figures/}}
+% \graphicspath{{../Enigma/figures/}}
 
 
 
@@ -105,7 +105,7 @@ For example, beneficial relationships between species form the foundation of mut
 There has been a growing interest in understanding community structure by taking into account diverse interaction types \cite{Kefi2016}, where multiple unique interactions are included, sometimes in a multi-layer network \cite{Pilosof2017}.
 Interactions between two species are inherently compound in nature, such that both species in an interaction experiences different effects.
 For example, mutualistic interactions generally involve a flow of biomass in one direction and a reproductive service in the other; in a trophic interaction there is a flow of biomass from the prey to the predator but not the reverse.
-While this asymmetry is generally encoded in the dynamics, rather than the network structure itself \cite{Gross2009,Allesina2012}.
+This asymmetry is generally encoded into the dynamics, rather than the network structure itself \cite{Gross2009,Allesina2012}.
 
 
 %Ecosystem engineering
@@ -126,10 +126,10 @@ While local habitats can be significantly impacted by single engineering species
 %Theory
 Theoretical models exploring the effects of ecosystem engineering are relatively few, but have covered important ground \cite{Hastings2007,OdlingSmee2013}.
 Initial efforts focused on understanding how habitat modification might impact the persistence of engineering species \cite{Gurney1996}, while more recent models have shown that engineering can promote invasion \cite{Cuddington2004} and impact primary productivity \cite{Wright2004}.
-On eco-evolutionary timescales, ecosystem engineering can alter the selective environment \cite{Krakauer2009,OdlingSmee2013} and ultimately lead to unexpected dynamics such as the fixation of deleterious alleles \cite{Laland1999}.
+On eco-evolutionary timescales, ecosystem engineering can alter the selective environment \cite{Krakauer2009,OdlingSmee2013} and ultimately lead to unexpected outcomes such as the fixation of deleterious alleles \cite{Laland1999}.
 On macroevolutionary timescales, there is considerable interest in understanding the role of innovation on diversification and extinction rates within and among clades \cite{Marshall2016}.
 While such innovation generally pertains to the appearance of morphological traits, environmental modifications that result from evolutionary innovations can sometimes be wide-ranging, such as the planetary-scale consequences following the evolution of multicellular cyanobacteria \cite{Schirrmeister2013}.
-Microbiota construct shared resources such as metabolites that have a significant influence on microbial communities \cite{Kallus2017}, the dynamics of which may even serve as the missing ingredient stabilizing some complex ecological systems \cite{Muscarella2017}.
+On smaller scales, microbiota construct shared resources such as metabolites that have a significant influence on microbial communities \cite{Kallus2017}, the dynamics of which may even serve as the missing ingredient stabilizing some complex ecological systems \cite{Muscarella2017}.
 
 % 
 % Recent efforts have examined engineering through the lens of niche construction \cite{Krakauer2009}, such as the construction of shared resources such as metabolite in microbiotic communities \cite{Kallus2017}.
@@ -138,34 +138,29 @@ Microbiota construct shared resources such as metabolites that have a significan
 
 Despite the relevance of ecosystem engineers to community dynamics over short and long timescales, they have been absent in models of ecological networks.
 While interactions between species and the abiotic environment have been conceptually described \cite{Olff2009,Getz2011}, to what extent these interactions serve to modify community function has not been explored.
-This theoretical gap was described by Odling-Smee et al. \cite{OdlingSmee2013}, where they describe a framework with both species and abiotic compartments included as nodes of a network, with links representing both biotic and abiotic interactions.
+This theoretical gap was addressed by Odling-Smee et al. \cite{OdlingSmee2013}, where they describe a conceptual framework with both species and abiotic compartments included as nodes of a network, with links representing both biotic and abiotic interactions.
 Importantly, they emphasize the potential eco-evolutionary consequences of prior alterations to the environment influencing an ecological system at some future state.
-Because ecological assembly is not a memory-less process, it is likely that engineers may have considerable impact on the emergence of community structure and dynamics.
+Because ecological assembly is not a memory-less process, it is likely that engineers can have considerable impact on the emergence of community structure and dynamics.
 
 %HERE WE...
-Here we model an ecological system with a network where nodes represent ecological entities, including non-engineering species, engineering species, and the effects of the latter on the environment, which we call \emph{objects}.
+Here we model an ecological system as a network where nodes represent ecological entities, including non-engineering species, engineering species, and the effects of the latter on the environment, which we call \emph{objects}.
 The links of the network that connect both species and objects represent resource (eat interactions), service (need interactions), and engineering dependencies, respectively (Fig. \ref{fig:model}; see Methods for a full description).
 Objects in our framework overlap conceptually with the `abiotic compartments' described in Odling-Smee et al. \cite{OdlingSmee2013}.
 Following Pillai et al. \cite{Pillai2011}, we do not track the abundances of entities but only track their presence or absence.
 We use this framework to explore the dynamics of ecosystem assembly, where the colonization and extinction of species within a community depends on the constraints imposed by the resource, service, and engineering dependencies.
 
-Our results offer four key insights into the roles of diverse interactions and ecosystem engineering in ecological network models.
-First, we show that ecosystem assembly of species networks in the absence of engineering reproduces many features observed in empirical systems.
-These include changes in the proportion of generalists over the course of assembly that accord with measured values, and realistic trophic levels.
+Our results offer four key insights into the roles of diverse interactions and ecosystem engineering in driving community assembly.
+First, we show that the assembly of species networks in the absence of engineering reproduces many features observed in empirical systems.
+These include changes in the proportion of generalists over the course of assembly that accord with measured values, and both maximum trophic level and trophic diversity similar to empirical observations.
 Second, we show that increasing the frequency of mutualistic interactions leads to the assembly of ecological networks that are more nested.
 However, we observe that greater mutualistic dependencies in the assembled communities also lower species' persistence.
 This suggests that while nested mutualistic networks are dynamically favored \cite{Rohr2014}, the additional inter-dependencies that define mutualisms may also result in greater species turnover and changes to community composition.
 
 %3: Engineering - moderate amounts increase extinction rates, but large amounts decrease extinction rates. The role of dependencies and redundancies
 We next explore the effects of ecosystem engineering on the dynamics of community assembly.
-Our third important result is that increasing the number of ecosystem engineers as well as the magnitude of engineering within a community has nonlinear effects on observed extinction rates.
-While we find that a low amount of engineering increases extinction rates, a high amount of engineering serves to reduce extinction rates by increasing the redundancy of engineering interactions.
-Finally, we show that inclusion of engineering modifies the effects of mutualistic interactions, and can eliminate the negative effects that mutualisms have on species' persistence.
-
-Together, the results of our model point to the importance of considering diverse interactions both between species and as mediated through changes to the environment via engineering.
-We suggest that including the effects of engineers, either explicitly as we have done here, or otherwise, is vital for understanding the inter-dependencies that define ecological systems.
-As past ecosystems have fundamentally altered the landscape on which contemporary communities interact, future ecosystems will be defined by the influence of ecosystem engineers today.
-Understanding their role is thus tantamount to understanding our own.\\
+Our third key result is that increasing the number of ecosystem engineers as well as the engineering interactions within a community has nonlinear effects on observed extinction rates.
+While we find that a low amount of engineering increases extinction rates, a high amount of engineering serves to reduce extinction rates by increasing redundant engineers.
+Finally, we show that the inclusion of engineering modifies the effects of mutualistic interactions, and can eliminate the negative effects that mutualisms have on species' persistence.\\
 % Only by understanding the effects of engineers on communities can we gain insight into 
 
 % 
@@ -194,13 +189,23 @@ Understanding their role is thus tantamount to understanding our own.\\
 \noindent \textbf{Trophic assembly without engineering} \\
 \noindent Assembly of ecological communities in the absence of engineering results in interaction networks with structures consistent with observations of empirical systems.
 % By assembling communities to a steady state from a pool of potential colonizers (see Methods), networks are generating by the 
-Assembly of communities from a source pool of potential colonizers (see Methods) follows a general pattern that results in the emergence of a steady state community.
-Following the establishment of an autotrophic base, both mixotrophs and lower trophic-level heterotrophs begin to colonize (Fig. \ref{fig:conn}a).
+Assembly of communities from a source pool of potential colonizers (see Methods) follows a general pattern that results in the emergence of a steady state community: following the establishment of an autotrophic base, mixotrophs and lower trophic-level heterotrophs comprise the initial colonizers (Fig. \ref{fig:conn}a).
 Primary extinctions occur by competitive exclusion, where a species' competitive strength is increased with its mutualistic interactions and decreased by its trophic generality (the number of prey it consumes) as well as its vulnerability (the number of predators it has).
 Secondary extinctions occur when species lose their trophic or service requirements.
 See Methods for a complete description of the assembly process due to losses from primary extinctions.
 As the colonization and extinction rates converge, the community reaches a steady state around which it oscillates stochastically (Fig. \ref{fig:conn}a).
 % As species richness increases, competitive exclusion initiates the extinction process, followed by secondary extinctions due to the loss of trophic and service requirements among species.
+
+
+\begin{figure}
+\centering
+\includegraphics[width=0.5\textwidth]{fig_model.pdf}
+\caption{
+An example of the source pool interaction matrix where $\mathcal{S} = 50$. Species and objects are aligned across the rows and columns; objects are shaded and labeled by `o' to distinguish them from species. The interaction recorded in row $i$ and column $j$ describes the directed interaction from species/object $i$ to species/object $j$. The first row/column represents the basal resource; species that assimilate the primary resource are capable of primary production. Species interact with other species and/or objects; objects only interact with their engineers by `needing' them; objects do not interact with other objects.
+}
+\label{fig:matrix}
+\end{figure}
+
 
 % 1) connectance
 As the community reaches steady state, we find that the connectance of trophic interactions ($C=L/S^2)$ follows a decay-like trajectory to values similar to -- but on average 9\% greater than -- the connectance of the source pool.
@@ -208,6 +213,23 @@ As the community reaches steady state, we find that the connectance of trophic i
 Decaying connectance has been documented in the assembly of mangrove communities \cite{Piechnik2008}, however this decay is a statistical inevitability, as a growing food web early in the assembly process inevitably has high link density (few species that are fully connected) from which it can only decline.
 That the connectance of assembled communities is greater than the source pool is due to the fact that only species connected by trophic interactions can enter the community to begin with, increasing expected link density compared to the overall pool.
 Compared to food webs constructed using the Niche model with similar species richness and connectance, our framework results in networks with roughly similar degree distributions, but with reduced means and variances (Supplementary Information: Appendix I).
+
+% 
+% \begin{figure}
+% \centering
+% \includegraphics[width=0.5\textwidth]{fig_specialization.pdf}
+% \caption{
+% The proportion of specialists as a function of assembly time, where a specialist is defined as a species with a generality index $G_i < 1$.
+% All measures of $G_i$ are scaled by the average number of links per species $L/S$, and we consider different values of $L/S$ on $G_i$:
+% Circles: $G_i^{\rr{all}}$ where $L$ accounts for all links in the food web and $S$ accounts for all species relative to each time interval in the assembly process (averaged across replicates);
+% Points: $G_i^{\rr{hetero}}$, where we consider only the links and species richness of heterotrophs, excluding autotrophs (each point shows an individual replicate);
+% Diamonds: $G_i^*$, where $L$ and $S$ are measured with respect to the communities at steady state, which is most similar to the measure used to evaluate assembling mangrove food webs (averaged across replicates).
+% }
+% \label{fig:spec}
+% \end{figure}
+
+
+
 
 %Generality
 Recent empirical work has suggested that generalist species may play an important role early in community assembly, whereas specialists tend to colonize after a diverse resource base has accumulated \cite{Piechnik2008}.
@@ -232,16 +254,6 @@ At steady state the proportion of specialists levels out at ca. 60\%, similar to
 %, all measures of $L/S$ are approximately equivalent, and
 
 
-\begin{figure}
-\centering
-\includegraphics[width=0.5\textwidth]{trophicdist_time4.pdf}
-\caption{
-The frequency distribution of trophic levels over the course of assembly taken across $10^4$ replicates. Autotrophs occupy trophic level 1.
-We set $S=200$, $p_e=0.01$, $p_n=0.002$, and $t=4000$ (see methods).
-}
-\label{fig:trophic}
-\end{figure}
-
 %trophic levels
 %Trophic Levels & degree dists
 The role of specialists early in assembly is primarily due to the accumulation of autotrophs specializing on the basal resource.
@@ -252,6 +264,20 @@ The distribution of trophic levels changes shape over the course of assembly: ea
 At steady state, we observe that intermediate trophic levels dominate, with frequencies taking on an hour-glass structure.
 Compellingly, the richness pyramids that we observe at steady state follow closely the distribution observed for empirical food webs and are less top-heavy than those produced by static food web models \cite{Turney2016}.\\
 
+
+\begin{figure}
+\centering
+\includegraphics[width=0.4\textwidth]{fig_trophic.pdf}
+\caption{
+a) The frequency distribution of trophic levels over the course of assembly taken across $10^4$ replicates. Autotrophs occupy trophic level 1.
+We set $S=200$, $p_e=0.01$, $p_n=0.002$, and $t=4000$ (see methods).
+b) The proportion of specialists as a function of assembly time, where a specialist is defined as a species with a generality index $G_i < 1$.
+All measures of $G_i$ are scaled by the average number of links per species where $L$ and $S$ are measured with respect to the communities at steady state, which is most similar to the measure used to evaluate assembling mangrove food webs (averaged across replicates).
+}
+\label{fig:trophic}
+\end{figure}
+
+
 % We emphasize that these structures are diversity-weighted rather than biomass or abundance-weighted as is often the case \cite{Trebilco2013,Gibert2019}.
 % Trophic levels higher than 7 do occur, but are rare.
 
@@ -260,10 +286,10 @@ Compellingly, the richness pyramids that we observe at steady state follow close
 %Origin of ecological structure: Stokstad
 
 
-
 %Drossel
 % [RELATE TO TROPHIC ASSEMBLY MODELS]\\
 %Hourglass food webs are predicted for systems where body size increases with trophic position (marine systems)
+
 
 
 % 4) Increased mutualisms => greater nestedness
@@ -279,9 +305,9 @@ Increasing service dependencies (need interactions; see Fig. \ref{fig:model}) le
 These interactions alter two key dynamics in our model: more service interactions \emph{i}) increases a species' competition strength, which will lower its probability of primary extinction, while also \emph{ii}) increasing inter-species dependencies.
 As such, elimination of a species that provides a service will result in the secondary extinction of the species that receives that service.
 While mutualisms must carry with them fitness advantages in order to evolve, the latter dynamic highlights the potential risk associated with losing mutualistic partners \cite{Bond1994,Colwell2012}.
-The precarious balance that mutualists experience by way of their dependencies may have large implications for the future of global biodiversity \cite{Dunn2009}.
+Indeed, the precarious balance that mutualists must maintain by way of their dependencies may have large implications for the future of global biodiversity \cite{Dunn2009}.
 
-We find that as we increase the frequency mutualistic interactions, the assembled community at steady state becomes significantly more nested (Fig. \ref{fig:nest}).
+We find that as we increase the frequency of mutualistic interactions, the assembled community at steady state becomes more nested (Fig. \ref{fig:nest}).
 % That the absolute values of nestedness are low compared to those measured for empirical mutualistic networks is unsurprising: observations of mutualistic interactions are generally for bipartite networks and isolated to specific systems (e.g. ant-plant mutualisms).
 % Here the NODF metric is taken across both eat and need interactions across the entire assembled community.
 In this case, nestedness is both the outcome of the assembly process as well as a stabilizing structure.
@@ -305,7 +331,7 @@ Relaxing these assumptions permits mutualism plasticity, long considered to be a
 
 \begin{figure}
 \centering
-\includegraphics[width=0.5\textwidth]{mean_nested.pdf}
+\includegraphics[width=0.5\textwidth]{fig_nested.pdf}
 \caption{
 Nestedness (measured as NODF) as a function of the frequency of need interactions in the species pool interaction matrix $\bm P$.
 }
@@ -313,19 +339,32 @@ Nestedness (measured as NODF) as a function of the frequency of need interaction
 \end{figure}
 
 \noindent \textbf{Community assembly with ecosystem engineers} \\
-We next introduce ecosystem engineering by allowing species to produce abiotic objects (as nodes) that can serve to fulfill resource or service requirements for other species.
-The parameter $\eta$ defines the mean number of objects produced by each species, which is drawn from a Poisson distribution (see Methods for details).
-Increasing the frequency of engineering interactions both increases the number of engineering species (those species that make $\geq 1$ object), as well as increases the number of objects made per species.
+We next introduce ecosystem engineering by allowing species to produce abiotic objects as addition nodes in the ecological network.
+These object nodes produced by engineers can serve to fulfill resource or service requirements for other species.
+The parameter $\eta$ defines the mean number of objects produced by each species, drawn from a Poisson distribution (see Methods for details).
+Increasing the frequency of engineering interactions both increases the number of engineering species (those species that make $\geq 1$ object) and the number of objects made per species.
 There are two characteristics of engineering that have particular relevance for community assembly:
-\emph{i}) more than one engineer can produce the same object, such that redundancy in object production increases nearly monotonically with $\eta$;
-\emph{ii}) objects can linger in the community even after the species that produces it has been excluded.
+\emph{i}) objects can linger in the community even after the species that produces it has been excluded;
+\emph{ii}) more than one engineer can produce the same object, such that redundancy in object production increases nearly monotonically with $\eta$.
 
 
-While the importance of engineered modifications having timescales larger than the engineering species has been emphasized previously \cite{Hastings2007}, redundancy in those modifications has not.
-We argue that redundancy may be an important component of highly engineered systems, and particularly relevant when there exists a positive feedback between the effects of engineers on engineers themselves \cite{Cuddington2004}.
-For example, over long timescales positive feedbacks likely facilitated the global changes induced by cyanobacteria in the Proterozoic \cite{Schirrmeister2013}, and -- more locally -- the facilitation of sessile epifauna on shelled gravels in shallow marine environments \cite{Kidwell1986}.
-The vast majority of examples of ecosystem engineering in contemporary ecosystems focus on single taxa, such that the concept of redundancy is moot.
-However in microbial communities, redundancy plays an important role via the production of shared metabolitic resources \cite{Kallus2017}, and it is likely that engineering redundancy is also important in macrobial systems.
+
+While the importance of engineered modifications having timescales longer than the engineering species has been emphasized previously \cite{Hastings2007}, redundancy in those modifications has not \cite{Lawton1994}.
+We argue that redundancy may be an important component of highly engineered systems, and particularly relevant when there exists a positive feedback between the effects of engineers on their success \cite{Cuddington2004}.
+Adaptive radiation may lead to increased engineering redundancy over evolutionary time, and this may feed back to influence the radiation.
+The vast majority of contemporary ecosystem engineering case studies focus on single taxa, such that redundant engineers appear rare \cite{Lawton1994}.
+If, for example, we consider longer timescales these dynamics likely facilitated the global changes induced by cyanobacteria in the Proterozoic \cite{Schirrmeister2013}.
+On shorter timescales, diverse sessile epifauna on shelled gravels in shallow marine environments are facilitated by the engineering efforts of their ancestors \cite{Kidwell1986}.
+In the microbiome, redundant engineering may be very common due to the influence of horizontal gene transfer in structuring metabolite production \cite{Polz2013}.
+In these systems, redundancy in producing these shared metabolitic resources may play a key role in community structure and dynamics \cite{Kallus2017,Muscarella2017}.
+
+%Engineering can produce positive feedback dynamics on engineers
+%Positive feedback over evolutionary time => speciation/radiation
+%Lead to engineering redundancies
+%This may be rare as Lawton suggests, but appears to be quite common in the microbial world.
+%In microbiomes, horizontal gene transfer can produce redundant engineering without radiations
+
+%Lawton 1994: there may be sometimes redundancy in ecosystem engineers... (uses beaver to suggest that there is not)
 
 We find that increasing the frequency of engineering has significant consequences for community stability.
 
@@ -336,6 +375,12 @@ We find that increasing the frequency of engineering has significant consequence
 
 %EVOLUTION: CITE LOEUILLE, Fussmann, Allhoff 2013,2015; Brannstrom
 
+
+%Closing
+Together, the results of our model point to the importance of considering diverse interactions both between species and as mediated through changes to the environment via engineering.
+We suggest that including the effects of engineers, either explicitly as we have done here, or otherwise, is vital for understanding the inter-dependencies that define ecological systems.
+As past ecosystems have fundamentally altered the landscape on which contemporary communities interact, future ecosystems will be defined by the influence of ecosystem engineers today.
+Understanding their role is thus tantamount to understanding our own.\\
 
 
 % \begin{matmethods}
@@ -424,20 +469,6 @@ $\mathcal{O}$ & Number of objects & dyn.\\
 
 
 
-\begin{figure}
-\centering
-\includegraphics[width=0.5\textwidth]{specialization.pdf}
-\caption{
-The proportion of specialists as a function of assembly time, where a specialist is defined as a species with a generality index $G_i < 1$.
-All measures of $G_i$ are scaled by the average number of links per species $L/S$, and we consider different values of $L/S$ on $G_i$:
-Circles: $G_i^{\rr{all}}$ where $L$ accounts for all links in the food web and $S$ accounts for all species relative to each time interval in the assembly process (averaged across replicates);
-Points: $G_i^{\rr{hetero}}$, where we consider only the links and species richness of heterotrophs, excluding autotrophs (each point shows an individual replicate);
-Diamonds: $G_i^*$, where $L$ and $S$ are measured with respect to the communities at steady state, which is most similar to the measure used to evaluate assembling mangrove food webs (averaged across replicates).
-}
-\label{fig:spec}
-\end{figure}
-
-
 
 %
 % \textbf{Building the source pool} The source pool interaction matrix $\bm P$ is generated by first setting the number of species in the pool $\mathcal{S}_{\bm P}$ and determining the number of objects $\mathcal{O}_{\bm P}$ that are made by ecosystem engineers.
@@ -479,15 +510,6 @@ Diamonds: $G_i^*$, where $L$ and $S$ are measured with respect to the communitie
 % Such alterations are to be considered in the abstract, but in empirical systems could represent an introduced compound, metabolite, or an alteration to the habitat/environment such as, for example, a burrow.
 %
 
-
-\begin{figure}
-\centering
-\includegraphics[width=0.45\textwidth]{matrix.pdf}
-\caption{
-An example of the source pool interaction matrix where $\mathcal{S} = 50$. Species and objects are aligned across the rows and columns; objects are shaded and labeled by `o' to distinguish them from species. The interaction recorded in row $i$ and column $j$ describes the directed interaction from species/object $i$ to species/object $j$. The first row/column represents the basal resource; species that assimilate the primary resource are capable of primary production. Species interact with other species and/or objects; objects only interact with their engineers by `needing' them; objects do not interact with other objects.
-}
-\label{fig:matrix}
-\end{figure}
 
 
 %

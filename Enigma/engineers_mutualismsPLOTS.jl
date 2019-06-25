@@ -146,10 +146,12 @@ filename = "figures/engmut/extrate_engmut.pdf";
 namespace = smartpath(filename);
 R"""
 library(RColorBrewer)
+library(fields)
 pal = brewer.pal(11,'Spectral')
 pdf($namespace,width=5,height=5)
-image(x=$nvec_scaled,y=$lambdavec,z=$mextrate_surf,col=pal,xlab='Frequency of mutualisms',ylab='Mean number of objects/species')
-contour(x=$nvec_scaled,y=$lambdavec,z=$mextrate_surf, add = TRUE, drawlabels = TRUE)
+image.plot(y=$nvec_scaled,x=$lambdavec,z=$(transpose(mextrate_surf)),col=pal,ylab='Frequency of mutualisms',xlab='Mean number of objects/species',nlevel=11)
+# contour(y=$nvec_scaled,x=$lambdavec,z=$(transpose(mextrate_surf)), add = TRUE, drawlabels = TRUE)
+
 dev.off()
 """
 
@@ -162,8 +164,33 @@ R"""
 library(RColorBrewer)
 pal = brewer.pal(9,'YlGnBu')
 pdf($namespace,width=5,height=5)
-image(x=$nvec_scaled,y=$lambdavec,z=$mpersist_surf,col=pal,xlab='Frequency of mutualisms',ylab='Mean number of objects/species')
-contour(x=$nvec_scaled,y=$lambdavec,z=$mpersist_surf, add = TRUE, drawlabels = TRUE)
+image.plot(y=$nvec_scaled,x=$lambdavec,z=$(transpose(mpersist_surf)),col=pal,ylab='Frequency of mutualisms',xlab='Mean number of objects/species',nlevel=11)
+# contour(x=$nvec_scaled,y=$lambdavec,z=$mpersist_surf, add = TRUE, drawlabels = TRUE)
 dev.off()
 """
 
+
+filename = "../manuscript/fig_engineers.pdf";
+namespace = smartpath(filename);
+R"""
+library(RColorBrewer)
+library(fields)
+pdf($namespace,width=5,height=5)
+layout(matrix(c(1,2), 2, 1, byrow = TRUE), 
+   widths=c(1,1), heights=c(0.5,0.5))
+par(oma = c(0.5, 1, 1, 1), mar = c(3, 4, 0, 1))
+pal = brewer.pal(11,'Spectral')
+image.plot(y=$nvec_scaled,x=$lambdavec,z=$(transpose(mextrate_surf)),col=pal,ylab='',xlab='',nlevel=11,axes=FALSE)
+axis(2,at=seq(0,0.002,by=0.001),labels=TRUE,tck=-0.015,mgp=c(0.5,0.5,0))
+axis(1,at=seq(0,2,by=0.5),labels=TRUE,tck=-0.015,mgp=c(0.5,0.5,0))
+title(ylab='Frequency of service', line=2.0, cex.lab=1.)
+title(xlab='Mean objects/species', line=1.5, cex.lab=1.)
+
+pal = brewer.pal(9,'YlGnBu')
+image.plot(y=$nvec_scaled,x=$lambdavec,z=$(transpose(mpersist_surf)),col=pal,ylab='',xlab='',nlevel=11,axes=FALSE)
+axis(2,at=seq(0,0.002,by=0.001),labels=TRUE,tck=-0.015,mgp=c(0.5,0.5,0))
+axis(1,at=seq(0,2,by=0.5),labels=TRUE,tck=-0.015,mgp=c(0.5,0.5,0))
+title(ylab='Frequency of service', line=2.0, cex.lab=1.)
+title(xlab='Mean objects/species', line=1.5, cex.lab=1.)
+dev.off()
+"""

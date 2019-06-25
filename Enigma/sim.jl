@@ -114,8 +114,8 @@ trophic2 = trophic[keepnodes];
 coords <- cbind(runif(length(keepnodes)),trophic2);
 coords[basal_pos,1] <- 0.5
 fw_g = graph.adjacency($(adjmatrix[keepnodes,keepnodes]'))
-plot(fw_g,layout=layout_(fw_g,nicely()),vertex.size=4,arrow.size=0.25)
-# plot(fw_g,layout=coords,vertex.size=5,edge.arrow.size=0.25,edge.color='#6495ED',vertex.label=NA,vertex.frame.color=NA, vertex.color=c(pal[1],rep(pal[2],vcount(fw_g)-1)))
+# plot(fw_g,layout=layout_(fw_g,nicely()),vertex.size=4,arrow.size=0.25)
+plot(fw_g,layout=coords,vertex.size=5,edge.arrow.size=0.25,edge.color='#6495ED',vertex.label=NA,vertex.frame.color=NA, vertex.color=c(pal[1],rep(pal[2],vcount(fw_g)-1)))
 #main=ecount(fw_g)/$(size(adjmatrix)[1])^2,
 fw_ind <- graph.adjacency($(indmatrix[keepnodes,keepnodes]'));
 #plot(fw_ind,layout=coords,vertex.size=5,edge.arrow.size=0.25,edge.color='red',vertex.label=NA,vertex.frame.color=NA, vertex.color=c(pal[1],rep(pal[2],vcount(fw_g)-1)),add=TRUE)

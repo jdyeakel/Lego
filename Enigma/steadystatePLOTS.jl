@@ -484,65 +484,101 @@ R"dev.off()"
 
 #Real degreea and trophic distribution
 
+##################
+#USE THESE 6/24/2019
+##################
+
 bins = [5;10;25;50;100;200;500;1000;2000;4000;];
 # bins = [5;50;100;4000;];
 seq2 = indexin(bins,seq);
-global tmaxdegree = zeros(Int64,length(seq2));
-global tmaxtrophic = zeros(Int64,length(seq2));
-freqdegreereps = Array{Array}(undef,reps);
-freqtrophicreps = Array{Array}(undef,reps);
+tmaxdegree = zeros(Int64,length(seq2));
+tmaxtrophic = zeros(Int64,length(seq2));
+maxdegree = Array{Int64}(undef,reps,length(seq2));
+maxtrophic = Array{Int64}(undef,reps,length(seq2));
 for r=1:reps
-    global freqdegreetime = Array{Array}(undef,length(seq2));
-    global freqtrophictime = Array{Array}(undef,length(seq2));
-    global tic = 0;
-
-    for t=seq2
-        global tic += 1;
-        alldegrees = degrees[r,t,:][degrees[r,t,:] .> 0];
-        alltrophic = trophic[r,t,:][trophic[r,t,:] .>= 0.9];
-        maxdegree = maximum(alldegrees);
-        maxtrophic = round(Int64,maximum(alltrophic))+1;
-        freqdegree = Array{Float64}(undef,maxdegree);
-        freqtrophic = Array{Float64}(undef,maxtrophic+1);
-        for i=1:maxdegree
-            freqdegree[i] = length(findall(x->x==i,alldegrees))/length(alldegrees);
+    freqdegreetime = Array{Array}(undef,length(seq2));
+    freqtrophictime = Array{Array}(undef,length(seq2));
+    let tic = 0
+        for t=seq2
+            tic += 1;
+            alldegrees = degrees[r,t,:][degrees[r,t,:] .> 0];
+            alltrophic = trophic[r,t,:][trophic[r,t,:] .>= 0.9];
+            maxdegree[r,tic] = maximum(alldegrees);
+            maxtrophic[r,tic] = round(Int64,maximum(alltrophic))+1;
+            freqdegree = Array{Float64}(undef,maxdegree[r,tic]);
+            freqtrophic = Array{Float64}(undef,maxtrophic[r,tic]+1);
+            for i=1:maxdegree[r,tic]
+                freqdegree[i] = length(findall(x->x==i,alldegrees))/length(alldegrees);
+            end
+            for i=0:maxtrophic[r,tic]
+                freqtrophic[i+1] = length(findall(x->(x>=i && x<i+1),alltrophic))/length(alltrophic);
+            end
+            freqdegreetime[tic] = freqdegree;
+            freqtrophictime[tic] = freqtrophic;
+            tmaxdegree[tic] = maximum([maxdegree[r,tic],tmaxdegree[tic]])
+            tmaxtrophic[tic] = maximum([maxtrophic[r,tic],tmaxtrophic[tic]])
         end
-        for i=0:maxtrophic
-            freqtrophic[i+1] = length(findall(x->(x>=i && x<i+1),alltrophic))/length(alltrophic);
-        end
-        freqdegreetime[tic] = freqdegree;
-        freqtrophictime[tic] = freqtrophic;
-        tmaxdegree[tic] = maximum([maxdegree,tmaxdegree[tic]])
-        tmaxtrophic[tic] = maximum([maxtrophic,tmaxtrophic[tic]])
     end
     freqdegreereps[r] = freqdegreetime;
     freqtrophicreps[r] = freqtrophictime;
 end
-maxdegree = maximum(tmaxdegree);
-maxtrophic = maximum(tmaxtrophic)+1;
+#lets ignore results with >20 trophic levels!
+toignore = findall(!iszero,vec(sum(maxtrophic .> 20,dims=2)));
+newreps = setdiff(collect(1:reps),toignore);
+
+
+maxdegreeall = maximum(tmaxdegree);
+# maxtrophic = maximum(tmaxtrophic)+1;
+maxtrophicall = 21;
 #Reorganizing
-degreedistreps = zeros(Float64,reps,length(seq2),maxdegree);
-trophicdistreps = zeros(Float64,reps,length(seq2),maxtrophic);
-for r=1:reps
-    for t=1:length(seq2)
-        degreedistreps[r,t,1:length(freqdegreereps[r][t])] = freqdegreereps[r][t];
-        trophicdistreps[r,t,1:length(freqtrophicreps[r][t])] = freqtrophicreps[r][t];
+degreedistreps = zeros(Float64,length(newreps),length(seq2),maxdegreeall);
+trophicdistreps = zeros(Float64,length(newreps),length(seq2),maxtrophicall);
+let rtic=0
+    for r=newreps
+        rtic += 1;
+        for t=1:length(seq2)
+            degreedistreps[rtic,t,1:length(freqdegreereps[r][t])] = freqdegreereps[r][t];
+            trophicdistreps[rtic,t,1:length(freqtrophicreps[r][t])] = freqtrophicreps[r][t];
+        end
     end
 end
 #means over reps
-meandegreedist = Array{Float64}(undef,length(seq2),maxdegree);
-meantrophicdist = Array{Float64}(undef,length(seq2),maxtrophic);
+meandegreedist = Array{Float64}(undef,length(seq2),maxdegreeall);
+meantrophicdist = Array{Float64}(undef,length(seq2),maxtrophicall);
 for t=1:length(seq2)
     meandegreedist[t,:] = mean(degreedistreps[:,t,:],dims=1);
     meantrophicdist[t,:] = mean(trophicdistreps[:,t,:],dims=1);
 end
 
 
-filename = "figures/yog/degreedist_time3.pdf";
+filename = "figures/yog/degreedist_time3trimunlogged.pdf";
 namespace = smartpath(filename);
 R"""
 library(RColorBrewer)
-pal = brewer.pal($(length(seq2)),'Spectral')
+pal = colorRampPalette(brewer.pal(11,"Spectral"))(length($seq2))
+pdf($namespace,height=5,width=6)
+plot(seq(1,length($(meandegreedist[1,:]))),$(meandegreedist[1,:]),type='l',xlim=c(1,10),ylim=c(0.000001,1),col=pal[1],xlab='Species degree',ylab='Probability')
+points(seq(1,length($(meandegreedist[1,:]))),$(meandegreedist[1,:]),pch=21,bg=pal[1],col='black')
+"""
+for i=2:length(seq2)
+    R"""
+    lines(seq(1,length($(meandegreedist[i,:]))),$(meandegreedist[i,:]),col=pal[$i])
+    points(seq(1,length($(meandegreedist[i,:]))),$(meandegreedist[i,:]),pch=21,bg=pal[$i],col='black')
+    """
+end
+R"""
+legend(x=8,y=1,legend=$(seq[seq2]),col=pal,cex=0.8,pch=16,bty='n',title='Assembly time')
+dev.off()
+"""
+
+
+
+
+filename = "figures/yog/degreedist_time3trim.pdf";
+namespace = smartpath(filename);
+R"""
+library(RColorBrewer)
+pal = colorRampPalette(brewer.pal(11,"Spectral"))(length($seq2))
 pdf($namespace,height=5,width=6)
 plot(seq(1,length($(meandegreedist[1,:]))),$(meandegreedist[1,:]),type='l',xlim=c(1,10),ylim=c(0.000001,1),col=pal[1],xlab='Species degree',ylab='Probability',log='y')
 points(seq(1,length($(meandegreedist[1,:]))),$(meandegreedist[1,:]),pch=21,bg=pal[1],col='black')
@@ -554,7 +590,7 @@ for i=2:length(seq2)
     """
 end
 R"""
-legend(x=8,y=1,legend=$(seq[seq2]),col=colorRampPalette(brewer.pal(9,"Spectral"))(9),cex=0.8,pch=16,bty='n',title='Assembly time')
+legend(x=8,y=1,legend=$(seq[seq2]),col=pal,cex=0.8,pch=16,bty='n',title='Assembly time')
 dev.off()
 """
 
@@ -582,14 +618,16 @@ dev.off()
 
 
 
-filename = "figures/yog/trophicdist_time4.pdf";
+filename = "../manuscript/fig_trophic.pdf";
 namespace = smartpath(filename);
 R"""
 library(RColorBrewer)
 pal = colorRampPalette(brewer.pal(11,"Spectral"))(length($seq2))
 pdf($namespace,height=5,width=6)
-plot($(meantrophicdist[1,:]),seq(1,length($(meantrophicdist[1,:]))),type='l',xlim=c(0,0.8),ylim=c(1,12),col=pal[1],xlab='Frequency',ylab='Trophic level')
-points($(meantrophicdist[1,:]),seq(1,length($(meantrophicdist[1,:]))),pch=21,bg=pal[1],col='black')
+fulldist = $(meantrophicdist[1,:]);
+trimdist = fulldist[which(fulldist>0.005)];
+plot(trimdist,seq(1,length(trimdist)),type='l',xlim=c(0,0.6),ylim=c(1,12),col=pal[1],xlab='Frequency',ylab='Trophic level')
+points(trimdist,seq(1,length(trimdist)),pch=21,bg=pal[1],col='black')
 """
 for i=1:12
     R"""
@@ -598,12 +636,14 @@ for i=1:12
 end
 for i=1:length(seq2)
     R"""
-    lines($(meantrophicdist[i,:]),seq(1,length($(meantrophicdist[i,:]))),col=pal[$i])
-    points($(meantrophicdist[i,:]),seq(1,length($(meantrophicdist[i,:]))),pch=21,bg=pal[$i],col='black')
+    fulldist = $(meantrophicdist[i,:]);
+    trimdist = fulldist[which(fulldist>0.005)];
+    lines(trimdist,seq(1,length(trimdist)),col=pal[$i])
+    points(trimdist,seq(1,length(trimdist)),pch=21,bg=pal[$i],col='black')
     """
 end
 R"""
-legend(x=0.65,y=12,legend=$(seq[seq2]),col=pal,cex=0.8,pch=16,bty='n',title='Assembly time')
+legend(x=0.45,y=12,legend=$(seq[seq2]),col=pal,cex=0.8,pch=16,bty='n',title='Assembly time')
 dev.off()
 """
 
@@ -730,6 +770,96 @@ points($(seq[seq2]),1-$mrGavgc,pch=23,col='black',bg=pal,cex=1.5)
 # legend(x=1.8,y=4.05,legend=$(seq[seq2]),col=colorRampPalette(brewer.pal(9,"Spectral"))(9),cex=0.7,pch=16,bty='n',title='Assembly time')
 dev.off()
 """
+
+
+#######################
+# FOR MANUSCRIPT: top panel specialization; bottom panel trophic
+#########################################
+
+
+
+filename = "../manuscript/fig_trophic.pdf";
+namespace = smartpath(filename);
+R"""
+library(RColorBrewer)
+pdf($namespace,height=8,width=5)
+layout(matrix(c(1,2), 2, 1, byrow = TRUE), 
+   widths=c(1,1), heights=c(0.3,0.5))
+par(oma = c(0.5, 1, 1, 1), mar = c(3, 4, 0, 1))
+#SPECIALIZATION
+pal = brewer.pal($(length(seq2)),'Spectral')
+timelabels = parse(text=c("5","10","25","50",paste("10","^2"),paste("2.10","^2"),paste("5*10","^2"),paste("10","^3"),paste("2*10","^3"),paste("4*10","^3")))
+# par(mfrow=c(2,1))
+plot($(seq[seq2]),1 - $mrGavgc, xlim=c(5,4000), ylim=c(0,1), xlab='', ylab='', log='x', cex.axis=0.85, pch=23, col='black', bg=pal, cex=1.5,axes=FALSE)
+axis(2,at=seq(0,1,by=0.2),labels=TRUE,tck=-0.015,mgp=c(0.5,0.5,0))
+axis(1,at=$(seq[seq2]),labels=TRUE,tck=-0.015,mgp=c(0.5,0.5,0))
+title(ylab='Proportion specialists', line=2.5, cex.lab=1.2)
+title(xlab='Assembly time', line=2.0, cex.lab=1.2)
+"""
+for i=1:length(seq2)
+    R"""
+    propspec = 1-($(propGavgc[:,i]))
+    propspectrim = propspec[which(propspec > 0)]
+    if (length(propspectrim)>0) {
+        points(jitter(rep($(seq[seq2[i]]),length(propspectrim))),propspectrim,pch='.',cex=3,col=pal[$i])
+    }
+    """
+end
+R"""
+lines($(seq[seq2]),1-$mrGavgc,lwd=2)
+points($(seq[seq2]),1-$mrGavgc,pch=23,col='black',bg=pal,cex=1.5)
+
+#TROPHIC
+
+pal = colorRampPalette(brewer.pal(11,"Spectral"))(length($seq2))
+fulldist = $(meantrophicdist[1,:]);
+trimdist = fulldist[which(fulldist>0.005)];
+plot(trimdist,seq(1,length(trimdist)),type='l',xlim=c(0,0.6),ylim=c(1,12),col=pal[1],xlab='',ylab='',axes=FALSE)
+axis(2,at=seq(1:12),labels=TRUE,tck=-0.015,mgp=c(0.5,0.5,0))
+axis(1,at=seq(0:0.6,by=0.2),labels=TRUE,tck=-0.015,mgp=c(0.5,0.5,0))
+title(ylab='Trophic level', line=2.5, cex.lab=1.2)
+title(xlab='Frequency', line=2.0, cex.lab=1.2)
+points(trimdist,seq(1,length(trimdist)),pch=21,bg=pal[1],col='black')
+"""
+for i=1:12
+    R"""
+    rect(0,$i-0.5,$(meantrophicdist[length(seq2),i]),$i+0.5,col=paste(pal[length($seq2)],50,sep=''),border=NA)
+    """
+end
+for i=1:length(seq2)
+    R"""
+    fulldist = $(meantrophicdist[i,:]);
+    trimdist = fulldist[which(fulldist>0.005)];
+    lines(trimdist,seq(1,length(trimdist)),col=pal[$i])
+    points(trimdist,seq(1,length(trimdist)),pch=21,bg=pal[$i],col='black')
+    """
+end
+R"""
+legend(x=0.4,y=12,legend=$(seq[seq2]),col=pal,cex=1,pch=16,bty='n',title='Assembly time')
+
+dev.off()
+"""
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 filename = "figures/yog/specialization2.pdf"
@@ -944,7 +1074,7 @@ coords[basal_pos,1] <- 0.5
 fw_g = graph.adjacency($(adjmatrix[keepnodes,keepnodes]'))
 plot(fw_g,layout=coords,vertex.size=5,edge.arrow.size=0.25,edge.color='#6495ED',vertex.label=NA,vertex.frame.color=NA, vertex.color=c(pal[1],rep(pal[2],vcount(fw_g)-1)),main='Spec') 
 #main=ecount(fw_g)/$(size(adjmatrix)[1])^2,
-fw_ind <- graph.adjacency($(indmatrix[keepnodes,keepnodes]'));
+fw_ind <- graph.adjacency($(transpose(indmatrix[keepnodes,keepnodes])));
 #plot(fw_ind,layout=coords,vertex.size=5,edge.arrow.size=0.25,edge.color='red',vertex.label=NA,vertex.frame.color=NA, vertex.color=c(pal[1],rep(pal[2],vcount(fw_g)-1)),add=TRUE)
 dev.off()
 """
@@ -1295,3 +1425,5 @@ polygon(x=c($propss,rev($propss)),y=c(($mpc-$sdpc)/$S,rev(($mpc+$sdpc)/$S)),col=
 lines($propss,$mpc/$S,col=pal[1],lwd=3)
 dev.off()
 """
+
+
