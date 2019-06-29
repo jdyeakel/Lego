@@ -1,46 +1,46 @@
-This is BibTeX, Version 0.99d (TeX Live 2017/Debian)
-Capacity: max_strings=100000, hash_size=100000, hash_prime=85009
+This is BibTeX, Version 0.99d (TeX Live 2016)
+Capacity: max_strings=35307, hash_size=35307, hash_prime=30011
 The top-level auxiliary file: enigma_manv5.aux
 The style file: pnas-new.bst
 Database file #1: aabib.bib
-You've used 55 entries,
+You've used 62 entries,
             1837 wiz_defined-function locations,
-            878 strings with 14615 characters,
-and the built_in function-call counts, 13481 in all, are:
-= -- 1142
-> -- 638
+            925 strings with 15722 characters,
+and the built_in function-call counts, 15047 in all, are:
+= -- 1274
+> -- 695
 < -- 1
-+ -- 191
-- -- 136
-* -- 1218
-:= -- 2011
-add.period$ -- 112
-call.type$ -- 55
-change.case$ -- 53
++ -- 210
+- -- 148
+* -- 1364
+:= -- 2246
+add.period$ -- 126
+call.type$ -- 62
+change.case$ -- 60
 chr.to.int$ -- 0
-cite$ -- 55
-duplicate$ -- 562
-empty$ -- 1297
-format.name$ -- 136
-if$ -- 2915
+cite$ -- 62
+duplicate$ -- 632
+empty$ -- 1458
+format.name$ -- 148
+if$ -- 3252
 int.to.chr$ -- 0
-int.to.str$ -- 55
-missing$ -- 57
-newline$ -- 225
-num.names$ -- 55
-pop$ -- 72
+int.to.str$ -- 62
+missing$ -- 64
+newline$ -- 253
+num.names$ -- 62
+pop$ -- 79
 preamble$ -- 1
 purify$ -- 0
 quote$ -- 0
-skip$ -- 304
+skip$ -- 336
 stack$ -- 0
-substring$ -- 1322
-swap$ -- 125
+substring$ -- 1477
+swap$ -- 139
 text.length$ -- 1
 text.prefix$ -- 0
 top$ -- 0
 type$ -- 0
 warning$ -- 0
-while$ -- 134
-width$ -- 57
-write$ -- 551
+while$ -- 150
+width$ -- 64
+write$ -- 621

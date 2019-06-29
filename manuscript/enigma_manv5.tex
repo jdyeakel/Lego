@@ -74,7 +74,7 @@ Here
 % Keywords are not mandatory, but authors are strongly encouraged to provide them. If provided, please include two to five keywords, separated by the pipe symbol, e.g:
 \keywords{Ecosystem assembly $|$ Ecological networks $|$ Colonization $|$ Extinction $|$ Ecosystem engineering}
 \begin{abstract}
-In this paper we investigate the effects of heterogeneity in food available on the survival times of foraging individuals, using a simple model to incorporate the basic elements of time-stationary foraging process.
+Some cool shit.
 \end{abstract}
 \dates{This manuscript was compiled on \today}
 \doi{\url{www.pnas.org/cgi/doi/10.1073/pnas.XXXXXXXXXX}}
@@ -111,11 +111,13 @@ This asymmetry is generally encoded into the dynamics, rather than the network s
 %Ecosystem engineering
 Diverse interactions occur not only between species, but indirectly through the effects species have on their environment \cite{Jones1994,Olff2009,OdlingSmee2013}.
 Species that alter the environment on timescales longer than themselves are known as ecosystem engineers \cite{Hastings2007}.
-Ecosystem engineers have played an out-sized role in the evolution of life on Earth: for example, the emergence of multicellular cyanobacteria fundamentally altered the atmosphere during the Great Oxidation Event of the Proterozoic roughly 2.5 Byrs BP \cite{Schirrmeister2013}, paving the way for the invasion of plants on land.
-In the oceans, it is thought that rRNA and protein biogenesis of aquatic photoautotrophs drove the nitrogen:phosphorous ratio (the Redfield Ratio) to ca. 16:1, matching that of plankton \cite{Loladze2011}.
 In contemporary systems, ecosystem engineers are relatively common and can alter the landscape on which ecological interactions occur \cite{Wright2006}.
-On a local scale, elephants root out large saplings and small trees, enabling the formation and maintenance of grasslands \cite{Haynes2012} and creating habitat for smaller vertebrates \cite{Pringle2008}.
-Burrowing rodents create shelter and aerate the soil, promoting primary production \cite{Reichman2002}, while leaf-cutter ants alter microclimates, influencing seedling survival and plant growth \cite{Meyer2011}.
+For example, elephants root out large saplings and small trees, enabling the formation and maintenance of grasslands \cite{Haynes2012} and creating habitat for smaller vertebrates \cite{Pringle2008}.
+Burrowing rodents create shelter and aerate the soil, promoting primary production \cite{Reichman2002}, salmon and aquatic invertebrates create freshwater habitats by changing stream morphology \cite{Moore2006}, and leaf-cutter ants alter microclimates, influencing seedling survival and plant growth \cite{Meyer2011}.
+
+Ecosystem engineering not only has large effects on communities within ecological timescales, but has profoundly influenced the evolution of life on Earth.
+For example, the emergence of multicellular cyanobacteria fundamentally altered the atmosphere during the Great Oxidation Event of the Proterozoic roughly 2.5 Byrs BP \cite{Schirrmeister2013}, paving the way for the invasion of plants on land.
+In the oceans, it is thought that rRNA and protein biogenesis of aquatic photoautotrophs drove the nitrogen:phosphorous ratio (the Redfield Ratio) to ca. 16:1, matching that of plankton \cite{Loladze2011}.
 While local habitats can be significantly impacted by single engineering species, larger scale effects are generally modified by diverse engineering clades.
 % These example describe indirect interactions between ecosystem engineers and species that rely on their engineering, through an environmental intermediary.
 % By way of their indirectness, these interactions are difficult to document.
@@ -124,7 +126,7 @@ While local habitats can be significantly impacted by single engineering species
 
 
 %Theory
-Theoretical models exploring the effects of ecosystem engineering are relatively few, but have covered important ground \cite{Hastings2007,OdlingSmee2013}.
+[Might significantly reduce this section] Theoretical models exploring the effects of ecosystem engineering are relatively few, but have covered important ground \cite{Hastings2007,OdlingSmee2013}.
 Initial efforts focused on understanding how habitat modification might impact the persistence of engineering species \cite{Gurney1996}, while more recent models have shown that engineering can promote invasion \cite{Cuddington2004} and impact primary productivity \cite{Wright2004}.
 On eco-evolutionary timescales, ecosystem engineering can alter the selective environment \cite{Krakauer2009,OdlingSmee2013} and ultimately lead to unexpected outcomes such as the fixation of deleterious alleles \cite{Laland1999}.
 On macroevolutionary timescales, there is considerable interest in understanding the role of innovation on diversification and extinction rates within and among clades \cite{Marshall2016}.
@@ -151,15 +153,15 @@ We use this framework to explore the dynamics of ecosystem assembly, where the c
 
 Our results offer four key insights into the roles of diverse interactions and ecosystem engineering in driving community assembly.
 First, we show that the assembly of species networks in the absence of engineering reproduces many features observed in empirical systems.
-These include changes in the proportion of generalists over the course of assembly that accord with measured values, and both maximum trophic level and trophic diversity similar to empirical observations.
-Second, we show that increasing the frequency of mutualistic interactions leads to the assembly of ecological networks that are more nested.
-However, we observe that greater mutualistic dependencies in the assembled communities also lower species' persistence.
-This suggests that while nested mutualistic networks are dynamically favored \cite{Rohr2014}, the additional inter-dependencies that define mutualisms may also result in greater species turnover and changes to community composition.
+These include changes in the proportion of generalists over the course of assembly that accord with measured values, and trophic diversity similar to empirical observations. % both maximum trophic level and 
+Second, we show that increasing the frequency of mutualistic interactions leads to the assembly of ecological networks that are more nested, a hallmark feature of mutualistic systems \cite{Bascompte2003}.
+However, we observe that increased mutualistic dependencies in the assembled communities also lower species' persistence.
+This suggests that while nested mutualistic networks appear to be dynamically favored (cf. Ref. \citenum{Rohr2014}), our model predicts that the additional inter-dependencies that define mutualisms should result in greater species turnover and changes to community composition.
 
 %3: Engineering - moderate amounts increase extinction rates, but large amounts decrease extinction rates. The role of dependencies and redundancies
 We next explore the effects of ecosystem engineering on the dynamics of community assembly.
-Our third key result is that increasing the number of ecosystem engineers as well as the engineering interactions within a community has nonlinear effects on observed extinction rates.
-While we find that a low amount of engineering increases extinction rates, a high amount of engineering serves to reduce extinction rates by increasing redundant engineers.
+Our third key result is that increasing both the number of ecosystem engineers and engineering interactions within a community has nonlinear effects on observed extinction rates.
+While we find that a low amount of engineering increases extinction rates, a high amount of engineering serves to reduce extinction rates by increasing engineering redundancies.
 Finally, we show that the inclusion of engineering modifies the effects of mutualistic interactions, and can eliminate the negative effects that mutualisms have on species' persistence.\\
 % Only by understanding the effects of engineers on communities can we gain insight into 
 
@@ -189,11 +191,11 @@ Finally, we show that the inclusion of engineering modifies the effects of mutua
 \noindent \textbf{Trophic assembly without engineering} \\
 \noindent Assembly of ecological communities in the absence of engineering results in interaction networks with structures consistent with observations of empirical systems.
 % By assembling communities to a steady state from a pool of potential colonizers (see Methods), networks are generating by the 
-Assembly of communities from a source pool of potential colonizers (see Methods) follows a general pattern that results in the emergence of a steady state community: following the establishment of an autotrophic base, mixotrophs and lower trophic-level heterotrophs comprise the initial colonizers (Fig. \ref{fig:conn}a).
+Assembly of communities from a source pool of potential colonizers (see Methods) follows a general pattern that results in the emergence of a steady state community: following the establishment of an autotrophic base, mixotrophs and lower trophic-level heterotrophs comprise the initial colonizers.
 Primary extinctions occur by competitive exclusion, where a species' competitive strength is increased with its mutualistic interactions and decreased by its trophic generality (the number of prey it consumes) as well as its vulnerability (the number of predators it has).
 Secondary extinctions occur when species lose their trophic or service requirements.
 See Methods for a complete description of the assembly process due to losses from primary extinctions.
-As the colonization and extinction rates converge, the community reaches a steady state around which it oscillates stochastically (Fig. \ref{fig:conn}a).
+As the colonization and extinction rates converge, the community reaches a steady state around which it oscillates stochastically.
 % As species richness increases, competitive exclusion initiates the extinction process, followed by secondary extinctions due to the loss of trophic and service requirements among species.
 
 
@@ -201,9 +203,11 @@ As the colonization and extinction rates converge, the community reaches a stead
 \centering
 \includegraphics[width=0.5\textwidth]{fig_model.pdf}
 \caption{
-An example of the source pool interaction matrix where $\mathcal{S} = 50$. Species and objects are aligned across the rows and columns; objects are shaded and labeled by `o' to distinguish them from species. The interaction recorded in row $i$ and column $j$ describes the directed interaction from species/object $i$ to species/object $j$. The first row/column represents the basal resource; species that assimilate the primary resource are capable of primary production. Species interact with other species and/or objects; objects only interact with their engineers by `needing' them; objects do not interact with other objects.
+A. Diverse interactions between species (colored nodes) and abiotic objects (black nodes)
+B. An assembling food web with species (colored nodes) and objects (black nodes)
+C. The corresponding adjacency matrix with colors denoting interactions between biotic (species) and abiotic (objects) entities. The basal resource is denoted in row/column 1. 
 }
-\label{fig:matrix}
+\label{fig:model}
 \end{figure}
 
 
@@ -269,10 +273,10 @@ Compellingly, the richness pyramids that we observe at steady state follow close
 \centering
 \includegraphics[width=0.4\textwidth]{fig_trophic.pdf}
 \caption{
-a) The frequency distribution of trophic levels over the course of assembly taken across $10^4$ replicates. Autotrophs occupy trophic level 1.
+A. The frequency distribution of trophic levels over the course of assembly taken across $10^4$ replicates. Autotrophs occupy trophic level 1.
 We set $S=200$, $p_e=0.01$, $p_n=0.002$, and $t=4000$ (see methods).
-b) The proportion of specialists as a function of assembly time, where a specialist is defined as a species with a generality index $G_i < 1$.
-All measures of $G_i$ are scaled by the average number of links per species where $L$ and $S$ are measured with respect to the communities at steady state, which is most similar to the measure used to evaluate assembling mangrove food webs (averaged across replicates).
+B. The proportion of specialists as a function of assembly time, where a specialist is defined as a species with a generality index $G_i < 1$.
+All measures of $G_i$ are scaled by the average number of links per species where $L$ and $S$ are measured with respect to the communities at steady state.
 }
 \label{fig:trophic}
 \end{figure}
@@ -333,7 +337,8 @@ Relaxing these assumptions permits mutualism plasticity, long considered to be a
 \centering
 \includegraphics[width=0.5\textwidth]{fig_nested.pdf}
 \caption{
-Nestedness (measured as NODF) as a function of the frequency of need interactions in the species pool interaction matrix $\bm P$.
+A. Species persistence and
+B. Nestedness (measured as NODF) for communities with increasing frequencies of mutualistic (service) interactions.
 }
 \label{fig:nest}
 \end{figure}
@@ -366,11 +371,46 @@ In these systems, redundancy in producing these shared metabolitic resources may
 
 %Lawton 1994: there may be sometimes redundancy in ecosystem engineers... (uses beaver to suggest that there is not)
 
-We find that increasing the frequency of engineering has significant consequences for community stability.
+%negative (introduces dependencies) then positive (introduces redundancies)
+We find that increasing engineering has significant consequences on stability, however the effect of engineering is dependent on the frequency of service interactions within the community.
+Here, we measure stability of the community by 
+\emph{i}) the rate of extinction and
+\emph{ii}) species persistence, or the proportion of assembly time each species was present in the community.
+Both measures were averaged over each species within the community across assembly time.
+%Without mutualists: engineering always GOOD
+When service interactions are absent, we find that increasing engineering both lowers extinction rates and increases persistence (Fig. \ref{fig:engineers}).
+Greater numbers of engineered objects/species (higher $\eta$) means that more species can be trophically linked to objects.
+Because objects can linger in the community following the extinction of the engineer, their presence lowers the risk of secondary extinctions, facilitating stability.
+When most species are engineers ($\eta = 2$), the probability that a single object has two or more engineers is higher.
+This added redundancy means that the disappearance of a single engineer has a lower impact on the community, further increasing stability.
+
+Increasing the frequency of service interactions increases both mutualisms as well as service interactions between species and engineered objects.
+While an example of the former is an \emph{Acacia} spp. serviced by Acacia ants (\emph{Pseudomyrmex} spp.) \cite{Janzen1966,Guimaraes2006}, an example of the later is the freshwater habitat provided to invertebrates by the recently discovered rock-boring teredinid shipworm (\emph{Lithoredo abatanica}) \cite{Shipway2019}.
+In our framework, service interactions are less flexible than trophic interactions: while just a single trophic interaction is required to avoid extinction, all service interactions must be realized.
+In systems with higher frequencies of service interactions, extinction rates increase with engineering and then decline (Fig \ref{fig:engineers}a).
+In contrast, persistence increases with engineering but at a slower rate compared to systems without service interactions.
+
+The nonlinear effect of engineering on mean extinction rates results from two competing forces.
+When there are few engineers in the community, engineered objects are typically unique to the engineer.
+When service interactions are common, the presence of a few engineers reduces stability because there are more dependencies between species and objects that must be maintained.
+However if engineering continues to increase, greater dependencies are offset by increased redundancy.
+If engineers and the objects they create are redundant, service interactions can be maintained even when engineers go extinct.
+In contrast, species persistence is not strongly penalized by the lack of engineering redundancy \ref{fig:engineers}b), however we observe that the beneficial effects of engineering is reduced.
 
 
 
-\noindent \textbf{Beyond engineering}
+
+\begin{figure}
+\centering
+\includegraphics[width=0.5\textwidth]{fig_engineers2.pdf}
+\caption{
+A. Extinction rate and 
+B. species persistence for communities with increasing frequencies of service interactions and average number of objects made per species $\eta$
+}
+\label{fig:engineers}
+\end{figure}
+
+% \noindent \textbf{Beyond engineering}
 %NOTE: THIS IS DISCUSSION MATERIAL
 
 %EVOLUTION: CITE LOEUILLE, Fussmann, Allhoff 2013,2015; Brannstrom
@@ -436,37 +476,37 @@ Understanding their role is thus tantamount to understanding our own.\\
   This algorithm is known to offer a much better approximation to the true stochastic continuous time process than a simulation in discrete time steps, while providing a much higher numerical efficiency \cite{Gillespie1977}.}
 % \end{matmethods}
 
-
-
-\begin{table*}[!t]
-\begin{center}
-\begin{tabular}{ l l l }
-\hline
-Parameter & Definition & Value/Range \\
-\hline
-$\overrightarrow{a}$ & assimilate & \\
-$\overrightarrow{n}$ & need & \\
-$\overrightarrow{i}$ & ignore & \\
-$\overrightarrow{m}$ & make & \\
-\hline
-$e \leftrightarrow i$ & Asymmetric consumption & $p_{ei} = p_i(p_e/(p_e+p_n+p_i)) + p_e(p_i/(p_a+p_i+p_n))$ \\
-$e \leftrightarrow e$ & Symmetric consumption & $p_{ee} = p_e(p_e/(p_i+p_n+p_e))$\\
-$e \leftrightarrow n$ & Trophic mutualism & $p_{en} = p_n(p_e/(p_e+p_n+p_i+p_m)) + p_e(p_n/(p_a+p_i+p_n))$ \\
-$n \leftrightarrow n$ & Non-trophic mutualism & $p_{nn} = p_n(p_n/(p_e+p_n+p_i+p_m))$ \\
-$n \leftrightarrow i$ & Commensalism & $p_{ni} = p_n(p_i/(p_e+p_n+p_i+p_m)) + p_i(p_n/(p_e+p_n+p_i))$\\
-$m \leftrightarrow n$ & Engineering & $p_{mn} = p_n(p_m/(p_e+p_n+p_i+p_m)) + p_m$\\
-$i \leftrightarrow i$ & Null & $p_{ii} = p_i(p_i/(p_e+p_n+p_i))$\\
-\hline
-$\mathcal{N}$ & Number of species + objects & dyn.\\
-$\mathcal{S}$ & Number of species & dyn.\\
-$\mathcal{O}$ & Number of objects & dyn.\\
-\hline
-\end{tabular}
-\end{center}
-\caption{Table of parameters, definitions, and assigned values or ranges.}
-\label{table:param}
-\end{table*}
-
+% 
+% 
+% \begin{table*}[!t]
+% \begin{center}
+% \begin{tabular}{ l l l }
+% \hline
+% Parameter & Definition & Value/Range \\
+% \hline
+% $\overrightarrow{a}$ & assimilate & \\
+% $\overrightarrow{n}$ & need & \\
+% $\overrightarrow{i}$ & ignore & \\
+% $\overrightarrow{m}$ & make & \\
+% \hline
+% $e \leftrightarrow i$ & Asymmetric consumption & $p_{ei} = p_i(p_e/(p_e+p_n+p_i)) + p_e(p_i/(p_a+p_i+p_n))$ \\
+% $e \leftrightarrow e$ & Symmetric consumption & $p_{ee} = p_e(p_e/(p_i+p_n+p_e))$\\
+% $e \leftrightarrow n$ & Trophic mutualism & $p_{en} = p_n(p_e/(p_e+p_n+p_i+p_m)) + p_e(p_n/(p_a+p_i+p_n))$ \\
+% $n \leftrightarrow n$ & Non-trophic mutualism & $p_{nn} = p_n(p_n/(p_e+p_n+p_i+p_m))$ \\
+% $n \leftrightarrow i$ & Commensalism & $p_{ni} = p_n(p_i/(p_e+p_n+p_i+p_m)) + p_i(p_n/(p_e+p_n+p_i))$\\
+% $m \leftrightarrow n$ & Engineering & $p_{mn} = p_n(p_m/(p_e+p_n+p_i+p_m)) + p_m$\\
+% $i \leftrightarrow i$ & Null & $p_{ii} = p_i(p_i/(p_e+p_n+p_i))$\\
+% \hline
+% $\mathcal{N}$ & Number of species + objects & dyn.\\
+% $\mathcal{S}$ & Number of species & dyn.\\
+% $\mathcal{O}$ & Number of objects & dyn.\\
+% \hline
+% \end{tabular}
+% \end{center}
+% \caption{Table of parameters, definitions, and assigned values or ranges.}
+% \label{table:param}
+% \end{table*}
+% 
 
 
 

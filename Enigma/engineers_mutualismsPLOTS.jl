@@ -4,7 +4,7 @@ else
     loadfunc = include("$(homedir())/Dropbox/PostDoc/2014_Lego/Enigma/src/loadfuncs.jl");
 end
 
-reps = 50;
+reps = 100;
 S = 200;
 maxits = 4000;
 
@@ -170,7 +170,7 @@ dev.off()
 """
 
 
-filename = "../manuscript/fig_engineers.pdf";
+filename = "../manuscript/fig_engineers2.pdf";
 namespace = smartpath(filename);
 R"""
 library(RColorBrewer)
@@ -178,19 +178,19 @@ library(fields)
 pdf($namespace,width=5,height=5)
 layout(matrix(c(1,2), 2, 1, byrow = TRUE), 
    widths=c(1,1), heights=c(0.5,0.5))
-par(oma = c(0.5, 1, 1, 1), mar = c(3, 4, 0, 1))
+par(oma = c(0.5, 1, 1, 1), mar = c(3, 4, 0, 1),mai=c(0.6,0.6,0,0.1))
 pal = brewer.pal(11,'Spectral')
 image.plot(y=$nvec_scaled,x=$lambdavec,z=$(transpose(mextrate_surf)),col=pal,ylab='',xlab='',nlevel=11,axes=FALSE)
 axis(2,at=seq(0,0.002,by=0.001),labels=TRUE,tck=-0.015,mgp=c(0.5,0.5,0))
-axis(1,at=seq(0,2,by=0.5),labels=TRUE,tck=-0.015,mgp=c(0.5,0.5,0))
-title(ylab='Frequency of service', line=2.0, cex.lab=1.)
-title(xlab='Mean objects/species', line=1.5, cex.lab=1.)
+# axis(1,at=seq(0,2,by=0.5),labels=TRUE,tck=-0.015,mgp=c(0.5,0.5,0))
+title(ylab='Freq. service interactions', line=2.0, cex.lab=1.)
+# title(xlab='Mean objects/species', line=1.5, cex.lab=1.)
 
 pal = brewer.pal(9,'YlGnBu')
 image.plot(y=$nvec_scaled,x=$lambdavec,z=$(transpose(mpersist_surf)),col=pal,ylab='',xlab='',nlevel=11,axes=FALSE)
 axis(2,at=seq(0,0.002,by=0.001),labels=TRUE,tck=-0.015,mgp=c(0.5,0.5,0))
 axis(1,at=seq(0,2,by=0.5),labels=TRUE,tck=-0.015,mgp=c(0.5,0.5,0))
-title(ylab='Frequency of service', line=2.0, cex.lab=1.)
+title(ylab='Freq. service interactions', line=2.0, cex.lab=1.)
 title(xlab='Mean objects/species', line=1.5, cex.lab=1.)
 dev.off()
 """

@@ -225,3 +225,54 @@ pdf($namespace,height=5,width=6)
 plot($modall,$nestall,pch='.',cex=1.5,col='black',xlab='Modularity',ylab='NODF')
 dev.off()
 """
+
+
+
+
+
+
+
+#SO WE DON'T HAVE TO RUN THE ABOVE ANALYSIS EVERY TIME (takes long time)
+
+
+avalue = 0.01;
+nvec_scaled = (avalue/10) .* nvec;
+
+
+
+teval = length(seq);
+nestall = vec(comb_nest[:,:,teval]);
+mnest = mean(comb_nest[:,:,teval],dims=2);
+mrich = vec(rich[:,:,teval]);
+mstdrich = std(rich[:,:,teval],dims=2);
+nvecreshaped = repeat(nvec,outer=reps);
+
+filename = "data/engineers_mutualisms/meanrates.jld";
+namespace = smartpath(filename);
+@load namespace reps lambdavec llamb sprich rich clocks engineers maxits mextrate stdextrate totalextinctions totalcolonizations mpersistance stdpersistance
+
+mpersist_noengin = transpose(mpersistance[:,1,:]);
+
+filename = "../manuscript/fig_nested.pdf";
+namespace = smartpath(filename);
+R"""
+library(RColorBrewer)
+pal=brewer.pal(3,'Set1')
+pdf($namespace,height=5,width=5)
+layout(matrix(c(1,2), 2, 1, byrow = TRUE), 
+   widths=c(1,1), heights=c(0.4,0.5))
+par(oma = c(0.5, 1, 1, 1), mar = c(3, 4, 0, 1),mai=c(0.6,0.6,0.0,0.0))
+boxplot($mpersist_noengin, names = c(0.0,rep("",9),0.001,rep("",9),0.002),ylim=c(0.5,0.9),xlab='',ylab='',axes=FALSE,pch='.',boxwex=0.6,col='gray')
+axis(2,at=seq(0.5,0.9,by=0.1),labels=TRUE,tck=-0.015,mgp=c(0.5,0.5,0))
+# axis(1,at=seq(1,21,by=1),labels=FALSE,tck=-0.015,mgp=c(0.5,0.5,0)) #at=seq(1,21,by=1),labels=c("0",rep("",9),"0.001",rep("",9),"0.002")
+title(ylab='Persistence', line=2.0, cex.lab=1.2)
+# title(xlab='Persistence', line=2.0, cex.lab=1.2)
+plot(jitter($(nvecreshaped .* (avalue/10))),$nestall,xlab='',ylab='',pch='.',cex=1.5,col=pal[2],ylim=c(min($nestall),3),axes=FALSE)
+axis(2,at=seq(0,3,by=0.5),labels=TRUE,tck=-0.015,mgp=c(0.5,0.5,0))
+axis(1,at=seq(0,0.002,by=0.001),labels=TRUE,tck=-0.015,mgp=c(0.5,0.5,0))
+title(ylab='Nestedness (NODF)', line=2.0, cex.lab=1.2)
+title(xlab='Freq. mutualisms', line=2.0, cex.lab=1.2)
+points($(nvec .* (avalue/10)),$mnest,pch=16,col='black')
+lines($(nvec  .* (avalue/10)),$mnest)
+dev.off()
+"""
