@@ -76,7 +76,7 @@ paramvec[:,3] = repeat(collect(1:reps),outer=lvec*lvec);
     @save namespace int_m tp_m tind_m mp_m mind_m;
     
 
-    sprich,rich,clock,CID = assembly(
+    sprich,rich,clock,CID,events = assembly(
         int_m,a_b,n_b,i_b,m_b,n_b0,sp_v,int_id,tp_m,tind_m,lambda,
         athresh,nthresh,maxits,cn,ce,cp);
     
@@ -84,7 +84,7 @@ paramvec[:,3] = repeat(collect(1:reps),outer=lvec*lvec);
     filename = "data/engineers_mutualisms/cid.jld";
     indices = [v,w,r];
     namespace = smartpath(filename,indices);
-    @save namespace CID clock;
+    @save namespace CID clock events;
             
             
         # end

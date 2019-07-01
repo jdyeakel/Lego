@@ -495,6 +495,8 @@ tmaxdegree = zeros(Int64,length(seq2));
 tmaxtrophic = zeros(Int64,length(seq2));
 maxdegree = Array{Int64}(undef,reps,length(seq2));
 maxtrophic = Array{Int64}(undef,reps,length(seq2));
+freqdegreereps = Array{Array}(undef,reps);
+freqtrophicreps = Array{Array}(undef,reps);
 for r=1:reps
     freqdegreetime = Array{Array}(undef,length(seq2));
     freqtrophictime = Array{Array}(undef,length(seq2));
@@ -782,16 +784,16 @@ filename = "../manuscript/fig_trophic.pdf";
 namespace = smartpath(filename);
 R"""
 library(RColorBrewer)
-pdf($namespace,height=8,width=5)
+pdf($namespace,height=7,width=5)
 layout(matrix(c(1,2), 2, 1, byrow = TRUE), 
-   widths=c(1,1), heights=c(0.3,0.5))
+   widths=c(1,1), heights=c(0.4,0.5))
 par(oma = c(0.5, 1, 1, 1), mar = c(3, 4, 0, 1))
 #SPECIALIZATION
 pal = brewer.pal($(length(seq2)),'Spectral')
 timelabels = parse(text=c("5","10","25","50",paste("10","^2"),paste("2.10","^2"),paste("5*10","^2"),paste("10","^3"),paste("2*10","^3"),paste("4*10","^3")))
 # par(mfrow=c(2,1))
 plot($(seq[seq2]),1 - $mrGavgc, xlim=c(5,4000), ylim=c(0,1), xlab='', ylab='', log='x', cex.axis=0.85, pch=23, col='black', bg=pal, cex=1.5,axes=FALSE)
-axis(2,at=seq(0,1,by=0.2),labels=TRUE,tck=-0.015,mgp=c(0.5,0.5,0))
+axis(2,at=seq(0,1,by=0.2),labels=TRUE,tck=-0.015,mgp=c(0.5,0.5,0),las=1)
 axis(1,at=$(seq[seq2]),labels=TRUE,tck=-0.015,mgp=c(0.5,0.5,0))
 title(ylab='Proportion specialists', line=2.5, cex.lab=1.2)
 title(xlab='Assembly time', line=2.0, cex.lab=1.2)
@@ -815,9 +817,9 @@ pal = colorRampPalette(brewer.pal(11,"Spectral"))(length($seq2))
 fulldist = $(meantrophicdist[1,:]);
 trimdist = fulldist[which(fulldist>0.005)];
 plot(trimdist,seq(1,length(trimdist)),type='l',xlim=c(0,0.6),ylim=c(1,12),col=pal[1],xlab='',ylab='',axes=FALSE)
-axis(2,at=seq(1:12),labels=TRUE,tck=-0.015,mgp=c(0.5,0.5,0))
+axis(2,at=seq(1:12),labels=TRUE,tck=-0.015,mgp=c(0.5,0.5,0),las=1)
 axis(1,at=seq(0:0.6,by=0.2),labels=TRUE,tck=-0.015,mgp=c(0.5,0.5,0))
-title(ylab='Trophic level', line=2.5, cex.lab=1.2)
+title(ylab='Trophic level (TL)', line=2.5, cex.lab=1.2)
 title(xlab='Frequency', line=2.0, cex.lab=1.2)
 points(trimdist,seq(1,length(trimdist)),pch=21,bg=pal[1],col='black')
 """

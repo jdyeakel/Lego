@@ -26,6 +26,7 @@ if homedir() == "/home/z840"
 
 		#Alternative 4x4 Interaction matrix
     @everywhere include("$(homedir())/2014_Lego/Enigma/src/intmatrixv4.jl")
+    @everywhere include("$(homedir())/2014_Lego/Enigma/src/intmatrixv4_unique.jl")
 
     #Community dynamics
     @everywhere include("$(homedir())/2014_Lego/Enigma/src/preamble_defs.jl")
@@ -56,6 +57,7 @@ else
 
 		#Alternative 4x4 Interaction matrix
     @everywhere include("$(homedir())/Dropbox/PostDoc/2014_Lego/Enigma/src/intmatrixv4.jl")
+    @everywhere include("$(homedir())/Dropbox/PostDoc/2014_Lego/Enigma/src/intmatrixv4_unique.jl")
 
     #Community dynamics
     @everywhere include("$(homedir())/Dropbox/PostDoc/2014_Lego/Enigma/src/preamble_defs.jl")

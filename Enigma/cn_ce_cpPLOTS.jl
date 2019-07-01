@@ -125,7 +125,7 @@ namespace = smartpath(filename);
 #SO WE DON'T HAVE TO RUN THE ABOVE ANALYSIS EVERY TIME (takes long time)
 filename = "data/cn_ce_cp/meanrates.jld";
 namespace = smartpath(filename);
-@load namespace reps lambdavec lvec sprich rich clocks engineers maxits mextrate stdextrate totalextinctions totalcolonizations mpersistance stdpersistance
+@load namespace reps lvec sprich rich clocks engineers maxits mextrate stdextrate totalextinctions totalcolonizations mpersistance stdpersistance
 
 
 #mean extinction rate as a function of engineering and mutualisms

@@ -1,96 +1,3 @@
-if homedir() == "/home/z840"
-    loadfunc = include("$(homedir())/2014_Lego/Enigma/src/loadfuncs.jl");
-else
-    loadfunc = include("$(homedir())/Dropbox/PostDoc/2014_Lego/Enigma/src/loadfuncs.jl");
-end
-
-filename = "data/engineers/sim_settings.jld";
-namespace = smartpath(filename);
-@load namespace reps S maxits athresh nthresh lambdavec SSprobs SOprobs OOprobs;
-
-llamb = length(lambdavec);
-its = llamb*reps;
-
-
-sprich = SharedArray{Int64}(llamb,reps,maxits);
-rich = SharedArray{Int64}(llamb,reps,maxits);
-#Extinction casades
-@sync @distributed for i = 0:(its - 1)
-
-    #Across lambdavec
-    a = Int64(floor(i/reps)) + 1;
-    #Across reps
-    b = mod(i,reps) + 1;
-
-    filename = "data/engineers/int_m.jld";
-    indices = [a,b];
-    namespace = smartpath(filename,indices);
-    @load namespace int_m tp_m tind_m mp_m mind_m;
-
-
-    # a_b,
-    # n_b,
-    # i_b,
-    # m_b,
-    # n_b0,
-    # sp_v,
-    # int_id = preamble_defs(int_m);
-
-
-    filename = "data/engineers/cid.jld";
-    indices = [a,b];
-    namespace = smartpath(filename,indices);
-    @load namespace CID clock;
-
-
-    for t=2:maxits
-        cid = CID[:,t];
-        cid_old = CID[:,t-1];
-
-        sprich[a,b,t] = sum(cid[1:S]);
-        rich[a,b,t] = sum(cid[:]);
-    end
-end
-
-#Mean sprichness and richness across reps (index b)
-msprich = Array{Float64}(undef,maxits-1,llamb);
-mrich = Array{Float64}(undef,maxits-1,llamb);
-for t=1:maxits-1
-    for l=1:llamb
-        msprich[t,l] = mean(sprich[l,:,t]);
-        mrich[t,l] = mean(rich[l,:,t]);
-    end
-end
-
-#Species richness as a function of number of engineers
-filename = "figures/eng/sprichengineers2.pdf";
-namespace = smartpath(filename);
-timeseq = collect(1:maxits-1);
-R"""
-library(RColorBrewer)
-library(fields)
-pal = rev(brewer.pal(9,"Blues"))
-pal = colorRampPalette(rev(brewer.pal(9,"Blues")))(100)
-pdf($namespace,width=8,height=7)
-image.plot(y=$lambdavec,x=$timeseq,z=$(msprich),ylab='Expected num. objects/species',xlab='Time',log='x',col=pal,useRaster=TRUE)
-dev.off()
-"""
-
-filename = "figures/eng/richengineers2.pdf";
-namespace = smartpath(filename);
-timeseq = collect(1:maxits-1);
-R"""
-library(RColorBrewer)
-library(fields)
-pal = rev(brewer.pal(9,"Blues"))
-pal = colorRampPalette(rev(brewer.pal(9,"Blues")))(100)
-pdf($namespace,width=8,height=7)
-image.plot(y=$lambdavec,x=$timeseq,z=$(mrich),ylab='Expected num. objects+species',xlab='Time',log='x',col=pal,useRaster=TRUE)
-dev.off()
-"""
-
-
-
 #EXTINCTION RATES
 if homedir() == "/home/z840"
     loadfunc = include("$(homedir())/2014_Lego/Enigma/src/loadfuncs.jl");
@@ -237,7 +144,7 @@ objects = rich .- sprich;
 mobj = vec(mean(objects[:,maxits-100:maxits],dims=2));
 meng = vec(mean(engineers[:,maxits-100:maxits],dims=2));
 mss = vec(mean(sprich[:,maxits-100:maxits],dims=2));
-
+totaltime = clocks[:,4000];
 
 #isolate diverse systems to minimize effects of s.s. richness
 diverse = findall(x->x>120,mss);
@@ -289,6 +196,48 @@ pdf($namespace,width=6,height=5)
 boxplot($mextarray,names = $lambdavec,xlab='Mean number of objects/species',ylab='Extinciton rate mean',outline=F,col='gray')
 dev.off()
 """
+
+
+mssarray = reshape(Array(mss),reps,llamb);
+filename = "figures/eng/boxplot_mss.pdf"
+namespace = smartpath(filename)
+R"""
+pdf($namespace,width=6,height=5)
+boxplot($mssarray,names = $lambdavec,xlab='Mean number of objects/species',ylab='Species richness',outline=F,col='gray')
+dev.off()
+"""
+
+mextarray = reshape(Array(mextrate),reps,llamb);
+mssarray = reshape(Array(mss),reps,llamb);
+filename = "figures/eng/boxplot_extratepercapita.pdf"
+namespace = smartpath(filename)
+R"""
+pdf($namespace,width=6,height=5)
+boxplot($mextarray / $mssarray,names = $lambdavec,xlab='Mean number of objects/species',ylab='Extinction rate (per capita)',outline=F,col='gray')
+dev.off()
+"""
+
+
+totextinctions = reshape(Array(totalextinctions),reps,llamb);
+tottime = reshape(Array(totaltime),reps,llamb);
+mssarray = reshape(Array(mss),reps,llamb);
+filename = "figures/eng/boxplot_totext.pdf"
+namespace = smartpath(filename)
+R"""
+pdf($namespace,width=6,height=5)
+boxplot($totextinctions / $tottime,names = $lambdavec,xlab='Mean number of objects/species',ylab='Total extinctions / Total time',outline=F,col='gray')
+dev.off()
+"""
+
+filename = "figures/eng/boxplot_totextmss.pdf"
+namespace = smartpath(filename)
+R"""
+pdf($namespace,width=6,height=5)
+boxplot(($totextinctions / ($tottime * $mssarray)),names = $lambdavec,xlab='Mean number of objects/species',ylab='Total extinctions / (Total time * SS)',outline=F,col='gray')
+dev.off()
+"""
+
+
 
 mextarray = reshape(Array(mextrate),reps,llamb);
 stdextarray = reshape(Array(stdextrate),reps,llamb);

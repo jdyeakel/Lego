@@ -16,7 +16,7 @@ cn_cp = cn/cp;
 
 
 S = 200;
-maxits = 2000;
+maxits = 4000;
 SOprobs = (
 # p_n=0.00228,
 # p_a=0.0129
@@ -44,7 +44,7 @@ n_b0,
 sp_v,
 int_id = preamble_defs(int_m);
 
-@time sprich,rich,clock,CID = assembly(
+@time sprich,rich,clock,CID,events = assembly(
     int_m,a_b,n_b,i_b,m_b,n_b0,sp_v,int_id,tp_m,tind_m,lambda,
     athresh,nthresh,maxits,cn,ce,cp);
 

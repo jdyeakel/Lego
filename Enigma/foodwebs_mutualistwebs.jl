@@ -60,7 +60,7 @@ for v = 1:lnvec
         @save namespace int_m tp_m tind_m mp_m mind_m;
         
 
-        sprich,rich,clock,CID = assembly(
+        sprich,rich,clock,CID,events = assembly(
             int_m,a_b,n_b,i_b,m_b,n_b0,sp_v,int_id,tp_m,tind_m,lambda,
             athresh,nthresh,maxits);
         
@@ -68,7 +68,7 @@ for v = 1:lnvec
         filename = "data/foodwebs_mutualistwebs/cid.jld";
         indices = [v,r];
         namespace = smartpath(filename,indices);
-        @save namespace CID clock;
+        @save namespace CID clock events;
         
         
     end

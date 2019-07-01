@@ -1,4 +1,4 @@
-function intmatrixv4(S, lambda, SSprobs, SOprobs, OOprobs)
+function intmatrixv4_unique(S, lambda, SSprobs, SOprobs, OOprobs)
     
 		#NOTE: In this version, different sets of probabilities are used to fill up interactions in each matrix quadrant (SS, SO, OO)
 		
@@ -25,7 +25,7 @@ function intmatrixv4(S, lambda, SSprobs, SOprobs, OOprobs)
         for i = 1:E
             # o = sample(obline,OpS[engind][i],replace=false);
             # obindpS[i,o] .= 1;
-            obindpS[i,tic:OpS[engind][i]] .= 1;
+            obindpS[i,tic:tic+(OpS[engind][i]-1)] .= 1;
             tic += OpS[engind][i]
         end
     end

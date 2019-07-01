@@ -93,18 +93,6 @@ Odling-Smee J, Erwin DH, Palkovacs EP, Feldman MW, Laland KN (2013) {Niche
 Hastings A, et~al. (2007) {Ecosystem engineering in space and time}.
 \newblock {\em Ecol. Lett.} 10(2):153--164.
 
-\bibitem{Schirrmeister2013}
-Schirrmeister BE, de~Vos JM, Antonelli A, Bagheri HC (2013) Evolution of
-  multicellularity coincided with increased diversification of cyanobacteria
-  and the great oxidation event.
-\newblock {\em Proceedings of the National Academy of Sciences}
-  110(5):1791--1796.
-
-\bibitem{Loladze2011}
-Loladze I, Elser JJ (2011) The origins of the redfield nitrogen-to-phosphorus
-  ratio are in a homoeostatic protein-to-rrna ratio.
-\newblock {\em Ecology Letters} 14(3):244--250.
-
 \bibitem{Wright2006}
 Wright JP, Jones CG (2006) {The Concept of Organisms as Ecosystem Engineers Ten
   Years On: Progress, Limitations, and Challenges}.
@@ -137,44 +125,17 @@ Meyer ST, Leal IR, Tabarelli M, Wirth R (2011) Ecosystem engineering by
   structure and microclimate.
 \newblock {\em Ecological Entomology} 36(1):14--24.
 
-\bibitem{Gurney1996}
-Gurney WSC, Lawton JH (1996) The population dynamics of ecosystem engineers.
-\newblock {\em Oikos} 76(2):273--283.
+\bibitem{Schirrmeister2013}
+Schirrmeister BE, de~Vos JM, Antonelli A, Bagheri HC (2013) Evolution of
+  multicellularity coincided with increased diversification of cyanobacteria
+  and the great oxidation event.
+\newblock {\em Proceedings of the National Academy of Sciences}
+  110(5):1791--1796.
 
-\bibitem{Cuddington2004}
-Cuddington K (2004) {Invasive engineers}.
-\newblock {\em Ecol. Model.}
-
-\bibitem{Wright2004}
-Wright JP, Jones CG (2004) Predicting effects of ecosystem engineers on
-  patch-scale species richness from primary productivity.
-\newblock {\em Ecology} 85(8):2071--2081.
-
-\bibitem{Krakauer2009}
-Krakauer DC, Page KM, Erwin DH (2009) {Diversity, dilemmas, and monopolies of
-  niche construction.}
-\newblock {\em Am. Nat.} 173(1):26--40.
-
-\bibitem{Laland1999}
-Laland KN, Odling-Smee FJ, Feldman MW (1999) {Evolutionary consequences of
-  niche construction and their implications for ecology}.
-\newblock {\em Proc. Natl. Acad. Sci. USA} 96(18):10242--10247.
-
-\bibitem{Marshall2016}
-Marshall CR, Quental TB (2016) The uncertain role of diversity dependence in
-  species diversification and the need to incorporate time-varying carrying
-  capacities.
-\newblock {\em Philosophical Transactions of the Royal Society B: Biological
-  Sciences} 371(1691):20150217.
-
-\bibitem{Kallus2017}
-Kallus Y, Miller JH, Libby E (2017) {Paradoxes in leaky microbial trade}.
-\newblock {\em Nat Commun} 8(1):1361.
-
-\bibitem{Muscarella2017}
-Muscarella ME, O'Dwyer JP (2017) {Ecological Insights from the Evolutionary
-  History of Microbial Innovations}.
-\newblock {\em bioRxiv} p. 220939.
+\bibitem{Loladze2011}
+Loladze I, Elser JJ (2011) The origins of the redfield nitrogen-to-phosphorus
+  ratio are in a homoeostatic protein-to-rrna ratio.
+\newblock {\em Ecology Letters} 14(3):244--250.
 
 \bibitem{Getz2011}
 Getz WM (2011) {Biomass transformation webs provide a unified approach to
@@ -185,6 +146,11 @@ Getz WM (2011) {Biomass transformation webs provide a unified approach to
 Pillai P, Gonzalez A, Loreau M (2011) {Metacommunity theory explains the
   emergence of food web complexity.}
 \newblock {\em PNAS} 108(48):19293--19298.
+
+\bibitem{Bascompte2003}
+Bascompte J, Jordano P, Meli{\'a}n CJ, Olesen JM (2003) {The nested assembly of
+  plant-animal mutualistic networks.}
+\newblock {\em Proc. Natl. Acad. Sci. USA} 100(16):9383--9387.
 
 \bibitem{Rohr2014}
 Rohr RP, Saavedra S, Bascompte J (2014) {On the structural stability of
@@ -201,21 +167,25 @@ Piechnik DA, Lawler SP, Martinez ND (2008) {Food-web assembly during a classic
 Williams RJ, Martinez ND (2000) {Simple rules yield complex food webs}.
 \newblock {\em Nature} 404(6774):180--183.
 
+\bibitem{Lafferty2006}
+Lafferty KD, Dobson AP, Kuris AM (2006) {Parasites dominate food web links.}
+\newblock {\em Proc. Natl. Acad. Sci. USA} 103(30):11211--11216.
+
 \bibitem{Turney2016}
 Turney S, Buddle CM (2016) Pyramids of species richness: the determinants and
   distribution of species diversity across trophic levels.
 \newblock {\em Oikos} 125(9):1224--1232.
-
-\bibitem{Bascompte2003}
-Bascompte J, Jordano P, Meli{\'a}n CJ, Olesen JM (2003) {The nested assembly of
-  plant-animal mutualistic networks.}
-\newblock {\em Proc. Natl. Acad. Sci. USA} 100(16):9383--9387.
 
 \bibitem{Valdovinos2016}
 Valdovinos FS, et~al. (2016) {Niche partitioning due to adaptive foraging
   reverses effects of nestedness and connectance on pollination network
   stability}.
 \newblock {\em Ecol. Lett.} 19(10):1277--1286.
+
+\bibitem{Valdovinos2019}
+Valdovinos FS (year?) Mutualistic networks: moving closer to a predictive
+  theory.
+\newblock {\em Ecology Letters} 0(0).
 
 \bibitem{Guimaraes2017}
 Guimar{\~a}es~Jr PR, Pires MM, Jordano P, Bascompte J, Thompson JN (2017)
@@ -281,6 +251,38 @@ Ponisio LC, Gaiarsa MP, Kremen C (2017) Opportunistic attachment assembles
 Ramos-Jiliberto R, Valdovinos FS, Moisset~de Espanés P, Flores JD (2012)
   Topological plasticity increases robustness of mutualistic networks.
 \newblock {\em Journal of Animal Ecology} 81(4):896--904.
+
+\bibitem{Gurney1996}
+Gurney WSC, Lawton JH (1996) The population dynamics of ecosystem engineers.
+\newblock {\em Oikos} 76(2):273--283.
+
+\bibitem{Cuddington2004}
+Cuddington K (2004) {Invasive engineers}.
+\newblock {\em Ecol. Model.}
+
+\bibitem{Wright2004}
+Wright JP, Jones CG (2004) Predicting effects of ecosystem engineers on
+  patch-scale species richness from primary productivity.
+\newblock {\em Ecology} 85(8):2071--2081.
+
+\bibitem{Krakauer2009}
+Krakauer DC, Page KM, Erwin DH (2009) {Diversity, dilemmas, and monopolies of
+  niche construction.}
+\newblock {\em Am. Nat.} 173(1):26--40.
+
+\bibitem{Laland1999}
+Laland KN, Odling-Smee FJ, Feldman MW (1999) {Evolutionary consequences of
+  niche construction and their implications for ecology}.
+\newblock {\em Proc. Natl. Acad. Sci. USA} 96(18):10242--10247.
+
+\bibitem{Kallus2017}
+Kallus Y, Miller JH, Libby E (2017) {Paradoxes in leaky microbial trade}.
+\newblock {\em Nat Commun} 8(1):1361.
+
+\bibitem{Muscarella2017}
+Muscarella ME, O'Dwyer JP (2017) {Ecological Insights from the Evolutionary
+  History of Microbial Innovations}.
+\newblock {\em bioRxiv} p. 220939.
 
 \bibitem{Lawton1994}
 Lawton JH (1994) What do species do in ecosystems?

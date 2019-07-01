@@ -286,7 +286,7 @@ let cn = cnrange[findall(x->x==minimum(abs.(cnrange .- cn_init)),abs.(cnrange .-
             sp_v,
             int_id = preamble_defs(int_m);
 
-            sprich,rich,clock,CID = assembly(
+            sprich,rich,clock,CID,events = assembly(
                 int_m,a_b,n_b,i_b,m_b,n_b0,sp_v,int_id,tp_m,tind_m,lambda,
                 athresh,nthresh,maxits,cn_prop,ce_prop,cp_prop);
 

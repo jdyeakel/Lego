@@ -8,6 +8,7 @@ function assembly(int_m,a_b,n_b,i_b,m_b,n_b0,sp_v,int_id,tp_m,tind_m,lambda,
     sprich = Array{Int64}(undef,0);
     rich = Array{Int64}(undef,0);
     clock = Array{Float64}(undef,0);
+    events = Array{Int64}(undef,0);
     CID = falses(N,maxits);
 
     #NOTE strength matrix can't be built a-priori!
@@ -118,7 +119,8 @@ function assembly(int_m,a_b,n_b,i_b,m_b,n_b0,sp_v,int_id,tp_m,tind_m,lambda,
             spext2 = Array{Int64}(undef,0);
         end
 
-
+        primext = copy(spext2);
+        secext = copy(spext1);
         #
         # spext2 = Array{Int64}(0);
         spext = unique([spext1;spext2]);
@@ -139,6 +141,7 @@ function assembly(int_m,a_b,n_b,i_b,m_b,n_b0,sp_v,int_id,tp_m,tind_m,lambda,
 
         #Choose a random event
         re = rand();
+        tally = -10;
 
         if re < (lcol/levents)
 
@@ -153,6 +156,8 @@ function assembly(int_m,a_b,n_b,i_b,m_b,n_b0,sp_v,int_id,tp_m,tind_m,lambda,
             cid = [cid_old;colonize];
             #Update species
             spcid = [spcid;c_sp];
+            #tally
+            tally = 0;
         end
 
         if re > (lcol/levents) && re < ((lcol + lspext)/levents)
@@ -162,6 +167,15 @@ function assembly(int_m,a_b,n_b,i_b,m_b,n_b0,sp_v,int_id,tp_m,tind_m,lambda,
             sp_bye = rand(spext,1);
             cid = setdiff(cid_old,sp_bye);
             spcid = setdiff(spcid,sp_bye);
+            #tally
+            if in(sp_bye[1],primext)
+                #These are extinctions from competitive exclusion
+                tally = 1;
+            end
+            if in(sp_bye[1],secext)
+                #These are secondary extinctions
+                tally = 2;
+            end
         end
 
         if re > ((lcol + lspext)/levents)
@@ -169,6 +183,8 @@ function assembly(int_m,a_b,n_b,i_b,m_b,n_b0,sp_v,int_id,tp_m,tind_m,lambda,
             #OBJECT EXTINCTION FUNCTION
             ob_bye = rand(obext,1);
             cid = setdiff(cid_old,ob_bye);
+            #tally
+            tally = 3;
 
         end
 
@@ -176,13 +192,15 @@ function assembly(int_m,a_b,n_b,i_b,m_b,n_b0,sp_v,int_id,tp_m,tind_m,lambda,
         CID[cid,it] .= true;
         push!(sprich,length(spcid));
         push!(rich,length(cid));
+        push!(events,tally);
     end #end time steps
 
     return(
     sprich,
     rich,
     clock,
-    CID
+    CID,
+    events
     )
 
 end
