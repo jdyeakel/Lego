@@ -8,7 +8,7 @@ end
 lambdavec = collect(0:0.1:2.0);
 llamb = length(lambdavec);
 
-reps = 500;
+reps = 50;
 S = 200;
 
 maxits = 4000;
@@ -35,7 +35,7 @@ nthresh = 1.0;
 
 #Save a small file to record the settings of the simulation
 # namespace = string("$(homedir())/Dropbox/PostDoc/2014_Lego/Enigma/data/engineers/sim_settings.jld");
-filename = "data/engineers/sim_settings.jld";
+filename = "data/engineers2/sim_settings.jld";
 namespace = smartpath(filename);
 @save namespace reps S maxits athresh nthresh lambdavec SSprobs SOprobs OOprobs cn ce cp;
 
@@ -60,7 +60,7 @@ its = llamb*reps;
     sp_v,
     int_id = preamble_defs(int_m);
 
-    filename = "data/engineers/int_m.jld";
+    filename = "data/engineers2/int_m.jld";
     indices = [a,b];
     namespace = smartpath(filename,indices);
     @save namespace int_m tp_m tind_m mp_m mind_m;
@@ -70,7 +70,7 @@ its = llamb*reps;
         athresh,nthresh,maxits,cn,ce,cp);
 
     #Save individually so data can be loaded in parallel
-    filename = "data/engineers/cid.jld";
+    filename = "data/engineers2/cid.jld";
     indices = [a,b];
     namespace = smartpath(filename,indices);
     @save namespace CID clock events;
