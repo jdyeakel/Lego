@@ -47,6 +47,10 @@ int_id = preamble_defs(int_m);
 @time sprich,rich,clock,CID,events = assembly(
     int_m,a_b,n_b,i_b,m_b,n_b0,sp_v,int_id,tp_m,tind_m,lambda,
     athresh,nthresh,maxits,cn,ce,cp);
+    
+length(findall(x->x==1,events))/length(findall(x->x==2,events))
+
+
 
 # @time sprich,rich,clock = assembly2(
 #     int_m,a_b,n_b,i_b,m_b,n_b0,sp_v,int_id,tp_m,tind_m,
