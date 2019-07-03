@@ -4,14 +4,14 @@ else
     loadfunc = include("$(homedir())/Dropbox/PostDoc/2014_Lego/Enigma/src/loadfuncs.jl");
 end
 
-reps = 50;
+reps = 100;
 S = 200;
 maxits = 4000;
 
-nvec = collect(0.0:0.1:2.0);
+nvec = collect(0.0:0.05:2.0);
 lnvec = length(nvec);
 
-lambdavec = collect(0:0.1:2.0);
+lambdavec = collect(0:0.05:2.0);
 llamb = length(lambdavec);
 
 cn = pi;

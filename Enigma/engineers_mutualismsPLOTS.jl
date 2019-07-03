@@ -8,10 +8,10 @@ reps = 100;
 S = 200;
 maxits = 4000;
 
-nvec = collect(0.0:0.1:2.0);
+nvec = collect(0.0:0.05:2.0);
 lnvec = length(nvec);
 
-lambdavec = collect(0:0.1:2.0);
+lambdavec = collect(0:0.05:2.0);
 llamb = length(lambdavec);
 
 engineers = SharedArray{Int64}(lnvec,llamb,reps,maxits);
@@ -30,98 +30,108 @@ stdpersistance = SharedArray{Float64}(lnvec,llamb,reps);
 
 
 
-for v = 1:lnvec
+lvec = copy(lnvec);
+paramvec = Array{Int64}(undef,lvec*lvec*reps,3);
+paramvec[:,1] = repeat(collect(1:lvec),inner=lvec*reps);
+paramvec[:,2] = repeat(collect(1:lvec),inner=reps,outer=lvec);
+paramvec[:,3] = repeat(collect(1:reps),outer=lvec*lvec);
+
+
+@sync @distributed for ii=1:(lvec*lvec*reps)
     
-    for w = 1:llamb
+    v = paramvec[ii,1];
+    w = paramvec[ii,2];
+    r = paramvec[ii,3];
         
-        filename = "data/engineers_mutualisms/sim_settings.jld";
-        indices = [v,w];
-        namespace = smartpath(filename,indices);
-        @load namespace reps S maxits nvec athresh nthresh lambda SSprobs SOprobs OOprobs;
         
-        @sync @distributed for r=1:reps
-            
-            filename = "data/engineers_mutualisms/int_m.jld";
-            indices = [v,w,r];
-            namespace = smartpath(filename,indices);
-            @load namespace int_m tp_m tind_m mp_m mind_m;
-            
-            filename = "data/engineers_mutualisms/cid.jld";
-            indices = [v,w,r];
-            namespace = smartpath(filename,indices);
-            @load namespace CID clock;
-            
-            a_b,
-            n_b,
-            i_b,
-            m_b,
-            n_b0,
-            sp_v,
-            int_id = preamble_defs(int_m);
-            
-            
-            for t=1:maxits
-                sprich[v,w,r,t] = sum(CID[1:S,t]);
-                rich[v,w,r,t] = sum(CID[:,t]);
-                #how many engineers?
-                spcid = findall(isodd,CID[1:S,t]);
-                engineers[v,w,r,t] = sum(sum(m_b[spcid,:],dims=2) .> 0);
-            end
-
-            clocks[v,w,r,:] = copy(clock);
-
-            #Delta species and richness over time
-            spdiff = diff(sprich[v,w,r,:]);
-            rdiff = diff(rich[v,w,r,:]);
-            dt = diff(clock);
-            
-            #Where Delta species > 0 (+1) is a colonization (position)
-            colpos = findall(x->x>0,spdiff);
-            #Where Delta species < 0 (-1 or less) is an extinction (position)
-            extpos = findall(x->x<0,spdiff);
-            #Extinction size (but make it positive)
-            extinctions = spdiff[extpos].*-1;
-            #Colonization size
-            colonizations = spdiff[colpos];
-            
-            totalextinctions[v,w,r] = sum(extinctions);
-            totalcolonizations[v,w,r] = sum(colonizations);
-            
-            tstepsincom = sum(CID[2:S,:],dims=2) ./ maxits;
-            mpersistance[v,w,r] = mean(tstepsincom[vec(findall(!iszero,tstepsincom))]);
-            stdpersistance[v,w,r] = std(tstepsincom[vec(findall(!iszero,tstepsincom))]);
-            
-            #Only loop if there are extinctions
-            if length(extinctions) > 0
-
-                #Number of extinctions / dt
-                extrate = extinctions ./ dt[extpos];
-                mextrate[v,w,r] = mean(extrate);
-                stdextrate[v,w,r] = std(extrate);
-
-                #Number of colonizations / dt
-                colrate = colonizations ./ dt[colpos];
-            else
-                mextrate[v,w,r] = 0;
-                stdextrate[v,w,r] = 0;
-            end
-            
-        end
-        println(string("v=",v,"/",lnvec,"; w=",w,"/",llamb))
+    filename = "data/engineers_mutualisms_long/sim_settings.jld";
+    indices = [v,w];
+    namespace = smartpath(filename,indices);
+    @load namespace reps S maxits nvec athresh nthresh lambda SSprobs SOprobs OOprobs;
+    
+    # @sync @distributed for r=1:reps
+        
+    filename = "data/engineers_mutualisms_long/int_m.jld";
+    indices = [v,w,r];
+    namespace = smartpath(filename,indices);
+    @load namespace int_m tp_m tind_m mp_m mind_m;
+    
+    filename = "data/engineers_mutualisms_long/cid.jld";
+    indices = [v,w,r];
+    namespace = smartpath(filename,indices);
+    @load namespace CID clock;
+    
+    a_b,
+    n_b,
+    i_b,
+    m_b,
+    n_b0,
+    sp_v,
+    int_id = preamble_defs(int_m);
+    
+    
+    for t=1:maxits
+        sprich[v,w,r,t] = sum(CID[1:S,t]);
+        rich[v,w,r,t] = sum(CID[:,t]);
+        #how many engineers?
+        spcid = findall(isodd,CID[1:S,t]);
+        engineers[v,w,r,t] = sum(sum(m_b[spcid,:],dims=2) .> 0);
     end
+
+    clocks[v,w,r,:] = copy(clock);
+
+    #Delta species and richness over time
+    spdiff = diff(sprich[v,w,r,:]);
+    rdiff = diff(rich[v,w,r,:]);
+    dt = diff(clock);
+    
+    #Where Delta species > 0 (+1) is a colonization (position)
+    colpos = findall(x->x>0,spdiff);
+    #Where Delta species < 0 (-1 or less) is an extinction (position)
+    extpos = findall(x->x<0,spdiff);
+    #Extinction size (but make it positive)
+    extinctions = spdiff[extpos].*-1;
+    #Colonization size
+    colonizations = spdiff[colpos];
+    
+    totalextinctions[v,w,r] = sum(extinctions);
+    totalcolonizations[v,w,r] = sum(colonizations);
+    
+    tstepsincom = sum(CID[2:S,:],dims=2) ./ maxits;
+    mpersistance[v,w,r] = mean(tstepsincom[vec(findall(!iszero,tstepsincom))]);
+    stdpersistance[v,w,r] = std(tstepsincom[vec(findall(!iszero,tstepsincom))]);
+    
+    #Only loop if there are extinctions
+    if length(extinctions) > 0
+
+        #Number of extinctions / dt
+        extrate = extinctions ./ dt[extpos];
+        mextrate[v,w,r] = mean(extrate);
+        stdextrate[v,w,r] = std(extrate);
+
+        #Number of colonizations / dt
+        colrate = colonizations ./ dt[colpos];
+    else
+        mextrate[v,w,r] = 0;
+        stdextrate[v,w,r] = 0;
+    end
+        
+    # end
+    # println(string("v=",v,"/",lnvec,"; w=",w,"/",llamb))
+    # end
 end
 objects = rich .- sprich;
 
 
 
 #SO WE DON'T HAVE TO RUN THE ABOVE ANALYSIS EVERY TIME (takes long time)
-filename = "data/engineers_mutualisms/meanrates.jld";
+filename = "data/engineers_mutualisms_long/meanrates.jld";
 namespace = smartpath(filename);
 @save namespace reps lambdavec llamb sprich rich clocks engineers maxits mextrate stdextrate totalextinctions totalcolonizations mpersistance stdpersistance
 
 
 #SO WE DON'T HAVE TO RUN THE ABOVE ANALYSIS EVERY TIME (takes long time)
-filename = "data/engineers_mutualisms/meanrates.jld";
+filename = "data/engineers_mutualisms_long/meanrates.jld";
 namespace = smartpath(filename);
 @load namespace reps lambdavec llamb sprich rich clocks engineers maxits mextrate stdextrate totalextinctions totalcolonizations mpersistance stdpersistance
 
@@ -142,7 +152,7 @@ end
 
 #x ~ row of z
 #y ~ columns of z
-filename = "figures/engmut/extrate_engmut.pdf";
+filename = "figures/engmut/extrate_engmut_long.pdf";
 namespace = smartpath(filename);
 R"""
 library(RColorBrewer)
@@ -158,7 +168,7 @@ dev.off()
 
 #x ~ row of z
 #y ~ columns of z
-filename = "figures/engmut/persistence_engmut.pdf";
+filename = "figures/engmut/persistence_engmut_long.pdf";
 namespace = smartpath(filename);
 R"""
 library(RColorBrewer)
@@ -170,7 +180,7 @@ dev.off()
 """
 
 
-filename = "../manuscript/fig_engineers2.pdf";
+filename = "../manuscript/fig_engineers2_long.pdf";
 namespace = smartpath(filename);
 R"""
 library(RColorBrewer)
