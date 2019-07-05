@@ -1,5 +1,9 @@
 \begin{thebibliography}{10}
 
+\bibitem{Paine1966}
+Paine RT (1966) {Food Web Complexity and Species Diversity}.
+\newblock {\em Am. Nat.} 100(910):65--75.
+
 \bibitem{Dunne2002}
 Dunne JA, Williams RJ, Martinez ND (2002) {Food-web structure and network
   theory: the role of connectance and size}.
@@ -9,6 +13,11 @@ Dunne JA, Williams RJ, Martinez ND (2002) {Food-web structure and network
 Pascual M, Dunne J (2006) {\em {Ecological Networks: Linking Structure to
   Dynamics in Food Webs}}.
 \newblock (Oxford University Press, USA).
+
+\bibitem{Bascompte2013}
+Bascompte J, Jordano P (2013) {\em Mutualistic Networks}, Monographs in
+  Population Biology.
+\newblock (Princeton University Press).
 
 \bibitem{May1972}
 May RM (1972) {Will a large complex system be stable?}
@@ -23,47 +32,6 @@ Gross T, Levin SA, Dieckmann U (2009) {Generalized Models Reveal Stabilizing
 Allesina S, Tang S (2012) {Stability criteria for complex ecosystems}.
 \newblock {\em Nature} 483(7388):205--208.
 
-\bibitem{Novak2011}
-Novak M, et~al. (2011) {Predicting community responses to perturbations in the
-  face of imperfect knowledge and network complexity.}
-\newblock {\em Ecology} 0:00.
-
-\bibitem{Aufderheide2013}
-Aufderheide H, Rudolf L, Gross T, Lafferty KD (2013) {How to predict community
-  responses to perturbations in the face of imperfect knowledge and network
-  complexity}.
-\newblock {\em Proc. Roy. Soc. B} 280(1773):20132355--11873.
-
-\bibitem{Novak2016}
-Novak M, et~al. (2016) {Characterizing Species Interactions to Understand Press
-  Perturbations: What Is the Community Matrix?}
-\newblock {\em Annu. Rev. Ecol. Evol. Syst.}
-  47(1):annurev--ecolsys--032416--010215.
-
-\bibitem{Lade2011}
-Lade SJ, Gross T (2011) {Early warning signals for critical transitions: A
-  generalized modeling approach}.
-\newblock {\em arXiv}.
-
-\bibitem{Boettiger2012}
-Boettiger C, Hastings A (2012) {Quantifying limits to detection of early
-  warning for critical transitions}.
-\newblock {\em J. R. Soc. Interface} 9(75):2527--2539.
-
-\bibitem{Stouffer2011}
-Stouffer DB (2011) {Compartmentalization increases food-web persistence}.
-\newblock {\em Proc. Natl. Acad. Sci. USA} 108(9):3648--3652.
-
-\bibitem{Yeakel2014}
-Yeakel JD, et~al. (2014) {Collapse of an ecological network in Ancient Egypt}.
-\newblock {\em Proceedings of the National Academy of Sciences}
-  111(40):14472--14477.
-
-\bibitem{Weiher2001}
-Weiher E, Keddy P (2001) {\em Ecological Assembly Rules: Perspectives,
-  Advances, Retreats}.
-\newblock (Cambridge University Press).
-
 \bibitem{Kefi2016}
 K{\'e}fi S, Miele V, Wieters EA, Navarrete SA, Berlow EL (2016) {How Structured
   Is the Entangled Bank? The Surprisingly Simple Organization of Multiplex
@@ -76,6 +44,15 @@ Pilosof S, Porter MA, Pascual M, K{\'e}fi S (2017) The multilayer nature of
 \newblock {\em Nature Ecology \&Amp; Evolution} 1:0101 EP --.
 \newblock Perspective.
 
+\bibitem{Lawton1994}
+Lawton JH (1994) What do species do in ecosystems?
+\newblock {\em Oikos} 71(3):367--374.
+
+\bibitem{OdlingSmee2013}
+Odling-Smee J, Erwin DH, Palkovacs EP, Feldman MW, Laland KN (2013) {Niche
+  construction theory: a practical guide for ecologists.}
+\newblock {\em Q Rev Biol} 88(1):4--28.
+
 \bibitem{Jones1994}
 Jones CG, Lawton JH, Shachak M (1994) Organisms as ecosystem engineers.
 \newblock {\em Oikos} 69(3):373--386.
@@ -83,11 +60,6 @@ Jones CG, Lawton JH, Shachak M (1994) Organisms as ecosystem engineers.
 \bibitem{Olff2009}
 Olff H, et~al. (2009) {Parallel ecological networks in ecosystems}.
 \newblock {\em Philos. T. Roy. Soc. B} 364(1524):1755.
-
-\bibitem{OdlingSmee2013}
-Odling-Smee J, Erwin DH, Palkovacs EP, Feldman MW, Laland KN (2013) {Niche
-  construction theory: a practical guide for ecologists.}
-\newblock {\em Q Rev Biol} 88(1):4--28.
 
 \bibitem{Hastings2007}
 Hastings A, et~al. (2007) {Ecosystem engineering in space and time}.
@@ -136,6 +108,20 @@ Schirrmeister BE, de~Vos JM, Antonelli A, Bagheri HC (2013) Evolution of
 Loladze I, Elser JJ (2011) The origins of the redfield nitrogen-to-phosphorus
   ratio are in a homoeostatic protein-to-rrna ratio.
 \newblock {\em Ecology Letters} 14(3):244--250.
+
+\bibitem{Woodward2010}
+Woodward G, Perkins DM, Brown LE (2010) {Climate change and freshwater
+  ecosystems: impacts across multiple levels of organization}.
+\newblock {\em Philos. T. Roy. Soc. B} 365(1549):2093--2106.
+
+\bibitem{Brose2012}
+Brose U, et~al. (2012) {Climate change in size-structured ecosystems.}
+\newblock {\em Philos. T. Roy. Soc. B} 367(1605):2903--2912.
+
+\bibitem{Gibert2019b}
+Gibert JP (2019) Temperature directly and indirectly influences food web
+  structure.
+\newblock {\em Scientific Reports} 9(1):5312.
 
 \bibitem{Getz2011}
 Getz WM (2011) {Biomass transformation webs provide a unified approach to
@@ -191,6 +177,10 @@ Valdovinos FS (year?) Mutualistic networks: moving closer to a predictive
 Guimar{\~a}es~Jr PR, Pires MM, Jordano P, Bascompte J, Thompson JN (2017)
   {Indirect effects drive coevolution in mutualistic networks}.
 \newblock {\em Nature} 18:586.
+
+\bibitem{Stouffer2011}
+Stouffer DB (2011) {Compartmentalization increases food-web persistence}.
+\newblock {\em Proc. Natl. Acad. Sci. USA} 108(9):3648--3652.
 
 \bibitem{Gilarranz2017}
 Gilarranz LJ, Rayfield B, Li{\~n}{\'a}n-Cembrano G, Bascompte J, Gonzalez A
@@ -284,9 +274,11 @@ Muscarella ME, O'Dwyer JP (2017) {Ecological Insights from the Evolutionary
   History of Microbial Innovations}.
 \newblock {\em bioRxiv} p. 220939.
 
-\bibitem{Lawton1994}
-Lawton JH (1994) What do species do in ecosystems?
-\newblock {\em Oikos} 71(3):367--374.
+\bibitem{Shipway2019}
+Shipway JR, et~al. (2019) A rock-boring and rock-ingesting freshwater bivalve
+  (shipworm) from the philippines.
+\newblock {\em Proceedings of the Royal Society B: Biological Sciences}
+  286(1905):20190434.
 
 \bibitem{Kidwell1986}
 Kidwell SM (1986) Taphonomic feedback in miocene assemblages; testing the role
@@ -297,23 +289,6 @@ Kidwell SM (1986) Taphonomic feedback in miocene assemblages; testing the role
 Polz MF, Alm EJ, Hanage WP (2013) Horizontal gene transfer and the evolution of
   bacterial and archaeal population structure.
 \newblock {\em Trends in Genetics} 29(3):170 -- 175.
-
-\bibitem{Janzen1966}
-Janzen DH (1966) Coevolution of mutualism between ants and acacias in central
-  america.
-\newblock {\em Evolution} 20(3):249--275.
-
-\bibitem{Guimaraes2006}
-Guimar{\~a}es~Jr PR, Rico-Gray V, Furtado~dos Reis S, Thompson JN (2006)
-  {Asymmetries in specialization in ant{\textendash}plant mutualistic
-  networks}.
-\newblock {\em Proc. Roy. Soc. B} 273(1597):2041.
-
-\bibitem{Shipway2019}
-Shipway JR, et~al. (2019) A rock-boring and rock-ingesting freshwater bivalve
-  (shipworm) from the philippines.
-\newblock {\em Proceedings of the Royal Society B: Biological Sciences}
-  286(1905):20190434.
 
 \bibitem{Gillespie1977}
 Gillespie DT (1977) Exact stochastic simulation of coupled chemical reactions.

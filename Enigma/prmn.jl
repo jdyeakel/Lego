@@ -5,7 +5,7 @@ else
 end
 #git
 
-lambdavec = collect(0:0.1:2.0);
+lambdavec = collect(0:0.05:4.0);
 llamb = length(lambdavec);
 
 
@@ -60,7 +60,7 @@ its = llamb*reps;
     int_id = preamble_defs(int_m);
             
     #what is the proportion of objects that have multiple makers?
-    numobj[a,b] = size(int_m)[1] - S;
+    numobj[a,b] = size(int_m)[1] - S - 1;
     numsharedobj[a,b] = sum(sum(m_b[:,S+1:size(int_m)[1]],dims=1) .> 1);
     
     #If we select 2 species at random, what is the probability that they make the same object?
@@ -84,10 +84,33 @@ probsharedobj =  numsharedobj ./ numobj;
 m_propsharedobj = mean(probsharedobj,dims=2);
 m_numobjects = mean(numobj,dims=2);
 m_numsharedobj = mean(numsharedobj,dims=2);
-m_numuniqueobj = mean(numuniquedobj,dims=2);
+m_numuniqueobj = mean(numuniqueobj,dims=2);
 
 m_probsp = mean(probsp,dims=2);
 
 filename = "data/prmn.jld";
 namespace = smartpath(filename);
-@save namespace lambdavec llamb reps numobj numsharedobj numuniqueobj probsharedobj probsp
+@save namespace lambdavec llamb reps numobj numsharedobj numuniqueobj probsharedobj probsp;
+
+filename = "data/prmn.jld";
+namespace = smartpath(filename);
+@load namespace lambdavec llamb reps numobj numsharedobj numuniqueobj probsharedobj probsp;
+
+
+
+filename = "../manuscript/fig_redundancy.pdf";
+namespace = smartpath(filename);
+R"""
+pdf($namespace,width=8,height=8)
+par(mfrow=c(2,1),oma=c(3,3,1,1),mar=c(1,1,0,1))
+boxplot($(transpose(numsharedobj)),names=$lambdavec,xlab='',ylab='Redundant objects',pch='.',col='gray',xaxt='n',yaxt='n')
+axis(2)
+title(ylab='Number redundant objects',outer=FALSE,xpd=NA,line=2.5)
+boxplot($(transpose(numsharedobj ./ numobj)),names=$lambdavec,xlab=expression(paste('Number objects/species (',eta,')')),ylab='',pch='.',col='gray',ylim=c(0,1),xaxt='n',yaxt='n')
+axis(1,at=seq(1,length($lambdavec),length.out=5),labels=seq(0,2,by=0.5))
+axis(2)
+title(xlab=expression(paste('Number objects/species (',eta,')')),outer=TRUE,xpd=NA,line=1.5)
+title(ylab='Proportion redundant objects',outer=FALSE,xpd=NA,line=2.5)
+dev.off()
+"""
+

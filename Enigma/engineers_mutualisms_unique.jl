@@ -8,10 +8,10 @@ reps = 50;
 S = 200;
 maxits = 4000;
 
-nvec = collect(0.0:0.1:2.0);
+nvec = collect(0.0:0.05:2.0);
 lnvec = length(nvec);
 
-lambdavec = collect(0:0.1:2.0);
+lambdavec = collect(0:0.05:2.0);
 llamb = length(lambdavec);
 
 cn = pi;
@@ -51,7 +51,7 @@ paramvec[:,3] = repeat(collect(1:reps),outer=lvec*lvec);
     MaxN = convert(Int64,floor(S + S*lambda));
     
     if r == 1
-        filename = "data/engineers_mutualisms_unique/sim_settings.jld";
+        filename = "data/engineers_mutualisms_unique2/sim_settings.jld";
         indices = [v,w];
         namespace = smartpath(filename,indices);
         @save namespace reps S maxits nvec athresh nthresh lambda SSprobs SOprobs OOprobs;
@@ -71,7 +71,7 @@ paramvec[:,3] = repeat(collect(1:reps),outer=lvec*lvec);
     sp_v,
     int_id = preamble_defs(int_m);
     
-    filename = "data/engineers_mutualisms_unique/int_m.jld";
+    filename = "data/engineers_mutualisms_unique2/int_m.jld";
     indices = [v,w,r];
     namespace = smartpath(filename,indices);
     @save namespace int_m tp_m tind_m mp_m mind_m;
@@ -82,7 +82,7 @@ paramvec[:,3] = repeat(collect(1:reps),outer=lvec*lvec);
         athresh,nthresh,maxits,cn,ce,cp);
     
     #Save individually so data can be loaded in parallel
-    filename = "data/engineers_mutualisms_unique/cid.jld";
+    filename = "data/engineers_mutualisms_unique2/cid.jld";
     indices = [v,w,r];
     namespace = smartpath(filename,indices);
     @save namespace CID clock events;

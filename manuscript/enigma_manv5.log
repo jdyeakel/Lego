@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.17 (TeX Live 2016) (preloaded format=pdflatex 2016.5.22)  3 JUL 2019 11:39
+This is pdfTeX, Version 3.14159265-2.6-1.40.17 (TeX Live 2016) (preloaded format=pdflatex 2016.5.22)  4 JUL 2019 15:54
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1897,28 +1897,28 @@ LaTeX Font Info:    Font shape `T1/phv/bx/n' in size <8> not available
 (Font)              Font shape `T1/phv/b/n' tried instead on input line 91.
 LaTeX Font Info:    Font shape `T1/phv/b/n' will be
 (Font)              scaled to size 7.59998pt on input line 91.
-Package mdframed Info: mdframed works in twoside mode on input line 117.
+Package mdframed Info: mdframed works in twoside mode on input line 129.
 LaTeX Font Info:    Font shape `T1/phv/m/n' will be
-(Font)              scaled to size 9.49997pt on input line 117.
+(Font)              scaled to size 9.49997pt on input line 129.
 LaTeX Font Info:    Font shape `T1/phv/bx/n' in size <10> not available
-(Font)              Font shape `T1/phv/b/n' tried instead on input line 117.
+(Font)              Font shape `T1/phv/b/n' tried instead on input line 129.
 LaTeX Font Info:    Font shape `T1/phv/b/n' will be
-(Font)              scaled to size 9.49997pt on input line 117.
+(Font)              scaled to size 9.49997pt on input line 129.
 Package mdframed Info: mdframed inside float 
- mdframed uses option nobreak mdframed on input line 117.
+ mdframed uses option nobreak mdframed on input line 129.
 Package mdframed Info: mdframed inside a box 
- mdframed uses option nobreak mdframed on input line 117.
+ mdframed uses option nobreak mdframed on input line 129.
 LaTeX Font Info:    Font shape `T1/phv/m/n' will be
-(Font)              scaled to size 5.69998pt on input line 117.
+(Font)              scaled to size 5.69998pt on input line 129.
 LaTeX Font Info:    Font shape `T1/phv/bx/n' in size <7> not available
-(Font)              Font shape `T1/phv/b/n' tried instead on input line 138.
+(Font)              Font shape `T1/phv/b/n' tried instead on input line 161.
 LaTeX Font Info:    Font shape `T1/phv/b/n' will be
-(Font)              scaled to size 6.64998pt on input line 138.
+(Font)              scaled to size 6.64998pt on input line 161.
  [1{/usr/local/texlive/2016/texmf-var/fonts/map/pdftex/updmap/pdftex.map}
 
 
 ]
-Underfull \hbox (badness 10000) in paragraph at lines 154--159
+Underfull \hbox (badness 10000) in paragraph at lines 170--175
 
  []
 
@@ -1926,38 +1926,45 @@ Underfull \hbox (badness 10000) in paragraph at lines 154--159
 
 pdfTeX warning: pdflatex (file ./fig_model.pdf): PDF inclusion: found PDF versi
 on <1.7>, but at most version <1.5> allowed
-<fig_model.pdf, id=84, 360.6273pt x 229.1993pt>
+<fig_model.pdf, id=78, 360.6273pt x 229.1993pt>
 File: fig_model.pdf Graphic file (type pdf)
  <use fig_model.pdf>
-Package pdftex.def Info: fig_model.pdf used on input line 197.
+Package pdftex.def Info: fig_model.pdf used on input line 213.
 (pdftex.def)             Requested size: 234.8775pt x 149.27853pt.
 
-Overfull \hbox (6.75pt too wide) in paragraph at lines 197--202
+Overfull \hbox (6.75pt too wide) in paragraph at lines 213--218
  [][] 
  []
 
 [2 <./fig_model.pdf>]
-Underfull \hbox (badness 10000) in paragraph at lines 264--268
+Underfull \hbox (badness 10000) in paragraph at lines 280--284
 
  []
 
-<fig_trophic.pdf, id=150, 361.35pt x 505.89pt>
+<fig_trophic.pdf, id=145, 361.35pt x 505.89pt>
 File: fig_trophic.pdf Graphic file (type pdf)
  <use fig_trophic.pdf>
-Package pdftex.def Info: fig_trophic.pdf used on input line 296.
+Package pdftex.def Info: fig_trophic.pdf used on input line 312.
 (pdftex.def)             Requested size: 187.89914pt x 263.05658pt.
+
+
+LaTeX Warning: `!h' float specifier changed to `!ht'.
+
+
+Underfull \vbox (badness 4303) has occurred while \output is active []
+
  [3 <./fig_trophic.pdf>]
-Underfull \hbox (badness 3536) in paragraph at lines 326--334
+Underfull \hbox (badness 3536) in paragraph at lines 342--350
 \T1/lmr/m/n/9 (+20) In fact, as-sem-bling plant-pollinator sys-tems have
  []
 
 
-Underfull \hbox (badness 1067) in paragraph at lines 326--334
+Underfull \hbox (badness 1067) in paragraph at lines 342--350
 \T1/lmr/m/n/9 (+20) demon-strated high rates of species and in-ter-ac-tion
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 326--334
+Underfull \hbox (badness 10000) in paragraph at lines 342--350
 
  []
 
@@ -1965,51 +1972,51 @@ Underfull \hbox (badness 10000) in paragraph at lines 326--334
 
 pdfTeX warning: pdflatex (file ./fig_nested.pdf): PDF inclusion: found PDF vers
 ion <1.7>, but at most version <1.5> allowed
-<fig_nested.pdf, id=198, 289.08pt x 295.99683pt>
+<fig_nested.pdf, id=192, 289.08pt x 295.99683pt>
 File: fig_nested.pdf Graphic file (type pdf)
  <use fig_nested.pdf>
-Package pdftex.def Info: fig_nested.pdf used on input line 339.
+Package pdftex.def Info: fig_nested.pdf used on input line 355.
 (pdftex.def)             Requested size: 234.8775pt x 240.49683pt.
 
-Overfull \hbox (6.75pt too wide) in paragraph at lines 339--343
+Overfull \hbox (6.75pt too wide) in paragraph at lines 355--359
  [][] 
  []
 
-[4 <./fig_nested.pdf>] <fig_engineers3.pdf, id=269, 578.16pt x 433.62pt>
+[4 <./fig_nested.pdf>] <fig_engineers3.pdf, id=264, 578.16pt x 433.62pt>
 File: fig_engineers3.pdf Graphic file (type pdf)
 
 <use fig_engineers3.pdf>
-Package pdftex.def Info: fig_engineers3.pdf used on input line 409.
+Package pdftex.def Info: fig_engineers3.pdf used on input line 471.
 (pdftex.def)             Requested size: 234.8775pt x 176.15768pt.
 
-Overfull \hbox (6.75pt too wide) in paragraph at lines 409--413
+Overfull \hbox (6.75pt too wide) in paragraph at lines 471--475
  [][] 
  []
 
 
-Underfull \hbox (badness 1057) in paragraph at lines 444--448
+Underfull \hbox (badness 1057) in paragraph at lines 500--504
 \T1/lmr/m/n/9 (+20) im-por-tance of con-sid-er-ing di-verse in-ter-ac-tions bot
 h
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 444--448
+Underfull \hbox (badness 10000) in paragraph at lines 500--504
 
  []
 
 [5 <./fig_engineers3.pdf>] (./enigma_manv5.bbl
 LaTeX Font Info:    Font shape `T1/phv/m/it' in size <6> not available
-(Font)              Font shape `T1/phv/m/sl' tried instead on input line 6.
+(Font)              Font shape `T1/phv/m/sl' tried instead on input line 5.
 LaTeX Font Info:    Font shape `T1/phv/m/sl' will be
-(Font)              scaled to size 5.69998pt on input line 6.
+(Font)              scaled to size 5.69998pt on input line 5.
 
-Underfull \hbox (badness 1237) in paragraph at lines 23--25
+Underfull \hbox (badness 1237) in paragraph at lines 32--34
 []\T1/phv/m/n/6 Allesina S, Tang S (2012) Sta-bil-ity cri-te-ria for com-plex e
 cosys-tems.  \T1/phv/m/sl/6 Na-ture
  []
 
 
-Underfull \hbox (badness 1087) in paragraph at lines 141--144
+Underfull \hbox (badness 1087) in paragraph at lines 127--130
 []\T1/phv/m/n/6 Getz WM (2011) Biomass trans-for-ma-tion webs pro-vide a uni-fi
 ed ap-proach to
  []
@@ -2023,21 +2030,21 @@ AED: lastpage setting LastPage
 [7
 
 ]
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 607.
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 607.
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 663.
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 663.
  (./enigma_manv5.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 607.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 607.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 663.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 663.
 Package rerunfilecheck Info: File `enigma_manv5.out' has not changed.
 (rerunfilecheck)             Checksum: D41D8CD98F00B204E9800998ECF8427E;0.
-Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 607.
+Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 663.
  ) 
 Here is how much of TeX's memory you used:
- 32026 strings out of 493014
- 590125 string characters out of 6133351
- 685844 words of memory out of 5000000
- 34702 multiletter control sequences out of 15000+600000
- 104962 words of font info for 181 fonts, out of 8000000 for 9000
+ 32000 strings out of 493014
+ 589702 string characters out of 6133351
+ 684780 words of memory out of 5000000
+ 34686 multiletter control sequences out of 15000+600000
+ 104613 words of font info for 178 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  62i,14n,73p,10454b,1036s stack positions out of 5000i,500n,10000p,200000b,80000s
 {/usr/local/texlive/2016/texmf-dist/fonts/enc/dvips/base/8r.enc}{/usr/local/t
@@ -2063,10 +2070,10 @@ l/texlive/2016/texmf-dist/fonts/type1/public/lm/lmsy9.pfb></usr/local/texlive/2
 016/texmf-dist/fonts/type1/urw/helvetic/uhvb8a.pfb></usr/local/texlive/2016/tex
 mf-dist/fonts/type1/urw/helvetic/uhvr8a.pfb></usr/local/texlive/2016/texmf-dist
 /fonts/type1/urw/helvetic/uhvro8a.pfb>
-Output written on enigma_manv5.pdf (7 pages, 4463494 bytes).
+Output written on enigma_manv5.pdf (7 pages, 4463589 bytes).
 PDF statistics:
- 403 PDF objects out of 1000 (max. 8388607)
- 347 compressed objects within 4 object streams
- 76 named destinations out of 1000 (max. 500000)
+ 397 PDF objects out of 1000 (max. 8388607)
+ 341 compressed objects within 4 object streams
+ 72 named destinations out of 1000 (max. 500000)
  34337 words of extra memory for PDF output out of 35830 (max. 10000000)
 
