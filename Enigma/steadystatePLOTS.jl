@@ -49,6 +49,9 @@ realizedGavgc = SharedArray{Float64}(reps,tseqmax,S);
 potentialG = SharedArray{Float64}(reps,tseqmax,S);
 C = SharedArray{Float64}(reps,tseqmax);
 
+#Save richness for colonizing phase
+coltraj = SharedArray{Int64}(reps,1000);
+clocktraj = SharedArray{Float64}(reps,1000);
 
 @sync @distributed for r=1:reps
     #Read in the interaction matrix
@@ -94,6 +97,10 @@ C = SharedArray{Float64}(reps,tseqmax);
     n_b0,
     sp_v,
     int_id = preamble_defs(int_m);
+    
+    #Save FULL colonizing phase
+    coltraj[r,:] = sum(CID[:,1:1000],dims=1);
+    clocktraj[r,:] = clock[1:1000];
 
     #Analysis
     for t = 1:tseqmax
@@ -153,6 +160,28 @@ C = SharedArray{Float64}(reps,tseqmax);
     end
 
 end
+
+filename = "figures/logistic_test.pdf";
+namespace = smartpath(filename);
+#logistic fit
+R"""
+d <- data.frame("Time"=$(clocktraj[1,:]),"Rich"=$(coltraj[1,:]))
+
+Time = as.numeric(d["Time"][,1]);
+Rich = as.numeric(d["Rich"][,1]);
+SS<-getInitial(Rich~SSlogis(Time,alpha,xmid,scale),data=d)
+K_start<-SS["alpha"]
+R_start<-1/SS["scale"]
+N0_start<-SS["alpha"]/(exp(SS["xmid"]/SS["scale"])+1)
+log_formula<-formula(Rich~K*N0*exp(R*Time)/(K+N0*(exp(R*Time)-1)))
+m<-nls(log_formula,start=list(K=K_start,R=R_start,N0=N0_start))
+
+pdf($namespace,width=6,height=5)
+plot($(clocktraj[1,:]),$(coltraj[1,:]))
+curve(predict(m,data.frame(Time=x),type="resp"),add=TRUE)
+dev.off()
+"""
+
 
 
 filename = "data/intm_structure.jld";
@@ -845,6 +874,116 @@ dev.off()
 
 
 
+
+
+
+filename = "../manuscript/fig_trophic2.pdf";
+namespace = smartpath(filename);
+R"""
+library(RColorBrewer)
+pdf($namespace,height=5,width=6)
+layout(matrix(c(1,1,2,3), 2, 2, byrow = TRUE), 
+   widths=c(1,1,1), heights=c(0.8,1,1))
+par(oma = c(0.5, 1, 1, 1), mar = c(3, 4, 1, 1))
+"""
+rsample=sample(collect(1:reps),100);
+r=rsample[1];
+filename = "data/steadystate/int_m.jld";
+indices = [r];
+namespace = smartpath(filename,indices);
+@load namespace int_m tp_m tind_m mp_m mind_m;
+filename = "data/steadystate/cid.jld";
+indices = [r];
+namespace = smartpath(filename,indices);
+@load namespace CID clock;
+R"""
+pal=brewer.pal(3,'Set1')
+plot($(clock),$(vec(sum(CID,dims=1))),type='l',col=paste(pal[2],40,sep=''),xlim=c(0,100),ylim=c(0,180),xlab='',ylab='',axes=FALSE)
+axis(1)
+axis(2,las=1)
+title(ylab='Species richness', line=3, cex.lab=1.2)
+title(xlab='Time', line=2.0, cex.lab=1.2)
+mtext(paste0("A"), side = 3, adj = -0.16, 
+    line = 0.3,cex=1.2)
+"""
+
+for i=2:length(rsample)
+    r=rsample[i];
+    filename = "data/steadystate/int_m.jld";
+    indices = [r];
+    namespace = smartpath(filename,indices);
+    @load namespace int_m tp_m tind_m mp_m mind_m;
+    filename = "data/steadystate/cid.jld";
+    indices = [r];
+    namespace = smartpath(filename,indices);
+    @load namespace CID clock;
+    # filename = "figures/yog/assembly_time.pdf"
+    # namespace = smartpath(filename);
+    R"""
+    lines($(clock),$(vec(sum(CID,dims=1))),type='l',col=paste(pal[2],40,sep=''))
+    """
+end
+
+
+
+#SPECIALIZATION
+R"""
+pal = brewer.pal($(length(seq2)),'Spectral')
+timelabels = parse(text=c("5","10","25","50",paste("10","^2"),paste("2.10","^2"),paste("5*10","^2"),paste("10","^3"),paste("2*10","^3"),paste("4*10","^3")))
+# par(mfrow=c(2,1))
+plot($(seq[seq2]),1 - $mrGavgc, xlim=c(5,4000), ylim=c(0,1), xlab='', ylab='', log='x', cex.axis=0.85, pch=23, col='black', bg=pal, cex=1.5,axes=FALSE)
+axis(2,at=seq(0,1,by=0.2),labels=TRUE,tck=-0.015,mgp=c(0.5,0.5,0),las=1)
+axis(1,at=$(seq[seq2]),labels=TRUE,tck=-0.015,mgp=c(0.5,0.5,0))
+title(ylab='Proportion specialists', line=3, cex.lab=1.2)
+title(xlab='Assembly time', line=2.0, cex.lab=1.2)
+mtext(paste0("B"), side = 3, adj = -0.4, 
+    line = -0.6,cex=1.2)
+"""
+for i=1:length(seq2)
+    R"""
+    propspec = 1-($(propGavgc[:,i]))
+    propspectrim = propspec[which(propspec > 0)]
+    if (length(propspectrim)>0) {
+        points(jitter(rep($(seq[seq2[i]]),length(propspectrim))),propspectrim,pch='.',cex=3,col=pal[$i])
+    }
+    """
+end
+R"""
+lines($(seq[seq2]),1-$mrGavgc,lwd=2)
+points($(seq[seq2]),1-$mrGavgc,pch=23,col='black',bg=pal,cex=1.5)
+
+#TROPHIC
+
+pal = colorRampPalette(brewer.pal(11,"Spectral"))(length($seq2))
+fulldist = $(meantrophicdist[1,:]);
+trimdist = fulldist[which(fulldist>0.005)];
+plot(trimdist,seq(1,length(trimdist)),type='l',xlim=c(0,0.6),ylim=c(1,12),col=pal[1],xlab='',ylab='',axes=FALSE)
+axis(2,at=seq(1:12),labels=TRUE,tck=-0.015,mgp=c(0.5,0.5,0),las=1)
+axis(1,at=seq(0:0.6,by=0.2),labels=TRUE,tck=-0.015,mgp=c(0.5,0.5,0))
+title(ylab='Trophic level (TL)', line=2, cex.lab=1.2)
+title(xlab='Frequency', line=2.0, cex.lab=1.2)
+mtext(paste0("C"), side = 3, adj = -0.3, 
+    line = -0.6,cex=1.2)
+points(trimdist,seq(1,length(trimdist)),pch=21,bg=pal[1],col='black')
+"""
+for i=1:12
+    R"""
+    rect(0,$i-0.5,$(meantrophicdist[length(seq2),i]),$i+0.5,col=paste(pal[length($seq2)],50,sep=''),border=NA)
+    """
+end
+for i=1:length(seq2)
+    R"""
+    fulldist = $(meantrophicdist[i,:]);
+    trimdist = fulldist[which(fulldist>0.005)];
+    lines(trimdist,seq(1,length(trimdist)),col=pal[$i])
+    points(trimdist,seq(1,length(trimdist)),pch=21,bg=pal[$i],col='black')
+    """
+end
+R"""
+legend(x=0.45,y=12.5,legend=$(seq[seq2]),pt.cex=1.2,pt.bg=pal,col='black',pch=21,bty='n',title='',cex=0.8)
+text(0.45,11.7,'Assembly time')
+dev.off()
+"""
 
 
 

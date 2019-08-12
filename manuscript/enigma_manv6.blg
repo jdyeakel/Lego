@@ -1,0 +1,46 @@
+This is BibTeX, Version 0.99d (TeX Live 2016)
+Capacity: max_strings=35307, hash_size=35307, hash_prime=30011
+The top-level auxiliary file: enigma_manv6.aux
+The style file: pnas-new.bst
+Database file #1: aabib.bib
+You've used 71 entries,
+            1837 wiz_defined-function locations,
+            971 strings with 16361 characters,
+and the built_in function-call counts, 17259 in all, are:
+= -- 1448
+> -- 822
+< -- 1
++ -- 247
+- -- 176
+* -- 1588
+:= -- 2576
+add.period$ -- 142
+call.type$ -- 71
+change.case$ -- 68
+chr.to.int$ -- 0
+cite$ -- 71
+duplicate$ -- 724
+empty$ -- 1665
+format.name$ -- 176
+if$ -- 3724
+int.to.chr$ -- 0
+int.to.str$ -- 71
+missing$ -- 74
+newline$ -- 287
+num.names$ -- 71
+pop$ -- 89
+preamble$ -- 1
+purify$ -- 0
+quote$ -- 0
+skip$ -- 391
+stack$ -- 0
+substring$ -- 1662
+swap$ -- 158
+text.length$ -- 1
+text.prefix$ -- 0
+top$ -- 0
+type$ -- 0
+warning$ -- 0
+while$ -- 173
+width$ -- 73
+write$ -- 709

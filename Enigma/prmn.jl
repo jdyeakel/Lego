@@ -103,14 +103,21 @@ namespace = smartpath(filename);
 R"""
 pdf($namespace,width=8,height=8)
 par(mfrow=c(2,1),oma=c(3,3,1,1),mar=c(1,1,0,1))
+
+exp_numb = ($S*(exp(1)-2)/(exp(1)))*seq(0,2,length.out=41);
+exp_prop = (exp(1)-2)/(exp(1)-1);
+
+
 boxplot($(transpose(numsharedobj)),names=$lambdavec,xlab='',ylab='Redundant objects',pch='.',col='gray',xaxt='n',yaxt='n')
+lines(seq(1,41),exp_numb,lwd=3,col='red',lty=2)
 axis(2)
-title(ylab='Number redundant objects',outer=FALSE,xpd=NA,line=2.5)
-boxplot($(transpose(numsharedobj ./ numobj)),names=$lambdavec,xlab=expression(paste('Number objects/species (',eta,')')),ylab='',pch='.',col='gray',ylim=c(0,1),xaxt='n',yaxt='n')
+title(ylab='Number redundant modifiers',outer=FALSE,xpd=NA,line=2.5)
+boxplot($(transpose(numsharedobj ./ numobj)),names=$lambdavec,xlab=expression(paste('Number modifiers/species (',eta,')')),ylab='',pch='.',col='gray',ylim=c(0,1),xaxt='n',yaxt='n')
+lines(seq(1,41),rep($(exp_prop),41),lwd=3,col='red',lty=2)
 axis(1,at=seq(1,length($lambdavec),length.out=5),labels=seq(0,2,by=0.5))
 axis(2)
-title(xlab=expression(paste('Number objects/species (',eta,')')),outer=TRUE,xpd=NA,line=1.5)
-title(ylab='Proportion redundant objects',outer=FALSE,xpd=NA,line=2.5)
+title(xlab=expression(paste('Number modifiers/species (',eta,')')),outer=TRUE,xpd=NA,line=1.5)
+title(ylab=expression(paste('Proportion redundant modifiers ',phi)),outer=FALSE,xpd=NA,line=2.5)
 dev.off()
 """
 

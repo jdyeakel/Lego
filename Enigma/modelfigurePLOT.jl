@@ -237,7 +237,7 @@ darken <- function(color, factor=1.2){
     col <- rgb(t(col), maxColorValue=255)
     col
 }
-objects = which(diag(xx)==3); #[-1]
+objects = which(diag(xx)==3);
 for (i in 1:length(objects)) {
     for (j in 1:num_play) {
         col = xx2[objects[i],j];
@@ -250,19 +250,15 @@ for (i in 1:length(objects)) {
     }
 pdf($namespace,height=5,width=10)
 par(mfrow=c(1,2))
-#pdf($namespace,width=6,height=5)
 pal <- brewer.pal(3,"Set1")
 fw_g <- graph.adjacency($(transpose(adjmatrix)));
 basal_pos <- 1
 trophic = as.numeric(c($([0;troph[1:length(species)-1]]),seq(1,8,length.out=length($objects))));
-# trophic = as.numeric($([0;paths[keepnodes[2:length(keepnodes)]]]));
 keepnodes = c(1,which(trophic>0.0))
 """
 @rget keepnodes; keepnodes = Int64.(keepnodes);
 R"""
-#keepnodes = $keepnodes;
 trophic2 = trophic[keepnodes];
-#BUILD TROPHIC COORDS TO GRAB FROM
 maxTL = floor(max(trophic2)) + 1
 TLcoords = list()
 for (i in 1:maxTL) {
@@ -278,18 +274,15 @@ for (i in 2:(length(trophic2)-length(objects)+1)) {
     if (trfloor < 1) {
         trfloor = 1
     }
-    #grab random position
     s = sample(seq(1:length(TLcoords[[trfloor]][,2])),1)
     coords[i,] = TLcoords[[trfloor]][s,]
 }
 for (i in ((length(trophic2)-length(objects)+2):length(trophic2))) {
     coords[i,] = c(-1.2,trophic2[i])
 }
-# coords <- cbind(runif(length(keepnodes)),trophic2);
 coords[basal_pos,] <- c(0,-1)
 max_pos = which(trophic2[1:length($species)] == max(trophic2[1:length($species)]))[1]
 coords[max_pos,1] <- 0
-#rearrange objects
 coords[(length(trophic2)-length($objects)+1):length(trophic2),2] = seq(min(coords[,2]),max(coords[1:(length(trophic2)-length($objects)),2]),length.out=length($objects))
 colpos = floor(trophic2)+1
 lowtrophic = which(colpos == 1)
@@ -298,18 +291,12 @@ nodecols = c("white",rev(colorRampPalette(brewer.pal(9,"Spectral"))(max(colpos))
 vertexcols = nodecols[colpos];
 vertexcols[((length(trophic2)-length(objects)+2):length(trophic2))] ="black";
 fw_g = graph.adjacency($(transpose(adjmatrix[keepnodes,keepnodes])))
-# plot(fw_g,layout=layout_(fw_g,nicely()),vertex.size=4,arrow.size=0.25)
-plot(fw_g,layout=coords,vertex.size=5,edge.arrow.size=0.25,edge.color=paste(pal[1],'75',sep=''),vertex.label=NA, vertex.color=vertexcols,vertex.frame.color="black",cex=2)
+plot(fw_g,layout=coords,vertex.size=8,edge.width=2,edge.arrow.size=0.5,edge.color=paste(pal[1],'75',sep=''),vertex.label=NA, vertex.color=vertexcols,vertex.frame.color="black",cex=2)
 legend.gradient(cbind(x =c(1.2,1.3,1.3,1.2), y =c(-.3,-.3,0.8,0.8)),cols=nodecols,limits = c(0,floor(max(trophic2)))+1,title='TL')
-#vertex.color=c(pal[1],rep(pal[2],vcount(fw_g)-1))
-#main=ecount(fw_g)/$(size(adjmatrix)[1])^2,
-# fw_ind <- graph.adjacency($(transpose(indmatrix[keepnodes,keepnodes])));
-# plot(fw_ind,layout=coords,vertex.size=5,edge.arrow.size=0.25,edge.color=pal[1],vertex.label=NA, vertex.color=nodecols[colpos],vertex.frame.color="black",cex=2,add=TRUE)
-# dev.off()
 fw_needs <- graph.adjacency($((adjmatrix_n[keepnodes,keepnodes])));
-plot(fw_needs,layout=coords,vertex.size=5,edge.arrow.size=0.25,edge.color=paste(pal[2],'75',sep=''),vertex.label=NA, vertex.color=vertexcols,vertex.frame.color="black",cex=2,add=TRUE)
+plot(fw_needs,layout=coords,vertex.size=8,edge.width=2,edge.arrow.size=0.5,edge.color=paste(pal[2],'75',sep=''),vertex.label=NA, vertex.color=vertexcols,vertex.frame.color="black",cex=2,add=TRUE)
 fw_makes <- graph.adjacency($((adjmatrix_m[keepnodes,keepnodes])));
-plot(fw_makes,layout=coords,vertex.size=5,edge.arrow.size=0.25,edge.color=paste(pal[3],'75',sep=''),vertex.label=NA, vertex.color=vertexcols,vertex.frame.color="black",cex=2,add=TRUE)
+plot(fw_makes,layout=coords,vertex.size=8,edge.width=2,edge.arrow.size=0.5,edge.color=paste(pal[3],'75',sep=''),vertex.label=NA, vertex.color=vertexcols,vertex.frame.color="black",cex=2,add=TRUE)
 int_types=c('e','n','i','m')
 color2D.matplot(xx,extremes=c(1:length(int_types)), border='white', axes=FALSE, xlab='', ylab='',main='',cellcolors=xx2)
 legend(x=-15,y=num_play,legend=int_types,pch=22,pt.bg=pal,xpd=TRUE, bty='n')

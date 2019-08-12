@@ -4,7 +4,7 @@ else
     loadfunc = include("$(homedir())/Dropbox/PostDoc/2014_Lego/Enigma/src/loadfuncs.jl");
 end
 
-filename = "data/engineers_mutualisms2/sim_settings.jld";
+filename = "data/engineers_mutualisms3/sim_settings.jld";
 indices = [1,1];
 namespace = smartpath(filename,indices);
 @load namespace reps S maxits nvec athresh nthresh lambda SSprobs SOprobs OOprobs;
@@ -16,8 +16,9 @@ namespace = smartpath(filename,indices);
 # nvec = collect(0.0:0.1:2.0);
 lnvec = length(nvec);
 
-lambdavec = copy(nvec);
+lambdavec = collect(0:0.05:2.0);
 llamb = length(lambdavec);
+
 
 numcol = SharedArray{Int64}(lnvec,llamb,reps);
 numprim = SharedArray{Int64}(lnvec,llamb,reps);
@@ -30,6 +31,7 @@ msecextrate = SharedArray{Float64}(lnvec,llamb,reps);
 mcolrate = SharedArray{Float64}(lnvec,llamb,reps);
 mobextrate = SharedArray{Float64}(lnvec,llamb,reps);
 mpersistance = SharedArray{Float64}(lnvec,llamb,reps);
+propcol = SharedArray{Float64}(lnvec,llamb,reps);
 
 numcol_unique = SharedArray{Int64}(lnvec,llamb,reps);
 numprim_unique = SharedArray{Int64}(lnvec,llamb,reps);
@@ -42,6 +44,7 @@ msecextrate_unique = SharedArray{Float64}(lnvec,llamb,reps);
 mcolrate_unique = SharedArray{Float64}(lnvec,llamb,reps);
 mobextrate_unique = SharedArray{Float64}(lnvec,llamb,reps);
 mpersistance_unique = SharedArray{Float64}(lnvec,llamb,reps);
+propcol_unique = SharedArray{Float64}(lnvec,llamb,reps);
 
 lvec = copy(lnvec);
 paramvec = Array{Int64}(undef,lvec*lvec*reps,3);
@@ -57,10 +60,10 @@ paramvec[:,3] = repeat(collect(1:reps),outer=lvec*lvec);
     r = paramvec[ii,3];
     
     #UNIQUE
-    filename = "data/engineers_mutualisms_unique/sim_settings.jld";
-    indices = [v,w];
-    namespace = smartpath(filename,indices);
-    @load namespace reps S maxits nvec athresh nthresh lambda SSprobs SOprobs OOprobs;
+    # filename = "data/engineers_mutualisms_unique2/sim_settings.jld";
+    # indices = [v,w];
+    # namespace = smartpath(filename,indices);
+    # @load namespace reps S maxits nvec athresh nthresh lambda SSprobs SOprobs OOprobs;
     
     # @sync @distributed for r=1:reps
         
@@ -69,7 +72,7 @@ paramvec[:,3] = repeat(collect(1:reps),outer=lvec*lvec);
     # namespace = smartpath(filename,indices);
     # @load namespace int_m tp_m tind_m mp_m mind_m;
     
-    filename = "data/engineers_mutualisms_unique/cid.jld";
+    filename = "data/engineers_mutualisms_unique2/cid.jld";
     indices = [v,w,r];
     namespace = smartpath(filename,indices);
     @load namespace CID clock events;
@@ -97,6 +100,8 @@ paramvec[:,3] = repeat(collect(1:reps),outer=lvec*lvec);
     tstepsincom = sum(CID_unique[2:S,:],dims=2) ./ maxits;
     mpersistance_unique[v,w,r] = mean(tstepsincom[vec(findall(!iszero,tstepsincom))]);
     
+    propcol_unique[v,w,r] = sum(vec(sum(CID[2:S,:],dims=2)) .> 0) / (S - 1);
+    
         
     # filename = "data/engineers_mutualisms2/sim_settings.jld";
     # indices = [v,w];
@@ -110,7 +115,7 @@ paramvec[:,3] = repeat(collect(1:reps),outer=lvec*lvec);
     # namespace = smartpath(filename,indices);
     # @load namespace int_m tp_m tind_m mp_m mind_m;
     
-    filename = "data/engineers_mutualisms2/cid.jld";
+    filename = "data/engineers_mutualisms3/cid.jld";
     indices = [v,w,r];
     namespace = smartpath(filename,indices);
     @load namespace CID clock events;
@@ -136,20 +141,22 @@ paramvec[:,3] = repeat(collect(1:reps),outer=lvec*lvec);
     tstepsincom = sum(CID[2:S,:],dims=2) ./ maxits;
     mpersistance[v,w,r] = mean(tstepsincom[vec(findall(!iszero,tstepsincom))]);
     
+    propcol[v,w,r] = sum(vec(sum(CID[2:S,:],dims=2)) .> 0) / (S - 1);
+    
     
 end
 
 
 #SO WE DON'T HAVE TO RUN THE ABOVE ANALYSIS EVERY TIME (takes long time)
-filename = "data/engineers_mutualisms2/meanrates.jld";
+filename = "data/engineers_mutualisms3/meanrates.jld";
 namespace = smartpath(filename);
-@save namespace reps lambdavec llamb nvec lnvec numcol numprim numsec numobext clocks mss mprimextrate msecextrate mcolrate mobextrate mpersistance numcol_unique numprim_unique numsec_unique numobext_unique clocks_unique mss_unique mpersistance_unique mprimextrate_unique msecextrate_unique mcolrate_unique mobextrate_unique;
+@save namespace reps lambdavec llamb nvec lnvec numcol numprim numsec numobext clocks mss mprimextrate msecextrate mcolrate mobextrate mpersistance propcol numcol_unique numprim_unique numsec_unique numobext_unique clocks_unique mss_unique mpersistance_unique mprimextrate_unique msecextrate_unique mcolrate_unique mobextrate_unique propcol_unique;
 
 
 #SO WE DON'T HAVE TO RUN THE ABOVE ANALYSIS EVERY TIME (takes long time)
-filename = "data/engineers_mutualisms2/meanrates.jld";
+filename = "data/engineers_mutualisms3/meanrates.jld";
 namespace = smartpath(filename);
-@load namespace reps lambdavec llamb nvec lnvec numcol numprim numsec numobext clocks mss mprimextrate msecextrate mcolrate mobextrate mpersistance numcol_unique numprim_unique numsec_unique numobext_unique clocks_unique mss_unique mpersistance_unique mprimextrate_unique msecextrate_unique mcolrate_unique mobextrate_unique;
+@load namespace reps lambdavec llamb nvec lnvec numcol numprim numsec numobext clocks mss mprimextrate msecextrate mcolrate mobextrate mpersistance propcol numcol_unique numprim_unique numsec_unique numobext_unique clocks_unique mss_unique mpersistance_unique mprimextrate_unique msecextrate_unique mcolrate_unique mobextrate_unique propcol_unique;
 
 avalue = 0.01;
 nvec_scaled = (avalue/10) .* nvec;
@@ -168,6 +175,9 @@ mpersist_surf_unique = Array{Float64}(undef,lnvec,llamb);
 
 mss_surf = Array{Float64}(undef,lnvec,llamb);
 mss_surf_unique = Array{Float64}(undef,lnvec,llamb);
+
+propcol_surf = Array{Float64}(undef,lnvec,llamb);
+propcol_surf_unique = Array{Float64}(undef,lnvec,llamb);
 for v = 1:lnvec
     for w = 1:llamb
         mprimextrate_surf[v,w] = mean(mprimextrate[v,w,:]);
@@ -187,6 +197,9 @@ for v = 1:lnvec
         
         mss_surf[v,w] = mean(mss[v,w,:]);
         mss_surf_unique[v,w] = mean(mss_unique[v,w,:]);
+        
+        propcol_surf[v,w] = mean(propcol[v,w,:]);
+        propcol_surf_unique[v,w] = mean(propcol_unique[v,w,:]);
     end
 end
 
@@ -200,7 +213,7 @@ end
 # library(fields)
 # pal = brewer.pal(11,'Spectral')
 # pdf($namespace,width=5,height=5)
-# image.plot(y=$nvec_scaled,x=$lambdavec,z=$(transpose(mextrate_surf)),col=pal,ylab='Frequency of mutualisms',xlab='Mean number of objects/species',nlevel=11)
+# image.plot(y=$nvec_scaled,x=$lambdavec,z=$(transpose(mextrate_surf)),col=pal,ylab='Frequency of mutualisms',xlab='Mean number of modifiers/species',nlevel=11)
 # # contour(y=$nvec_scaled,x=$lambdavec,z=$(transpose(mextrate_surf)), add = TRUE, drawlabels = TRUE)
 # 
 # dev.off()
@@ -215,13 +228,13 @@ end
 # library(RColorBrewer)
 # pal = brewer.pal(9,'YlGnBu')
 # pdf($namespace,width=5,height=5)
-# image.plot(y=$nvec_scaled,x=$lambdavec,z=$(transpose(mpersist_surf)),col=pal,ylab='Frequency of mutualisms',xlab='Mean number of objects/species',nlevel=11)
+# image.plot(y=$nvec_scaled,x=$lambdavec,z=$(transpose(mpersist_surf)),col=pal,ylab='Frequency of mutualisms',xlab='Mean number of modifiers/species',nlevel=11)
 # # contour(x=$nvec_scaled,y=$lambdavec,z=$mpersist_surf, add = TRUE, drawlabels = TRUE)
 # dev.off()
 # """
 
 
-filename = "../manuscript/fig_engineers3.pdf";
+filename = "../manuscript/fig_engineers4.pdf";
 namespace = smartpath(filename);
 R"""
 library(RColorBrewer)
@@ -235,8 +248,8 @@ image.plot(y=$nvec_scaled,x=$lambdavec,z=$(transpose(avgprimextrate_surf)),col=p
 axis(2,at=seq(0,0.002,by=0.001),labels=TRUE,tck=-0.015,mgp=c(0.5,0.5,0),las=1)
 # axis(1,at=seq(0,2,by=0.5),labels=TRUE,tck=-0.015,mgp=c(0.5,0.5,0))
 title(ylab='Frequency of service interactions', line=2.5, cex.lab=1.2,las=1,outer=TRUE,xpd=NA)
-title(xlab=expression(paste('Expected objects/species (',eta,')')), line=1.0, cex.lab=1.2,las=1,outer=TRUE,xpd=NA)
-# title(xlab='Mean objects/species', line=1.5, cex.lab=1.)
+title(xlab=expression(paste('Expected modifiers/species (',eta,')')), line=1.0, cex.lab=1.2,las=1,outer=TRUE,xpd=NA)
+# title(xlab='Mean modifiers/species', line=1.5, cex.lab=1.)
 mtext('1° ext.',side=4,line=0.1,las=1,padj=-10)
 text(0.1,0.0019,'A',cex=2,col='Black')
 
@@ -245,7 +258,7 @@ image.plot(y=$nvec_scaled,x=$lambdavec,z=$(transpose(avgsecextrate_surf)),col=pa
 # axis(2,at=seq(0,0.002,by=0.001),labels=TRUE,tck=-0.015,mgp=c(0.5,0.5,0))
 # axis(1,at=seq(0,2,by=0.5),labels=TRUE,tck=-0.015,mgp=c(0.5,0.5,0))
 # title(ylab='Freq. service interactions', line=2.0, cex.lab=1.,las=1)
-# title(xlab='Mean objects/species', line=1.5, cex.lab=1.)
+# title(xlab='Mean modifiers/species', line=1.5, cex.lab=1.)
 mtext('2° ext.',side=4,line=0.1,las=1,padj=-10)
 text(0.1,0.0019,'B',cex=2,col='White')
 
@@ -273,7 +286,7 @@ dev.off()
 
 
 
-filename = "../manuscript/fig_engineers3_unique.pdf";
+filename = "../manuscript/fig_engineers4_unique.pdf";
 namespace = smartpath(filename);
 R"""
 library(RColorBrewer)
@@ -287,8 +300,8 @@ image.plot(y=$nvec_scaled,x=$lambdavec,z=$(transpose(avgprimextrate_surf_unique)
 axis(2,at=seq(0,0.002,by=0.001),labels=TRUE,tck=-0.015,mgp=c(0.5,0.5,0),las=1)
 # axis(1,at=seq(0,2,by=0.5),labels=TRUE,tck=-0.015,mgp=c(0.5,0.5,0))
 title(ylab='Frequency of service interactions', line=2.5, cex.lab=1.2,las=1,outer=TRUE,xpd=NA)
-title(xlab=expression(paste('Expected objects/species (',eta,')')), line=1.0, cex.lab=1.2,las=1,outer=TRUE,xpd=NA)
-# title(xlab='Mean objects/species', line=1.5, cex.lab=1.)
+title(xlab=expression(paste('Expected modifiers/species (',eta,')')), line=1.0, cex.lab=1.2,las=1,outer=TRUE,xpd=NA)
+# title(xlab='Mean modifiers/species', line=1.5, cex.lab=1.)
 mtext('1° ext.',side=4,line=0.1,las=1,padj=-10)
 text(0.1,0.0019,'A',cex=2,col='Black')
 
@@ -297,7 +310,7 @@ image.plot(y=$nvec_scaled,x=$lambdavec,z=$(transpose(avgsecextrate_surf_unique))
 # axis(2,at=seq(0,0.002,by=0.001),labels=TRUE,tck=-0.015,mgp=c(0.5,0.5,0))
 # axis(1,at=seq(0,2,by=0.5),labels=TRUE,tck=-0.015,mgp=c(0.5,0.5,0))
 # title(ylab='Freq. service interactions', line=2.0, cex.lab=1.,las=1)
-# title(xlab='Mean objects/species', line=1.5, cex.lab=1.)
+# title(xlab='Mean modifiers/species', line=1.5, cex.lab=1.)
 mtext('2° ext.',side=4,line=0.1,las=1,padj=-10)
 text(0.1,0.0019,'B',cex=2,col='White')
 
@@ -323,24 +336,24 @@ dev.off()
 """
 
 
-filename = "../manuscript/fig_steadystates.pdf";
+filename = "../manuscript/fig_steadystates2.pdf";
 namespace = smartpath(filename);
 R"""
 library(RColorBrewer)
 library(fields)
-pdf($namespace,width=8,height=4)
-layout(matrix(c(1,2), 1, 2, byrow = TRUE), 
-   widths=c(1,1), heights=c(0.5,0.5))
-par(oma = c(3, 4, 1, 1), mar = c(1, 1, 0, 1)) #,mai=c(0.6,0.6,0,0.1)
+pdf($namespace,width=8,height=7)
+layout(matrix(c(1,2,3,4), 2, 2, byrow = TRUE), 
+   widths=c(1,1,1,1), heights=c(0.5,0.5,0.5,0.5))
+par(oma = c(4, 5, 1, 1), mar = c(1, 1, 0, 3)) #,mai=c(0.6,0.6,0,0.1)
 pal = brewer.pal(9,'Blues')
 image.plot(y=$nvec_scaled,x=$lambdavec,z=$(transpose( mss_surf)),col=pal,ylab='',xlab='',nlevel=11,axes=FALSE,zlim=c(0,200))
 # axis(2,at=seq(0,0.002,by=0.001),labels=TRUE,tck=-0.015,mgp=c(0.5,0.5,0))
-axis(1,at=seq(0,2,by=0.5),labels=TRUE,tck=-0.015,mgp=c(0.5,0.5,0),las=1)
+# axis(1,at=seq(0,2,by=0.5),labels=TRUE,tck=-0.015,mgp=c(0.5,0.5,0),las=1)
 axis(2,at=seq(0,0.002,by=0.001),labels=TRUE,tck=-0.015,mgp=c(0.5,0.5,0),las=1)
 # axis(1,at=seq(0,2,by=0.5),labels=TRUE,tck=-0.015,mgp=c(0.5,0.5,0))
 title(ylab='Frequency of service interactions', line=2.5, cex.lab=1.2,las=1,outer=TRUE,xpd=NA)
-title(xlab=expression(paste('Expected objects/species (',eta,')')), line=1.0, cex.lab=1.2,las=1,outer=TRUE,xpd=NA)
-# title(xlab='Mean objects/species', line=1.5, cex.lab=1.)
+title(xlab=expression(paste('Expected modifiers/species (',eta,')')), line=1.0, cex.lab=1.2,las=1,outer=TRUE,xpd=NA)
+# title(xlab='Mean modifiers/species', line=1.5, cex.lab=1.)
 # title(ylab='Freq. service interactions', line=2.0, cex.lab=1.,las=1)
 # title(xlab='', line=1.5, cex.lab=1.)
 mtext(expression(paste('S'^'*')),side=4,line=0.3,las=1,padj=-8.5)
@@ -350,13 +363,53 @@ text(0.1,0.0019,'A',cex=2,col='White')
 pal = brewer.pal(9,'Blues')
 image.plot(y=$nvec_scaled,x=$lambdavec,z=$(transpose(mss_surf_unique)),col=pal,ylab='',xlab='',nlevel=11,axes=FALSE,zlim=c(0,200))
 # axis(2,at=seq(0,0.002,by=0.001),labels=TRUE,tck=-0.015,mgp=c(0.5,0.5,0))
-axis(1,at=seq(0,2,by=0.5),labels=TRUE,tck=-0.015,mgp=c(0.5,0.5,0),las=1)
+# axis(1,at=seq(0,2,by=0.5),labels=TRUE,tck=-0.015,mgp=c(0.5,0.5,0),las=1)
 # title(ylab='Freq. service interactions', line=2.0, cex.lab=1.,las=1)
 # title(xlab='', line=1.5, cex.lab=1.)
 mtext(expression(paste({'S'['u']}^'*')),side=4,line=0.3,las=1,padj=-7)
 text(0.1,0.0019,'B',cex=2,col='White')
 
 
+pal = brewer.pal(9,'BuPu')
+image.plot(y=$nvec_scaled,x=$lambdavec,z=$(transpose( propcol_surf)),col=pal,ylab='',xlab='',nlevel=11,axes=FALSE,zlim=c(0,1))
+# axis(2,at=seq(0,0.002,by=0.001),labels=TRUE,tck=-0.015,mgp=c(0.5,0.5,0))
+axis(1,at=seq(0,2,by=0.5),labels=TRUE,tck=-0.015,mgp=c(0.5,0.5,0),las=1)
+axis(2,at=seq(0,0.002,by=0.001),labels=TRUE,tck=-0.015,mgp=c(0.5,0.5,0),las=1)
+# axis(1,at=seq(0,2,by=0.5),labels=TRUE,tck=-0.015,mgp=c(0.5,0.5,0))
+title(ylab='Frequency of service interactions', line=2.5, cex.lab=1.2,las=1,outer=TRUE,xpd=NA)
+title(xlab=expression(paste('Expected modifiers/species (',eta,')')), line=1.0, cex.lab=1.2,las=1,outer=TRUE,xpd=NA)
+# title(xlab='Mean modifiers/species', line=1.5, cex.lab=1.)
+# title(ylab='Freq. service interactions', line=2.0, cex.lab=1.,las=1)
+# title(xlab='', line=1.5, cex.lab=1.)
+mtext('Prop. col.',side=4,line=0.3,las=1,padj=-12)
+text(0.1,0.0019,'C',cex=2,col='White')
+
+
+pal = brewer.pal(9,'BuPu')
+image.plot(y=$nvec_scaled,x=$lambdavec,z=$(transpose(propcol_surf_unique)),col=pal,ylab='',xlab='',nlevel=11,axes=FALSE,zlim=c(0,1))
+# axis(2,at=seq(0,0.002,by=0.001),labels=TRUE,tck=-0.015,mgp=c(0.5,0.5,0))
+axis(1,at=seq(0,2,by=0.5),labels=TRUE,tck=-0.015,mgp=c(0.5,0.5,0),las=1)
+# title(ylab='Freq. service interactions', line=2.0, cex.lab=1.,las=1)
+# title(xlab='', line=1.5, cex.lab=1.)
+mtext('Prop. col.',side=4,line=0.3,las=1,padj=-12)
+text(0.1,0.0019,'D',cex=2,col='White')
+
+
 dev.off()
 """
 
+
+# 
+# dev.off()
+# """
+# 
+# 
+# filename = "../manuscript/fig_propcol.pdf";
+# namespace = smartpath(filename);
+# R"""
+# library(RColorBrewer)
+# library(fields)
+# pdf($namespace,width=8,height=4)
+# layout(matrix(c(1,2), 1, 2, byrow = TRUE), 
+#    widths=c(1,1), heights=c(0.5,0.5))
+# par(oma = c(3, 4, 1, 1), mar = c(1, 1, 0, 1)) #,mai=c(0.6,0.6,0,0.1)
