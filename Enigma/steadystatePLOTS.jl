@@ -903,8 +903,8 @@ axis(1)
 axis(2,las=1)
 title(ylab='Species richness', line=3, cex.lab=1.2)
 title(xlab='Time', line=2.0, cex.lab=1.2)
-mtext(paste0("A"), side = 3, adj = -0.16, 
-    line = 0.3,cex=1.2)
+mtext(paste0("a"), side = 3, adj = -0.16, 
+    line = 0.3,cex=1.2,font=2)
 """
 
 for i=2:length(rsample)
@@ -936,8 +936,8 @@ axis(2,at=seq(0,1,by=0.2),labels=TRUE,tck=-0.015,mgp=c(0.5,0.5,0),las=1)
 axis(1,at=$(seq[seq2]),labels=TRUE,tck=-0.015,mgp=c(0.5,0.5,0))
 title(ylab='Proportion specialists', line=3, cex.lab=1.2)
 title(xlab='Assembly time', line=2.0, cex.lab=1.2)
-mtext(paste0("B"), side = 3, adj = -0.4, 
-    line = -0.6,cex=1.2)
+mtext(paste0("b"), side = 3, adj = -0.4, 
+    line = -0.6,cex=1.2,font=2)
 """
 for i=1:length(seq2)
     R"""
@@ -962,8 +962,8 @@ axis(2,at=seq(1:12),labels=TRUE,tck=-0.015,mgp=c(0.5,0.5,0),las=1)
 axis(1,at=seq(0:0.6,by=0.2),labels=TRUE,tck=-0.015,mgp=c(0.5,0.5,0))
 title(ylab='Trophic level (TL)', line=2, cex.lab=1.2)
 title(xlab='Frequency', line=2.0, cex.lab=1.2)
-mtext(paste0("C"), side = 3, adj = -0.3, 
-    line = -0.6,cex=1.2)
+mtext(paste0("c"), side = 3, adj = -0.3, 
+    line = -0.6,cex=1.2,font=2)
 points(trimdist,seq(1,length(trimdist)),pch=21,bg=pal[1],col='black')
 """
 for i=1:12

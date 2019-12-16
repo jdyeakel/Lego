@@ -92,12 +92,21 @@ comb_mod = SharedArray{Float64}(lnvec,reps,tseqmax);
         options(warn = -1)
         library(bipartite)
         comb_nestvalue=networklevel($comb_amatrix,index='NODF')
+        
+        # if(!require(devtools)){install.packages('devtools'); library(devtools)} 
+        # install_bitbucket(“maucantor/unodf”); 
+        library(UNODF)
+        library(igraph)
+        unodfvalue = unodf($comb_amatrix,selfloop=TRUE)
+        comb_nestvalue=unodfvalue$UNODFc
+        comb_nestvalue_r = unodfvalue$UNODFr
         """
         @rget comb_nestvalue;
         if ismissing(comb_nestvalue)
             comb_nestvalue = NaN;
         end
         comb_nest[v,r,t] = comb_nestvalue;
+        comb_nest_r[v,r,t] = comb_nestvalue_r;
 
         # if sum(mutual_amatrix) > 0
         #     R"""
@@ -114,42 +123,42 @@ comb_mod = SharedArray{Float64}(lnvec,reps,tseqmax);
         #     mutual_nest[v,r,t] = 0;
         # end
         #
+        
+        
         #Modularity
-        R"""
-        library(igraph)
-        # g_food <- graph.adjacency($food_amatrix);
-        # g_mutual <- graph.adjacency($mutual_amatrix);
-        g_comb <- as.undirected(graph.adjacency($comb_amatrix));
-
-        # food_modvalue <- modularity(g_food);
-        # mutual_modvalue <- modularity(g_mutual);
-        wtc <- cluster_walktrap(g_comb)
-        comb_modvalue <- modularity(g_comb,membership(wtc));
-        """
-        # @rget food_modvalue;
-        # @rget mutual_modvalue;
-        @rget comb_modvalue;
-
-        # food_mod[v,r,t] = food_modvalue;
-        # mutual_mod[v,r,t] = mutual_modvalue;
-        comb_mod[v,r,t] = comb_modvalue;
+        # R"""
+        # 
+        # # g_food <- graph.adjacency($food_amatrix);
+        # # g_mutual <- graph.adjacency($mutual_amatrix);
+        # g_comb <- as.undirected(graph.adjacency($comb_amatrix));
+        # 
+        # # food_modvalue <- modularity(g_food);
+        # # mutual_modvalue <- modularity(g_mutual);
+        # wtc <- cluster_walktrap(g_comb)
+        # comb_modvalue <- modularity(g_comb,membership(wtc));
+        # """
+        # # @rget food_modvalue;
+        # # @rget mutual_modvalue;
+        # @rget comb_modvalue;
+        # 
+        # # food_mod[v,r,t] = food_modvalue;
+        # # mutual_mod[v,r,t] = mutual_modvalue;
+        # comb_mod[v,r,t] = comb_modvalue;
+        # 
         
         
-        
-
-
     end 
     
 end
 
-filename = "data/foodwebs_mutualistwebs/nestedmod.jld";
+filename = "data/foodwebs_mutualistwebs/nestedmod2.jld";
 namespace = smartpath(filename);
-@save namespace seq tseqmax reps nvec lnvec rich sdrich comb_nest comb_mod;
+@save namespace seq tseqmax reps nvec lnvec rich sdrich comb_nest comb_nest_r;
 
 
-filename = "data/foodwebs_mutualistwebs/nestedmod.jld";
+filename = "data/foodwebs_mutualistwebs/nestedmod2.jld";
 namespace = smartpath(filename);
-@load namespace seq tseqmax reps nvec lnvec rich sdrich comb_nest comb_mod;
+@load namespace seq tseqmax reps nvec lnvec rich sdrich comb_nest comb_nest_r;
 
 teval = length(seq);
 nestall = vec(comb_nest[:,:,teval]);

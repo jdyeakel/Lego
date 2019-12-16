@@ -247,11 +247,11 @@ pal = brewer.pal(11,'YlOrRd')
 image.plot(y=$nvec_scaled,x=$lambdavec,z=$(transpose(avgprimextrate_surf)),col=pal,ylab='',xlab='',nlevel=11,axes=FALSE)
 axis(2,at=seq(0,0.002,by=0.001),labels=TRUE,tck=-0.015,mgp=c(0.5,0.5,0),las=1)
 # axis(1,at=seq(0,2,by=0.5),labels=TRUE,tck=-0.015,mgp=c(0.5,0.5,0))
-title(ylab='Frequency of service interactions', line=2.5, cex.lab=1.2,las=1,outer=TRUE,xpd=NA)
-title(xlab=expression(paste('Expected modifiers/species (',eta,')')), line=1.0, cex.lab=1.2,las=1,outer=TRUE,xpd=NA)
+title(ylab='Frequency of service interactions', line=2.5, cex.lab=2,las=1,outer=TRUE,xpd=NA)
+title(xlab=expression(paste('Expected modifiers/species (',eta,')')), line=1.5, cex.lab=2,las=1,outer=TRUE,xpd=NA)
 # title(xlab='Mean modifiers/species', line=1.5, cex.lab=1.)
 mtext('1° ext.',side=4,line=0.1,las=1,padj=-10)
-text(0.1,0.0019,'A',cex=2,col='Black')
+text(0.1,0.0019,'a',cex=2,col='Black',font=2)
 
 pal = brewer.pal(11,'YlOrRd')
 image.plot(y=$nvec_scaled,x=$lambdavec,z=$(transpose(avgsecextrate_surf)),col=pal,ylab='',xlab='',nlevel=11,axes=FALSE)
@@ -260,7 +260,7 @@ image.plot(y=$nvec_scaled,x=$lambdavec,z=$(transpose(avgsecextrate_surf)),col=pa
 # title(ylab='Freq. service interactions', line=2.0, cex.lab=1.,las=1)
 # title(xlab='Mean modifiers/species', line=1.5, cex.lab=1.)
 mtext('2° ext.',side=4,line=0.1,las=1,padj=-10)
-text(0.1,0.0019,'B',cex=2,col='White')
+text(0.1,0.0019,'b',cex=2,col='White',font=2)
 
 pal = brewer.pal(9,'Greens')
 image.plot(y=$nvec_scaled,x=$lambdavec,z=$(transpose(mpersist_surf)),col=pal,ylab='',xlab='',nlevel=11,axes=FALSE)
@@ -269,7 +269,7 @@ axis(1,at=seq(0,2,by=0.5),labels=TRUE,tck=-0.015,mgp=c(0.5,0.5,0),las=1)
 # title(ylab='', line=2.0, cex.lab=1.)
 # title(xlab='', line=1.5, cex.lab=1.)
 mtext('Pers.',side=4,line=0.1,las=1,padj=-10)
-text(0.1,0.0019,'C',cex=2,col='Black')
+text(0.1,0.0019,'c',cex=2,col='Black',font=2)
 
 pal = brewer.pal(9,'Blues')
 image.plot(y=$nvec_scaled,x=$lambdavec,z=$(transpose(mss_surf_unique ./ mss_surf)),col=pal,ylab='',xlab='',nlevel=11,axes=FALSE)
@@ -278,7 +278,7 @@ axis(1,at=seq(0,2,by=0.5),labels=TRUE,tck=-0.015,mgp=c(0.5,0.5,0),las=1)
 # title(ylab='Freq. service interactions', line=2.0, cex.lab=1.,las=1)
 # title(xlab='', line=1.5, cex.lab=1.)
 mtext(expression(paste({'S'['u']}^'*','/S'^'*')),side=4,line=0.1,las=1,padj=-6)
-text(0.1,0.0019,'D',cex=2,col='White')
+text(0.1,0.0019,'d',cex=2,col='White',font=2)
 
 dev.off()
 """
@@ -303,7 +303,7 @@ title(ylab='Frequency of service interactions', line=2.5, cex.lab=1.2,las=1,oute
 title(xlab=expression(paste('Expected modifiers/species (',eta,')')), line=1.0, cex.lab=1.2,las=1,outer=TRUE,xpd=NA)
 # title(xlab='Mean modifiers/species', line=1.5, cex.lab=1.)
 mtext('1° ext.',side=4,line=0.1,las=1,padj=-10)
-text(0.1,0.0019,'A',cex=2,col='Black')
+text(0.1,0.0019,'a',cex=2,col='Black',font=2)
 
 pal = brewer.pal(11,'YlOrRd')
 image.plot(y=$nvec_scaled,x=$lambdavec,z=$(transpose(avgsecextrate_surf_unique)),col=pal,ylab='',xlab='',nlevel=11,axes=FALSE)
@@ -312,7 +312,7 @@ image.plot(y=$nvec_scaled,x=$lambdavec,z=$(transpose(avgsecextrate_surf_unique))
 # title(ylab='Freq. service interactions', line=2.0, cex.lab=1.,las=1)
 # title(xlab='Mean modifiers/species', line=1.5, cex.lab=1.)
 mtext('2° ext.',side=4,line=0.1,las=1,padj=-10)
-text(0.1,0.0019,'B',cex=2,col='White')
+text(0.1,0.0019,'b',cex=2,col='White',font=2)
 
 pal = brewer.pal(9,'Greens')
 image.plot(y=$nvec_scaled,x=$lambdavec,z=$(transpose(mpersist_surf_unique)),col=pal,ylab='',xlab='',nlevel=11,axes=FALSE)
@@ -321,7 +321,7 @@ axis(1,at=seq(0,2,by=0.5),labels=TRUE,tck=-0.015,mgp=c(0.5,0.5,0),las=1)
 # title(ylab='', line=2.0, cex.lab=1.)
 # title(xlab='', line=1.5, cex.lab=1.)
 mtext('Pers.',side=4,line=0.1,las=1,padj=-10)
-text(0.1,0.0019,'C',cex=2,col='Black')
+text(0.1,0.0019,'c',cex=2,col='Black',font=2)
 
 pal = brewer.pal(9,'Blues')
 image.plot(y=$nvec_scaled,x=$lambdavec,z=$(transpose(mss_surf_unique ./ mss_surf)),col=pal,ylab='',xlab='',nlevel=11,axes=FALSE)
@@ -330,7 +330,7 @@ axis(1,at=seq(0,2,by=0.5),labels=TRUE,tck=-0.015,mgp=c(0.5,0.5,0),las=1)
 # title(ylab='Freq. service interactions', line=2.0, cex.lab=1.,las=1)
 # title(xlab='', line=1.5, cex.lab=1.)
 mtext(expression(paste({'S'['u']}^'*','/S'^'*')),side=4,line=0.1,las=1,padj=-6)
-text(0.1,0.0019,'D',cex=2,col='White')
+text(0.1,0.0019,'d',cex=2,col='White',font=2)
 
 dev.off()
 """
@@ -357,7 +357,7 @@ title(xlab=expression(paste('Expected modifiers/species (',eta,')')), line=1.0, 
 # title(ylab='Freq. service interactions', line=2.0, cex.lab=1.,las=1)
 # title(xlab='', line=1.5, cex.lab=1.)
 mtext(expression(paste('S'^'*')),side=4,line=0.3,las=1,padj=-8.5)
-text(0.1,0.0019,'A',cex=2,col='White')
+text(0.1,0.0019,'a',cex=2,col='White',font=2)
 
 
 pal = brewer.pal(9,'Blues')
@@ -367,7 +367,7 @@ image.plot(y=$nvec_scaled,x=$lambdavec,z=$(transpose(mss_surf_unique)),col=pal,y
 # title(ylab='Freq. service interactions', line=2.0, cex.lab=1.,las=1)
 # title(xlab='', line=1.5, cex.lab=1.)
 mtext(expression(paste({'S'['u']}^'*')),side=4,line=0.3,las=1,padj=-7)
-text(0.1,0.0019,'B',cex=2,col='White')
+text(0.1,0.0019,'b',cex=2,col='White',font=2)
 
 
 pal = brewer.pal(9,'BuPu')
@@ -382,7 +382,7 @@ title(xlab=expression(paste('Expected modifiers/species (',eta,')')), line=1.0, 
 # title(ylab='Freq. service interactions', line=2.0, cex.lab=1.,las=1)
 # title(xlab='', line=1.5, cex.lab=1.)
 mtext('Prop. col.',side=4,line=0.3,las=1,padj=-12)
-text(0.1,0.0019,'C',cex=2,col='White')
+text(0.1,0.0019,'c',cex=2,col='White',font=2)
 
 
 pal = brewer.pal(9,'BuPu')
@@ -392,7 +392,7 @@ axis(1,at=seq(0,2,by=0.5),labels=TRUE,tck=-0.015,mgp=c(0.5,0.5,0),las=1)
 # title(ylab='Freq. service interactions', line=2.0, cex.lab=1.,las=1)
 # title(xlab='', line=1.5, cex.lab=1.)
 mtext('Prop. col.',side=4,line=0.3,las=1,padj=-12)
-text(0.1,0.0019,'D',cex=2,col='White')
+text(0.1,0.0019,'d',cex=2,col='White',font=2)
 
 
 dev.off()

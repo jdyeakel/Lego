@@ -52,9 +52,14 @@ length(findall(x->x==1,events))/length(findall(x->x==2,events))
 
 
 
-# @time sprich,rich,clock = assembly2(
-#     int_m,a_b,n_b,i_b,m_b,n_b0,sp_v,int_id,tp_m,tind_m,
-#     athresh,nthresh,tmax);
+@time sprich,rich,clock = assembly2(
+    int_m,a_b,n_b,i_b,m_b,n_b0,sp_v,int_id,tp_m,tind_m,
+    athresh,nthresh,tmax);
+
+
+
+
+
 
 namespace = "$(homedir())/Dropbox/PostDoc/2014_Lego/Enigma/figures/sprich_web.pdf"
 R"""
