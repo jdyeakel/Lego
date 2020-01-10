@@ -30,7 +30,7 @@ OOprobs = (p_n = OOmult * SOprobs.p_n, p0 = 0.0);
 
 
 #expected objects per species
-lambda = 0;
+lambda = 2.0;
 athresh = 0;
 nthresh = 1.0;
 MaxN = convert(Int64,floor(S + S*lambda));
