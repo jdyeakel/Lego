@@ -8,9 +8,9 @@ end
 reps = 10000;
 
 
-cn = 8.949;
-ce = 1.83;
-cp = 0.954;
+cn = pi;
+ce = sqrt(2);
+cp = 1.0;
 
 #How much more does a mutualism benefit relative to the penalty of a trophic link?
 cn_ce = cn/ce;
@@ -21,8 +21,8 @@ cn_cp = cn/cp;
 S = 200;
 maxits = 4000;
 SOprobs = (
-p_n=0.00228,
-p_a=0.0129
+p_n=0.002,
+p_a=0.01
 );
 SSmult = 1.0; OOmult = 0.0;
 SSprobs = (p_n = SSmult .* SOprobs.p_n , p_a = SSmult .* SOprobs.p_a);

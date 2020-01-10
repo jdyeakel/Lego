@@ -4,7 +4,7 @@ else
     loadfunc = include("$(homedir())/Dropbox/PostDoc/2014_Lego/Enigma/src/loadfuncs.jl");
 end
 
-R"library(bipartite)"
+# R"library(bipartite)"
 R"options(warn = -1)"
 R"library(igraph)"
 
@@ -20,11 +20,14 @@ its = lnvec*reps;
 # food_nest = SharedArray{Float64}(lnvec,reps,tseqmax);
 # mutual_nest = SharedArray{Float64}(lnvec,reps,tseqmax);
 comb_nest = SharedArray{Float64}(lnvec,reps,tseqmax);
+mut_nest = SharedArray{Float64}(lnvec,reps,tseqmax);
+
+# comb_nest_r = SharedArray{Float64}(lnvec,reps,tseqmax);
 rich = SharedArray{Float64}(lnvec,reps,tseqmax);
 sdrich = SharedArray{Float64}(lnvec,reps,tseqmax);
 # food_mod = SharedArray{Float64}(lnvec,reps,tseqmax);
 # mutual_mod = SharedArray{Float64}(lnvec,reps,tseqmax);
-comb_mod = SharedArray{Float64}(lnvec,reps,tseqmax);
+# comb_mod = SharedArray{Float64}(lnvec,reps,tseqmax);
 
 @sync @distributed for i = 0:(its - 1)
 
@@ -63,6 +66,11 @@ comb_mod = SharedArray{Float64}(lnvec,reps,tseqmax);
         # food_amatrix = tp_m[[1;cid],[1;cid]];
         # mutual_amatrix = mp_m[[1;cid],[1;cid]];
         comb_amatrix = tp_m[[1;cid],[1;cid]] .+ mp_m[[1;cid],[1;cid]];
+        
+        #trim matrix to eliminate non-mutualistic interactions
+        
+        
+        
 
         #CALCULATE METRICS
         # rich[v,r,t] = length(cid);
@@ -89,24 +97,47 @@ comb_mod = SharedArray{Float64}(lnvec,reps,tseqmax);
         # food_nest[v,r,t] = food_nestvalue;
 
         R"""
-        options(warn = -1)
-        library(bipartite)
-        comb_nestvalue=networklevel($comb_amatrix,index='NODF')
+        # options(warn = -1)
+        # library(bipartite)
+        # comb_nestvalue=networklevel($comb_amatrix,index='NODF')
         
         # if(!require(devtools)){install.packages('devtools'); library(devtools)} 
         # install_bitbucket(“maucantor/unodf”); 
         library(UNODF)
         library(igraph)
-        unodfvalue = unodf($comb_amatrix,selfloop=TRUE)
-        comb_nestvalue=unodfvalue$UNODFc
+        unodfvalue = suppressWarnings(unodf($comb_amatrix,selfloop=FALSE))
+        comb_nestvalue_c = unodfvalue$UNODFc
         comb_nestvalue_r = unodfvalue$UNODFr
         """
-        @rget comb_nestvalue;
-        if ismissing(comb_nestvalue)
-            comb_nestvalue = NaN;
+        @rget comb_nestvalue_c;
+        @rget comb_nestvalue_r;
+        
+        mrowsums = findall(x->x>0,vec(sum(mp_m[[1;cid],[1;cid]],dims=2)));
+        mcolsums = findall(x->x>0,vec(sum(mp_m[[1;cid],[1;cid]],dims=2)));
+        mutualisticspecies = unique([mrowsums;mcolsums]);
+        if length(mutualisticspecies) > 0
+            mut_amatrix = comb_amatrix[mutualisticspecies,mutualisticspecies];
+            R"""
+            mut_unodfvalue = suppressWarnings(unodf($mut_amatrix,selfloop=TRUE))
+            mut_nestvalue_c = mut_unodfvalue$UNODFc
+            mut_nestvalue_r = mut_unodfvalue$UNODFr
+            """
+            @rget mut_nestvalue_c;
+            @rget mut_nestvalue_r;
+        else 
+            mut_nestvalue_c = 0;
+            mut_nestvalue_r = 0;
         end
-        comb_nest[v,r,t] = comb_nestvalue;
-        comb_nest_r[v,r,t] = comb_nestvalue_r;
+        
+        
+        
+        
+        # if ismissing(comb_nestvalue)
+        #     comb_nestvalue = NaN;
+        # end
+        comb_nest[v,r,t] = mean([comb_nestvalue_c,comb_nestvalue_r]);
+        mut_nest[v,r,t] = mean([mut_nestvalue_c,mut_nestvalue_r]);
+        # comb_nest_r[v,r,t] = comb_nestvalue_r;
 
         # if sum(mutual_amatrix) > 0
         #     R"""
@@ -151,33 +182,55 @@ comb_mod = SharedArray{Float64}(lnvec,reps,tseqmax);
     
 end
 
-filename = "data/foodwebs_mutualistwebs/nestedmod2.jld";
-namespace = smartpath(filename);
-@save namespace seq tseqmax reps nvec lnvec rich sdrich comb_nest comb_nest_r;
 
 
 filename = "data/foodwebs_mutualistwebs/nestedmod2.jld";
 namespace = smartpath(filename);
-@load namespace seq tseqmax reps nvec lnvec rich sdrich comb_nest comb_nest_r;
+@save namespace seq tseqmax reps nvec lnvec rich sdrich comb_nest mut_nest;
+
+
+filename = "data/foodwebs_mutualistwebs/nestedmod2.jld";
+namespace = smartpath(filename);
+@load namespace seq tseqmax reps nvec lnvec rich sdrich comb_nest mut_nest;
 
 teval = length(seq);
 nestall = vec(comb_nest[:,:,teval]);
+mut_nestall = vec(mut_nest[:,:,teval]);
 mnest = mean(comb_nest[:,:,teval],dims=2);
+mut_mnest = mean(mut_nest[:,:,teval],dims=2);
 mrich = vec(rich[:,:,teval]);
 mstdrich = std(rich[:,:,teval],dims=2);
 nvecreshaped = repeat(nvec,outer=reps);
-filename = "/figures/yog/mean_nested.pdf";
+
+
+filename = "/figures/yog/mean_nested_rev.pdf";
 namespace = smartpath(filename);
 R"""
 library(RColorBrewer)
 pal=brewer.pal(3,'Set1')
 pdf($namespace,height=5,width=6)
-plot(jitter($nvecreshaped),$nestall,xlab='Frequency of mutualisms',ylab='NODF',pch='.',cex=1.5,col=pal[2],ylim=c(min($nestall),3))
+plot(jitter($nvecreshaped),$nestall,xlab='Frequency of mutualisms',ylab='UNODF',pch='.',cex=1.5,col=pal[2],ylim=c(min($nestall),0.025))
 points($nvec,$mnest,pch=16,col='black')
 lines($nvec,$mnest)
 dev.off()
 """
 
+filename = "/figures/yog/mean_mutnested_rev.pdf";
+namespace = smartpath(filename);
+R"""
+library(RColorBrewer)
+pal=brewer.pal(3,'Set1')
+pdf($namespace,height=5,width=6)
+plot(jitter($nvecreshaped),$mut_nestall,xlab='Frequency of mutualisms',ylab='UNODF',pch='.',cex=1.5,col=pal[2],ylim=c(0,0.1))
+points($nvec,$mut_mnest,pch=16,col='black')
+lines($nvec,$mut_mnest)
+dev.off()
+"""
+
+
+
+
+#ylim=c(min($nestall),max($nestall))
 
 nestreps = vec(comb_nest[:,:,teval]);
 richreps = vec(rich[:,:,teval]);
@@ -194,15 +247,15 @@ nestreps1 = vec(comb_nest[1,:,teval]);
 richreps1 = vec(rich[1,:,teval]);
 nestreps21 = vec(comb_nest[21,:,teval]);
 richreps21 = vec(rich[21,:,teval]);
-filename = "/figures/mean_nestedvsize2.pdf";
+filename = "/figures/yog/mean_nestedvsize2_rev.pdf";
 namespace = smartpath(filename);
 R"""
 library(RColorBrewer)
 pal = brewer.pal(3,'Set1')
 pdf($namespace,height=5,width=6)
-plot(jitter($richreps1),$nestreps1,xlab='Species richness',ylab='Nestedness (NODF)',pch='.',col=pal[1],ylim=c(0,3),xlim=c(100,200),cex=2)
+plot(jitter($richreps1),$nestreps1,xlab='Species richness',ylab='Nestedness (NODF)',pch='.',col=pal[1],ylim=c(0,0.025),xlim=c(100,200),cex=2)
 points(jitter($richreps21),$nestreps21,pch='.',col=pal[2],cex=2)
-legend(180,3,legend=c("Low pr(n)","High pr(n)"),col=pal[1:2],cex=0.8,bty='n',pch=16)
+legend(180,0.025,legend=c("Low pr(n)","High pr(n)"),col=pal[1:2],cex=0.8,bty='n',pch=16)
 dev.off()
 """
 

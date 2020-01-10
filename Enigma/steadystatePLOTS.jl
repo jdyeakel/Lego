@@ -5,7 +5,8 @@ else
 end
 
 filename = "data/steadystate/sim_settings.jld";
-namespace = smartpath(filename);
+# namespace = smartpath(filename);
+namespace = "$(homedir())/2014_Lego/Enigma/data/steadystate/sim_settings.jld";
 @load namespace reps S maxits athresh nthresh lambda SSprobs SOprobs OOprobs;
 
 # 
@@ -714,6 +715,7 @@ for r=1:reps
         
         propGnoprim[r,t] = sum((realizedGnoprim[r,seq2[t],1:sprichinwebnoprim[r,seq2[t]]]) .> (1))/sprichinwebnoprim[r,seq2[t]];
         
+        #USED IN MS
         propGavgc[r,t] = sum((realizedGavgc[r,seq2[t],1:sprichinwebnoprim[r,seq2[t]]]) .> (1))/sprichinwebnoprim[r,seq2[t]];
         
         potpropG[r,t] = sum((potentialG[r,seq2[t],1:sprichinweb[r,seq2[t]]]) .> (1))/sprichinweb[r,seq2[t]];

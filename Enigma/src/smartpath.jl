@@ -7,7 +7,8 @@ function smartpath(filename::String,indices::Array{Int64}=[0])
         if homedir() == "/home/z840"
             namespace = string("$(homedir())/2014_Lego/Enigma/",filename_cut,extension);
         else
-            namespace = string("$(homedir())/Dropbox/Postdoc/2014_Lego/Enigma/",filename_cut,extension);
+            # namespace = string("$(homedir())/Dropbox/Postdoc/2014_Lego/Enigma/",filename_cut,extension);
+            namespace = string("$(homedir())/2014_Lego/Enigma/",filename_cut,extension);
         end
     else
         
@@ -21,7 +22,8 @@ function smartpath(filename::String,indices::Array{Int64}=[0])
         if homedir() == "/home/z840"
             namespace = string("$(homedir())/2014_Lego/Enigma/",filename_cut,indexstring,extension);
         else
-            namespace = string("$(homedir())/Dropbox/Postdoc/2014_Lego/Enigma/",filename_cut,indexstring,extension);
+            # namespace = string("$(homedir())/Dropbox/Postdoc/2014_Lego/Enigma/",filename_cut,indexstring,extension);
+            namespace = string("$(homedir())/2014_Lego/Enigma/",filename_cut,indexstring,extension);
         end
     end
     

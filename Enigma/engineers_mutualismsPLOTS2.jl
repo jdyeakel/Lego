@@ -283,8 +283,13 @@ text(0.1,0.0019,'d',cex=2,col='White',font=2)
 dev.off()
 """
 
-
-
+#Secondary extinctions with no engineers (increasing mutualistms only)
+namespace = "$(homedir())/Dropbox/PostDoc/2014_Lego/manuscript/fig_mutsecext.pdf";
+R"""
+pdf($namespace,width=8,height=6)
+plot($nvec_scaled,$(transpose(avgsecextrate_surf[:,1])),xlab='Frequency of service interactions',ylab='Mean secondary extinction rate',pch=16)
+dev.off()
+"""
 
 filename = "../manuscript/fig_engineers4_unique.pdf";
 namespace = smartpath(filename);
