@@ -153,7 +153,7 @@ Diverse interactions occur not only between species but indirectly through the e
 Elephants root out large saplings and small trees, enabling the formation and maintenance of grasslands \cite{Haynes2012} and creating habitat for smaller vertebrates \cite{Pringle2008}.
 Burrowing rodents create shelter and promote primary production by aerating the soil \cite{Reichman2002}, salmon and aquatic invertebrates create freshwater habitats by changing stream morphology \cite{Moore2006}, and leaf-cutter ants alter microclimates, influencing seedling survival and plant growth \cite{Meyer2011}.
 These examples illustrate ecosystem engineering, where the engineering organism alters the environment on timescales longer than its own \cite{Hastings2007}.
-
+Engineers are widely acknowledged to have impacts on both small and large spatial scales \cite{Wright2006b}, and may serve as important keystone species in many habitats \cite{Jones2012}.
 % On ecological timescales, ecosystem engineers are relatively common and can alter the landscape on which ecological interactions occur \cite{Wright2006}.
 
 Ecosystem engineering not only impacts communities on ecological timescales, but has profoundly shaped the evolution of life on Earth \cite{Erwin2008}.
@@ -246,10 +246,10 @@ Finally we show that redundancies in engineered effects promote community divers
 \vspace{0mm}
 \noindent \textbf{Assembly without ecosystem engineering.}
 \noindent Communities assemble by random colonization from a source pool.
-A species from the source pool can colonize if it finds at least one resource that it can consume (one \emph{eat} interaction is satisfied; cf. Ref. \citenum{Gravel2011}) and all of its non-trophic needs are met (all \emph{need} interactions are satisfied). 
+A species from the source pool can colonize if it finds at least one resource that it can consume (one \emph{eat} interaction is satisfied; cf. Ref. \citenum{Gravel2011}) and all of its non-trophic needs are met (all \emph{need} interactions are satisfied; see Fig. \ref{fig:model}).
 % Colonization is possible if a species can fulfill $\geq 1$ trophic requirement (cf. Ref. \citenum{Gravel2011}) and \emph{all} of its service requirements.
 As such, the service interactions are assumed to be obligate, whereas trophic interactions are flexible.
-\rev{While a basal resource is always assumed to be present, (Fig. \ref{fig:model}A)} following the establishment of an autotrophic base, the arrival of mixotrophs (i.e. mixing auto- and heterotrophy) and lower trophic heterotrophs create opportunities for organisms occupying higher trophic levels to invade.
+\rev{While a basal resource is always assumed to be present, (white node in Fig. \ref{fig:model}b)} following the establishment of an autotrophic base, the arrival of mixotrophs (i.e. mixing auto- and heterotrophy) and lower trophic heterotrophs create opportunities for organisms occupying higher trophic levels to invade.
 This expanding niche space initially serves as an accelerator for community growth.
  % comprise the initial colonizers, succeeded by higher trophic consumers.
 % Interestingly, we find that community growth is diversity dependent and appears logistic, where the initial colonization phase appears exponential.
@@ -324,7 +324,7 @@ At steady state the proportion of specialists is ca. 56\%, similar to empirical 
 The role of specialists early in assembly is primarily due to the accumulation of autotrophic specialists.
 This is evident when we observe that the trophic level (TL) distribution early in assembly ($t=5$) has an average ${\rm TL}=1.6$.
 % Additional consumers arrive in the form of both mixotrophs (consuming the basal resource and one or more autotrophs) and heterotrophs, which establish higher trophic levels.
-Four trophic levels are typically established by $t=50$, where colonization is still dominant, and by the time communities reach steady state the interaction networks are characterized by an average ${\rm TL_{max}}$ ($\pm$ standard deviation) $=11 \pm 2.8$ (Fig. \ref{fig:trophic}C).
+Four trophic levels are typically established by $t=50$, where colonization is still dominant, and by the time communities reach steady state the interaction networks are characterized by an average ${\rm TL_{max}}$ ($\pm$ standard deviation) $=11 \pm 2.8$ (Fig. \ref{fig:trophic}c).
 While the maximum trophic level is higher than that measured in most predator-prey systems \cite{Williams2002}, it is not unreasonable if parasitic interactions (which we do not differentiate from other consumers) are included \cite{Lafferty2006}.
 Overall, the most common trophic level among species at steady state is ca. ${\rm TL}=4.75$. %, which is similar to average measures  \cite{Williams2002}.
 
@@ -389,29 +389,38 @@ Indeed, the balance that mutualists must maintain with their partners may have l
 
 
 
-\rev{We find that as we increase the frequency of service interactions (holding constant trophic interactions; see Appendix 2), the assembled community at steady state becomes more nested (Fig. \ref{fig:nest}).}
+\rev{We find that as we increase the frequency of service interactions (holding constant the frequency of trophic interactions; see Appendix 2), the assembled community at steady state becomes more nested (Fig. \ref{fig:nest}).}
 % That the absolute values of nestedness are low compared to those measured for empirical mutualistic networks is unsurprising: observations of mutualistic interactions are generally for bipartite networks and isolated to specific systems (e.g. ant-plant mutualisms).
 % Here the NODF metric is taken across both eat and need interactions across the entire assembled community.
-In this case, nestedness emerges from the assembly process and provides structural stability.
-This stability can be observed by examining the exclusionary differences between species in a simple nested motif (Fig. \ref{fig:nest}, inset).
+% In this case, nestedness emerges from the assembly process and provides structural stability.
+In this case, nestedness emerges from the assembly process.
+The increasing nestedness with the frequency of mutualistic interactions can be understood by examining the different extinction risks among species in a simple nested motif (Fig. \ref{fig:nest}, inset).
 In the trophic motif, species with high vulnerability (multiple predators) are at greater risk of primary extinction via competitive exclusion.
 This will result in the secondary extinction of the specialist consumer, rendering the nested structure prone to change.
 In our framework mutualistic networks are generally formed by composite interactions, where the consumer species is engaged in a trophic interaction while the resource species is engaged in a service interaction.
 As such, the consumer species becomes a trophic partner and the resource species gains the competitive advantages of the service.
 If the competitive advantages of services are greater than the costs of vulnerability (see Materials and Methods), it is the low vulnerability species with fewer trophic partners that is at greater risk of exclusion (Fig. \ref{fig:nest}, inset).
-Because its elimination will not cascade, the nested structure will be more resistant to change.
+\rev{As such, interaction asymmetry is conserved when interactions are mutualistic, but is prone to decay when interactions are purely trophic.
+Because nestedness requires conservation of interaction asymmetry, it emerges in systems with higher frequencies of mutualisms.}
+% Because its elimination will not cascade, the nested structure will be more resistant to change.
 
+\rev{The relative stability conferred by services to interaction asymmetries should not be confused with stability of the network as a whole.
+When we examine the dynamics of the community as a function of service interaction frequency, we observe that mutualistic interactions have different effects on primary vs. secondary extinction rates.
+Service dependencies bolster the competitive strength of otherwise susceptible species such as trophic generalists and those with multiple predators.
+This serves to lower the rate of primary extinctions (FIG), while simultaneously conserving the asymmetries of nested interactions (Fig. \ref{fig:nest}, inset).
+However, because mutualisms build dependencies between species, more service dependencies result in higher frequencies of secondary extinctions (Fig. \ref{fig:mutsecext}).
+In communities with many mutualistic interactions, the combined effect yields extinctions that are less likely to occur, but that promote larger cascades when they do.}
 
-Our results also suggest that the addition of mutualistic interactions comes at a cost to the assembling community.
-Because mutualisms increase dependencies between species, they also increase the frequency of secondary extinctions (Fig. \ref{fig:mutsecext}).
 % , we observe that these networks have lower species' persistence
  %as well as lower diversity (Supplemental Materials).
 % both lower species diversity on average as well as lower species' persistence.
-As such, measuring persistence in terms of the proportion of time species are established in the network reveals that more frequent mutualisms leads on average to lower persistence (Fig. \ref{fig:nest}a).
+\rev{Larger numbers of secondary extinctions means that the network is less robust to perturbation, which may impact the rate of turnover experienced by the community.
+If we measure persistence in terms of the proportion of time species are established in the network, we find that higher frequencies of service interactions lower average persistence (Fig. \ref{fig:nest}a).}
 % Persistence as measured as the percent simulation time the community is occupied by a given species, averaged across all species that successfully colonize.
 At the community-scale, lower average persistence implies greater species turnover.
 Observations of empirical systems appear to support our model predictions.
 For example, assembling plant-pollinator systems have demonstrated high rates of species and interaction turnover, both during the assembly process and at the steady state \cite{Ponisio2017}.
+
 % Ponisio et al. \cite{Ponisio2017} suggested that the assembly process they observed was ordered by an `opportunistic attachment' rather than `preferential attachment' process, where generalist interactions reordered in response to the changing conditions of the community.
 % The framework that we present here employs an attachment dynamic that is more in line with an opportunistic, rather than preferential, process, as invoked by Ponisio et al. \cite{Ponisio2017} to explain observed changes in mutualism structure over the course of assembly.
 % Our results suggest that such a process, when employed in randomly assembled multitype interaction networks, results in THE STRUCTURE AND DYNAMICS EXPECTED OF ASSEMBLING MUTUALISTIC SYSTEMS.
@@ -1346,6 +1355,16 @@ This measure is the one presented in the main text and most similar to that used
 Mean rates of secondary extinction with increasing service interactions.
 }
 \label{fig:mutsecext}
+\end{figure*}
+
+
+\begin{figure*}[h!]
+\centering
+\includegraphics[width=0.8\textwidth]{fig_motif.pdf}
+\caption{
+Motif.
+}
+\label{fig:motif}
 \end{figure*}
 
 
