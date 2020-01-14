@@ -2,6 +2,21 @@ using Distributed
 using DataFrames
 using Images
 
+using AxisArrays
+using Combinatorics
+using LinearAlgebra
+# @everywhere using Distributed
+using SharedArrays
+using SparseArrays
+# using DataFrames
+using Distributions
+# using Images
+using SpecialFunctions
+using LightGraphs
+using RCall
+# @everywhere using HDF5
+using JLD2
+
 @everywhere using AxisArrays
 @everywhere using Combinatorics
 @everywhere using LinearAlgebra
