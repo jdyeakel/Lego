@@ -1,36 +1,50 @@
-using Distributed
-# using DataFrames
-# using Images
-# 
-# using AxisArrays
-# using Combinatorics
-# using LinearAlgebra
-# # @everywhere using Distributed
-# using SharedArrays
-# using SparseArrays
+# using Distributed
 # # using DataFrames
-# using Distributions
 # # using Images
-# using SpecialFunctions
-# using LightGraphs
-# using RCall
+# # 
+# # using AxisArrays
+# # using Combinatorics
+# # using LinearAlgebra
+# # # @everywhere using Distributed
+# # using SharedArrays
+# # using SparseArrays
+# # # using DataFrames
+# # using Distributions
+# # # using Images
+# # using SpecialFunctions
+# # using LightGraphs
+# # using RCall
+# # # @everywhere using HDF5
+# # using JLD2
+# 
+# @everywhere using AxisArrays
+# @everywhere using Combinatorics
+# @everywhere using LinearAlgebra
+# # @everywhere using Distributed
+# @everywhere using SharedArrays
+# @everywhere using SparseArrays
+# @everywhere using DataFrames
+# @everywhere using Distributions
+# @everywhere using Images
+# @everywhere using SpecialFunctions
+# @everywhere using LightGraphs
+# @everywhere using RCall
 # # @everywhere using HDF5
-# using JLD2
+# @everywhere using JLD2
 
-@everywhere using AxisArrays
-@everywhere using Combinatorics
-@everywhere using LinearAlgebra
-# @everywhere using Distributed
-@everywhere using SharedArrays
-@everywhere using SparseArrays
-@everywhere using DataFrames
+
+using Distributed
+
 @everywhere using Distributions
-@everywhere using Images
-@everywhere using SpecialFunctions
-@everywhere using LightGraphs
 @everywhere using RCall
 # @everywhere using HDF5
 @everywhere using JLD2
+@everywhere using DataFrames
+@everywhere using LinearAlgebra
+@everywhere using SharedArrays
+# @everywhere using EcologicalNetworks
+
+
 
 if homedir() == "/home/z840"
 

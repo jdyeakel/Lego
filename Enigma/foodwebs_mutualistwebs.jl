@@ -5,7 +5,7 @@ else
 end
 
 
-reps = 1000;
+reps = 10;
 S = 200;
 maxits = 4000;
 nvec = collect(0.0:0.1:2.0);
@@ -13,7 +13,7 @@ lnvec = length(nvec);
 
 cn = pi;
 ce = sqrt(2);
-cp = 1;
+cp = 1.;
 
 its = lnvec*reps;
 
