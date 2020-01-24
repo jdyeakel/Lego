@@ -148,9 +148,9 @@ end
 
 
 #SO WE DON'T HAVE TO RUN THE ABOVE ANALYSIS EVERY TIME (takes long time)
-filename = "data/engineers_mutualisms3/meanrates.jld";
-namespace = smartpath(filename);
-@save namespace reps lambdavec llamb nvec lnvec numcol numprim numsec numobext clocks mss mprimextrate msecextrate mcolrate mobextrate mpersistance propcol numcol_unique numprim_unique numsec_unique numobext_unique clocks_unique mss_unique mpersistance_unique mprimextrate_unique msecextrate_unique mcolrate_unique mobextrate_unique propcol_unique;
+# filename = "data/engineers_mutualisms3/meanrates.jld";
+# namespace = smartpath(filename);
+# @save namespace reps lambdavec llamb nvec lnvec numcol numprim numsec numobext clocks mss mprimextrate msecextrate mcolrate mobextrate mpersistance propcol numcol_unique numprim_unique numsec_unique numobext_unique clocks_unique mss_unique mpersistance_unique mprimextrate_unique msecextrate_unique mcolrate_unique mobextrate_unique propcol_unique;
 
 
 #SO WE DON'T HAVE TO RUN THE ABOVE ANALYSIS EVERY TIME (takes long time)
@@ -284,10 +284,17 @@ dev.off()
 """
 
 #Secondary extinctions with no engineers (increasing mutualistms only)
-namespace = "$(homedir())/Dropbox/PostDoc/2014_Lego/manuscript/fig_mutsecext.pdf";
+namespace = "$(homedir())/Dropbox/PostDoc/2014_Lego/manuscript/fig_mutext.pdf";
 R"""
-pdf($namespace,width=8,height=6)
-plot($nvec_scaled,$(transpose(avgsecextrate_surf[:,1])),xlab='Frequency of service interactions',ylab='Mean secondary extinction rate',pch=16)
+pdf($namespace,width=4,height=6)
+layout(matrix(c(1,2),2,1,byrow=TRUE),
+widths = c(1,1),heights = c(1,1))
+par(oma = c(3,3,1,1), mar = c(1,1,0,1))
+plot($nvec_scaled,$(transpose(avgprimextrate_surf[:,1])),xlab='Frequency of service interactions',ylab='Mean primary extinction rate',pch=16,xaxt='n',las=1)
+title(ylab='Mean primary extinction rate', line=2.5, cex.lab=1,las=1,outer=FALSE,xpd=NA)
+plot($nvec_scaled,$(transpose(avgsecextrate_surf[:,1])),xlab='Frequency of service interactions',ylab='Mean secondary extinction rate',pch=16,las=1)
+title(ylab='Mean secondary extinction rate', line=2.5, cex.lab=1,las=1,outer=FALSE,xpd=NA)
+title(xlab='Frequency of service interactions', line=1.5, cex.lab=1,las=1,outer=TRUE,xpd=NA)
 dev.off()
 """
 
