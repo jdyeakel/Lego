@@ -16,7 +16,7 @@ llamb = length(lambdavec);
 
 cn = pi;
 ce = sqrt(2);
-cp = 1.0;
+cp_test = 1.0;
 
 lvec = copy(lnvec);
 paramvec = Array{Int64}(undef,lvec*lvec*reps,3);
@@ -79,7 +79,7 @@ paramvec[:,3] = repeat(collect(1:reps),outer=lvec*lvec);
 
     sprich,rich,clock,CID,events = assembly(
         int_m,a_b,n_b,i_b,m_b,n_b0,sp_v,int_id,tp_m,tind_m,lambda,
-        athresh,nthresh,maxits,cn,ce,cp);
+        athresh,nthresh,maxits,cn,ce,cp_test);
     
     #Save individually so data can be loaded in parallel
     filename = "data/engineers_mutualisms2/cid.jld";
