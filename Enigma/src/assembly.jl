@@ -20,7 +20,7 @@ function assembly(int_m,a_b,n_b,i_b,m_b,n_b0,sp_v,int_id,tp_m,tind_m,lambda,
     # end
     # # smatrix[findall(iszero,a_b)] = NaN;
     #
-    minstrength = -ce*Float64(S) - cp*Float64(S);
+    minstrength = -ce*(S) - cp*(S);
 
 
     t=0;
