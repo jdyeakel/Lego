@@ -257,7 +257,7 @@ This expanding niche space initially serves as an accelerator for community grow
 Following the initial colonization phase, extinctions begin to slow the rate of community growth.
 Primary extinctions occur \rev{if a given species is not the strongest competitor for at least one of its resources (see Methods)}.
 % by the competitive exclusion of species sharing similar resources.
-\rev{A species' competition strength is determined by its interactions: competition strength is enhanced by the number of need interactions and penalized by the number of its prey (favoring trophic specialists) and predators (favoring species with fewer predators).}
+\rev{A species' competition strength is determined by its interactions: competition strength is enhanced by the number of need interactions and penalized by the number of its resources(favoring trophic specialists) and consumers(favoring species with fewer predators).}
 Secondary extinctions occur when species lose its last trophic or any of its service requirements.
 See Fig. \ref{fig:model}d,~e for an illustration of the assembly process. 
 As the colonization and extinction rates converge, the community reaches a steady state around which it oscillates (Fig. \ref{fig:trophic}a).
@@ -285,9 +285,9 @@ The extinction of species ($\dag$) will cascade to affect those connected by tro
 
 % 1) connectance
 Assembly of ecological communities in the absence of engineering results in interaction networks with structures consistent with empirical observations.
-As the community reaches steady state, we find that the connectance of trophic interactions ($C=L/S^2$, where $S$ is species richness and $L$ is the number of links) decays to a value similar to that of the source pool (Fig. \ref{fig:conn}).
+As the community reaches steady state, we find that the connectance of trophic interactions ($C(t)=L(t)/S(t)^2$, where $S(t)$ is species richness and $L(t)$ is the number of links at time $t$) decays to a value similar to that of the source pool over time (Fig. \ref{fig:conn}).
 % The species richness of the community increases to $S_{\bm A}=130$.
-Decaying connectance has been documented in the assembly of mangrove communities \cite{Piechnik2008}, however this decay is a statistical inevitability, as early in the assembly process small food webs will have high link density, from which it can only decline.
+Decaying connectance has been documented in the assembly of mangrove communities \cite{Piechnik2008}, however this decay is likely inevitable as early in the assembly process the small set of tightly interacting species will have a high link density from which it will decline as the number of species increases.
 % That the connectance of assembled communities is greater than the source pool is due to the fact that only species connected by trophic interactions can enter the community to begin with, increasing expected link density compared to the overall pool.
 Compared to trophic networks constructed using the Niche model \cite{Williams2000} given similar species richness and connectance, our framework results in networks with degree distributions of similar means but with reduced variance (Supplementary Appendix 3).
 
@@ -309,19 +309,31 @@ Compared to trophic networks constructed using the Niche model \cite{Williams200
 
 
 %Generality
-Recent empirical work has suggested that generalist species may predominate early in assembly, whereas specialists colonize after a diverse resource base has accumulated \cite{Piechnik2008,Gravel2011}.
+Recent empirical work has suggested that generalist species may dominate early in assembly, whereas specialists colonize after a diverse resource base has accumulated \cite{Piechnik2008,Gravel2011}.
 Here the trophic generality of species $i$ is defined $G_i = k^{\rm in}_i/(L/S)$ where $k^{\rm in}_i$ is the in-degree, or number of resources consumed, by species $i$ \cite{Williams2000}.
 A species is classified as a generalist if $G_i > 1$ and a specialist if $G_i < 1$.
-If generalism is scaled to the steady state link density (see Supplementary Appendix, section 4), we observe that generalists dominate early in assembly, with an increase in specialists as assembly progresses (Fig. \ref{fig:trophic}B).
-This confirms expectations from the trophic theory of island biogeography \cite{Gravel2011}, where early communities with lower richness are less likely to support specialist consumers than late, species-rich communities.
+\rev{In empirical investigations, generality is often scaled to the steady state link density $L^*/S^*$.
+If generality is evaluated with respect to the steady state link density, we find that species with many potential trophic interactions realize only a subset of them, thereby functioning as specialists early in the assembly process (Fig. \ref{fig:trophic}b).
+As the community grows, more potential interactions become realized, and functional specialists become functional generalists.
+Moreover, as species assemble the available niche space expands, and the proportion of potential trophic specialists grows (Fig. \ref{fig:trophic}b).}
+This confirms expectations from the trophic theory of island biogeography \cite{Gravel2011}, where communities with lower richness (i.e. early assembly) are less likely to support specialist consumers than species-rich communities (i.e. late assembly).
 % where communities with lower richness (early in assembly) are more likely to support generalist consumers than communities with higher richness (late in assembly). 
-At steady state the proportion of specialists is ca. 56\%, similar to empirical observations of assembling food webs \cite{Piechnik2008}.
+At steady state the proportion of functional specialists is ca. 56\%, which is similar to empirical observations of assembling food webs \cite{Piechnik2008}.
 %, all measures of $L/S$ are approximately equivalent, and
+
+
+% If we calculate generality with respect to \emph{realized} trophic interactions, we find that the initial colonizers must be functional specialists, and that the proportion of generalists increase as the community grows (Fig. \ref{fig:trophic}b).
+% (see Supplementary Appendix, section 4), 
+% Perhaps of more interest is that we find a similar trend a species' \emph{potential} trophic interactions are used to calculate generality.
+% Here we find that (potential) specialists are more common early in assembly.
+% Specialists are assumed to have increased competition strength relative to generalists, and it is the younger communities that experience greater competitive pressures.
+% Later in assembly the available niche space grows and competitive exclusion lessens (SUPP FIG?). 
+% we observe that generalists dominate early in assembly, with an increase in specialists as assembly progresses (Fig. \ref{fig:trophic}B).
 
 
 %trophic levels
 %Trophic Levels & degree dists
-The role of specialists early in assembly is primarily due to the accumulation of autotrophic specialists.
+\rev{The dominance of functional specialists early in assembly is primarily due to the initial colonization by autotrophs.}
 This is evident when we observe that the trophic level (TL) distribution early in assembly ($t=5$) has an average ${\rm TL}=1.6$.
 % Additional consumers arrive in the form of both mixotrophs (consuming the basal resource and one or more autotrophs) and heterotrophs, which establish higher trophic levels.
 Four trophic levels are typically established by $t=50$, where colonization is still dominant, and by the time communities reach steady state the interaction networks are characterized by an average ${\rm TL_{max}}$ ($\pm$ standard deviation) $=11 \pm 2.8$ (Fig. \ref{fig:trophic}c).
@@ -330,7 +342,7 @@ Overall, the most common trophic level among species at steady state is ca. ${\r
 
 The distribution of trophic levels changes shape over the course of assembly.
 Early in assembly, we observe a skewed pyramidal structure, where most species feed from the base of the food web.
-At steady state, we observe that intermediate trophic levels dominate, with frequencies taking on an hourglass structure (purple bars, Fig. \ref{fig:trophic}C).
+At steady state, we observe that intermediate trophic levels dominate, with frequencies taking on an hourglass structure (purple bars, Fig. \ref{fig:trophic}c).
 Compellingly, the trophic richness pyramids that we observe at steady state follow closely the hourglass distribution observed for empirical food webs and are less top-heavy than those produced by static food web models \cite{Turney2016}.\\
 
 
@@ -353,7 +365,7 @@ Compellingly, the trophic richness pyramids that we observe at steady state foll
 % 4) Increased mutualisms => greater nestedness
 \vspace{0mm}
 \noindent \textbf{Structure and dynamics of mutualisms.}
-Nested interactions, where specialist interactions are subsets of generalist interactions, are a distinguishing feature of mutualistic networks \cite{Bascompte2003} and defined by asymmetric interactions between species \cite{Bascompte2003,Bascompte2006,Guimaraes2006}.
+Nested interactions, where specialist interactions are subsets of generalist interactions, are a distinguishing feature of mutualistic networks \cite{Bascompte2003} and are defined by asymmetric interactions between species \cite{Bascompte2003,Bascompte2006,Guimaraes2006,Araujo2010}.
 A nested structure has been shown to maximize the structural stability of mutualistic networks \cite{Rohr2014}, emerge naturally via adaptive foraging behaviors \cite{Valdovinos2016,Valdovinos2019} and neutral processes \cite{Krishna2008}, and promote the influence of indirect effects in driving coevolutionary dynamics \cite{Guimaraes2017}.
 While models and experiments of trophic networks suggest that compartmentalization confers greater stabilizing properties \cite{Stouffer2011,Gilarranz2017}, interaction asymmetry among species may promote nestedness in both trophic \cite{Araujo2010} and mutualistic systems \cite{Pires2011}.
 Processes that operate on different temporal and spatial scales may have a significant influence on these observations \cite{Massol2011}.
@@ -362,7 +374,7 @@ For example, over evolutionary time, coevolution and speciation may degrade nest
 \vspace{0mm}
 \begin{figure}[h!]
 \centering
-\includegraphics[width=0.5\textwidth]{fig_trophic2.pdf}
+\includegraphics[width=0.5\textwidth]{fig_trophic3.pdf}
 \vspace{0mm}
 \caption{
 \textbf{a}, Assembling communities over time from a pool of 200 non-engineering species. 
@@ -379,49 +391,79 @@ Measures were evaluated across $10^4$ replicates; see Materials and Methods for 
 
 
 Does the assembly of ecological networks favor nestedness when mutualistic interactions are frequent?
-Increasing the number of need interactions (Fig. \ref{fig:model}) increases the number of both service-resource and service-service dependencies.
-% Increasing service dependencies (\emph{need} interactions; see Fig. \ref{fig:model}) promotes both service-resource and service-service dependencies.
-Consider how species with more service interactions compare to those with fewer.
-More service interactions \emph{i}) increase a species' competition strength, (lowering its primary extinction risk) while also \emph{ii}) increasing inter-species dependencies. % and its secondary extinction risk
-% As such, elimination of a species that provides a service will result in the secondary extinction of the species that receives that service.
-While the occurrence of a mutualism assumes a fitness advantage for the species receiving the service, the latter highlights the potential risk associated with losing mutualistic partners \cite{Bond1994,Colwell2012}.
-Indeed, the balance that mutualists must maintain with their partners may have large implications for the future of global biodiversity \cite{Dunn2009}.
+\rev{In the absence of mutualisms, the trade-offs in our model preclude high levels of nestedness because we assume that generalists are at a competitive disadvantage when they share the same resources with a specialist consumer.
+Yet we find that as we increase the frequency of service interactions (holding constant trophic interaction frequency; see Appendix 2), the assembled community at steady state becomes more nested (Fig. \ref{fig:nest}a).
+}
+More service interactions increase a species' competition strength, lowering its primary extinction risk.
+\rev{Participation in a mutualism thus delivers a fitness advantage to the species receiving the service, compensating for the lower competitive strength of generalists and allowing generalists to share subsets of resources with specialists, which promotes nestedness.}
+However increases in mutualisms also increase inter-species dependencies, which raises the potential risk associated with losing mutualistic partners \cite{Bond1994,Colwell2012}. % and its secondary extinction risk
+% Indeed, the balance that mutualists must maintain with their partners may have large implications for the future of global biodiversity \cite{Dunn2009}.
+\rev{While this shifting landscape of extinction risks lowers the steady state species richness of communities with high frequencies of service interactions, there is not a direct relationship between nestedness and richness (Fig. \ref{fig:nestsize}).}
+
+% 
+% Increasing the number of need interactions (Fig. \ref{fig:model}) increases the number of both service-resource and service-service dependencies.
+% % Increasing service dependencies (\emph{need} interactions; see Fig. \ref{fig:model}) promotes both service-resource and service-service dependencies.
+% Consider how species with more service interactions compare to those with fewer.
+% % As such, elimination of a species that provides a service will result in the secondary extinction of the species that receives that service.
+% % While the occurrence of a mutualism assumes a fitness advantage for the species receiving the service, the latter highlights the 
+% Indeed, the balance that mutualists must maintain with their partners may have large implications for the future of global biodiversity \cite{Dunn2009}.
 
 
 
-\rev{We find that as we increase the frequency of service interactions (holding constant trophic interaction frequency; see Appendix 2), the assembled community at steady state becomes more nested (Fig. \ref{fig:nest}a).}
+% \rev{We find that as we increase the frequency of service interactions (holding constant trophic interaction frequency; see Appendix 2), the assembled community at steady state becomes more nested (Fig. \ref{fig:nest}a).}
 % That the absolute values of nestedness are low compared to those measured for empirical mutualistic networks is unsurprising: observations of mutualistic interactions are generally for bipartite networks and isolated to specific systems (e.g. ant-plant mutualisms).
 % Here the NODF metric is taken across both eat and need interactions across the entire assembled community.
 % In this case, nestedness emerges from the assembly process and provides structural stability.
 % In this case, nestedness emerges from the assembly process itself.
-Nestedness requires the maintenance of interaction asymmetry between species \cite{Araujo2010}, which in this case emerges from the assembly process.
-This increasing nestedness can be understood by examining the different extinction risks among species within a simple nested motif composed of both trophic and mutualistic interactions (Fig. \ref{fig:nest}, inset).
-In the trophic motif, species with high vulnerability (multiple predators) are at greater risk of primary extinction via competitive exclusion.
-This will result in the secondary extinction of the specialist consumer, eliminating the interaction asymmetry. %rendering the nested structure prone to change and 
-In the mutualistic motif and our framework generally, mutualisms are more commonly formed by composite interactions, where the consumer species is engaged in a trophic interaction and the resource species is engaged in a service interaction.
-% As such, the consumer species becomes a trophic partner and the resource species gains the competitive advantages of the service.
-If the competitive advantage of services are greater than the costs of vulnerability (see Methods), it is the low vulnerability species with fewer trophic partners that are at greater risk of exclusion (Fig. \ref{fig:nest}, inset).
-\rev{As such, interaction asymmetry is conserved when interactions are mutualistic, and is prone to decay when interactions are purely trophic.
-This dynamic can be observed in larger nested motifs as well (Fig. \ref{fig:motif}).}
-% As increased nestedness requires conservation of interaction asymmetry, we observe it to emerge in systems with higher frequencies of mutualistic interactions.
-% Because its elimination will not cascade, the nested structure will be more resistant to change.
+\rev{Increasing the frequency of mutualisms affects extinction dynamics within the community in conflicting ways.
+Consider two motifs composed of trophic and mutualistic interactions, respectively (Fig. \ref{fig:nest}, inset).}
+In a trophic motif with no mutualisms, species with high vulnerability (multiple predators) are at greater risk of primary extinction via competitive exclusion. 
+This will result in the secondary extinction of the specialist consumer. 
+If the interactions are instead mutualisms the costs of vulnerability are compensated by services, and it is now the low vulnerability species with fewer trophic partners that is at greater risk of exclusion, preserving the core of the motif at the expense of the periphery.
+Preservation of the core species also emerges in larger nested motifs (Fig. \ref{fig:motif}), and has been observed in ant-plant mutualistic systems where nested structures are thought to arise from shifting competitive exclusion to the periphery \cite{Dattilo2013}.
+\rev{The effects of mutualisms will differ across motifs, but they will generally serve to increase competitive advantages of species receiving services, while creating additional structural dependencies within the community.
+}
 
-\rev{The conservation of interaction asymmetries provided by service interactions in nested motifs should not be construed with stability of the network as a whole. %, and the existence of one does not infer the other
-When we examine the dynamics of the community as a function of service interaction frequency, we observe that mutualistic interactions have different effects on primary vs. secondary extinction rates.
-Because service dependencies bolster the competitive strength of otherwise susceptible species such as trophic generalists and those with multiple predators, the rate of primary extinctions is lowered, though this effect is weak (Fig. \ref{fig:nest}b).
-% This serves to lower the rate of primary extinctions (FIG), while simultaneously conserving the asymmetries of nested interactions (Fig. \ref{fig:nest}, inset).
-However, because mutualisms build rigid dependencies between species, more service dependencies result in higher frequencies of secondary extinctions (Fig. \ref{fig:nest}c).
-In communities with many mutualistic interactions, this combined influence yields extinctions that are less likely to occur, but that promote larger cascades when they do.}
+\rev{When we examine the dynamics of the community as a function of service interaction frequency, we observe that mutualistic interactions have different effects on primary versus secondary extinction rates.
+Because service dependencies bolster the competitive strength of otherwise susceptible species such as trophic generalists and species with multiple predators, the rate of primary extinctions is lowered, though this effect is weak (Fig. \ref{fig:nest}b).
+However, because mutualisms build rigid dependencies between species, more service dependencies result in higher frequencies of secondary extinctions (Fig. \ref{fig:nest}c). 
+In communities with many mutualistic interactions, this combined influence yields extinctions that are less likely to occur, but that result in larger cascades when they do.
+}
+
+% 
+% Nestedness requires the maintenance of interaction asymmetry between species \cite{Araujo2010}, which in this case emerges from the assembly process.
+% Increasing nestedness can be understood by examining the different extinction risks among species within a simple nested motif composed of both trophic and mutualistic interactions (Fig. \ref{fig:nest}, inset).
+% In the trophic motif, species with high vulnerability (multiple predators) are at greater risk of primary extinction via competitive exclusion.
+% This will result in the secondary extinction of the specialist consumer, eliminating the interaction asymmetry. %rendering the nested structure prone to change and 
+% In the mutualistic motif and our framework generally, mutualisms are more commonly formed by composite interactions, where the consumer species is engaged in a trophic interaction and the resource species is engaged in a service interaction.
+% % As such, the consumer species becomes a trophic partner and the resource species gains the competitive advantages of the service.
+% If the competitive advantage of services is greater than the costs of vulnerability (see Methods), it is the low vulnerability species with fewer trophic partners that is at greater risk of exclusion (Fig. \ref{fig:nest}, inset).
+% \rev{As such, interaction asymmetry is conserved when interactions are mutualistic, and is prone to decay when interactions are purely trophic.
+% Preservation of the core species that maintain interaction asymmetry also emerges in larger nested motifs (Fig. \ref{fig:motif}), and has been observed in ant-plant mutualistic systems where nested structures are similarly thought to arise from shifting competitive exclusion to the periphery \cite{Dattilo2013}.}
+% % As increased nestedness requires conservation of interaction asymmetry, we observe it to emerge in systems with higher frequencies of mutualistic interactions.
+% % Because its elimination will not cascade, the nested structure will be more resistant to change.
+% 
+% \rev{The conservation of interaction asymmetries provided by service interactions in nested motifs should not be construed with stability of the network as a whole. %, and the existence of one does not infer the other
+% This is particularly important to note because while nestedness increases with service interaction frequency, the absolute value is low, and this is due to the sparsity of the network.
+% When we examine the dynamics of the community as a function of service interaction frequency, we observe that mutualistic interactions have different effects on primary versus secondary extinction rates.
+% Because service dependencies bolster the competitive strength of otherwise susceptible species such as trophic generalists and species with multiple predators, the rate of primary extinctions is lowered, though this effect is weak (Fig. \ref{fig:nest}b).
+% % This serves to lower the rate of primary extinctions (FIG), while simultaneously conserving the asymmetries of nested interactions (Fig. \ref{fig:nest}, inset).
+% However, because mutualisms build rigid dependencies between species, more services result in higher frequencies of secondary extinctions (Fig. \ref{fig:nest}c).
+% In communities with many mutualistic interactions, this combined influence yields extinctions that are less likely to occur, but that result in larger cascades when they do.}
 
 % , we observe that these networks have lower species' persistence
  %as well as lower diversity (Supplemental Materials).
 % both lower species diversity on average as well as lower species' persistence.
-\rev{An increased rate of secondary extinctions means that the network is less robust to perturbation, which may impact community turnover.
-If we measure persistence in terms of the proportion of time species are established in the network, we find that higher frequencies of service interactions lower average persistence, i.e. increased species turnover (Fig. \ref{fig:nest}d).}
+\rev{An increased rate of secondary extinctions means that the network is less robust to perturbation, which may impact community turnover, or persistence.
+If we measure persistence in terms of the proportion of time species are established in the community, we find that higher frequencies of service interactions lower average persistence (increased species turnover; Fig. \ref{fig:nest}d).
+Analysis of species-specific interactions reveals that it is the species that require more services that have lower persistence (Fig. \ref{fig:degree}).
 % Persistence as measured as the percent simulation time the community is occupied by a given species, averaged across all species that successfully colonize.
 % At the community-scale, lower average persistence implies greater species turnover.
 Observations of empirical systems appear to support model predictions.
-For example, assembling plant-pollinator systems have demonstrated high rates of species and interaction turnover, both during the assembly process and at the steady state \cite{Ponisio2017}.
+For example, assembling plant-pollinator systems have demonstrated high rates of species and interaction turnover, both during the assembly process and at the steady state \cite{Ponisio2017}.}
+% We also find that increasing a species trophic interactions -- from the perspective of both the prey and predator -- lowers its persistence (Fig. \ref{fig:degree}), however communities as a whole are more stable as the trophic link density increases (Fig. \ref{fig:meandegree}).
+% For an individual species, too many trophic interactions will increase the risk of competitive exclusion (Fig. \ref{fig:degree}), however the community as a whole benefits from the structural stability provided by trophic redundancies (Fig. \ref{fig:meandegree}).
+
 
 % Ponisio et al. \cite{Ponisio2017} suggested that the assembly process they observed was ordered by an `opportunistic attachment' rather than `preferential attachment' process, where generalist interactions reordered in response to the changing conditions of the community.
 % The framework that we present here employs an attachment dynamic that is more in line with an opportunistic, rather than preferential, process, as invoked by Ponisio et al. \cite{Ponisio2017} to explain observed changes in mutualism structure over the course of assembly.
@@ -430,16 +472,16 @@ For example, assembling plant-pollinator systems have demonstrated high rates of
 
 \begin{figure}[h!]
 \centering
-\includegraphics[width=0.5\textwidth]{fig_nested.png}
+\includegraphics[width=0.45\textwidth]{fig_nested3.pdf}
 \vspace{0mm}
 \caption{
-\textbf{a}, Species persistence with increasing frequencies of mutualistic (service) interactions without ecosystem engineers.
-% Persistence as measured as the percent simulation time the community is occupied by a given species, averaged across all species that successfully colonize.
-\textbf{b}, Structural nestedness of communities, measured as NODF (Nestedness based on Overlap and Decreasing Fill) \cite{AlmeidaNeto2008}.
-Measures were evaluated across $10^4$ replicates; see Materials and Methods for parameter values.
+\textbf{a}, Structural nestedness of communities, measured as UNODF (Unipartite Nestedness based on Overlap and Decreasing Fill) \cite{Cantor2017}.
+The value reported is the mean value taken across the rows and columns of the adjacency matrix accounting for both trophic and service interactions.
 Inset: A trophic and mutualistic nested motif for resource species 1, 2 and consumer species 3, 4.
-Trophic motif: the vulnerable species 2 is subject to primary extinction because it has a lower competition strength $\sigma$, resulting in an extinction cascade of species 4.
-Mutualistic motif: the least vulnerable species 1 with fewer mutualistic partners is subject to primary extinction without cascading effects.
+Whether the interactions are trophic or mutualistic impacts the susceptibility of each species to primary extinctions (based on differences in competitive strength $\sigma_i$) and secondary extinctions (which result from lost dependencies associated with primary extinctions).
+\textbf{b}, Primary extinction rate and \textbf{c}, secondary extinction rate as a function of service interaction frequency.
+\textbf{d}, Species persistence as a function of service interaction frequency.
+Measures were evaluated for $10^4$ replicates; see Methods and Supplementary Appendix 2 for parameter values.
 \vspace{0mm}
 }
 \label{fig:nest}
@@ -469,14 +511,14 @@ For example, engineering has been shown to promote invasion \cite{Cuddington2004
 % On eco-evolutionary timescales, ecosystem engineering can alter the selective environment \cite{Krakauer2009,OdlingSmee2013} and ultimately lead to unexpected outcomes such as the fixation of deleterious alleles \cite{Laland1999}.
 % On macroevolutionary timescales, there is considerable interest in understanding the role of innovation on diversification and extinction rates within and among clades \cite{Marshall2016}.
 % While such innovation generally pertains to the appearance of morphological traits, environmental modifications that result from evolutionary innovations can sometimes be wide-ranging, such as the planetary-scale consequences following the evolution of multicellular cyanobacteria \cite{Schirrmeister2013}.
-On smaller scales, microbiota construct shared metabolitic resources that have a significant influence on microbial communities \cite{Kallus2017}, the dynamics of which may even serve as the missing ingredient stabilizing some complex ecological systems \cite{Muscarella2017}.
+On smaller scales, microbiota construct shared metabolitic resources that have a significant influence on microbial communities \cite{Kallus2017}, the dynamics of which may even serve as the missing ingredient stabilizing some complex ecological systems \cite{Butler2018}.
 
 
 We next explore the effects of ecosystem engineering by allowing species to produce abiotic modifiers as additional nodes in the ecological network (Fig. \ref{fig:model}).
 These modifier nodes produced by engineers can serve to fulfill resource or service requirements for other species.
 The parameter $\eta$ defines the mean number of modifiers produced per species in the pool, drawn from a Poisson distribution (see Methods and Supplementary Appendix 1 for details).
-If a species makes $\leq 1$ modifier, we label it an engineer.
-As the mean number of modifiers/species $\eta$ increases, both the number of engineers in the pool as well as the number of modifiers each engineer makes increases.
+If a species makes $\geq 1$ modifier, we label it an engineer.
+As the mean number of modifiers/species $\eta$ increases, both the number of engineers in the pool as well as the number of modifiers made per engineer increases.
 As detailed in Supplementary Appendix 1, multiple engineers can make the same modifier, such that engineering redundancies are introduced when $\eta$ is large.
 When an engineer colonizes the community, so do its modifiers, which other species in the system may interact with.
 When engineers are lost, their modifiers will also be lost, though can linger in the community for a period of time inversely proportional to the density of disconnected modifiers (modifiers without a maker) in the community.
@@ -494,27 +536,26 @@ When engineers are lost, their modifiers will also be lost, though can linger in
 %Lawton 1994: there may be sometimes redundancy in ecosystem engineers... (uses beaver to suggest that there is not)
 
 %negative (introduces dependencies) then positive (introduces redundancies)
-\rev{The inclusion of engineers does not have a significant impact on the species-species interactions within assembling food webs.
-See Supplementary Appendix XX for details.
-Transition from structure to dynamics.}
-However, increasing engineering does have significant consequences for community stability, but these effects also are sensitive to the frequency of service interactions within the community.
-We measure community stability by 
+\rev{While the inclusion of engineering does not significantly impact the structure of species-species interactions within assembling food webs (see Supplementary Appendix 4 and Fig. \ref{fig:trophiceng}), it does have significant consequences for community stability.
+Importantly, these effects also are sensitive to the frequency of service interactions within the community, and we find that their combined influence can be complex.}
+As for food webs without engineering, we measure community stability by assessing
 \emph{i}) rates of primary versus secondary extinctions,
 \emph{ii}) species persistence, and 
 \emph{iii}) steady state community diversity.
 % Primary extinctions result from the competitive exclusion of species, whereas secondary extinctions are those that occur as a direct result of the former.
-All measures were averaged over each species within the community across assembly time.
+% All measures were averaged over each species within the community across assembly time.
 
 % Increasing engineering has different effects on primary versus secondary extinctions.
 As the number of engineers increase, mean rates of primary extinction are first elevated and then decline (Fig. \ref{fig:engineers}a).
 At the same time, the mean rates of secondary extinction systematically decline and persistence systematically increases (Fig. \ref{fig:engineers}b-c).
-Higher rates of primary extinction coupled with lower rates of secondary extinction that occur when modifiers are rare ($0 < \eta \leq 0.5$) mean that extinctions are common, but of limited magnitude such that disturbances are compartmentalized.
+When engineered modifiers are rare ($0 < \eta \leq 0.5$), higher rates of primary extinction coupled with lower rates of secondary extinction mean that extinctions are common, but of limited magnitude such that disturbances are compartmentalized.
 As modifiers become more common both primary and secondary extinction rates decline, which corresponds to increased persistence.
 We suggest two mechanisms that may produce the observed results.
 First, when engineers and modifiers are present but rare, they provide additional resources for consumers.
 This stabilization of consumers ultimately results in increased vulnerability of prey, such that the cumulative effect is increased competitive exclusion of prey and higher rates of primary extinction (Fig. \ref{fig:engineers}a).
 Second, when engineers and their modifiers are common ($\eta > 0.5$) the available niche space expands, lowering competitive overlap and suppressing both primary and secondary extinctions.
 Notably the presence of even a small number of engineers serves to limit the magnitude of secondary extinction cascades.
+Assessment of species persistence as a function of trophic in-degree (number of resources) and out-degree (number of consumers) generally supports this proposed dynamic (Fig. \ref{fig:indeng}).
 
 % This nonlinear effect of engineering on rates of primary extinction results from two competing forces.
 % The first force is observed when engineers and their modifiers are rare ($0 < \eta \leq 0.5$).
@@ -525,11 +566,11 @@ Notably the presence of even a small number of engineers serves to limit the mag
 Increasing the frequency of service interactions promotes service interactions between species and engineered modifiers (Fig. \ref{fig:model}).
 A topical example of the latter is the habitat provided to invertebrates by the recently discovered rock-boring teredinid shipworm (\emph{Lithoredo abatanica}) \cite{Shipway2019}.
 Here, freshwater invertebrates are serviced by the habitat modifications engineered by the shipworm, linking species indirectly via an abiotic effect (in our framework via a modifier node).
-As the frequency of service interactions increases, the negative effects associated with rare engineers is diminished (Fig. \ref{fig:engineers}A).
+As the frequency of service interactions increases, the negative effects associated with rare engineers is diminished (Fig. \ref{fig:engineers}a).
 Increasing service interactions both elevates the competitive strength of species receiving services (from species and/or modifiers), while creating more interdependencies between and among species.
 % Species that serve as resources to many consumers are less competitive due to increased vulnerability.
-As trophic interactions are replaced by service interactions, previously vulnerable species gain a competitive foothold and persist (Fig. \ref{fig:nest}, inset), lowering rates of primary extinctions (Fig. \ref{fig:engineers}A). %, particularly in systems where consumers are facilitated by a small number of engineers
-The costs of these added services to the community are an increased rate of secondary extinctions (Fig. \ref{fig:engineers}B) and higher species turnover (Fig. \ref{fig:engineers}C).
+As trophic interactions are replaced by service interactions, previously vulnerable species gain a competitive foothold and persist (Fig. \ref{fig:nest}, inset), lowering rates of primary extinctions (Fig. \ref{fig:engineers}a). %, particularly in systems where consumers are facilitated by a small number of engineers
+The costs of these added services to the community are an increased rate of secondary extinctions (Fig. \ref{fig:engineers}b) and higher species turnover (Fig. \ref{fig:engineers}c).
 Low rates of primary extinction coupled with high rates of secondary extinction mean that extinctions are less common but lead to larger cascades.
 % Importantly, these changes are not due to fluctuations in steady state community richness, which remains relatively constant across the parameter space that we examine (Fig. \ref{fig:steadystate}A).
 
@@ -1142,13 +1183,18 @@ As past ecosystems have fundamentally altered the landscape on which contemporar
   Uttam Bhat,
   Irina Birskis Barros,
   Emmet Brickowski,
+  Jennifer A. Dunne,
   Ashkaan Fahimipour,
+  Marilia P. Gaiarsa,
   Jean Philippe Gibert,
-  Chris P Kempes,
+  Christopher P Kempes,
+  Eric Libby,
+  Lauren C. Ponisio,
   Taran Rallings,
-  Samuel Scarpino,
+  Samuel V. Scarpino,
   Megha Suswaram,
-  and Ritwika VPS 
+  and Ritwika VPS,
+  and two anonymous reviewers
   for insightful discussions and comments throughout the lengthy gestation of this manuscript.
   The original idea was conceived at the Networks on Networks Working Group in G\"ottingen, Germany (2014) and the Santa Fe Institute (2015).
   This work was formerly prepared as a part of the Ecological Network Dynamics Working Group at the National Institute for Mathematical and Biological Synthesis (2015-2019), sponsored by the National Science Foundation through NSF Award DBI-1300426, with additional support from The University of Tennessee, Knoxville.
@@ -1269,42 +1315,72 @@ The Inverse Niche Model assumes increasing specialization with feeding hierarchi
 In addition, the Inverse Niche model outputs lower standard deviations of in- and out-degree distributions.
 Together these trends suggest that the qualitative structural differences that we observe for the assembly and Niche model may reflect an important structural distinction between food webs that do and do not include parasitic species.
 
+\subsection*{Appendix 4: The structure of engineered food webs}
+We examined whether and to what extent the structure of food webs was altered when engineers are introduced into the community.
+Because trophic links can now exist between species-modifiers as well as species-species, there are different ways of accounting for structure, making direct comparisons with non-engineered food webs somewhat difficult.
+We note that we exclude service interactions in this case to best match the structural analysis described in the main text and shown in Fig. \ref{fig:trophic}.
+While the inclusion of engineers ($\eta = 2$) does have an impact on stability in terms of primary versus secondary extinction rates, there is not a strong effect of engineering on steady state species richness (Fig. \ref{fig:trophiceng}a; species richness is shown in blue, modifier richness is shown in red).
 
-\subsection*{Appendix 4: Measures of generality}
+The role of specialists \emph{does} and \emph{does not} change with the introduction of engineering, depending on how specialization is defined.
+As in the main text, a specialist is defined when its generality index $G_i < 1$ relative to the steady state link density.
+When engineered modifiers are included, we account for a trophic interaction between a species and its another's modifier as an interaction between those two species.
+So if a species $B$ makes a modifier $M$, and $A$ eats $M$, then we set $A$ to (indirectly) eat $B$.
+This accounting of both direct and indirect trophic interactions between species can then be compared to \emph{i}) the direct trophic link density of the community, or \emph{ii}) the direct + indirect trophic link density of the community, and some insights can be gained from both approaches.
 
-The trophic breadth of potential colonizers is thought to play an important role in community assembly.
-The definition of a specialist or generalist to some degree depends on the size and connectance of the larger food web.
-Trophic generality for a species $i$ is defined $G_i = k^{\rm in}_i/(L/S)$, where $k^{\rm in}_i$ is the in-degree, or number of resources consumed by species $i$ \cite{Williams2000}.
-% A species is classified as a generalist if $G_i > 1$ and a specialist if $G_i < 1$.
-A species is classified as a generalist if the number of its trophic interactions is greater than the average number of links per species, or $G_i > 1$, and a specialist if $G_i < 1$, where a community can be described by the proportion of specialists found therein. %$\rho_\rr{s}(G)$
-For interaction networks that are assembling over time, generality can be scaled by a number of different measures of $L/S$, and this has a large effect on our interpretation of the role of generality in community assembly.
-For instance, $L/S$ may be quantified by either including all autotrophic species or only autotrophic functional groups.
-Furthermore, the scaling of generality may be made with respect to the current state of the community at each point in time, or with respect to the community at steady state.
-For instance, in their investigation of assembling mangrove food webs, Piechnik et al. \cite{Piechnik2008} scaled trophic breadth to a standard steady state value of $L^*/S^* = 0.2$ averaged across 102 food webs.
+In the first case, where $G_i$ is determined relative to $L^*_{\rm direct}/S^*$, we find that there are no potential specialists that colonize the community, and -- as before -- functional specialists colonize first, but -- not as before -- become functional generalists at steady state (mean proportion specialists at steady state is 0.04; Fig. \ref{fig:trophiceng}b).
+This means that the indirect links that define trophic interactions between species and modifiers increase the link-density of the network relative to that defined only by direct trophic interactions.
+In words, modifiers serve to connect otherwise disconnected species, formalizing the otherwise indirect relationships that structure the role of engineers in the community.
 
-To examine how our assessment of the role of generalism over the course of assembly changes based on the application of different scalings, we employ three different measures of $L/S$ to calculate $G_i$:
-1) $G_i^{\rr{all}}$, where $L$ accounts for all links in the food web and $S$ accounts for all species relative to each time interval in the assembly process (circles; Fig. \ref{fig:spec}b);
-2) $G_i^{\rr{hetero}}$, where we consider only the links and species richness of heterotrophs, excluding autotrophs (points; Fig. \ref{fig:spec}b);
-3) $G_i^*$, where $L$ and $S$ are measured with respect to the communities at steady state, which is most similar to the measure used to evaluate assembling mangrove food webs (diamonds; Fig. \ref{fig:spec}b).
-Whether trophic breadth is scaled to the current state of $L/S$ or the steady state value of $L^*/S^*$ has a large influence on the estimated proportion of generalists in the community, particularly when the size of the system is small.
-We observe that for $G_i^{\rr{all}}$, the system is initially assembled by specialist species, though over the course of assembly the proportion of specialists relative to generalists declines to intermediate values (circles representing the average over replicates in Fig. \ref{fig:spec}).
-If only the trophic links between non-autotrophs are considered as in $G_i^{\rr{hetero}}$, specialists still dominate early in assembly, but there is a greater range, such that some systems can be described by a mixed proportion of specialists and generalists (individual points representing independent replicates in Fig. \ref{fig:spec}).
-
-The different normalizations by which generality is measured will impact the interpretation of both empirical and model systems alike.
-In our framework, species colonizing early in the assembly process are generalists compared to how the term is defined at the steady state, but they are functionally specialists with respect to the assembling community.
-For example, a species that is trophically connected to 10 resource species in the source pool may colonize a community where it is consuming a small subset of its potential range.
-As the community grows, that species may realize more of its trophic niche if those resource species subsequently colonize the system.
-To what end we label this species a generalist or specialist relative to the assembling community is thus subject to multiple interpretations.
-% Because link density is dynamic over the course of assembly, it is not altogether obvious which measure is more appropriate
+In the second case, where $G_i$ is determined relative to $L^*_{\rm indirect}/S^*$, we find that the changes in both functional and potential specialists over the course of assembly (Fig. \ref{fig:trophiceng}c) follow those observed for non-engineered food webs (Fig. \ref{fig:trophic}b).
 
 
-\subsection*{Appendix 5: Measures of generality}
+% 
+% \textbf{b}, The proportion of specialists as a function of assembly time, where a specialist is defined as a species with a generality index $G_i < 1$ relative to the steady state link density.
+% $G_i$ is scaled to the steady state link density where links are direct trophic interactions between species.
+% Diamonds represent functional (realized) trophic interactions; triangles represent potential trophic interactions.
+% \textbf{c}, The proportion of specialists as a function of assembly time, where a specialist is defined as a species with a generality index $G_i < 1$.
+% Here $G_i$ is scaled to the steady state link density where links are composed of \emph{both} direct trophic interactions between species and indirect trophic interactions between consumers and those species that produce modifiers as resources.
+% Diamonds represent functional (realized) trophic interactions; triangles represent potential trophic interactions.
+% \textbf{d}, The frequency distribution of trophic levels as a function of assembly time (iterations). 
+% Autotrophs occupy ${\rm TL}=1$.
+% Measures were evaluated across $10^4$ replicates; see Materials and Methods for parameter values.
+
+% 
+% \subsection*{Appendix 4: Measures of generality}
+% 
+% The trophic breadth of potential colonizers is thought to play an important role in community assembly.
+% The definition of a specialist or generalist to some degree depends on the size and connectance of the larger food web.
+% Trophic generality for a species $i$ is defined $G_i = k^{\rm in}_i/(L/S)$, where $k^{\rm in}_i$ is the in-degree, or number of resources consumed by species $i$ \cite{Williams2000}.
+% % A species is classified as a generalist if $G_i > 1$ and a specialist if $G_i < 1$.
+% A species is classified as a generalist if the number of its trophic interactions is greater than the average number of links per species, or $G_i > 1$, and a specialist if $G_i < 1$, where a community can be described by the proportion of specialists found therein. %$\rho_\rr{s}(G)$
+% For interaction networks that are assembling over time, generality can be scaled by a number of different measures of $L/S$, and this has a large effect on our interpretation of the role of generality in community assembly.
+% For instance, $L/S$ may be quantified by either including all autotrophic species or only autotrophic functional groups.
+% Furthermore, the scaling of generality may be made with respect to the current state of the community at each point in time, or with respect to the community at steady state.
+% For instance, in their investigation of assembling mangrove food webs, Piechnik et al. \cite{Piechnik2008} scaled trophic breadth to a standard steady state value of $L^*/S^* = 0.2$ averaged across 102 food webs.
+% 
+% To examine how our assessment of the role of generalism over the course of assembly changes based on the application of different scalings, we employ three different measures of $L/S$ to calculate $G_i$:
+% 1) $G_i^{\rr{all}}$, where $L$ accounts for all links in the food web and $S$ accounts for all species relative to each time interval in the assembly process (circles; Fig. \ref{fig:spec}b);
+% 2) $G_i^{\rr{hetero}}$, where we consider only the links and species richness of heterotrophs, excluding autotrophs (points; Fig. \ref{fig:spec}b);
+% 3) $G_i^*$, where $L$ and $S$ are measured with respect to the communities at steady state, which is most similar to the measure used to evaluate assembling mangrove food webs (diamonds; Fig. \ref{fig:spec}b).
+% Whether trophic breadth is scaled to the current state of $L/S$ or the steady state value of $L^*/S^*$ has a large influence on the estimated proportion of generalists in the community, particularly when the size of the system is small.
+% We observe that for $G_i^{\rr{all}}$, the system is initially assembled by specialist species, though over the course of assembly the proportion of specialists relative to generalists declines to intermediate values (circles representing the average over replicates in Fig. \ref{fig:spec}).
+% If only the trophic links between non-autotrophs are considered as in $G_i^{\rr{hetero}}$, specialists still dominate early in assembly, but there is a greater range, such that some systems can be described by a mixed proportion of specialists and generalists (individual points representing independent replicates in Fig. \ref{fig:spec}).
+% 
+% The different normalizations by which generality is measured will impact the interpretation of both empirical and model systems alike.
+% In our framework, species colonizing early in the assembly process are generalists compared to how the term is defined at the steady state, but they are functionally specialists with respect to the assembling community.
+% For example, a species that is trophically connected to 10 resource species in the source pool may colonize a community where it is consuming a small subset of its potential range.
+% As the community grows, that species may realize more of its trophic niche if those resource species subsequently colonize the system.
+% To what end we label this species a generalist or specialist relative to the assembling community is thus subject to multiple interpretations.
+% % Because link density is dynamic over the course of assembly, it is not altogether obvious which measure is more appropriate
+
+% 
+% \subsection*{Appendix 5: Measures of generality}
 
 
 
 \begin{figure*}[h!]
 \centering
-\includegraphics[width=0.8\textwidth]{fig_conn.pdf}
+\includegraphics[width=0.6\textwidth]{fig_conn.pdf}
 \caption{
 Left: Assembly of communities over time results in steady state species richness by ca. time-step 250.
 Right: Trophic connectance early in assembly is high because few species are tightly connected.
@@ -1337,19 +1413,22 @@ Only the trophic network of the assembly model used to assess metrics.
 \label{fig:error2}
 \end{figure*}
 
-\begin{figure*}[h!]
-\centering
-\includegraphics[width=0.8\textwidth]{fig_specialization.pdf}
-\caption{
-The proportion of specialists as a function of assembly time, where a specialist is defined as a species with a generality index $G_i < 1$.
-Measures of $G_i$ are shown normalized to different measures of link-density.
-Circles: $G_i^{\rr{all}}$ where $L$ accounts for all links in the food web and $S$ accounts for all species relative to each time interval in the assembly process (averaged across replicates).
-Points: $G_i^{\rr{hetero}}$, where we consider only the links and species richness of heterotrophs, excluding autotrophs (each point shows an individual replicate).
-Diamonds: $G_i^*$, where $L$ and $S$ are measured with respect to the communities at steady state (averaged across replicates). 
-This measure is the one presented in the main text and most similar to that used to evaluate assembling mangrove food webs \cite{Piechnik2008}.
-}
-\label{fig:spec}
-\end{figure*}
+
+
+% 
+% \begin{figure*}[h!]
+% \centering
+% \includegraphics[width=0.8\textwidth]{fig_specialization.pdf}
+% \caption{
+% The proportion of specialists as a function of assembly time, where a specialist is defined as a species with a generality index $G_i < 1$.
+% Measures of $G_i$ are shown normalized to different measures of link-density.
+% Circles: $G_i^{\rr{all}}$ where $L$ accounts for all links in the food web and $S$ accounts for all species relative to each time interval in the assembly process (averaged across replicates).
+% Points: $G_i^{\rr{hetero}}$, where we consider only the links and species richness of heterotrophs, excluding autotrophs (each point shows an individual replicate).
+% Diamonds: $G_i^*$, where $L$ and $S$ are measured with respect to the communities at steady state (averaged across replicates). 
+% This measure is the one presented in the main text and most similar to that used to evaluate assembling mangrove food webs \cite{Piechnik2008}.
+% }
+% \label{fig:spec}
+% \end{figure*}
 
 
 
@@ -1365,7 +1444,7 @@ This measure is the one presented in the main text and most similar to that used
 
 \begin{figure*}[h!]
 \centering
-\includegraphics[width=0.8\textwidth]{fig_motif.pdf}
+\includegraphics[width=0.6\textwidth]{fig_motif.pdf}
 \caption{
 \textbf{a}, The 4-species nested trophic and mutualistic motif described in the main text.
 \textbf{b}, A 6-species nested trophic and mutualistic motif. For the trophic motif at time-step 1, it is the core species of the motif that are at greatest risk of extinction. For the mutualistic motif at time-step 1 it is the peripheral species at greatest risk.
@@ -1375,24 +1454,15 @@ While suggesting that the dynamics of a single (among many possible) motif canno
 \label{fig:motif}
 \end{figure*}
 
-\begin{figure*}[h!]
-\centering
-\includegraphics[width=0.8\textwidth]{fig_persistdegree2.pdf}
-\caption{
-Top row: Mean persistence as a function of mean trophic degree, where the mean is taken across species, and the degree is the number of \emph{potential} trophic interactions if all species were present in the community. Each point is a replicate and columns correspond to different frequencies of service interactions.
-Middle row: Mean persistence as a function of mean trophic degree, where the mean is taken across species, and the degree is the time-averaged number of \emph{realized} trophic interactions. Each point is a replicate and columns correspond to different frequencies of service interactions.
-Bottom row: Mean persistence as a function of mean mutualism degree, where the mean is taken across species. Each point is a replicate and columns correspond to different frequencies of service interactions. In the case of service interactions, the potential and realized degree are equivalent.
-}
-\label{fig:meandegree}
-\end{figure*}
 
 \begin{figure*}[h!]
 \centering
-\includegraphics[width=0.8\textwidth]{fig_persistdegree2.pdf}
+\includegraphics[width=0.8\textwidth]{fig_nestedvsize.pdf}
 \caption{
-
+Nestedness (UNODF) as a function of steady state richness for 1000 replicated communities with low () and high frequency of service interactions.
+While higher frequencies of service interactions does lower steady state species richness (due to increasing secondary extinction rates), there is not a relationship between nestedness and species richness across replicates for a given service interaction frequency.
 }
-\label{fig:inddegree}
+\label{fig:nestsize}
 \end{figure*}
 
 
@@ -1400,7 +1470,67 @@ Bottom row: Mean persistence as a function of mean mutualism degree, where the m
 
 \begin{figure*}[h!]
 \centering
-\includegraphics[width=0.8\textwidth]{fig_redundancy.pdf}
+\includegraphics[width=0.8\textwidth]{fig_persistdegree_boxall.pdf}
+\caption{
+Left column: species-specific persistence as a function of trophic in-degree (the number of prey a species has; top) and out-degree (the number of predators a species has; bottom).
+Right column: species-specific persistence as a function of the mutualism in-degree (the number of service receivers a species has; top) and out-degree (the number of service providers a species has; bottom).
+As the trophic in- and out-degree of species increases, competition strength is lowered and persistence decreases.
+As the mutualism in-degree increases, so does the number of service donors that are needed for the receiving species to remain in the community. This introduces structural constraints that lowers persistence.
+}
+\label{fig:degree}
+\end{figure*}
+
+
+\begin{figure*}[h!]
+\centering
+\includegraphics[width=0.7\textwidth]{fig_trophic3_eng.pdf}
+\caption{
+\textbf{a}, Assembling communities over time from a pool of 200 non-engineering species. 
+Steady state species richness is reached by $t=250$.
+\textbf{b}, The proportion of specialists as a function of assembly time, where a specialist is defined as a species with a generality index $G_i < 1$ relative to the steady state link density.
+$G_i$ is scaled to the steady state link density where links are direct trophic interactions between species.
+Diamonds represent functional (realized) trophic interactions; triangles represent potential trophic interactions.
+\textbf{c}, The proportion of specialists as a function of assembly time, where a specialist is defined as a species with a generality index $G_i < 1$.
+Here $G_i$ is scaled to the steady state link density where links are composed of \emph{both} direct trophic interactions between species and indirect trophic interactions between consumers and those species that produce modifiers as resources.
+Diamonds represent functional (realized) trophic interactions; triangles represent potential trophic interactions.
+\textbf{d}, The frequency distribution of trophic levels as a function of assembly time (iterations). 
+Autotrophs occupy ${\rm TL}=1$.
+Measures were evaluated across $10^4$ replicates; see Materials and Methods for parameter values.
+}
+\label{fig:trophiceng}
+\end{figure*}
+
+
+\begin{figure*}[h!]
+\centering
+\includegraphics[width=0.7\textwidth]{fig_indeng_combined.pdf}
+\caption{
+\textbf{a},\textbf{b}, Species-specific persistence as a function of trophic in-degree (number of resources a species has; top) and out-degree (number of consumers that eat the species; bottom) when there are no engineers in the community. 
+\textbf{c},\textbf{d}, Species-specific persistence as a function of trophic in-degree (number of resources a species has; top) and out-degree (number of consumers that eat the species; bottom) when engineers are rare ($\eta = 0.5$).
+The notion that having a small number of engineers and modifiers in the community increases rates of primary extinction (Fig. \ref{fig:engineers}a) by stabilizing consumers at the expense of their prey is supported by \emph{i}) increased persistence of generalist consumers, and \emph{ii}) the increase in species with higher numbers of consumers.
+\textbf{e},\textbf{f}, Species-specific persistence as a function of trophic in-degree (number of resources a species has; top) and out-degree (number of consumers that eat the species; bottom) when engineers are common ($\eta = 2.0$).
+The notion that a large number of engineers and modifiers in the community decrease rates of primary extinction (Fig. \ref{fig:engineers}a) due to expanding niche space (diffusing the effects of competitive exclusion) is supported by the lack of correlation between trophic in/out-degree and persistence.
+}
+\label{fig:indeng}
+\end{figure*}
+
+
+
+% \begin{figure*}[h!]
+% \centering
+% \includegraphics[width=0.8\textwidth]{fig_persistdegree2.pdf}
+% \caption{
+% Top row: Mean persistence as a function of mean trophic degree, where the mean is taken across species, and the degree is the number of \emph{potential} trophic interactions if all species were present in the community. Each point is a replicate and columns correspond to different frequencies of service interactions.
+% Middle row: Mean persistence as a function of mean trophic degree, where the mean is taken across species, and the degree is the time-averaged number of \emph{realized} trophic interactions. Each point is a replicate and columns correspond to different frequencies of service interactions.
+% Bottom row: Mean persistence as a function of mean mutualism degree, where the mean is taken across species. Each point is a replicate and columns correspond to different frequencies of service interactions. In the case of service interactions, the potential and realized degree are equivalent.
+% }
+% \label{fig:meandegree}
+% \end{figure*}
+% 
+
+\begin{figure*}[h!]
+\centering
+\includegraphics[width=0.6\textwidth]{fig_redundancy.pdf}
 \caption{
 \textbf{a}, Number of redundant modifiers in the source pool as a function of the expected number of modifiers made per species $\eta$.
 The red dashed line shows the analytical expectation (Eq. \ref{eq:redundant}).
@@ -1412,7 +1542,7 @@ The red dashed line shows the analytical expectation of $\phi \approx 0.418$ (Eq
 
 \begin{figure*}[h!]
 \centering
-\includegraphics[width=0.8\textwidth]{fig_engineers4_unique.pdf}
+\includegraphics[width=0.6\textwidth]{fig_engineers4_unique.pdf}
 \caption{
 Measures of community stability as a function of the frequency of service interactions and number of modifiers per species, where each modifier is uniquely made by an engineer.
 \textbf{a}, Mean rates of primary extinction, where primary extinctions occur from competitive exclusion of consumers over shared resources.

@@ -49,12 +49,62 @@ realizedGnoprim = SharedArray{Float64}(reps,tseqmax,S);
 realizedGavgc = SharedArray{Float64}(reps,tseqmax,S);
 potentialGavgc = SharedArray{Float64}(reps,tseqmax,S);
 
+realizedGavgc_ind = SharedArray{Float64}(reps,tseqmax,S);
+potentialGavgc_ind = SharedArray{Float64}(reps,tseqmax,S);
+
 potentialG = SharedArray{Float64}(reps,tseqmax,S);
 C = SharedArray{Float64}(reps,tseqmax);
 
 #Save richness for colonizing phase
 coltraj = SharedArray{Int64}(reps,1000);
 clocktraj = SharedArray{Float64}(reps,1000);
+
+
+#FIRST Calculate SSL
+SS_linkdensity = SharedArray{Float64}(reps);
+SS_indlinkdensity = SharedArray{Float64}(reps);
+@sync @distributed for r=1:reps
+    filename = "data/steadystate_eng/int_m.jld";
+    indices = [r];
+    namespace = smartpath(filename,indices);
+    @load namespace int_m tp_m tind_m mp_m mind_m;
+    
+    a_b,
+    n_b,
+    i_b,
+    m_b,
+    n_b0,
+    sp_v,
+    int_id = preamble_defs(int_m);
+    
+    filename = "data/steadystate_eng/cid.jld";
+    indices = [r];
+    namespace = smartpath(filename,indices);
+    @load namespace CID clock;
+    
+    cid = findall(isodd,CID[:,4000]);
+    spcid = intersect(sp_v,cid);
+    
+    # cidinwebnoprim = sort(cid[findall(!iszero,vec(sum(a_b[cid,cid],dims=2)))]);
+    cidinwebnoprim = sort(spcid[findall(!iszero,vec(sum(tind_m[spcid,spcid],dims=2)))]);
+    
+    
+    #ONLY COUNT CONNECTED SPECIES AND NOT PURE PRIMARY PRODUCERS
+    speciesatsteadystate = length(cidinwebnoprim);
+    linksatsteadystate = sum(a_b[cidinwebnoprim,cidinwebnoprim]);
+    indlinksatsteadystate = sum(tind_m[cidinwebnoprim,cidinwebnoprim]);
+    
+    # speciesatsteadystate = length(spcid);
+    # linksatsteadystate = sum(a_b[spcid,spcid]);
+    # indlinksatsteadystate = sum(tind_m[spcid,spcid]);
+    
+    SS_linkdensity[r] = linksatsteadystate/speciesatsteadystate;
+    SS_indlinkdensity[r] = indlinksatsteadystate/speciesatsteadystate;
+end
+
+SSL = meanfinite(vec(SS_linkdensity),1)[1];
+SSL_ind = meanfinite(vec(SS_indlinkdensity),1)[1];
+
 
 @sync @distributed for r=1:reps
     #Read in the interaction matrix
@@ -167,11 +217,15 @@ clocktraj = SharedArray{Float64}(reps,1000);
         # SSC = 0.048; #indirect connectance
         #steady state link density averaged over all replicates
         # SSL = meanfinite(conn_ind[:,55],1)[1]*meanfinite(sprich[:,55],1)[1];
-        SSL = 6.058971063952253;
+        # SSL = 6.058971063952253;
         if sprichinwebnoprim[r,t] > 0
             # realizedGavgc[r,t,1:length(cidinweb)] = vec(sum(a_b[cidinweb,[1;cid]],dims=2)) .* (1/(SSC*length(cidinweb)));
-            realizedGavgc[r,t,1:length(cidinweb)] = vec(sum(tind_m[cidinweb,[1;spcid]],dims=2)) .* (1/(SSL));
-            potentialGavgc[r,t,1:length(cidinweb)] = vec(sum(tind_m[cidinweb,:],dims=2)) .* (1/(SSL));
+            realizedGavgc[r,t,1:length(cidinwebnoprim)] = vec(sum(tind_m[cidinwebnoprim,spcid],dims=2)) .* (1/(SSL));
+            potentialGavgc[r,t,1:length(cidinwebnoprim)] = vec(sum(tind_m[cidinwebnoprim,2:S],dims=2)) .* (1/(SSL));
+            
+            
+            realizedGavgc_ind[r,t,1:length(cidinwebnoprim)] = vec(sum(tind_m[cidinwebnoprim,spcid],dims=2)) .* (1/(SSL_ind));
+            potentialGavgc_ind[r,t,1:length(cidinwebnoprim)] = vec(sum(tind_m[cidinwebnoprim,2:S],dims=2)) .* (1/(SSL_ind));
         end
         
     end
@@ -263,6 +317,8 @@ pG = Array{Float64}(undef,reps,length(seq2));
 propG = Array{Float64}(undef,reps,length(seq2));
 propGavgc = Array{Float64}(undef,reps,length(seq2));
 proppotGavgc = Array{Float64}(undef,reps,length(seq2));
+propGavgc_ind = Array{Float64}(undef,reps,length(seq2));
+proppotGavgc_ind = Array{Float64}(undef,reps,length(seq2));
 propGnoprim = Array{Float64}(undef,reps,length(seq2));
 uppertrophicpropG = Array{Float64}(undef,reps,length(seq2));
 potpropG = Array{Float64}(undef,reps,length(seq2));
@@ -292,6 +348,11 @@ for r=1:reps
         #potential generality
         proppotGavgc[r,t] = sum((potentialGavgc[r,seq2[t],1:sprichinwebnoprim[r,seq2[t]]]) .> (1))/sprichinwebnoprim[r,seq2[t]];
         
+        #realized generality
+        propGavgc_ind[r,t] = sum((realizedGavgc_ind[r,seq2[t],1:sprichinwebnoprim[r,seq2[t]]]) .> (1))/sprichinwebnoprim[r,seq2[t]];
+        #potential generality
+        proppotGavgc_ind[r,t] = sum((potentialGavgc_ind[r,seq2[t],1:sprichinwebnoprim[r,seq2[t]]]) .> (1))/sprichinwebnoprim[r,seq2[t]];
+        
         potpropG[r,t] = sum((potentialG[r,seq2[t],1:sprichinweb[r,seq2[t]]]) .> (1))/sprichinweb[r,seq2[t]];
         
         uppertrophicpropG[r,t] = sum((realizedG[r,seq2[t],findall(x->x<2,trophic[r,seq2[t],:])][realizedG[r,seq2[t],findall(x->x<2,trophic[r,seq2[t],:])].>0]) .> (1))/sum(realizedG[r,seq2[t],findall(x->x<2,trophic[r,seq2[t],:])][realizedG[r,seq2[t],findall(x->x<2,trophic[r,seq2[t],:])].>0]);
@@ -317,6 +378,8 @@ mrGnoprim = meanfinite(propGnoprim,1);
 
 mrGavgc = meanfinite(propGavgc,1);
 mpGavgc = meanfinite(proppotGavgc,1);
+mrGavgc_ind = meanfinite(propGavgc_ind,1);
+mpGavgc_ind = meanfinite(proppotGavgc_ind,1);
 
 minmrGnoprim = Array{Float64}(undef,length(seq2));
 maxmrGnoprim = Array{Float64}(undef,length(seq2));
@@ -333,8 +396,8 @@ namespace = smartpath(filename);
 R"""
 library(RColorBrewer)
 pdf($namespace,height=5,width=6)
-layout(matrix(c(1,1,2,3), 2, 2, byrow = TRUE), 
-   widths=c(1,1,1), heights=c(0.8,1,1))
+layout(matrix(c(1,2,3,4), 2, 2, byrow = TRUE), 
+   widths=c(1,1,1,1), heights=c(1,1,1,1))
 par(oma = c(0.5, 1, 1, 1), mar = c(3, 4, 1, 1))
 """
 rsample=sample(collect(1:reps),100);
@@ -351,14 +414,14 @@ speciesrich = sum(CID[1:200,:],dims=1);
 objectrich = sum(CID[200:size(CID)[1],:],dims=1);
 R"""
 pal=brewer.pal(3,'Set1')
-plot($(clock),$(speciesrich),type='l',col=paste(pal[2],40,sep=''),xlim=c(0,100),ylim=c(0,300),xlab='',ylab='',axes=FALSE)
-lines($(clock),$(objectrich),col=paste(pal[1],40,sep=''))
+plot(seq(1,4000),$(speciesrich),type='l',col=paste(pal[2],40,sep=''),xlim=c(1,4000),ylim=c(0,300),xlab='',ylab='',axes=FALSE)
+lines(seq(1,4000),$(objectrich),col=paste(pal[1],40,sep=''))
 axis(1)
 axis(2,las=1)
 title(ylab='Species richness', line=3, cex.lab=1.2)
 title(xlab='Time', line=2.0, cex.lab=1.2)
-mtext(paste0("a"), side = 3, adj = -0.16, 
-    line = 0.3,cex=1.2,font=2)
+mtext(paste0("a"), side = 3, adj = -0.4, 
+    line = -0.6,cex=1.2,font=2)
 """
 
 for i=2:length(rsample)
@@ -376,14 +439,14 @@ for i=2:length(rsample)
     # filename = "figures/yog/assembly_time.pdf"
     # namespace = smartpath(filename);
     R"""
-    lines($(clock),$(speciesrich),type='l',col=paste(pal[2],40,sep=''))
-    lines($(clock),$(objectrich),col=paste(pal[1],40,sep=''))
+    lines(seq(1,4000),$(speciesrich),type='l',col=paste(pal[2],40,sep=''))
+    lines(seq(1,4000),$(objectrich),col=paste(pal[1],40,sep=''))
     """
 end
 
 
 
-#SPECIALIZATION
+#SPECIALIZATION 1
 R"""
 pal = brewer.pal($(length(seq2)),'Spectral')
 timelabels = parse(text=c("5","10","25","50",paste("10","^2"),paste("2.10","^2"),paste("5*10","^2"),paste("10","^3"),paste("2*10","^3"),paste("4*10","^3")))
@@ -392,9 +455,9 @@ plot($(seq[seq2]),1 - $mrGavgc, xlim=c(5,4000), ylim=c(0,1), xlab='', ylab='', l
 # points($(seq[seq2]),1 - $mpGavgc, pch=24, col='black', bg=pal, cex=1.5)
 axis(2,at=seq(0,1,by=0.2),labels=TRUE,tck=-0.015,mgp=c(0.5,0.5,0),las=1)
 axis(1,at=$(seq[seq2]),labels=TRUE,tck=-0.015,mgp=c(0.5,0.5,0))
-title(ylab='Proportion specialists', line=3, cex.lab=1.2)
+title(ylab='Proportion specialists', line=2, cex.lab=1.2)
 title(xlab='Assembly time', line=2.0, cex.lab=1.2)
-mtext(paste0("b"), side = 3, adj = -0.4, 
+mtext(paste0("b"), side = 3, adj = -0.3, 
     line = -0.6,cex=1.2,font=2)
 """
 for i=1:length(seq2)
@@ -411,6 +474,46 @@ lines($(seq[seq2]),1-$mrGavgc,lwd=2)
 points($(seq[seq2]),1-$mrGavgc,pch=23,col='black',bg=pal,cex=1.5)
 lines($(seq[seq2]),1-$mpGavgc,lwd=2)
 points($(seq[seq2]),1 - $mpGavgc, pch=24, col='black', bg=pal, cex=1.5)
+#labels
+points(4000,1.05,pch=23,col='black',bg='white',cex=1.5,xpd=TRUE)
+text(675,1.05,'Functional',cex=1.0,xpd=TRUE)
+points(4000,0.95,pch=24,col='black',bg='white',cex=1.5)
+text(800,0.95,'Potential',cex=1.0)
+"""
+
+#SPECIALIZATION 2
+R"""
+pal = brewer.pal($(length(seq2)),'Spectral')
+timelabels = parse(text=c("5","10","25","50",paste("10","^2"),paste("2.10","^2"),paste("5*10","^2"),paste("10","^3"),paste("2*10","^3"),paste("4*10","^3")))
+# par(mfrow=c(2,1))
+plot($(seq[seq2]),1 - $mrGavgc_ind, xlim=c(5,4000), ylim=c(0,1), xlab='', ylab='', log='x', cex.axis=0.85, pch=23, col='black', bg=pal, cex=1.5,axes=FALSE)
+# points($(seq[seq2]),1 - $mpGavgc, pch=24, col='black', bg=pal, cex=1.5)
+axis(2,at=seq(0,1,by=0.2),labels=TRUE,tck=-0.015,mgp=c(0.5,0.5,0),las=1)
+axis(1,at=$(seq[seq2]),labels=TRUE,tck=-0.015,mgp=c(0.5,0.5,0))
+title(ylab='Proportion specialists', line=3, cex.lab=1.2)
+title(xlab='Assembly time', line=2.0, cex.lab=1.2)
+mtext(paste0("c"), side = 3, adj = -0.4, 
+    line = -0.6,cex=1.2,font=2)
+"""
+for i=1:length(seq2)
+    R"""
+    propspec = 1-($(propGavgc_ind[:,i]))
+    propspectrim = propspec[which(propspec > 0)]
+    if (length(propspectrim)>0) {
+        points(jitter(rep($(seq[seq2[i]]),length(propspectrim))),propspectrim,pch='.',cex=3,col=pal[$i])
+    }
+    """
+end
+R"""
+lines($(seq[seq2]),1-$mrGavgc_ind,lwd=2)
+points($(seq[seq2]),1-$mrGavgc_ind,pch=23,col='black',bg=pal,cex=1.5)
+lines($(seq[seq2]),1-$mpGavgc_ind,lwd=2)
+points($(seq[seq2]),1 - $mpGavgc_ind, pch=24, col='black', bg=pal, cex=1.5)
+#labels
+points(4000,1.05,pch=23,col='black',bg='white',cex=1.5,xpd=TRUE)
+text(675,1.05,'Functional',cex=1.0,xpd=TRUE)
+points(4000,0.95,pch=24,col='black',bg='white',cex=1.5)
+text(800,0.95,'Potential',cex=1.0)
 
 
 #TROPHIC
@@ -423,7 +526,7 @@ axis(2,at=seq(2,20,by=2),labels=TRUE,tck=-0.015,mgp=c(0.5,0.5,0),las=1)
 axis(1,at=seq(0:0.6,by=0.2),labels=TRUE,tck=-0.015,mgp=c(0.5,0.5,0))
 title(ylab='Trophic level (TL)', line=2, cex.lab=1.2)
 title(xlab='Frequency', line=2.0, cex.lab=1.2)
-mtext(paste0("c"), side = 3, adj = -0.3, 
+mtext(paste0("d"), side = 3, adj = -0.3, 
     line = -0.6,cex=1.2,font=2)
 points(trimdist,seq(1,length(trimdist)),pch=21,bg=pal[1],col='black')
 """

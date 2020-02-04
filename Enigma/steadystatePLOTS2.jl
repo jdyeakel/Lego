@@ -81,9 +81,16 @@ SS_indlinkdensity = SharedArray{Float64}(reps);
     cid = findall(isodd,CID[:,4000]);
     spcid = intersect(sp_v,cid);
     
-    speciesatsteadystate = length(spcid);
-    linksatsteadystate = sum(a_b[spcid,spcid]);
-    indlinksatsteadystate = sum(tind_m[spcid,spcid]);
+    cidinwebnoprim = sort(cid[findall(!iszero,vec(sum(a_b[cid,cid],dims=2)))]);
+    
+    #ONLY COUNT CONNECTED SPECIES AND NOT PURE PRIMARY PRODUCERS
+    speciesatsteadystate = length(cidinwebnoprim);
+    linksatsteadystate = sum(a_b[cidinwebnoprim,cidinwebnoprim]);
+    indlinksatsteadystate = sum(tind_m[cidinwebnoprim,cidinwebnoprim]);
+    
+    # speciesatsteadystate = length(spcid);
+    # linksatsteadystate = sum(a_b[spcid,spcid]);
+    # indlinksatsteadystate = sum(tind_m[spcid,spcid]);
     
     SS_linkdensity[r] = linksatsteadystate/speciesatsteadystate;
     SS_indlinkdensity[r] = indlinksatsteadystate/speciesatsteadystate;
@@ -194,8 +201,8 @@ SSL = mean(SS_linkdensity);
         # SSL = 1.402144739810133;
         if sprichinwebnoprim[r,t] > 0
             # realizedGavgc[r,t,1:length(cidinweb)] = vec(sum(a_b[cidinweb,[1;cid]],dims=2)) .* (1/(SSC*length(cidinweb)));
-            realizedGavgc[r,t,1:length(cidinweb)] = vec(sum(a_b[cidinweb,cid],dims=2)) .* (1/(SSL));
-            potentialGavgc[r,t,1:length(cidinweb)] = vec(sum(a_b[cidinweb,2:S],dims=2)) .* (1/(SSL));
+            realizedGavgc[r,t,1:length(cidinwebnoprim)] = vec(sum(a_b[cidinwebnoprim,cid],dims=2)) .* (1/(SSL));
+            potentialGavgc[r,t,1:length(cidinwebnoprim)] = vec(sum(a_b[cidinwebnoprim,2:S],dims=2)) .* (1/(SSL));
         end
         
     end
@@ -374,11 +381,11 @@ namespace = smartpath(filename,indices);
 @load namespace CID clock;
 R"""
 pal=brewer.pal(3,'Set1')
-plot($(clock),$(vec(sum(CID,dims=1))),type='l',col=paste(pal[2],40,sep=''),xlim=c(0,100),ylim=c(0,180),xlab='',ylab='',axes=FALSE)
+plot(seq(1,4000),$(vec(sum(CID,dims=1))),type='l',col=paste(pal[2],40,sep=''),xlim=c(0,4000),ylim=c(0,180),xlab='',ylab='',axes=FALSE)
 axis(1)
 axis(2,las=1)
 title(ylab='Species richness', line=3, cex.lab=1.2)
-title(xlab='Time', line=2.0, cex.lab=1.2)
+title(xlab='Assembly time', line=2.0, cex.lab=1.2)
 mtext(paste0("a"), side = 3, adj = -0.16, 
     line = 0.3,cex=1.2,font=2)
 """
@@ -396,7 +403,7 @@ for i=2:length(rsample)
     # filename = "figures/yog/assembly_time.pdf"
     # namespace = smartpath(filename);
     R"""
-    lines($(clock),$(vec(sum(CID,dims=1))),type='l',col=paste(pal[2],40,sep=''))
+    lines(seq(1,4000),$(vec(sum(CID,dims=1))),type='l',col=paste(pal[2],40,sep=''))
     """
 end
 
@@ -429,6 +436,11 @@ lines($(seq[seq2]),1-$mrGavgc,lwd=2)
 points($(seq[seq2]),1-$mrGavgc,pch=23,col='black',bg=pal,cex=1.5)
 lines($(seq[seq2]),1-$mpGavgc,lwd=2)
 points($(seq[seq2]),1 - $mpGavgc, pch=24, col='black', bg=pal, cex=1.5)
+#labels
+points(4000,1.05,pch=23,col='black',bg='white',cex=1.5,xpd=TRUE)
+text(675,1.05,'Functional',cex=1.0,xpd=TRUE)
+points(4000,0.95,pch=24,col='black',bg='white',cex=1.5)
+text(800,0.95,'Potential',cex=1.0)
 
 #TROPHIC
 

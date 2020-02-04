@@ -39,7 +39,7 @@
 \citation{Lafferty2006}
 \citation{Turney2016}
 \citation{Bascompte2003}
-\citation{Bascompte2003,Bascompte2006,Guimaraes2006}
+\citation{Bascompte2003,Bascompte2006,Guimaraes2006,Araujo2010}
 \citation{Rohr2014}
 \citation{Valdovinos2016,Valdovinos2019}
 \citation{Krishna2008}
@@ -51,17 +51,13 @@
 \citation{Ponisio2019}
 \citation{Yeakel2013}
 \citation{Bond1994,Colwell2012}
-\citation{Dunn2009}
 \@writefile{lof}{\contentsline {figure}{\numberline {1}{\ignorespaces  \textbf  {a}, Multitype interactions between species (colored nodes) and abiotic modifiers (black nodes). \textbf  {b}, An assembling food web with species (colored nodes; color denotes trophic level, TL) and modifiers (black nodes). The basal resource is the white node rooted at the bottom of the network. \textbf  {c}, The corresponding adjacency matrix with colors denoting interactions between biotic (species) and abiotic (modifiers) entities. \textbf  {d}, A species ($\ast $) can colonize a community when a single trophic and all service requirements are met. \textbf  {e}, Greater vulnerability increases the risk of primary extinction via competitive exclusion (competition denoted by dashed line) to species ($\dag  $). The extinction of species ($\dag  $) will cascade to affect those connected by trophic ($\dag  \dag  $) and service ($\dag  \dag  \dag  $) dependencies. \vspace  {-3mm} }}{3}{}}
 \newlabel{fig:model}{{1}{3}{}{}{}}
+\citation{Dattilo2013}
 \citation{Ponisio2017}
-\citation{AlmeidaNeto2008}
-\citation{AlmeidaNeto2008}
+\citation{Cantor2017}
+\citation{Cantor2017}
 \citation{Ramos2012,Vieira2015,Valdovinos2016,Ponisio2017,Valdovinos2019}
-\@writefile{lof}{\contentsline {figure}{\numberline {2}{\ignorespaces  \textbf  {a}, Assembling communities over time from a pool of 200 non-engineering species. Steady state species richness is reached by $t=250$. \textbf  {b}, The proportion of specialists as a function of assembly time (iterations), where a specialist is defined as a species with a generality index $G_i < 1$. All measures of $G_i$ are scaled by the average number of links per species where $L$ and $S$ are measured at steady state. \textbf  {c}, The frequency distribution of trophic levels as a function of assembly time (iterations). Autotrophs occupy ${\rm  TL}=1$. Measures were evaluated across $10^4$ replicates; see Materials and Methods for parameter values. \vspace  {0mm} }}{4}{}}
-\newlabel{fig:trophic}{{2}{4}{}{}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {3}{\ignorespaces  \textbf  {a}, Species persistence with increasing frequencies of mutualistic (service) interactions without ecosystem engineers. \textbf  {b}, Structural nestedness of communities, measured as NODF (Nestedness based on Overlap and Decreasing Fill) \cite  {AlmeidaNeto2008}. Measures were evaluated across $10^4$ replicates; see Materials and Methods for parameter values. Inset: A trophic and mutualistic nested motif for resource species 1, 2 and consumer species 3, 4. Trophic motif: the vulnerable species 2 is subject to primary extinction because it has a lower competition strength $\sigma $, resulting in an extinction cascade of species 4. Mutualistic motif: the least vulnerable species 1 with fewer mutualistic partners is subject to primary extinction without cascading effects. \vspace  {0mm} }}{4}{}}
-\newlabel{fig:nest}{{3}{4}{}{}{}}
 \citation{Laland2015}
 \citation{Gupta2017,Feldman2017}
 \citation{Hastings2007,OdlingSmee2013}
@@ -70,8 +66,12 @@
 \citation{Kylafis2008,Krakauer2009}
 \citation{Laland1999}
 \citation{Kallus2017}
-\citation{Muscarella2017}
+\citation{Butler2018}
+\@writefile{lof}{\contentsline {figure}{\numberline {2}{\ignorespaces  \textbf  {a}, Assembling communities over time from a pool of 200 non-engineering species. Steady state species richness is reached by $t=250$. \textbf  {b}, The proportion of specialists as a function of assembly time (iterations), where a specialist is defined as a species with a generality index $G_i < 1$. All measures of $G_i$ are scaled by the average number of links per species where $L$ and $S$ are measured at steady state. \textbf  {c}, The frequency distribution of trophic levels as a function of assembly time (iterations). Autotrophs occupy ${\rm  TL}=1$. Measures were evaluated across $10^4$ replicates; see Materials and Methods for parameter values. \vspace  {0mm} }}{4}{}}
+\newlabel{fig:trophic}{{2}{4}{}{}{}}
 \citation{Shipway2019}
+\@writefile{lof}{\contentsline {figure}{\numberline {3}{\ignorespaces  \textbf  {a}, Structural nestedness of communities, measured as UNODF (Unipartite Nestedness based on Overlap and Decreasing Fill) \cite  {Cantor2017}. The value reported is the mean value taken across the rows and columns of the adjacency matrix accounting for both trophic and service interactions. Inset: A trophic and mutualistic nested motif for resource species 1, 2 and consumer species 3, 4. Whether the interactions are trophic or mutualistic impacts the susceptibility of each species to primary extinctions (based on differences in competitive strength $\sigma _i$) and secondary extinctions (which result from lost dependencies associated with primary extinctions). \textbf  {b}, Primary extinction rate and \textbf  {c}, secondary extinction rate as a function of service interaction frequency. \textbf  {d}, Species persistence as a function of service interaction frequency. Measures were evaluated for $10^4$ replicates; see Methods and Supplementary Appendix 2 for parameter values. \vspace  {0mm} }}{5}{}}
+\newlabel{fig:nest}{{3}{5}{}{}{}}
 \citation{Hastings2007}
 \citation{Lawton1994}
 \citation{Cuddington2004}
@@ -84,16 +84,17 @@
 \citation{Polz2013}
 \citation{Kallus2017,Muscarella2017}
 \citation{Fukami2015}
-\citation{Corlett2015}
-\citation{Pillai2011}
 \@writefile{lof}{\contentsline {figure}{\numberline {4}{\ignorespaces  Community stability as a function of the frequency of service interactions and modifiers per species. \textbf  {a}, Mean rates of primary extinction, where primary extinctions occur from competitive exclusion of consumers over shared resources. \textbf  {b}, Mean rates of secondary extinction, which cascade from primary extinctions. \textbf  {c}, Mean species persistence. \textbf  {d}, The ratio $S^*_{\rm  u}/S^*$, where $S^*_{\rm  u}$ denotes steady states for systems where all engineered modifiers are unique to each engineer, and $S^*$ denote steady states for systems with redundant engineering. Lower values of $S^*_{\rm  u}/S^*$ mean that systems with redundant engineers have higher richness at the steady state than those without redundancies. Measures were evaluated across $50$ replicates; see Materials and Methods for parameter values. \vspace  {0mm} }}{6}{}}
 \newlabel{fig:engineers}{{4}{6}{}{}{}}
+\citation{Corlett2015}
+\citation{Pillai2011}
 \citation{Gillespie1977}
 \bibdata{enigma_rev2Notes,aabib}
 \bibcite{Paine1966}{{1}{}{{}}{{}}}
 \bibcite{Dunne2002}{{2}{}{{}}{{}}}
 \bibcite{Pascual2006}{{3}{}{{}}{{}}}
 \bibcite{Bascompte2013}{{4}{}{{}}{{}}}
+\@writefile{toc}{\contentsline {section}{\numberline {}References}{7}{}}
 \bibcite{May1972}{{5}{}{{}}{{}}}
 \bibcite{Gross2009}{{6}{}{{}}{{}}}
 \bibcite{Allesina2012}{{7}{}{{}}{{}}}
@@ -106,7 +107,6 @@
 \bibcite{OdlingSmee2013b}{{14}{}{{}}{{}}}
 \bibcite{Fukami2015}{{15}{}{{}}{{}}}
 \bibcite{Jones1994}{{16}{}{{}}{{}}}
-\@writefile{toc}{\contentsline {section}{\numberline {}References}{7}{}}
 \bibcite{Olff2009}{{17}{}{{}}{{}}}
 \bibcite{Haynes2012}{{18}{}{{}}{{}}}
 \bibcite{Pringle2008}{{19}{}{{}}{{}}}
@@ -114,90 +114,95 @@
 \bibcite{Moore2006}{{21}{}{{}}{{}}}
 \bibcite{Meyer2011}{{22}{}{{}}{{}}}
 \bibcite{Hastings2007}{{23}{}{{}}{{}}}
-\bibcite{Erwin2008}{{24}{}{{}}{{}}}
-\bibcite{Schirrmeister2013}{{25}{}{{}}{{}}}
-\bibcite{Loladze2011}{{26}{}{{}}{{}}}
-\bibcite{Woodward2010}{{27}{}{{}}{{}}}
-\bibcite{Brose2012}{{28}{}{{}}{{}}}
-\bibcite{Gibert2019b}{{29}{}{{}}{{}}}
-\bibcite{Getz2011}{{30}{}{{}}{{}}}
-\bibcite{Pillai2011}{{31}{}{{}}{{}}}
-\bibcite{Bascompte2003}{{32}{}{{}}{{}}}
-\bibcite{Gravel2011}{{33}{}{{}}{{}}}
-\bibcite{Piechnik2008}{{34}{}{{}}{{}}}
-\bibcite{Williams2000}{{35}{}{{}}{{}}}
-\bibcite{Williams2002}{{36}{}{{}}{{}}}
-\bibcite{Lafferty2006}{{37}{}{{}}{{}}}
-\bibcite{Turney2016}{{38}{}{{}}{{}}}
-\bibcite{Rohr2014}{{39}{}{{}}{{}}}
-\bibcite{Valdovinos2016}{{40}{}{{}}{{}}}
-\bibcite{Valdovinos2019}{{41}{}{{}}{{}}}
-\bibcite{Krishna2008}{{42}{}{{}}{{}}}
-\bibcite{Stouffer2011}{{43}{}{{}}{{}}}
-\bibcite{Gilarranz2017}{{44}{}{{}}{{}}}
-\bibcite{Araujo2010}{{45}{}{{}}{{}}}
-\bibcite{Pires2011}{{46}{}{{}}{{}}}
-\bibcite{Massol2011}{{47}{}{{}}{{}}}
-\bibcite{Ponisio2019}{{48}{}{{}}{{}}}
-\bibcite{Yeakel2013}{{49}{}{{}}{{}}}
-\bibcite{Bond1994}{{50}{}{{}}{{}}}
-\bibcite{Colwell2012}{{51}{}{{}}{{}}}
-\bibcite{Dunn2009}{{52}{}{{}}{{}}}
-\bibcite{AlmeidaNeto2008}{{53}{}{{}}{{}}}
-\bibcite{Ramos2012}{{54}{}{{}}{{}}}
-\bibcite{Vieira2015}{{55}{}{{}}{{}}}
-\bibcite{Laland2015}{{56}{}{{}}{{}}}
-\bibcite{Gupta2017}{{57}{}{{}}{{}}}
-\bibcite{Feldman2017}{{58}{}{{}}{{}}}
-\bibcite{Cuddington2004}{{59}{}{{}}{{}}}
-\bibcite{Wright2004}{{60}{}{{}}{{}}}
-\bibcite{Kylafis2008}{{61}{}{{}}{{}}}
-\bibcite{Krakauer2009}{{62}{}{{}}{{}}}
-\bibcite{Laland1999}{{63}{}{{}}{{}}}
-\bibcite{Kallus2017}{{64}{}{{}}{{}}}
-\bibcite{Muscarella2017}{{65}{}{{}}{{}}}
-\bibcite{Shipway2019}{{66}{}{{}}{{}}}
-\bibcite{Kidwell1986}{{67}{}{{}}{{}}}
-\bibcite{Polz2013}{{68}{}{{}}{{}}}
-\bibcite{Corlett2015}{{69}{}{{}}{{}}}
-\bibcite{Gillespie1977}{{70}{}{{}}{{}}}
-\bibcite{Williams2011}{{71}{}{{}}{{}}}
-\bibcite{Warren2010}{{72}{}{{}}{{}}}
-\newlabel{LastBibItem}{{72}{9}{}{}{}}
+\bibcite{Wright2006b}{{24}{}{{}}{{}}}
+\bibcite{Jones2012}{{25}{}{{}}{{}}}
+\bibcite{Erwin2008}{{26}{}{{}}{{}}}
+\bibcite{Schirrmeister2013}{{27}{}{{}}{{}}}
+\bibcite{Loladze2011}{{28}{}{{}}{{}}}
+\bibcite{Woodward2010}{{29}{}{{}}{{}}}
+\bibcite{Brose2012}{{30}{}{{}}{{}}}
+\bibcite{Gibert2019b}{{31}{}{{}}{{}}}
+\bibcite{Getz2011}{{32}{}{{}}{{}}}
+\bibcite{Pillai2011}{{33}{}{{}}{{}}}
+\bibcite{Bascompte2003}{{34}{}{{}}{{}}}
+\bibcite{Gravel2011}{{35}{}{{}}{{}}}
+\bibcite{Piechnik2008}{{36}{}{{}}{{}}}
+\bibcite{Williams2000}{{37}{}{{}}{{}}}
+\bibcite{Williams2002}{{38}{}{{}}{{}}}
+\bibcite{Lafferty2006}{{39}{}{{}}{{}}}
+\bibcite{Turney2016}{{40}{}{{}}{{}}}
+\bibcite{Bascompte2006}{{41}{}{{}}{{}}}
+\bibcite{Guimaraes2006}{{42}{}{{}}{{}}}
+\bibcite{Araujo2010}{{43}{}{{}}{{}}}
+\bibcite{Rohr2014}{{44}{}{{}}{{}}}
+\bibcite{Valdovinos2016}{{45}{}{{}}{{}}}
+\bibcite{Valdovinos2019}{{46}{}{{}}{{}}}
+\bibcite{Krishna2008}{{47}{}{{}}{{}}}
+\bibcite{Stouffer2011}{{48}{}{{}}{{}}}
+\bibcite{Gilarranz2017}{{49}{}{{}}{{}}}
+\bibcite{Pires2011}{{50}{}{{}}{{}}}
+\bibcite{Massol2011}{{51}{}{{}}{{}}}
+\bibcite{Ponisio2019}{{52}{}{{}}{{}}}
+\bibcite{Yeakel2013}{{53}{}{{}}{{}}}
+\bibcite{Bond1994}{{54}{}{{}}{{}}}
+\bibcite{Colwell2012}{{55}{}{{}}{{}}}
+\bibcite{Dattilo2013}{{56}{}{{}}{{}}}
+\bibcite{Cantor2017}{{57}{}{{}}{{}}}
+\bibcite{Ramos2012}{{58}{}{{}}{{}}}
+\bibcite{Vieira2015}{{59}{}{{}}{{}}}
+\bibcite{Laland2015}{{60}{}{{}}{{}}}
+\bibcite{Gupta2017}{{61}{}{{}}{{}}}
+\bibcite{Feldman2017}{{62}{}{{}}{{}}}
+\bibcite{Cuddington2004}{{63}{}{{}}{{}}}
+\bibcite{Wright2004}{{64}{}{{}}{{}}}
+\bibcite{Kylafis2008}{{65}{}{{}}{{}}}
+\bibcite{Krakauer2009}{{66}{}{{}}{{}}}
+\bibcite{Laland1999}{{67}{}{{}}{{}}}
+\bibcite{Kallus2017}{{68}{}{{}}{{}}}
+\bibcite{Butler2018}{{69}{}{{}}{{}}}
+\bibcite{Shipway2019}{{70}{}{{}}{{}}}
+\bibcite{Kidwell1986}{{71}{}{{}}{{}}}
+\bibcite{Polz2013}{{72}{}{{}}{{}}}
+\bibcite{Muscarella2017}{{73}{}{{}}{{}}}
+\bibcite{Corlett2015}{{74}{}{{}}{{}}}
+\bibcite{Gillespie1977}{{75}{}{{}}{{}}}
+\bibcite{Williams2011}{{76}{}{{}}{{}}}
+\bibcite{Warren2010}{{77}{}{{}}{{}}}
+\newlabel{LastBibItem}{{77}{9}{}{}{}}
 \citation{Williams2000}
 \citation{Williams2000,Williams2011}
 \citation{Williams2000}
 \citation{Warren2010}
-\citation{Williams2000}
-\citation{Piechnik2008}
-\@writefile{toc}{\contentsline {section}{\numberline {}Supplementary Methods}{10}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {}Appendix 1: Building the source pool}{10}{}}
-\newlabel{eq:total}{{S1}{10}{}{}{}}
-\newlabel{eq:redundant}{{S3}{10}{}{}{}}
-\newlabel{eq:redundantprop}{{S4}{10}{}{}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {}Appendix 2: Model parameterizations}{10}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {}Appendix 3: Comparison to Niche Model}{10}{}}
-\citation{Piechnik2008}
-\citation{Piechnik2008}
+\@writefile{toc}{\contentsline {section}{\numberline {}Supplementary Methods}{11}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {}Appendix 1: Building the source pool}{11}{}}
+\newlabel{eq:total}{{S1}{11}{}{}{}}
+\newlabel{eq:redundant}{{S3}{11}{}{}{}}
+\newlabel{eq:redundantprop}{{S4}{11}{}{}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {}Appendix 2: Model parameterizations}{11}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {}Appendix 3: Comparison to Niche Model}{11}{}}
 \bibstyle{naturemag}
 \providecommand\NAT@force@numbers{}\NAT@force@numbers
-\@writefile{toc}{\contentsline {subsection}{\numberline {}Appendix 4: Measures of generality}{11}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {S1}{\ignorespaces  Left: Assembly of communities over time results in steady state species richness by ca. time-step 250. Right: Trophic connectance early in assembly is high because few species are tightly connected. Over time, connectance decays as species richness increases, and the density of trophic interactions declines. }}{12}{}}
-\newlabel{fig:conn}{{S1}{12}{}{}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {}Appendix 4: The structure of engineered food webs}{12}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {S1}{\ignorespaces  Left: Assembly of communities over time results in steady state species richness by ca. time-step 250. Right: Trophic connectance early in assembly is high because few species are tightly connected. Over time, connectance decays as species richness increases, and the density of trophic interactions declines. }}{13}{}}
+\newlabel{fig:conn}{{S1}{13}{}{}{}}
 \@writefile{lof}{\contentsline {figure}{\numberline {S2}{\ignorespaces  Comparisons of raw structural measures for the assembly (y-axis) and Niche model (x-axis). If the models produce similar structures, metrics will tend to fall on the 1:1 line (drawn). While the values for both models are similar, connectance, mean degree, and the standard deviation of in- and out-degree are all lower for the assembly model relative to those measures for the Niche model. }}{13}{}}
 \newlabel{fig:error1}{{S2}{13}{}{}{}}
 \@writefile{lof}{\contentsline {figure}{\numberline {S3}{\ignorespaces  Error between structural measures of the assembly and Niche models. Error is measured as $\sqrt  {(m_i - m_j)^2}$, where $m_i$ and $m_j$ are structural metrics for the assembly and Niche model, respectively. Only the trophic network of the assembly model used to assess metrics. }}{14}{}}
 \newlabel{fig:error2}{{S3}{14}{}{}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {S4}{\ignorespaces  The proportion of specialists as a function of assembly time, where a specialist is defined as a species with a generality index $G_i < 1$. Measures of $G_i$ are shown normalized to different measures of link-density. Circles: $G_i^{{\rm  all}}$ where $L$ accounts for all links in the food web and $S$ accounts for all species relative to each time interval in the assembly process (averaged across replicates). Points: $G_i^{{\rm  hetero}}$, where we consider only the links and species richness of heterotrophs, excluding autotrophs (each point shows an individual replicate). Diamonds: $G_i^*$, where $L$ and $S$ are measured with respect to the communities at steady state (averaged across replicates). This measure is the one presented in the main text and most similar to that used to evaluate assembling mangrove food webs \cite  {Piechnik2008}. }}{15}{}}
-\newlabel{fig:spec}{{S4}{15}{}{}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {S5}{\ignorespaces  Mean rates of secondary extinction with increasing service interactions. }}{16}{}}
-\newlabel{fig:mutsecext}{{S5}{16}{}{}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {S6}{\ignorespaces  Motif. }}{16}{}}
-\newlabel{fig:motif}{{S6}{16}{}{}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {S7}{\ignorespaces  \textbf  {a}, Number of redundant modifiers in the source pool as a function of the expected number of modifiers made per species $\eta $. The red dashed line shows the analytical expectation (Eq. \ref  {eq:redundant}). \textbf  {b}, Proportion of redundant modifiers $\phi $ versus the total number of modifiers in the source pool as a function of the expected number of modifiers made per species $\eta $. The red dashed line shows the analytical expectation of $\phi \approx 0.418$ (Eq. \ref  {eq:redundantprop}). }}{17}{}}
-\newlabel{fig:redundancy}{{S7}{17}{}{}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {S8}{\ignorespaces  Measures of community stability as a function of the frequency of service interactions and number of modifiers per species, where each modifier is uniquely made by an engineer. \textbf  {a}, Mean rates of primary extinction, where primary extinctions occur from competitive exclusion of consumers over shared resources. \textbf  {b}, Mean rates of secondary extinction, which cascade from primary extinctions. \textbf  {c}, Mean species persistence, defined as the percent simulation time the community is occupied by a given species, averaged across all species that successfully colonize. \textbf  {d}, The ratio $S^*_{\rm  u}/S^*$, where $S^*_{\rm  u}$ denotes steady states for systems where all engineered modifiers are unique to each engineer, and $S^*$ denote steady states for systems with redundant engineering. Lower values of $S^*_{\rm  u}/S^*$ mean that systems with redundant engineers have higher steady states than those without redundancies. Values are averaged over 50 replicates for each parameterization. See Materials and Methods for default parameter values. }}{18}{}}
-\newlabel{fig:unique}{{S8}{18}{}{}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {S9}{\ignorespaces  \textbf  {a}, Steady state community richness with redundant engineering. \textbf  {b}, Steady state community richness without redundant engineering. \textbf  {c}, Proportion of species in the source pool that colonize the community at least once throughout the simulation (with redundant engineering). \textbf  {d}, Proportion of species in the source pool that colonize the community at least once throughout the simulation (without redundant engineering). }}{19}{}}
-\newlabel{fig:steadystate}{{S9}{19}{}{}{}}
-\newlabel{LastPage}{{}{19}{}{}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {S4}{\ignorespaces  \textbf  {a}, The 4-species nested trophic and mutualistic motif described in the main text. \textbf  {b}, A 6-species nested trophic and mutualistic motif. For the trophic motif at time-step 1, it is the core species of the motif that are at greatest risk of extinction. For the mutualistic motif at time-step 1 it is the peripheral species at greatest risk. \textbf  {c}, Nestedness (UNODF) of the 6-species trophic and mutualistic motif over the course of the two time-steps illustrated in \textbf  {b}. While nestedness decays in both following the primary and secondary extinctions, it decays more slowly for the mutualistic motif. While suggesting that the dynamics of a single (among many possible) motif cannot simply be extended to the entire network, we suggest that the maintenance of asymmetric interactions among species engaged in mutualistic interactions may be important for the observed increase in nestedness when service interactions are frequent. }}{15}{}}
+\newlabel{fig:motif}{{S4}{15}{}{}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {S5}{\ignorespaces  Nestedness (UNODF) as a function of steady state richness for 1000 replicated communities with low () and high frequency of service interactions. While higher frequencies of service interactions does lower steady state species richness (due to increasing secondary extinction rates), there is not a relationship between nestedness and species richness across replicates for a given service interaction frequency. }}{16}{}}
+\newlabel{fig:nestsize}{{S5}{16}{}{}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {S6}{\ignorespaces  Left column: species-specific persistence as a function of trophic in-degree (the number of prey a species has; top) and out-degree (the number of predators a species has; bottom). Right column: species-specific persistence as a function of the mutualism in-degree (the number of service receivers a species has; top) and out-degree (the number of service providers a species has; bottom). As the trophic in- and out-degree of species increases, competition strength is lowered and persistence decreases. As the mutualism in-degree increases, so does the number of service donors that are needed for the receiving species to remain in the community. This introduces structural constraints that lowers persistence. }}{17}{}}
+\newlabel{fig:degree}{{S6}{17}{}{}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {S7}{\ignorespaces  \textbf  {a}, Assembling communities over time from a pool of 200 non-engineering species. Steady state species richness is reached by $t=250$. \textbf  {b}, The proportion of specialists as a function of assembly time, where a specialist is defined as a species with a generality index $G_i < 1$ relative to the steady state link density. $G_i$ is scaled to the steady state link density where links are direct trophic interactions between species. Diamonds represent functional (realized) trophic interactions; triangles represent potential trophic interactions. \textbf  {c}, The proportion of specialists as a function of assembly time, where a specialist is defined as a species with a generality index $G_i < 1$. Here $G_i$ is scaled to the steady state link density where links are composed of \emph  {both} direct trophic interactions between species and indirect trophic interactions between consumers and those species that produce modifiers as resources. Diamonds represent functional (realized) trophic interactions; triangles represent potential trophic interactions. \textbf  {d}, The frequency distribution of trophic levels as a function of assembly time (iterations). Autotrophs occupy ${\rm  TL}=1$. Measures were evaluated across $10^4$ replicates; see Materials and Methods for parameter values. }}{18}{}}
+\newlabel{fig:trophiceng}{{S7}{18}{}{}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {S8}{\ignorespaces  \textbf  {a},\textbf  {b}, Species-specific persistence as a function of trophic in-degree (number of resources a species has; top) and out-degree (number of consumers that eat the species; bottom) when there are no engineers in the community. \textbf  {c},\textbf  {d}, Species-specific persistence as a function of trophic in-degree (number of resources a species has; top) and out-degree (number of consumers that eat the species; bottom) when engineers are rare ($\eta = 0.5$). The notion that having a small number of engineers and modifiers in the community increases rates of primary extinction (Fig. \ref  {fig:engineers}a) by stabilizing consumers at the expense of their prey is supported by \emph  {i}) increased persistence of generalist consumers, and \emph  {ii}) the increase in species with higher numbers of consumers. \textbf  {e},\textbf  {f}, Species-specific persistence as a function of trophic in-degree (number of resources a species has; top) and out-degree (number of consumers that eat the species; bottom) when engineers are common ($\eta = 2.0$). The notion that a large number of engineers and modifiers in the community decrease rates of primary extinction (Fig. \ref  {fig:engineers}a) due to expanding niche space (diffusing the effects of competitive exclusion) is supported by the lack of correlation between trophic in/out-degree and persistence. }}{19}{}}
+\newlabel{fig:indeng}{{S8}{19}{}{}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {S9}{\ignorespaces  \textbf  {a}, Number of redundant modifiers in the source pool as a function of the expected number of modifiers made per species $\eta $. The red dashed line shows the analytical expectation (Eq. \ref  {eq:redundant}). \textbf  {b}, Proportion of redundant modifiers $\phi $ versus the total number of modifiers in the source pool as a function of the expected number of modifiers made per species $\eta $. The red dashed line shows the analytical expectation of $\phi \approx 0.418$ (Eq. \ref  {eq:redundantprop}). }}{20}{}}
+\newlabel{fig:redundancy}{{S9}{20}{}{}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {S10}{\ignorespaces  Measures of community stability as a function of the frequency of service interactions and number of modifiers per species, where each modifier is uniquely made by an engineer. \textbf  {a}, Mean rates of primary extinction, where primary extinctions occur from competitive exclusion of consumers over shared resources. \textbf  {b}, Mean rates of secondary extinction, which cascade from primary extinctions. \textbf  {c}, Mean species persistence, defined as the percent simulation time the community is occupied by a given species, averaged across all species that successfully colonize. \textbf  {d}, The ratio $S^*_{\rm  u}/S^*$, where $S^*_{\rm  u}$ denotes steady states for systems where all engineered modifiers are unique to each engineer, and $S^*$ denote steady states for systems with redundant engineering. Lower values of $S^*_{\rm  u}/S^*$ mean that systems with redundant engineers have higher steady states than those without redundancies. Values are averaged over 50 replicates for each parameterization. See Materials and Methods for default parameter values. }}{21}{}}
+\newlabel{fig:unique}{{S10}{21}{}{}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {S11}{\ignorespaces  \textbf  {a}, Steady state community richness with redundant engineering. \textbf  {b}, Steady state community richness without redundant engineering. \textbf  {c}, Proportion of species in the source pool that colonize the community at least once throughout the simulation (with redundant engineering). \textbf  {d}, Proportion of species in the source pool that colonize the community at least once throughout the simulation (without redundant engineering). }}{22}{}}
+\newlabel{fig:steadystate}{{S11}{22}{}{}{}}
+\newlabel{LastPage}{{}{22}{}{}{}}

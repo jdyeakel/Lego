@@ -579,6 +579,105 @@ boxplot(df$x ~ df$f1,col=pal[2],boxwex=0.25,xlab='Mutualism out-degree (service 
 dev.off()
 """
 
+
+#Trophic without mutualisms
+
+namespace = "$(homedir())/Dropbox/PostDoc/2014_Lego/manuscript/fig_persistdegree_boxtrophic.pdf";
+R"""
+library(RColorBrewer)
+pal = brewer.pal(3,'Set1')
+pdf($namespace,width=10,height=6)
+layout(matrix(c(1,3,2,4),2,2,byrow=TRUE))
+par(list(oma = c(1, 1, 1, 1), mar = c(4, 4, 1, 1)))
+"""
+
+m1pos_in = findall(x-> x==1,vec(trindegree[1,:,:]));
+m2pos_in = findall(x->x==2,vec(trindegree[1,:,:]));
+m3pos_in = findall(x->x==3,vec(trindegree[1,:,:]));
+m4pos_in = findall(x->x==4,vec(trindegree[1,:,:]));
+m5pos_in = findall(x->x==5,vec(trindegree[1,:,:]));
+m6pos_in = findall(x->x==6,vec(trindegree[1,:,:]));
+m7pos_in = findall(x->x==7,vec(trindegree[1,:,:]));
+m8pos_in = findall(x->x==8,vec(trindegree[1,:,:]));
+m1pos_out = findall(x-> x==1,vec(troutdegree[1,:,:]));
+m2pos_out = findall(x->x==2,vec(troutdegree[1,:,:]));
+m3pos_out = findall(x->x==3,vec(troutdegree[1,:,:]));
+m4pos_out = findall(x->x==4,vec(troutdegree[1,:,:]));
+m5pos_out = findall(x->x==5,vec(troutdegree[1,:,:]));
+m6pos_out = findall(x->x==6,vec(troutdegree[1,:,:]));
+m7pos_out = findall(x->x==7,vec(troutdegree[1,:,:]));
+m8pos_out = findall(x->x==8,vec(troutdegree[1,:,:]));
+
+# namespace = "$(homedir())/Dropbox/PostDoc/2014_Lego/Enigma/figures/fig_persistdegree_boxall.pdf";
+R"""
+# pdf($namespace,width=6,height=8)
+# layout(matrix(c(2,2),2,1,byrow=TRUE))
+# par(list(oma = c(1, 1, 1, 1), mar = c(4, 4, 1, 1)))
+data = c($(speciespersist[m1pos_in]),$(speciespersist[m2pos_in]),$(speciespersist[m3pos_in]),$(speciespersist[m4pos_in]))
+# ,$(speciespersist[m5pos_in]),$(speciespersist[m6pos_in]),$(speciespersist[m7pos_in]),$(speciespersist[m8pos_in])
+f <-c(rep(1,length($(speciespersist[m1pos_in]))),rep(2,length($(speciespersist[m2pos_in]))),rep(3,length($(speciespersist[m3pos_in]))),rep(4,length($(speciespersist[m4pos_in]))))
+# ,rep(5,length($(speciespersist[m5pos_in]))),rep(6,length($(speciespersist[m6pos_in]))),rep(7,length($(speciespersist[m7pos_in]))),rep(8,length($(speciespersist[m8pos_in])))
+df = data.frame(x=data,f1 = f)
+df$f1<-factor(df$f1)
+boxplot(df$x ~ df$f1,col=pal[1],boxwex=0.25,xlab='Trophic in-degree (prey)',ylab='Persistence',ylim=c(0,1),las=1)
+
+data = c($(speciespersist[m1pos_out]),$(speciespersist[m2pos_out]),$(speciespersist[m3pos_out]),$(speciespersist[m4pos_out]))
+# ,$(speciespersist[m5pos_out]),$(speciespersist[m6pos_out]),$(speciespersist[m7pos_out]),$(speciespersist[m8pos_out])
+f <-c(rep(1,length($(speciespersist[m1pos_out]))),rep(2,length($(speciespersist[m2pos_out]))),rep(3,length($(speciespersist[m3pos_out]))),rep(4,length($(speciespersist[m4pos_out]))))
+# ,rep(5,length($(speciespersist[m5pos_out]))),rep(6,length($(speciespersist[m6pos_out]))),rep(7,length($(speciespersist[m7pos_out]))),rep(8,length($(speciespersist[m8pos_out])))
+df = data.frame(x=data,f1 = f)
+df$f1<-factor(df$f1)
+boxplot(df$x ~ df$f1,col=pal[1],boxwex=0.25,xlab='Trophic out-degree (predators)',ylab='Persistence',ylim=c(0,1),las=1)
+# dev.off()
+"""
+
+m1pos_in = findall(x-> x==1,vec(tpindegree[1,:,:]));
+m2pos_in = findall(x->x==2,vec(tpindegree[1,:,:]));
+m3pos_in = findall(x->x==3,vec(tpindegree[1,:,:]));
+m4pos_in = findall(x->x==4,vec(tpindegree[1,:,:]));
+m5pos_in = findall(x->x==5,vec(tpindegree[1,:,:]));
+m6pos_in = findall(x->x==6,vec(tpindegree[1,:,:]));
+m7pos_in = findall(x->x==7,vec(tpindegree[1,:,:]));
+m8pos_in = findall(x->x==8,vec(tpindegree[1,:,:]));
+m9pos_in = findall(x->x==9,vec(tpindegree[1,:,:]));
+m10pos_in = findall(x->x==10,vec(tpindegree[1,:,:]));
+m1pos_out = findall(x-> x==1,vec(tpoutdegree[1,:,:]));
+m2pos_out = findall(x->x==2,vec(tpoutdegree[1,:,:]));
+m3pos_out = findall(x->x==3,vec(tpoutdegree[1,:,:]));
+m4pos_out = findall(x->x==4,vec(tpoutdegree[1,:,:]));
+m5pos_out = findall(x->x==5,vec(tpoutdegree[1,:,:]));
+m6pos_out = findall(x->x==6,vec(tpoutdegree[1,:,:]));
+m7pos_out = findall(x->x==7,vec(tpoutdegree[1,:,:]));
+m8pos_out = findall(x->x==8,vec(tpoutdegree[1,:,:]));
+m9pos_out = findall(x->x==9,vec(tpoutdegree[1,:,:]));
+m10pos_out = findall(x->x==10,vec(tpoutdegree[1,:,:]));
+# namespace = "$(homedir())/Dropbox/PostDoc/2014_Lego/Enigma/figures/fig_persistdegree_boxall.pdf";
+R"""
+# pdf($namespace,width=6,height=8)
+# layout(matrix(c(2,2),2,1,byrow=TRUE))
+# par(list(oma = c(1, 1, 1, 1), mar = c(4, 4, 1, 1)))
+data = c($(speciespersist[m1pos_in]),$(speciespersist[m2pos_in]),$(speciespersist[m3pos_in]),$(speciespersist[m4pos_in]),$(speciespersist[m5pos_in]),$(speciespersist[m6pos_in]),$(speciespersist[m7pos_in]),$(speciespersist[m8pos_in]),$(speciespersist[m9pos_in]),$(speciespersist[m10pos_in]))
+# ,$(speciespersist[m5pos_in]),$(speciespersist[m6pos_in]),$(speciespersist[m7pos_in]),$(speciespersist[m8pos_in])
+f <-c(rep(1,length($(speciespersist[m1pos_in]))),rep(2,length($(speciespersist[m2pos_in]))),rep(3,length($(speciespersist[m3pos_in]))),rep(4,length($(speciespersist[m4pos_in]))),rep(5,length($(speciespersist[m5pos_in]))),rep(6,length($(speciespersist[m6pos_in]))),rep(7,length($(speciespersist[m7pos_in]))),rep(8,length($(speciespersist[m8pos_in]))),rep(9,length($(speciespersist[m9pos_in]))),rep(10,length($(speciespersist[m10pos_in]))))
+# ,rep(5,length($(speciespersist[m5pos_in]))),rep(6,length($(speciespersist[m6pos_in]))),rep(7,length($(speciespersist[m7pos_in]))),rep(8,length($(speciespersist[m8pos_in])))
+df = data.frame(x=data,f1 = f)
+df$f1<-factor(df$f1)
+boxplot(df$x ~ df$f1,col=pal[1],boxwex=0.25,xlab='Pot. Trophic in-degree (prey)',ylab='Persistence',ylim=c(0,1),las=1)
+
+data = c($(speciespersist[m1pos_out]),$(speciespersist[m2pos_out]),$(speciespersist[m3pos_out]),$(speciespersist[m4pos_out]),$(speciespersist[m5pos_out]),$(speciespersist[m6pos_out]),$(speciespersist[m7pos_out]),$(speciespersist[m8pos_out]),$(speciespersist[m9pos_out]),$(speciespersist[m10pos_out]))
+# ,$(speciespersist[m5pos_out]),$(speciespersist[m6pos_out]),$(speciespersist[m7pos_out]),$(speciespersist[m8pos_out])
+f <-c(rep(1,length($(speciespersist[m1pos_out]))),rep(2,length($(speciespersist[m2pos_out]))),rep(3,length($(speciespersist[m3pos_out]))),rep(4,length($(speciespersist[m4pos_out]))),rep(5,length($(speciespersist[m5pos_out]))),rep(6,length($(speciespersist[m6pos_out]))),rep(7,length($(speciespersist[m7pos_out]))),rep(8,length($(speciespersist[m8pos_out]))),rep(9,length($(speciespersist[m9pos_out]))),rep(10,length($(speciespersist[m10pos_out]))))
+# ,rep(5,length($(speciespersist[m5pos_out]))),rep(6,length($(speciespersist[m6pos_out]))),rep(7,length($(speciespersist[m7pos_out]))),rep(8,length($(speciespersist[m8pos_out])))
+df = data.frame(x=data,f1 = f)
+df$f1<-factor(df$f1)
+boxplot(df$x ~ df$f1,col=pal[1],boxwex=0.25,xlab='Pot. Trophic out-degree (predators)',ylab='Persistence',ylim=c(0,1),las=1)
+dev.off()
+"""
+
+
+
+
+
 ################################
 
 
