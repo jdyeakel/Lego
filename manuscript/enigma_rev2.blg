@@ -1,47 +1,47 @@
-This is BibTeX, Version 0.99d (TeX Live 2017)
-Capacity: max_strings=100000, hash_size=100000, hash_prime=85009
+This is BibTeX, Version 0.99d (TeX Live 2015)
+Capacity: max_strings=35307, hash_size=35307, hash_prime=30011
 The top-level auxiliary file: enigma_rev2.aux
 The style file: naturemag.bst
 Database file #1: enigma_rev2Notes.bib
 Database file #2: aabib.bib
-You've used 77 entries,
+You've used 97 entries,
             2344 wiz_defined-function locations,
-            1582 strings with 26574 characters,
-and the built_in function-call counts, 30974 in all, are:
-= -- 2255
-> -- 784
+            1727 strings with 30812 characters,
+and the built_in function-call counts, 39067 in all, are:
+= -- 2853
+> -- 992
 < -- 0
-+ -- 392
-- -- 196
-* -- 3976
-:= -- 3471
-add.period$ -- 237
-call.type$ -- 77
-change.case$ -- 73
++ -- 496
+- -- 248
+* -- 5023
+:= -- 4371
+add.period$ -- 298
+call.type$ -- 97
+change.case$ -- 92
 chr.to.int$ -- 0
-cite$ -- 77
-duplicate$ -- 2669
-empty$ -- 2751
-format.name$ -- 257
-if$ -- 6128
+cite$ -- 97
+duplicate$ -- 3362
+empty$ -- 3463
+format.name$ -- 326
+if$ -- 7716
 int.to.chr$ -- 0
-int.to.str$ -- 77
-missing$ -- 653
-newline$ -- 399
-num.names$ -- 77
-pop$ -- 355
+int.to.str$ -- 97
+missing$ -- 824
+newline$ -- 500
+num.names$ -- 97
+pop$ -- 449
 preamble$ -- 1
 purify$ -- 0
 quote$ -- 0
-skip$ -- 450
+skip$ -- 565
 stack$ -- 0
-substring$ -- 1694
-swap$ -- 2799
+substring$ -- 2147
+swap$ -- 3532
 text.length$ -- 0
 text.prefix$ -- 0
 top$ -- 0
 type$ -- 0
 warning$ -- 0
-while$ -- 185
-width$ -- 79
-write$ -- 862
+while$ -- 239
+width$ -- 99
+write$ -- 1083

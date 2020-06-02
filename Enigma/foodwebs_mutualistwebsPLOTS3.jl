@@ -293,6 +293,8 @@ filename = "data/foodwebs_mutualistwebs/nestedmod3.jld";
 namespace = smartpath(filename);
 @load namespace seq tseqmax reps nvec lnvec rich sdrich comb_nest mut_nest numprim numsec clocks mpersistance speciespersist poutdegree pindegree tpoutdegree tpindegree mpoutdegree mpindegree routdegree rindegree troutdegree trindegree mroutdegree mrindegree;
 
+
+avalue = 0.01;
 teval = length(seq);
 nestall = vec(comb_nest[:,:,teval]);
 mut_nestall = vec(mut_nest[:,:,teval]);
@@ -301,13 +303,18 @@ mut_mnest = mean(mut_nest[:,:,teval],dims=2);
 mrich = vec(rich[:,:,teval]);
 mstdrich = std(rich[:,:,teval],dims=2);
 nvecreshaped = repeat(nvec,outer=reps);
+nvecreshaped_scaled = nvecreshaped .* (avalue/10);
 
 primextrate = vec(numprim ./ clocks);
 mprimext = mean(numprim ./ clocks,dims=2);
 secextrate = vec(numsec ./ clocks);
 msecext = mean(numsec ./ clocks,dims=2);
-persistence = vec(mpersistance);
+persistence = vec(Array(mpersistance));
 mpersist = mean(mpersistance,dims=2);
+
+
+nvec_scaled = (avalue/10) .* nvec;
+
 
 # filename = "/figures/yog/mean_nested_rev.pdf";
 namespace = "$(homedir())/Dropbox/PostDoc/2014_Lego/Enigma/figures/mean_mutnested.pdf";
@@ -432,6 +439,69 @@ dev.off()
 """
 
 
+namespace = "$(homedir())/Dropbox/PostDoc/2014_Lego/manuscript/fig_nested4.pdf";
+scaled_nestall = Int64.(floor.((nestall .- minimum(nestall)) ./ (maximum(nestall) .- minimum(nestall))*100));
+scaled_nestall[vec(findall(x->x==0,scaled_nestall))] .= 1;
+scaled_primextrate = Int64.(floor.((primextrate .- minimum(primextrate)) ./ (maximum(primextrate) .- minimum(primextrate))*100));
+scaled_primextrate[vec(findall(x->x==0,scaled_primextrate))] .= 1;
+scaled_secextrate = Int64.(floor.((secextrate .- minimum(secextrate)) ./ (maximum(secextrate) .- minimum(secextrate))*100));
+scaled_secextrate[vec(findall(x->x==0,scaled_secextrate))] .= 1;
+scaled_persistence = Int64.(floor.((persistence .- minimum(persistence)) ./ (maximum(persistence) .- minimum(persistence))*100));
+scaled_persistence[vec(findall(x->x==0,scaled_persistence))] .= 1;
+# namespace = smartpath(filename);
+R"""
+library(RColorBrewer)
+library(png)
+library(fields)
+pal=colorRampPalette(brewer.pal(9,"Blues")[4:9])(100);
+pdf($namespace,height=5,width=6)
+layout(matrix(c(1,2,3,4),2,2,byrow=TRUE), widths=c(1,1,1,1), heights=c(0.5,0.5,0.5,0.5))
+par(list(oma = c(3, 2, 0.5, 0.5), mar = c(1, 3, 0, 1)))
+
+# par(list(new=TRUE, plt=c(.075, 1, .75, 1)))
+plot(jitter($nvecreshaped_scaled),$nestall * 100,xlab='',ylab='',pch='.',cex=1.5,axes=TRUE,xaxt='n',col=pal[$scaled_nestall],las=1)
+points($nvec_scaled,$mnest * 100,pch=16,col='black')
+lines($nvec_scaled,$mnest * 100)
+# axis(side=2,at=seq(0,2.5,by=0.5),line=0,las=1)
+mtext(side=2,'Nestedness (UNODF)',line=2.5)
+# mtext(side=3,'a',font=2,outer=TRUE)
+
+# par(list(new=TRUE, plt=c(.075, 1, .48, .77)))
+pal=colorRampPalette(brewer.pal(9,"YlOrRd"))(100);
+plot(jitter($nvecreshaped_scaled),$primextrate,xlab='',ylab='',pch='.',cex=1.5,col=pal[$scaled_primextrate],axes=TRUE,xaxt='n',las=1)
+points($nvec_scaled,$mprimext,pch=17,col='black')
+lines($nvec_scaled,$mprimext)
+# axis(side=2,at=seq(10,25,by=5),line=0,las=1)
+mtext(side=2,'1° extinction rate',line=2.5)
+
+# par(list(new=TRUE, plt=c(.075, 1, .25, .5)))
+pal=colorRampPalette(brewer.pal(9,"YlOrRd"))(100);
+plot(jitter($nvecreshaped_scaled),$secextrate,xlab='',ylab='',pch='.',cex=1.5,col=pal[$scaled_secextrate],axes=TRUE,las=1)
+points($nvec_scaled,$msecext,pch=18,col='black')
+lines($nvec_scaled,$msecext)
+# axis(side=2,at=seq(2,12,by=2),line=0,las=1)
+mtext(side=2,'2° extinction rate',line=2.5)
+# mtext(side=1,'Frequency of mutualisms',line=1.5)
+# axis(side=1,at=seq(0,2,by=0.5),line=-1,las=1)
+
+
+# par(list(new=TRUE, plt=c(.075, 1,0, .25)))
+pal=colorRampPalette(brewer.pal(9,"Greens"))(100);
+plot(jitter($nvecreshaped_scaled),$persistence,xlab='',ylab='',pch='.',cex=1.5,col=pal[$scaled_persistence],axes=TRUE,las=1)
+points($nvec_scaled,$mpersist,pch=15,col='black')
+lines($nvec_scaled,$mpersist)
+# axis(side=2,at=seq(0.5,1,by=0.2),line=0,las=1)
+mtext(side=2,'Persistence',line=2.5)
+
+# axis(side=1,at=seq(0,2,by=0.5),line=-1,las=1)
+# mtext(side=1,'Frequency of mutualisms',line=1.5)
+title(xlab='Frequency of service interactions',outer=TRUE,line=1.25,cex.lab=1.25)
+
+dev.off()
+"""
+
+
+
 persistarray = meanfinite(speciespersist,3)[1:21,1:1000];
 
 pindegreearray = meanfinite(pindegree,3)[1:21,1:1000];
@@ -503,7 +573,7 @@ dev.off()
 
 #boxplots for potential m-degree and persistence
 
-namespace = "$(homedir())/Dropbox/PostDoc/2014_Lego/manuscript/fig_persistdegree_boxall.pdf";
+namespace = "$(homedir())/Dropbox/PostDoc/2014_Lego/manuscript/fig_persistdegree_boxall2.pdf";
 R"""
 library(RColorBrewer)
 pal = brewer.pal(3,'Set1')
@@ -512,22 +582,22 @@ layout(matrix(c(1,3,2,4),2,2,byrow=TRUE))
 par(list(oma = c(1, 1, 1, 1), mar = c(4, 4, 1, 1)))
 """
 
-m1pos_in = findall(x-> x==1,vec(trindegree));
-m2pos_in = findall(x->x==2,vec(trindegree));
-m3pos_in = findall(x->x==3,vec(trindegree));
-m4pos_in = findall(x->x==4,vec(trindegree));
-m5pos_in = findall(x->x==5,vec(trindegree));
-m6pos_in = findall(x->x==6,vec(trindegree));
-m7pos_in = findall(x->x==7,vec(trindegree));
-m8pos_in = findall(x->x==8,vec(trindegree));
-m1pos_out = findall(x-> x==1,vec(troutdegree));
-m2pos_out = findall(x->x==2,vec(troutdegree));
-m3pos_out = findall(x->x==3,vec(troutdegree));
-m4pos_out = findall(x->x==4,vec(troutdegree));
-m5pos_out = findall(x->x==5,vec(troutdegree));
-m6pos_out = findall(x->x==6,vec(troutdegree));
-m7pos_out = findall(x->x==7,vec(troutdegree));
-m8pos_out = findall(x->x==8,vec(troutdegree));
+m1pos_in = findall(x-> x==1,vec(trindegree[:,:,:]));
+m2pos_in = findall(x->x==2,vec(trindegree[:,:,:]));
+m3pos_in = findall(x->x==3,vec(trindegree[:,:,:]));
+m4pos_in = findall(x->x==4,vec(trindegree[:,:,:]));
+m5pos_in = findall(x->x==5,vec(trindegree[:,:,:]));
+m6pos_in = findall(x->x==6,vec(trindegree[:,:,:]));
+m7pos_in = findall(x->x==7,vec(trindegree[:,:,:]));
+m8pos_in = findall(x->x==8,vec(trindegree[:,:,:]));
+m1pos_out = findall(x-> x==1,vec(troutdegree[:,:,:]));
+m2pos_out = findall(x->x==2,vec(troutdegree[:,:,:]));
+m3pos_out = findall(x->x==3,vec(troutdegree[:,:,:]));
+m4pos_out = findall(x->x==4,vec(troutdegree[:,:,:]));
+m5pos_out = findall(x->x==5,vec(troutdegree[:,:,:]));
+m6pos_out = findall(x->x==6,vec(troutdegree[:,:,:]));
+m7pos_out = findall(x->x==7,vec(troutdegree[:,:,:]));
+m8pos_out = findall(x->x==8,vec(troutdegree[:,:,:]));
 
 # namespace = "$(homedir())/Dropbox/PostDoc/2014_Lego/Enigma/figures/fig_persistdegree_boxall.pdf";
 R"""
@@ -553,29 +623,29 @@ boxplot(df$x ~ df$f1,col=pal[1],boxwex=0.25,xlab='Trophic out-degree (predators)
 """
 
 
-m1pos_in = findall(x-> x==1,vec(mpindegree));
-m2pos_in = findall(x->x==2,vec(mpindegree));
-m3pos_in = findall(x->x==3,vec(mpindegree));
-m4pos_in = findall(x->x==4,vec(mpindegree));
-m5pos_in = findall(x->x==5,vec(mpindegree));
-m1pos_out = findall(x-> x==1,vec(mpoutdegree));
-m2pos_out = findall(x->x==2,vec(mpoutdegree));
-m3pos_out = findall(x->x==3,vec(mpoutdegree));
-m4pos_out = findall(x->x==4,vec(mpoutdegree));
-m5pos_out = findall(x->x==5,vec(mpoutdegree));
+m1pos_in = findall(x-> x==1,vec(mpindegree[:,:,:]));
+m2pos_in = findall(x->x==2,vec(mpindegree[:,:,:]));
+m3pos_in = findall(x->x==3,vec(mpindegree[:,:,:]));
+m4pos_in = findall(x->x==4,vec(mpindegree[:,:,:]));
+m5pos_in = findall(x->x==5,vec(mpindegree[:,:,:]));
+m1pos_out = findall(x-> x==1,vec(mpoutdegree[:,:,:]));
+m2pos_out = findall(x->x==2,vec(mpoutdegree[:,:,:]));
+m3pos_out = findall(x->x==3,vec(mpoutdegree[:,:,:]));
+m4pos_out = findall(x->x==4,vec(mpoutdegree[:,:,:]));
+m5pos_out = findall(x->x==5,vec(mpoutdegree[:,:,:]));
 
 R"""
 data = c($(speciespersist[m1pos_in]),$(speciespersist[m2pos_in]),$(speciespersist[m3pos_in]),$(speciespersist[m4pos_in]),$(speciespersist[m5pos_in]))
 f <-c(rep(1,length($(speciespersist[m1pos_in]))),rep(2,length($(speciespersist[m2pos_in]))),rep(3,length($(speciespersist[m3pos_in]))),rep(4,length($(speciespersist[m4pos_in]))),rep(5,length($(speciespersist[m5pos_in]))))
 df = data.frame(x=data,f1 = f)
 df$f1<-factor(df$f1)
-boxplot(df$x ~ df$f1,col=pal[2],boxwex=0.25,xlab='Mutualism in-degree (service receivers)',ylab='Persistence',ylim=c(0,1),las=1)
+boxplot(df$x ~ df$f1,col=pal[2],boxwex=0.25,xlab='Mutualism in-degree (service donors)',ylab='Persistence',ylim=c(0,1),las=1)
 
 data = c($(speciespersist[m1pos_out]),$(speciespersist[m2pos_out]),$(speciespersist[m3pos_out]),$(speciespersist[m4pos_out]),$(speciespersist[m5pos_out]))
 f <-c(rep(1,length($(speciespersist[m1pos_out]))),rep(2,length($(speciespersist[m2pos_out]))),rep(3,length($(speciespersist[m3pos_out]))),rep(4,length($(speciespersist[m4pos_out]))),rep(5,length($(speciespersist[m5pos_out]))))
 df = data.frame(x=data,f1 = f)
 df$f1<-factor(df$f1)
-boxplot(df$x ~ df$f1,col=pal[2],boxwex=0.25,xlab='Mutualism out-degree (service donors)',ylab='Persistence',ylim=c(0,1),las=1)
+boxplot(df$x ~ df$f1,col=pal[2],boxwex=0.25,xlab='Mutualism out-degree (service receivers)',ylab='Persistence',ylim=c(0,1),las=1)
 dev.off()
 """
 

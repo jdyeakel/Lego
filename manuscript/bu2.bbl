@@ -1,0 +1,37 @@
+\begin{thebibliography}{1}
+\expandafter\ifx\csname url\endcsname\relax
+  \def\url#1{\texttt{#1}}\fi
+\expandafter\ifx\csname urlprefix\endcsname\relax\def\urlprefix{URL }\fi
+\providecommand{\bibinfo}[2]{#2}
+\providecommand{\eprint}[2][]{\url{#2}}
+
+\bibitem{Gillespie1977}
+\bibinfo{author}{Gillespie, D.~T.}
+\newblock \bibinfo{title}{Exact stochastic simulation of coupled chemical
+  reactions}.
+\newblock \emph{\bibinfo{journal}{J. Phys. Chem.}}
+  \textbf{\bibinfo{volume}{81}}, \bibinfo{pages}{2340--2361}
+  (\bibinfo{year}{1977}).
+
+\bibitem{Williams2000}
+\bibinfo{author}{Williams, R.~J.} \& \bibinfo{author}{Martinez, N.~D.}
+\newblock \bibinfo{title}{{Simple rules yield complex food webs}}.
+\newblock \emph{\bibinfo{journal}{Nature}} \textbf{\bibinfo{volume}{404}},
+  \bibinfo{pages}{180--183} (\bibinfo{year}{2000}).
+
+\bibitem{Williams2011}
+\bibinfo{author}{Williams, R.~J.} \& \bibinfo{author}{Purves, D.~W.}
+\newblock \bibinfo{title}{{The probabilistic niche model reveals substantial
+  variation in the niche structure of empirical food webs.}}
+\newblock \emph{\bibinfo{journal}{Ecology}} \textbf{\bibinfo{volume}{92}},
+  \bibinfo{pages}{1849--1857} (\bibinfo{year}{2011}).
+
+\bibitem{Warren2010}
+\bibinfo{author}{Warren, C.~P.}, \bibinfo{author}{Pascual, M.},
+  \bibinfo{author}{Lafferty, K.~D.} \& \bibinfo{author}{Kuris, A.~M.}
+\newblock \bibinfo{title}{{The inverse niche model for food webs with
+  parasites.}}
+\newblock \emph{\bibinfo{journal}{Theor. Ecol.}} \textbf{\bibinfo{volume}{3}},
+  \bibinfo{pages}{285--294} (\bibinfo{year}{2010}).
+
+\end{thebibliography}

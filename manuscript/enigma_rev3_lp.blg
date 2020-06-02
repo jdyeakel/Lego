@@ -1,0 +1,47 @@
+This is BibTeX, Version 0.99d (TeX Live 2017/Debian)
+Capacity: max_strings=100000, hash_size=100000, hash_prime=85009
+The top-level auxiliary file: enigma_rev3_lp.aux
+The style file: naturemag.bst
+Database file #1: enigma_rev3_lpNotes.bib
+Database file #2: aabib.bib
+You've used 98 entries,
+            2344 wiz_defined-function locations,
+            1737 strings with 31147 characters,
+and the built_in function-call counts, 39351 in all, are:
+= -- 2875
+> -- 992
+< -- 0
++ -- 496
+- -- 248
+* -- 5057
+:= -- 4406
+add.period$ -- 302
+call.type$ -- 98
+change.case$ -- 93
+chr.to.int$ -- 0
+cite$ -- 98
+duplicate$ -- 3391
+empty$ -- 3493
+format.name$ -- 326
+if$ -- 7774
+int.to.chr$ -- 0
+int.to.str$ -- 98
+missing$ -- 830
+newline$ -- 506
+num.names$ -- 98
+pop$ -- 449
+preamble$ -- 1
+purify$ -- 0
+quote$ -- 0
+skip$ -- 568
+stack$ -- 0
+substring$ -- 2156
+swap$ -- 3559
+text.length$ -- 0
+text.prefix$ -- 0
+top$ -- 0
+type$ -- 0
+warning$ -- 0
+while$ -- 241
+width$ -- 100
+write$ -- 1096

@@ -108,7 +108,7 @@
 \author{Thilo Gross} \affiliation{University of California, Davis, Davis, CA 95616, USA}
 
 \begin{abstract}
-  The complexity of an ecological community can be distilled into a network, where diverse interactions connect species in a web of dependencies. Species interact not only with each other but indirectly through environmental effects, however the role of these ecosystem engineers has not yet been considered in models of ecological networks. Here we explore the dynamics of ecosystem assembly, where the colonization and extinction of species within a community depends on the constraints imposed by trophic, service, and engineering dependencies. We show that our assembly model reproduces many key features of ecological systems, such as the role of generalists during assembly, realistic maximum trophic levels, and increased nestedness with higher frequencies of mutualisms. We find that ecosystem engineering has large and nonlinear effects on extinction rates, facilitating stability by creating niche space, but at the same time increasing the magnitude of extinction cascades. We emphasize the importance of redundancies in engineered effects and show that such redundancy lowers the barriers to colonization, promoting community diversity. Together, our results suggest that ecological engineers may enhance community diversity while increasing persistence by facilitating colonization and limiting competitive exclusion. 
+  The complexity of an ecological community can be distilled into a network, where diverse interactions connect species in a web of dependencies. Species interact not only with each other but indirectly through environmental effects, however the role of these ecosystem engineers has not yet been considered in models of ecological networks. Here we explore the dynamics of ecosystem assembly, where the colonization and extinction of species within a community depends on the constraints imposed by trophic, service, and engineering dependencies. We show that our assembly model reproduces many key features of ecological systems, such as the role of generalists during assembly, realistic maximum trophic levels, and increased nestedness with higher frequencies of mutualisms. We find that ecosystem engineering has large and nonlinear effects on extinction rates. While small numbers of engineers reduce stability by increasing the primary extinction frequency, larger numbers of engineers increase stability by both reducing the primary extinction frequency and the size of extinction cascades. We emphasize the importance of redundancies in engineered effects and show that such redundancy lowers the barriers to colonization, promoting community diversity. Together, our results suggest that ecological engineers may enhance community diversity while increasing persistence by facilitating colonization and limiting competitive exclusion. 
 \end{abstract}
 
 \maketitle
@@ -125,10 +125,21 @@
 To unravel nature's secrets we must simplify its abundant complexities and idiosyncrasies.
 % Simplifying the abundant complexities and eccentricities of nature is necessary to unravel its secrets.
 The layers of natural history giving rise to an ecological community can be distilled -- among many forms -- into a network, where nodes represent species and links represent interactions between them.
-Networks are generally constructed for one type of interaction, such as food webs capturing predation \cite{Paine1966,Dunne2002,Pascual2006} or pollination networks capturing a specific mutualistic interaction \cite{Bascompte2013}, and continues to lead to significant breakthroughs in our understanding of the dynamical consequences of community structure \cite{May1972,Gross2009,Allesina2012}, assembly \cite{Ponisio2017}, and coevolution \cite{Guimaraes2017}. 
+Networks are generally constructed for one type of interaction, such as food webs capturing predation \cite{Paine1966,Dunne2002,Pascual2006} or pollination networks capturing a specific mutualistic interaction \cite{Bascompte2013}, and continues to lead to significant breakthroughs in our understanding of the dynamical consequences of community structure \cite{May1972,Gross2009,Allesina2012}.
+% , assembly \cite{Ponisio2017}, and coevolution \cite{Guimaraes2017}. 
+\rev{This perspective has also been used to shed light on the generative processes driving the assembly of complex ecological communities \cite{Montoya2003,Bascompte2009}.}
 
-\rev{Paragraph on the importance of assembly and models of assembly on structure/dynamics.
-The structure evolves from a feedback between different types of interactions between species and their environment, which leads into the next section.}
+% \rev{Paragraph on the importance of assembly and models of assembly on structure/dynamics.
+% The structure evolves from a feedback between different types of interactions between species and their environment, which leads into the next section.}
+
+\rev{To what extent assembly leaves its fingerprint on the structure and function of ecological communities is a source of considerable debate \cite{Hubbell2001,Tilman2004,Fukami2015}.
+% , motivating the investigation of species' attributes that may drive assembly dynamics \cite{Kraft2008,ODwyer2009}.
+There is strong evidence that functional traits constrain assembly \cite{Kraft2008,ODwyer2009,Fukami2015}, and differences in species' trophic niche \cite{Brown2002,Piechnik2008}, coupled with early establishment of fast/slow energy channels \cite{Fahimipour2014}, significantly impacts the long-term dynamics of the community.
+% which species can colonize and persist within the community.
+% such as trophic breadth \cite{Brown2002} and body size 
+% How species' trophic niche constrains the temporal sequence of colonization \cite{Brown2002} has motivated theoretical models of assembly that have pointed to processes resulting in communities \cite{Wilmers2002,Barbier2018}.
+There has been growing interest in understanding the combined role of trophic and mutualistic interactions in driving assembly \cite{Barbier2018,Campbell2011}, where the establishment of species from a source pool \cite{Luh1993,Law1996,Campbell2011} and the plasticity of species interactions \cite{Valdovinos2010,RamosJiliberto2012,Valdovinos2016,Ponisio2019} drive colonization and extinction dynamics.
+}
 
 Recent interest in `multilayer networks' comprising multiple interaction types (multitype interactions) may provide additional insight into these processes \cite{Kefi2016,Pilosof2017}. 
 However, interactions where species affect others by altering the environment in a lasting way have not yet been incorporated into models of ecological networks. 
@@ -189,16 +200,19 @@ While interactions between species and the abiotic environment have been concept
 % Here we model the assembly of ecological communities by the successive arrival of new entities from a source pool into an initially empty system. 
 % These entities are modeled as nodes of a network, which include 
 
+%Questions
+\rev{How does the assembly dynamics of species constrained by multitype interactions impact community structure and stability?
+How are these processes altered when the presence of engineers modifies interactions?}
 %HERE WE...
 Here we model the assembly of an ecological network where nodes represent ecological entities, including engineering species, non-engineering species, and the effects of the former on the environment, which we call abiotic \emph{modifiers}.
-The links of the network that connect both species and modifiers represent trophic (\emph{eat} interactions), service (\emph{need} interactions), and engineering dependencies, respectively (Fig. \ref{fig:model}; see Materials and Methods for a full description).
+The links of the network that connect both species and modifiers represent trophic (\emph{eat} interactions), service (\emph{need} interactions), and engineering dependencies, respectively (Fig. \ref{fig:model}; see Methods for a full description).
 \rev{Trophic interactions represent both predation as well as parasitism, whereas service interactions account for non-trophic interactions associated with reproductive facilitation such as pollination or seed dispersal.}
 In our framework a traditional mutualism (such as a plant-pollinator interaction) consists of a service (need) interaction in one direction and a trophic (eat) interaction in the other.
 These multitype interactions between species and modifiers thus embed multiple dependent ecological sub-systems into a single network (Fig. \ref{fig:model}). % with interactions formed by the pairing of two dependency types (eat, need, make;
 Modifiers in our framework overlap conceptually with the `abiotic compartments' described in Odling-Smee et al. \cite{OdlingSmee2013}.
-Following Pillai et al. \cite{Pillai2011}, we do not track the abundances of biotic or abiotic entities but only track their presence or absence.
+Following Pillai et al. \cite{Pillai2011}, we do not track the abundances of biotic or abiotic entities but track only their presence or absence.
 We use this framework to explore the dynamics of ecosystem assembly, where the colonization and extinction of species within a community depends on the constraints imposed by the trophic, service, and engineering dependencies.
-We then show how observed network structures emerge from the process of assembly, compare their attributes with those from empirical systems, and examine the effects of ecosystem engineers.
+We then show how observed network structures emerge from the process of assembly, compare their attributes with those of empirical systems, and examine the effects of ecosystem engineers.
 % Because ecological assembly is not a memory-less process, it is likely that engineers can have considerable impact on the emergence of community structure and dynamics.
 % We use this general framework to study community assembly by invasion of species and their abiotic modifiers, taking into account how interactions between them drive both colonization and extinction.
 % Second we integrate the dynamics of invasion of multiple species and abiotic factors with network theory and show how observed network structures depend on historical contingencies.  
@@ -206,7 +220,7 @@ We then show how observed network structures emerge from the process of assembly
 Our results offer four key insights into the roles of multitype interactions and ecosystem engineering in driving community assembly.
 First, we show that the assembly of communities in the absence of engineering reproduces many features observed in empirical systems.
 These include changes in the proportion of generalists over the course of assembly that accord with measured data and trophic diversity similar to empirical observations. % both maximum trophic level and 
-Second, we show that increasing the frequency of mutualistic interactions leads to the assembly of ecological networks that are more nested, a common feature of diverse mutualistic systems \cite{Bascompte2003}, but are also less stable.
+Second, we show that increasing the frequency of mutualistic interactions leads to the assembly of ecological networks that are more nested, a common feature of diverse mutualistic systems \cite{Bascompte2003}, but are also prone to extinction cascades.
 % We next explore the effects of ecosystem engineering on the dynamics of community assembly.
 Our third key result shows that increasing the proportion of ecosystem engineers within a community has nonlinear effects on observed extinction rates.
 While we find that a low amount of engineering increases extinction rates, a high amount of engineering has the opposite effect.
@@ -249,31 +263,33 @@ Finally we show that redundancies in engineered effects promote community divers
 A species from the source pool can colonize if it finds at least one resource that it can consume (one \emph{eat} interaction is satisfied; cf. Ref. \citenum{Gravel2011}) and all of its non-trophic needs are met (all \emph{need} interactions are satisfied; see Fig. \ref{fig:model}).
 % Colonization is possible if a species can fulfill $\geq 1$ trophic requirement (cf. Ref. \citenum{Gravel2011}) and \emph{all} of its service requirements.
 As such, the service interactions are assumed to be obligate, whereas trophic interactions are flexible.
-\rev{While a basal resource is always assumed to be present, (white node in Fig. \ref{fig:model}b)} following the establishment of an autotrophic base, the arrival of mixotrophs (i.e. mixing auto- and heterotrophy) and lower trophic heterotrophs create opportunities for organisms occupying higher trophic levels to invade.
+\rev{While a basal resource is always assumed to be present (white node in Fig. \ref{fig:model}b)}, following the establishment of an autotrophic base, the arrival of mixotrophs (i.e. mixing auto- and heterotrophy) and lower trophic heterotrophs create opportunities for organisms occupying higher trophic levels to invade.
 This expanding niche space initially serves as an accelerator for community growth.
  % comprise the initial colonizers, succeeded by higher trophic consumers.
 % Interestingly, we find that community growth is diversity dependent and appears logistic, where the initial colonization phase appears exponential.
 
 Following the initial colonization phase, extinctions begin to slow the rate of community growth.
-Primary extinctions occur \rev{if a given species is not the strongest competitor for at least one of its resources (see Methods)}.
+Primary extinctions occur \rev{if a given species is not the strongest competitor for at least one of its resources}.
 % by the competitive exclusion of species sharing similar resources.
-\rev{A species' competition strength is determined by its interactions: competition strength is enhanced by the number of need interactions and penalized by the number of its resources(favoring trophic specialists) and consumers(favoring species with fewer predators).}
+\rev{A species' competition strength is determined by its interactions: competition strength is enhanced by the number of need interactions and penalized by the number of its resources (favoring trophic specialists) and consumers (favoring species with fewer predators).}
+This encodes three key assumptions: that mutualisms provide a fitness benefit \cite{Bronstein1994}, specialists are stronger competitors than generalists \cite{Macarthur1964,Dykhuizen1980,Futuyma1988,Costa2015}, and many predators entail an energetic cost \cite{Brown1994}.
 Secondary extinctions occur when species lose its last trophic or any of its service requirements.
-See Fig. \ref{fig:model}d,~e for an illustration of the assembly process. 
+See Fig. \ref{fig:model}d,e for an illustration of the assembly process. 
 As the colonization and extinction rates converge, the community reaches a steady state around which it oscillates (Fig. \ref{fig:trophic}a).
 See Methods and Supplementary Appendix 1 for a complete description of the assembly process.
-Specific model parameterizations for each section are described in Supplementary Appendix 2. % due to losses from primary extinctions.
+Specific model parameterizations are described in Supplementary Appendix 2. % due to losses from primary extinctions.
 % As species richness increases, competitive exclusion initiates the extinction process, followed by secondary extinctions due to the loss of trophic and service requirements among species.
 
 
 \begin{figure}[h!]
 \centering
-\includegraphics[width=0.5\textwidth]{fig_model.png}
+\includegraphics[width=0.48\textwidth]{fig_model2.pdf}
 \vspace{0mm}
 \caption{
 \textbf{a}, Multitype interactions between species (colored nodes) and abiotic modifiers (black nodes).
-\textbf{b}, An assembling food web with species (colored nodes; color denotes trophic level, TL) and modifiers (black nodes). The basal resource is the white node rooted at the bottom of the network.
-\textbf{c}, The corresponding adjacency matrix with colors denoting interactions between biotic (species) and abiotic (modifiers) entities.
+Trophic and mutualistic relationships define both species-species (S-S) and species-modifier (S-M) interactions; an engineering interaction is denoted by an engineer that makes a modifier, such that the modifier needs the engineer to persist.
+\textbf{b}, An assembling food web with species (color denotes trophic level) and modifiers. The basal resource is the white node at the bottom of the network.
+\textbf{c}, The corresponding adjacency matrix with colors denoting interactions between species and modifiers.
 \textbf{d}, A species ($\ast$) can colonize a community when a single trophic and all service requirements are met.
 \textbf{e}, Greater vulnerability increases the risk of primary extinction via competitive exclusion (competition denoted by dashed line) to species ($\dag$).
 The extinction of species ($\dag$) will cascade to affect those connected by trophic ($\dag \dag$) and service ($\dag \dag \dag$) dependencies. 
@@ -285,9 +301,10 @@ The extinction of species ($\dag$) will cascade to affect those connected by tro
 
 % 1) connectance
 Assembly of ecological communities in the absence of engineering results in interaction networks with structures consistent with empirical observations.
-As the community reaches steady state, we find that the connectance of trophic interactions ($C(t)=L(t)/S(t)^2$, where $S(t)$ is species richness and $L(t)$ is the number of links at time $t$) decays to a value similar to that of the source pool over time (Fig. \ref{fig:conn}).
+As the community reaches steady state, we find that the connectance of trophic interactions ($C(t)=L(t)/S(t)^2$, where $S(t)$ is species richness and $L(t)$ is the number of links at time $t$) decays to a constant value (Fig. \ref{fig:conn}). % similar to that of the source pool over time 
 % The species richness of the community increases to $S_{\bm A}=130$.
-Decaying connectance has been documented in the assembly of mangrove communities \cite{Piechnik2008}, however this decay is likely inevitable as early in the assembly process the small set of tightly interacting species will have a high link density from which it will decline as the number of species increases.
+Decaying connectance followed by stabilization around a constant value has been documented in the assembly of mangrove communities \cite{Piechnik2008} and experimental aquatic mesocosms \cite{Fahimipour2014}. 
+The initial decay is likely inevitable as early in the assembly process the small set of tightly interacting species will have a high link density from which it will decline as the number of species increases.
 % That the connectance of assembled communities is greater than the source pool is due to the fact that only species connected by trophic interactions can enter the community to begin with, increasing expected link density compared to the overall pool.
 Compared to trophic networks constructed using the Niche model \cite{Williams2000} given similar species richness and connectance, our framework results in networks with degree distributions of similar means but with reduced variance (Supplementary Appendix 3).
 
@@ -365,8 +382,9 @@ Compellingly, the trophic richness pyramids that we observe at steady state foll
 % 4) Increased mutualisms => greater nestedness
 \vspace{0mm}
 \noindent \textbf{Structure and dynamics of mutualisms.}
-Nested interactions, where specialist interactions are subsets of generalist interactions, are a distinguishing feature of mutualistic networks \cite{Bascompte2003} and are defined by asymmetric interactions between species \cite{Bascompte2003,Bascompte2006,Guimaraes2006,Araujo2010}.
-A nested structure has been shown to maximize the structural stability of mutualistic networks \cite{Rohr2014}, emerge naturally via adaptive foraging behaviors \cite{Valdovinos2016,Valdovinos2019} and neutral processes \cite{Krishna2008}, and promote the influence of indirect effects in driving coevolutionary dynamics \cite{Guimaraes2017}.
+Nested interactions, where specialist interactions are subsets of generalist interactions, are a distinguishing feature of mutualistic networks \cite{Bascompte2003,Bascompte2006,Guimaraes2006,Araujo2010}.
+ % and are defined by asymmetric interactions between species \cite{Bascompte2003,Bascompte2006,Guimaraes2006,Araujo2010}.
+Nestedness has been shown to maximize the structural stability of mutualistic networks \cite{Rohr2014}, emerge naturally via adaptive foraging behaviors \cite{Valdovinos2016,Valdovinos2019} and neutral processes \cite{Krishna2008}, and promote the influence of indirect effects in driving coevolutionary dynamics \cite{Guimaraes2017}.
 While models and experiments of trophic networks suggest that compartmentalization confers greater stabilizing properties \cite{Stouffer2011,Gilarranz2017}, interaction asymmetry among species may promote nestedness in both trophic \cite{Araujo2010} and mutualistic systems \cite{Pires2011}.
 Processes that operate on different temporal and spatial scales may have a significant influence on these observations \cite{Massol2011}.
 For example, over evolutionary time, coevolution and speciation may degrade nested structures in favor of modularity \cite{Ponisio2019}, and there is some evidence from Pleistocene food webs that geographic insularity may reinforce this process \cite{Yeakel2013}.
@@ -381,9 +399,10 @@ For example, over evolutionary time, coevolution and speciation may degrade nest
 Steady state species richness is reached by $t=250$.
 \textbf{b}, The proportion of specialists as a function of assembly time (iterations), where a specialist is defined as a species with a generality index $G_i < 1$.
 All measures of $G_i$ are scaled by the average number of links per species where $L$ and $S$ are measured at steady state.
+Diamonds denote expected values for functional (realized) trophic interactions at each point in time, and triangles denote expected values for potential trophic interactions (as if all trophic interactions with all species in the pool were realized), where the expectation is taken across replicates. Individual replicate results are shown for functional trophic interactions (small points).
 \textbf{c}, The frequency distribution of trophic levels as a function of assembly time (iterations). 
 Autotrophs occupy ${\rm TL}=1$.
-Measures were evaluated across $10^4$ replicates; see Materials and Methods for parameter values.
+Measures were evaluated across $10^4$ replicates; see Methods for parameter values.
 \vspace{0mm}
 }
 \label{fig:trophic}
@@ -392,13 +411,13 @@ Measures were evaluated across $10^4$ replicates; see Materials and Methods for 
 
 Does the assembly of ecological networks favor nestedness when mutualistic interactions are frequent?
 \rev{In the absence of mutualisms, the trade-offs in our model preclude high levels of nestedness because we assume that generalists are at a competitive disadvantage when they share the same resources with a specialist consumer.
-Yet we find that as we increase the frequency of service interactions (holding constant trophic interaction frequency; see Appendix 2), the assembled community at steady state becomes more nested (Fig. \ref{fig:nest}a).
+Yet we find that as we increase the frequency of service interactions (holding constant trophic interaction frequency; see Supplementary Appendix 2), the assembled community at steady state becomes more nested (Fig. \ref{fig:nest}a).
 }
 More service interactions increase a species' competition strength, lowering its primary extinction risk.
 \rev{Participation in a mutualism thus delivers a fitness advantage to the species receiving the service, compensating for the lower competitive strength of generalists and allowing generalists to share subsets of resources with specialists, which promotes nestedness.}
 However increases in mutualisms also increase inter-species dependencies, which raises the potential risk associated with losing mutualistic partners \cite{Bond1994,Colwell2012}. % and its secondary extinction risk
 % Indeed, the balance that mutualists must maintain with their partners may have large implications for the future of global biodiversity \cite{Dunn2009}.
-\rev{While this shifting landscape of extinction risks lowers the steady state species richness of communities with high frequencies of service interactions, there is not a direct relationship between nestedness and richness (Fig. \ref{fig:nestsize}).}
+\rev{While this shifting landscape of extinction risks lowers the steady state species richness of highly mutualistic communities, we do not observe a direct relationship between nestedness and richness (Fig. \ref{fig:nestsize}).}
 
 % 
 % Increasing the number of need interactions (Fig. \ref{fig:model}) increases the number of both service-resource and service-service dependencies.
@@ -415,19 +434,22 @@ However increases in mutualisms also increase inter-species dependencies, which 
 % Here the NODF metric is taken across both eat and need interactions across the entire assembled community.
 % In this case, nestedness emerges from the assembly process and provides structural stability.
 % In this case, nestedness emerges from the assembly process itself.
-\rev{Increasing the frequency of mutualisms affects extinction dynamics within the community in conflicting ways.
-Consider two motifs composed of trophic and mutualistic interactions, respectively (Fig. \ref{fig:nest}, inset).}
-In a trophic motif with no mutualisms, species with high vulnerability (multiple predators) are at greater risk of primary extinction via competitive exclusion. 
-This will result in the secondary extinction of the specialist consumer. 
-If the interactions are instead mutualisms the costs of vulnerability are compensated by services, and it is now the low vulnerability species with fewer trophic partners that is at greater risk of exclusion, preserving the core of the motif at the expense of the periphery.
-Preservation of the core species also emerges in larger nested motifs (Fig. \ref{fig:motif}), and has been observed in ant-plant mutualistic systems where nested structures are thought to arise from shifting competitive exclusion to the periphery \cite{Dattilo2013}.
-\rev{The effects of mutualisms will differ across motifs, but they will generally serve to increase competitive advantages of species receiving services, while creating additional structural dependencies within the community.
-}
+
+
+%MOTIF
+% \rev{Increasing the frequency of mutualisms affects extinction dynamics within the community in conflicting ways.
+% Consider two motifs composed of trophic and mutualistic interactions, respectively (Fig. \ref{fig:nest}, inset).}
+% In a trophic motif with no mutualisms, species with high vulnerability (multiple predators) are at greater risk of primary extinction via competitive exclusion. 
+% This will result in the secondary extinction of the specialist consumer. 
+% If the interactions are instead mutualisms the costs of vulnerability are compensated by services, and it is now the low vulnerability species with fewer trophic partners that is at greater risk of exclusion, preserving the core of the motif at the expense of the periphery.
+% Preservation of the core species also emerges in larger nested motifs (Fig. \ref{fig:motif}), and has been observed in ant-plant mutualistic systems where nested structures are thought to arise from shifting competitive exclusion to the periphery \cite{Dattilo2013}.
+% \rev{The effects of mutualisms will differ across motifs, but they will generally serve to increase competitive advantages of species receiving services, while creating additional structural dependencies within the community.
+% }
 
 \rev{When we examine the dynamics of the community as a function of service interaction frequency, we observe that mutualistic interactions have different effects on primary versus secondary extinction rates.
 Because service dependencies bolster the competitive strength of otherwise susceptible species such as trophic generalists and species with multiple predators, the rate of primary extinctions is lowered, though this effect is weak (Fig. \ref{fig:nest}b).
-However, because mutualisms build rigid dependencies between species, more service dependencies result in higher frequencies of secondary extinctions (Fig. \ref{fig:nest}c). 
-In communities with many mutualistic interactions, this combined influence yields extinctions that are less likely to occur, but that result in larger cascades when they do.
+However, because mutualisms build rigid dependencies between species, more service interactions result in higher frequencies of secondary extinctions (Fig. \ref{fig:nest}c). 
+In communities with many mutualistic interactions, this combined influence yields extinctions that are less likely to occur, but lead to larger cascades when they do.
 }
 
 % 
@@ -472,23 +494,23 @@ For example, assembling plant-pollinator systems have demonstrated high rates of
 
 \begin{figure}[h!]
 \centering
-\includegraphics[width=0.45\textwidth]{fig_nested3.pdf}
-\vspace{0mm}
+\includegraphics[width=0.5\textwidth]{fig_nested4.pdf}
+\vspace{-6mm}
 \caption{
 \textbf{a}, Structural nestedness of communities, measured as UNODF (Unipartite Nestedness based on Overlap and Decreasing Fill) \cite{Cantor2017}.
 The value reported is the mean value taken across the rows and columns of the adjacency matrix accounting for both trophic and service interactions.
-Inset: A trophic and mutualistic nested motif for resource species 1, 2 and consumer species 3, 4.
-Whether the interactions are trophic or mutualistic impacts the susceptibility of each species to primary extinctions (based on differences in competitive strength $\sigma_i$) and secondary extinctions (which result from lost dependencies associated with primary extinctions).
+% Inset: A trophic and mutualistic nested motif for resource species 1, 2 and consumer species 3, 4.
+% Whether the interactions are trophic or mutualistic impacts the susceptibility of each species to primary extinctions (based on differences in competitive strength $\sigma_i$) and secondary extinctions (which result from lost dependencies associated with primary extinctions).
 \textbf{b}, Primary extinction rate and \textbf{c}, secondary extinction rate as a function of service interaction frequency.
 \textbf{d}, Species persistence as a function of service interaction frequency.
 Measures were evaluated for $10^4$ replicates; see Methods and Supplementary Appendix 2 for parameter values.
-\vspace{0mm}
+\vspace{-6mm}
 }
 \label{fig:nest}
 \end{figure}
 
 
-% An important condition of our model is that we assume that all service interactions are obligate (see Materials and Methods), which is expected to heighten the influence of secondary extinctions.
+% An important condition of our model is that we assume that all service interactions are obligate (see Methods), which is expected to heighten the influence of secondary extinctions.
 We emphasize that we have restricted ourselves to examining the effects of obligate mutualisms, although the importance of non-obligate mutualisms has long been recognized \cite{Ramos2012,Vieira2015,Valdovinos2016,Ponisio2017,Valdovinos2019}.
 % Because including these
 % While the inclusion of non-obligate mutualists will lower the likelihood of cascading effects in systems with higher frequencies of service interactions, the loss of obligate mutualistic partners will have larger dynamic consequences than the loss of more flexible non-obligate mutualistic partners.
@@ -538,10 +560,10 @@ When engineers are lost, their modifiers will also be lost, though can linger in
 %negative (introduces dependencies) then positive (introduces redundancies)
 \rev{While the inclusion of engineering does not significantly impact the structure of species-species interactions within assembling food webs (see Supplementary Appendix 4 and Fig. \ref{fig:trophiceng}), it does have significant consequences for community stability.
 Importantly, these effects also are sensitive to the frequency of service interactions within the community, and we find that their combined influence can be complex.}
-As for food webs without engineering, we measure community stability by assessing
-\emph{i}) rates of primary versus secondary extinctions,
-\emph{ii}) species persistence, and 
-\emph{iii}) steady state community diversity.
+% As with food webs without engineering, we measure community stability by assessing
+% \emph{i}) rates of primary versus secondary extinctions,
+% \emph{ii}) species persistence, and 
+% \emph{iii}) steady state community diversity.
 % Primary extinctions result from the competitive exclusion of species, whereas secondary extinctions are those that occur as a direct result of the former.
 % All measures were averaged over each species within the community across assembly time.
 
@@ -569,9 +591,9 @@ Here, freshwater invertebrates are serviced by the habitat modifications enginee
 As the frequency of service interactions increases, the negative effects associated with rare engineers is diminished (Fig. \ref{fig:engineers}a).
 Increasing service interactions both elevates the competitive strength of species receiving services (from species and/or modifiers), while creating more interdependencies between and among species.
 % Species that serve as resources to many consumers are less competitive due to increased vulnerability.
-As trophic interactions are replaced by service interactions, previously vulnerable species gain a competitive foothold and persist (Fig. \ref{fig:nest}, inset), lowering rates of primary extinctions (Fig. \ref{fig:engineers}a). %, particularly in systems where consumers are facilitated by a small number of engineers
-The costs of these added services to the community are an increased rate of secondary extinctions (Fig. \ref{fig:engineers}b) and higher species turnover (Fig. \ref{fig:engineers}c).
-Low rates of primary extinction coupled with high rates of secondary extinction mean that extinctions are less common but lead to larger cascades.
+As trophic interactions are replaced by service interactions, previously vulnerable species gain a competitive foothold and persist, lowering rates of primary extinctions (Fig. \ref{fig:engineers}a). %, particularly in systems where consumers are facilitated by a small number of engineers
+The costs of these added services to the community are an increased rate of secondary extinctions (Fig. \ref{fig:engineers}b) and higher species turnover (Fig. \ref{fig:engineers}c), such that extinctions are less common but lead to larger cascades.
+% Low rates of primary extinction coupled with high rates of secondary extinction mean that extinctions are less common but lead to larger cascades.
 % Importantly, these changes are not due to fluctuations in steady state community richness, which remains relatively constant across the parameter space that we examine (Fig. \ref{fig:steadystate}A).
 
 % Together, these results point to an important tradeoff originating from the effects of engineering.
@@ -586,15 +608,17 @@ Low rates of primary extinction coupled with high rates of secondary extinction 
 \vspace{0mm}
 \begin{figure}[h!]
 \centering
-\includegraphics[width=0.5\textwidth]{fig_engineers4.pdf}
+\includegraphics[width=0.5\textwidth]{fig_engineers5.pdf}
 \vspace{-8mm}
 \caption{
 Community stability as a function of the frequency of service interactions and modifiers per species.
 \textbf{a}, Mean rates of primary extinction, where primary extinctions occur from competitive exclusion of consumers over shared resources.
 \textbf{b}, Mean rates of secondary extinction, which cascade from primary extinctions.
 \textbf{c}, Mean species persistence.
-\textbf{d}, The ratio $S^*_{\rm u}/S^*$, where $S^*_{\rm u}$ denotes steady states for systems where all engineered modifiers are unique to each engineer, and $S^*$ denote steady states for systems with redundant engineering. Lower values of $S^*_{\rm u}/S^*$ mean that systems with redundant engineers have higher richness at the steady state than those without redundancies.
-Measures were evaluated across $50$ replicates; see Materials and Methods for parameter values.
+\textbf{d}, The ratio $S^*/S^*_{\rm u}$, where $S^*_{\rm u}$ denotes steady states for systems where all engineered modifiers are unique to each engineer, and $S^*$ denote steady states for systems with redundant engineering. Higher values of $S^*/S^*_{\rm u}$ mean that systems with redundant engineers have higher richness at the steady state than those without redundancies.
+Primary and secondary extinction rates were evaluated at the community level, whereas persistence was determined for each species and averaged across the community.
+Each measure reports the expectation taken across $50$ replicates.
+See Methods and Supplementary Appendix 2 for parameter values.
 \vspace{0mm}
 }
 \label{fig:engineers}
@@ -622,10 +646,10 @@ Engineering redundancies increase linearly with $\eta$ (Supplementary Appendix 1
 We examine the effects of this redundancy by comparing our results to those produced by the same model, but where each modifier is uniquely produced by a single species.
 Surprisingly, the lack of engineering redundancies does not alter the general relationship between engineering and measures of community stability (Fig. \ref{fig:unique}).
 However we find that redundancies play a central role in maintaining species diversity.
-When engineering redundancies are allowed, steady state community richness $S^*$ does not vary considerably with increasing service interactions and engineering (Fig. \ref{fig:steadystate}A).
-In contrast, when redundant engineering is not allowed, steady state community richness $S^*_u$ declines sharply (Figs. \ref{fig:engineers}D, \ref{fig:steadystate}B).
+When engineering redundancies are allowed, steady state community richness $S^*$ does not vary considerably with increasing service interactions and engineering (Fig. \ref{fig:steadystate}a).
+In contrast, when redundant engineering is not allowed, steady state community richness $S^*_u$ declines sharply (Figs. \ref{fig:engineers}d, \ref{fig:steadystate}b).
 
-\rev{Communities lacking redundancy have lower species richness because species' trophic and service dependencies are unlikely to be fulfilled, precluding colonization (Fig. \ref{fig:steadystate}C,D).
+\rev{Communities lacking redundancy have lower species richness because species' trophic and service dependencies are unlikely to be fulfilled, precluding colonization (Fig. \ref{fig:steadystate}c,d).
 Colonization occurs only when trophic and service dependencies are fulfilled.}
 A species requiring multiple engineered modifiers, each uniquely produced, means that each required entity must precede colonization.
 This magnifies the role of priority effects in constraining assembly order \cite{Fukami2015}, precluding many species from colonizing.
@@ -633,12 +657,15 @@ This magnifies the role of priority effects in constraining assembly order \cite
 Our results thus suggest that redundant engineers may play important roles in assembling ecosystems by lowering the barriers to colonization thereby promoting community diversity.
 
 %Closing
-\rev{We have shown that the dynamics of assembly driven by multitype interactions can produce model communities with realistic structures and dynamics.
-Moreover, the inclusion of ecosystem engineering by way of modifier nodes reveals that low levels of engineering may be expected to produce higher rates of extinction while limiting the size of extinction cascades, and that engineering redundancy -- whether it is common or rare -- may have considerable dynamical implications.}
+% \rev{We have shown that the dynamics of assembly driven by multitype interactions can produce model communities with realistic structures and dynamics.
+% Moreover, the inclusion of ecosystem engineering by way of modifier nodes reveals that low levels of engineering may be expected to produce higher rates of extinction while limiting the size of extinction cascades, and that engineering redundancy -- whether it is common or rare -- may have considerable dynamical implications.}
+\rev{We have shown that the dynamics of assembly driven by competitive forces influenced by multitype interactions can produce communities with realistic structures and dynamics. 
+Moreover, the inclusion of ecosystem engineering by way of modifier nodes reveals that low levels of engineering may be expected to produce higher rates of extinction while limiting the size of extinction cascades, and that engineering redundancy -- whether it is common or rare -- serves to promote colonization and by extension diversity.}
 % Together, these results point to the importance of considering multitype interactions both between species and as mediated through changes to the environment via engineering.
 We suggest that including the effects of engineers, either explicitly as we have done here, or otherwise, is vital for understanding the inter-dependencies that define ecological systems.
 As past ecosystems have fundamentally altered the landscape on which contemporary communities interact, future ecosystems will be defined by the influence of engineering today.
-\rev{Given the rate and magnitude that humans are currently engineering environments \cite{Corlett2015}, understanding the role of ecosystem engineers is tantamount to understanding our own.}\\
+% \rev{Given the rate and magnitude that humans are currently engineering environments \cite{Corlett2015}, understanding the role of ecosystem engineers is tantamount to understanding our own.}
+\rev{Given the rate and magnitude with which humans are currently engineering environments \cite{Corlett2015}, understanding the role of ecosystem engineers is thus tantamount to understanding our own effects on the assembly of natural communities.}\\
 
 
 % \noindent \textbf{Beyond engineering}
@@ -660,18 +687,21 @@ As past ecosystems have fundamentally altered the landscape on which contemporar
   % \noindent \textbf{The ENIgMa Model}\\
   We model an ecological system with a network where nodes represent \emph{ecological entities} such as populations of species and or the presence of abiotic modifiers affecting species.
    % and links represent interactions between them.
-  Following Pilai et al. \cite{Pillai2011}, we do not track the abundances of entities but only track their presence or absence.
+  Following Pilai et al. \cite{Pillai2011}, we do not track the abundances of entities but track only their presence or absence (see also Refs. \citenum{Luh1993,Campbell2011}).
   The links of the network represent interactions between pairs of entities (x,y).
   We distinguish three types of such interactions: x eats y, x needs y to be present, x makes modifier y.
 
   The assembly process entails two steps: first a source pool of species is created, followed by colonization/extinction into/from a local community.
-  The model is initialized by creating $S$ species and $M = \eta S$ modifiers, such that $N=S+M$ is the average total number of entities and $\eta$ is the average number of modifiers per species in the system.
+  The model is initialized by creating $S$ species and $M = \eta S$ modifiers, such that $N=S+M$ is the expected total number of entities (before considering engineering redundancies) and $\eta$ is the expected number of modifiers made per species in the community, where the expectation is taken across replicates.
   For each pair of species (x,y) there is a probability $p_e$ that x eats y and probability $p_n$ that x needs y.
-  For each pair of species x and modifier m, there is a probability $q_e$ that x eats m and a probability $q_n$ that species x needs modifier m.
-  Additionally, each species makes a number of modifiers that is drawn from a Poisson distribution with mean $\mu = \eta e/(e-1)$ where $e$ is Euler's number.
-  Once the number of modifiers per species is determined, each modifier is assigned to a species independently.
-  This means that multiple species may make the same modifier, and that there may be some modifiers that are not made by any species, which are eliminated from the pool.
-
+  For each pair of species x and modifier m, there is a probability $q_e$ that species x eats modifier m and a probability $q_n$ that species x needs modifier m.
+  Throughout we assume that $p_e = q_e$ and $p_n = q_n$ for simplicity.
+  Each species $i$ makes a number of modifiers $M_i \sim \rr{Poiss}(\eta)$ where $\eta$ is the mean number of modifiers made per species.
+  If engineering redundancies are allowed, once the number of modifiers per species is determined each modifier is assigned to a species independently to match its assigned number of modifiers.
+  This means that multiple species may make the same modifier, and that there may be some modifiers that are not assigned to any species, which are eliminated from the pool.
+  Accounting for engineering redundancies, the number of modifiers in the pool becomes $M^\prime = \eta S (\rr{e}-1)/\rr{e}$ where $\rr{e}$ is Euler's number.
+  If engineering redundancies are not allowed, each modifier is made by a single engineer and $M^\prime = M$.
+  
   In addition to interactions with ecosystem entities, there can be interactions with a basal resource, which is always present.
   The first species always eats this resource, such that there is always a primary producer in the pool.
   Other species eat the basal resource with probability $p_e$.
@@ -691,14 +721,14 @@ As past ecosystems have fundamentally altered the landscape on which contemporar
     \sigma_i = c_\rr{n} n_i - c_\rr{e} e_i - c_\rr{v} v_i,
   \end{equation}
   where $n_i$ is the number of entities that species $i$ needs, $e_i$ is the number of entities from the pool that species $i$ can eat, and $v_i$ is the number of species in the community that eat species $i$.
-  This captures the ecological intuition that mutualisms provide a fitness benefit, specialists are stronger competitors than generalists, and many predators entail an energetic cost.
-  The coefficients $c_\rr{n},~c_\rr{e},~c_\rr{v}$ describe the relative effects of these contributions to competitive strength.
-  In the following, we use the values $c_\rr{n} > c_\rr{e} > c_\rr{v}$, such that the competitive benefit of adding an additional mutualism is greater than the detriment incurred by adding another prey or predator.
+  This captures the ecological intuition that mutualisms provide a fitness benefit \cite{Bronstein1994}, specialists are stronger competitors than generalists \cite{Futuyma1988}, and many predators entail an energetic cost \cite{Brown1994}.
+  The coefficients $c_\rr{n},~c_\rr{e},~c_\rr{v}$ describe the relative effects of these contributions to competition strength.
+  In the following, we use the relationship $c_\rr{n} > c_\rr{e} > c_\rr{v}$, such that the competitive benefit of adding an additional mutualism is greater than the detriment incurred by adding another prey or predator.
   % In the following, we use the values $c_\rr{n} = \pi,~c_\rr{e}=\sqrt{2},~c_\rr{v}=1$, such that the competitive benefit of adding an additional mutualism is greater than the detriment incurred by adding another prey or predator.
   A species at risk of extinction leaves the community stochastically in time at rate $r_e$.
 
   A modifier is present in the community whenever at least one species that makes the modifier is present.
-  If a species that makes a modifier colonizes a community, the modifier is created immediately, however modifiers may persist for some time after the last species that makes the modifier goes extinct.
+  If a species that makes a modifier colonizes a community, the modifier is introduced as well, however modifiers may persist for some time after the last species that makes the modifier goes extinct.
   Any modifier that has lost all of its makers disappears stochastically in time at rate $r_m$.
 
   The model described here can be simulated efficiently with an event-driven simulation utilizing a Gillespie algorithm.
@@ -707,109 +737,8 @@ As past ecosystems have fundamentally altered the landscape on which contemporar
   At this time, an event occurs that is randomly selected from the set of possible events such that the probability of event $a$ is $r_a/\sum_j{r_j}$.
   The effect of the event is then realized and the list of possible events is updated for the next step.
   This algorithm is known to offer a much better approximation to the true stochastic continuous time process than a simulation in discrete time steps, while providing a much higher numerical efficiency \cite{Gillespie1977}.
-  Simulations described in the main text have default parameterizations of $S=200$, $p_{\rm e}=0.01$, $c_{\rm n} = \pi$, $c_{\rm e} = \sqrt{2}$, $c_{\rm v} = 1$, and $4000$ iterations.}
-% \end{matmethods}
-
-% 
-% 
-% \begin{table*}[!t]
-% \begin{center}
-% \begin{tabular}{ l l l }
-% \hline
-% Parameter & Definition & Value/Range \\
-% \hline
-% $\overrightarrow{a}$ & assimilate & \\
-% $\overrightarrow{n}$ & need & \\
-% $\overrightarrow{i}$ & ignore & \\
-% $\overrightarrow{m}$ & make & \\
-% \hline
-% $e \leftrightarrow i$ & Asymmetric consumption & $p_{ei} = p_i(p_e/(p_e+p_n+p_i)) + p_e(p_i/(p_a+p_i+p_n))$ \\
-% $e \leftrightarrow e$ & Symmetric consumption & $p_{ee} = p_e(p_e/(p_i+p_n+p_e))$\\
-% $e \leftrightarrow n$ & Trophic mutualism & $p_{en} = p_n(p_e/(p_e+p_n+p_i+p_m)) + p_e(p_n/(p_a+p_i+p_n))$ \\
-% $n \leftrightarrow n$ & Non-trophic mutualism & $p_{nn} = p_n(p_n/(p_e+p_n+p_i+p_m))$ \\
-% $n \leftrightarrow i$ & Commensalism & $p_{ni} = p_n(p_i/(p_e+p_n+p_i+p_m)) + p_i(p_n/(p_e+p_n+p_i))$\\
-% $m \leftrightarrow n$ & Engineering & $p_{mn} = p_n(p_m/(p_e+p_n+p_i+p_m)) + p_m$\\
-% $i \leftrightarrow i$ & Null & $p_{ii} = p_i(p_i/(p_e+p_n+p_i))$\\
-% \hline
-% $\mathcal{N}$ & Number of species + modifiers & dyn.\\
-% $\mathcal{S}$ & Number of species & dyn.\\
-% $\mathcal{M}$ & Number of modifiers & dyn.\\
-% \hline
-% \end{tabular}
-% \end{center}
-% \caption{Table of parameters, definitions, and assigned values or ranges.}
-% \label{table:param}
-% \end{table*}
-% 
-
-
-
-%
-% \textbf{Building the source pool} The source pool interaction matrix $\bm P$ is generated by first setting the number of species in the pool $\mathcal{S}_{\bm P}$ and determining the number of modifiers $\mathcal{M}_{\bm P}$ that are made by ecosystem engineers.
-% The resulting matrix is $\mathcal{N}_{\bm P}\times\mathcal{N}_{\bm P}$ where $\mathcal{N}_{\bm P}=\mathcal{S}_{\bm P}+\mathcal{M}_{\bm P}$, and is subdivided into four quadrants, only two of which play a role here: species-species interactions and species-modifier interactions (see Fig. \ref{fig:matrix}).
-% In these two quadrants, the expected frequency of eat interactions ${\rm E}\{p_\rr{e}\}$ and the expected frequency of need interactions ${\rm E}\{p_\rr{n}\}$ are free parameters, as is the expected number of modifiers made per species ${\rm E}\{\mathcal{M}_i\}=\eta$.
-% Here and throughout, we simplify this parameter space by assuming that the frequency of eat and need interactions for species-species (SS) interactions and species-modifier (SO) interactions scale as $\phi$, such that ${\rm E_{SS}}\{p_\rr{e}\} = \phi{\rm E_{SO}}\{p_\rr{e}\}$ and ${\rm E_{SS}}\{p_\rr{n}\} = \phi{\rm E_{SO}}\{p_\rr{n}\}$.
-% % is given by the parameter ${\rm E}\{\mathcal{M}_i\}=\eta$, which determines how many modifiers will be present in the source pool.
-% % The source pool interaction matrix $\bm P$ is generated by first setting the number of species $\mathcal{S}$ and the expected number of modifiers that are engineered per species ${\rm E}\{\mathcal{M}_i\}=\eta$.
-% For each species, a set number of modifiers is drawn from ${\rm Poiss}(\eta)$, such that the expected proportion of species that are engineers (species that make modifiers) is $1-{e}^{-\eta}$.
-% If a particular modifier is randomly and independently drawn for a given engineer from a complete list of all possible modifiers, such that multiple species -- with some probability -- can make the same modifier, the expected number of modifiers is
-% \begin{equation}
-% {\rm E}\{\mathcal{M}_{\bm P}\} = \mathcal{S}_{\bm P}\eta\left(1 - \frac{1}{{e}}\right),
-% \end{equation}
-% where $e$ is Euler's number.
-% % This allows multiple species to make the same modifier.
-% % If each species makes unique modifiers, the number of expected modifiers is $\mathcal{M} = \mathcal{S}\eta$, however because multiple species can make the same modifier, the realized number of modifiers will be lower.
-% % % To determine whether modifiers are uniquely made or made by multiple engineers, we assign modifiers by randomly drawing independently modifier IDs from $[1:\mathcal{M}_{\rm max}]$ without replacement for each engineer; unassigned modifiers are discarded.
-% % Each engineer is randomly assigned a modifier, which permits a single modifier to be made by multiple engineers, such that
-% % \begin{equation}
-% % {\rm E}\{\mathcal{M}\} = \mathcal{S}\eta\left(1 - \frac{1}{{\rm e}}\right).
-% % \end{equation}
-% % where $\rm e$ is Euler's number.
-% The frequency of $m \leftrightarrow n$ interactions is then calculated as
-% \begin{equation}
-% {\rm E}\{p_\rr{m}\} = \frac{\eta}{\mathcal{S}_{\bm P}\left(1 + \eta - \frac{\eta}{e}\right)^2}.
-% \end{equation}
-% Finally the frequency of the ignore interaction is calculated as $\rr{E_{SS}}\{p_\rr{\varnothing}\} = 1 - \rr{E_{SS}}\{p_\rr{e}\} + \rr{E_{SS}}\{p_\rr{n}\}$ and  $\rr{E_{SO}}\{p_\rr{\varnothing}\} = 1 - \rr{E_{SO}}\{p_\rr{e}\} + \rr{E_{SO}}\{p_\rr{n}\}+ \rr{E_{SO}}\{p_\rr{m}\}$ for species-species and species-modifier interactions, respectively.
-% Pairwise interaction probabilities between both species and modifiers are then calculated as shown in Table \ref{table:param}.
-% These pairwise interactions are assigned randomly from these probabilities between species-species and species-modifiers independently in both quadrants, such that the source pool matrix has no imbued structure apart from the number of species, the number of modifiers, and the frequency of each directional interaction type.
-% Each source pool is provided a \emph{basal resource} (the first row/column).
-% A species with a single trophic interaction to this resource is identified as a pure autotroph (Fig. \ref{fig:matrix}), however the basal resource does not have eat, need, or make interactions itself.
-%
-%
-%
-%
-% We consider a framework incorporating multiple types of directional interactions between species, which, when paired, represent specific ecological relationships including trophic interactions, service-resource and service-service mutualisms, and commensalisms.
-% We also introduce two types of nodes in our depiction of ecological networks: those representing \emph{species} and those representing \emph{modifiers}.
-% modifiers must be made by one or more species (here and henceforth refereed to as engineers) and represent a modification to the available niche-space that can be utilized by other species in the community.
-% Such alterations are to be considered in the abstract, but in empirical systems could represent an introduced compound, metabolite, or an alteration to the habitat/environment such as, for example, a burrow.
-%
-
-
-
-%
-% %Interaction types
-%
-% The ENIgMa model consists of four directed interactions:
-% $\rr{e}$: eat, which specifies a dependency involving the exchange of biomass,
-% $\rr{n}$: need, which specifies a dependency that does not involve biomass flow (e.g. a reproductive service),
-% $\rr{i}$: ignore, the null interaction, and
-% $\rr{m}$: make, which connects a species to a modifier that it engineers.
-% `modifiers' are interactive components that can be made by $\geq 1$ species, and eaten, needed, or ignored by the others.
-% The four directed interaction types describe specific dependencies that one species/modifier has on another, however it is the coupling of two opposing directed interactions that describe familiar ecological relationships (Table 1).
-%
-% The $\rr{e} \leftrightarrow \rr{i}$ interaction describes a typical predator-prey relationship, where species 1 eats species 2, whereas aside from serving as a resource, species 2 does not interact with (ignores) species 1.
-% Of course, a prey's abundance does not \emph{ignore} the effects of predation, however our framework operates at the scale of presence/absence rather than abundance, and we assume that if both species co-occur, they have positive population densities, such that the prey's state (presence/absence) ignores the predator.
-% A second type of trophic interaction is described by $\rr{e} \leftrightarrow \rr{e}$, where consumption is symmetric, which could be do to changing roles over an individual's life-history.
-% The $\rr{e} \leftrightarrow \rr{n}$ and $\rr{n} \leftrightarrow \rr{n}$ interactions describe service-resource and service-service mutualisms, respectively.
-% In the case of the former, one species interacts by way of a trophic interaction, whereas the other is provided a non-trophic need, such is the case in a plant-pollinator relationship.
-% Unique to models of ecological networks, the $\rr{m} \leftrightarrow \rr{n}$ interaction describes ecosystem engineering, where a species makes a modifier, whereas the presence of the modifier `needs' the presence of the species that makes it.
-% modifiers can be utilized by other species in the community, providing an indirect dependency that could be facilitated by multiple species (many engineers make the same modifier) and/or used by multiple species (many species eat or need the same modifier).
-% As we will describe below, engineers can modify the niche space available to the community on timescales that last longer than the species themselves, which is an oft-assumed characteristic of engineering.
-%
-% We explore the assembly of a novel community that emerges from a species source pool, which is represented by a source pool interaction matrix where all eat, need, ignore, and make interactions are established between all species and modifiers.
-% As such, a set of interactions for a particular species defines how it interacts with any other \emph{a priori}, thereby establishing its potential interaction niche space.
-% The source pool is used to seed a novel community, which arises as the result of colonization and extinction rules, the details of which we describe below.
-%
+  Simulations described in the main text have default parameterizations of $S=200$, $p_e=0.01$, $c_{\rm n} = \pi$, $c_{\rm e} = \sqrt{2}$, $c_{\rm v} = 1$, and $4000$ iterations.
+  Replicates are defined as the independent assembly of independently drawn source pools with a given parameterization.}
 
 \vspace{2mm}
 \noindent \textbf{Data availability}\\
@@ -822,358 +751,6 @@ As past ecosystems have fundamentally altered the landscape on which contemporar
   }\\
 
 \bibliography{aabib}
-
-% \begin{thebibliography}{10}
-% 
-% \bibitem{Paine1966}
-% Paine RT (1966) Food web complexity and species diversity.
-% \newblock {\em Am. Nat.} 100(910):65--75.
-% 
-% \bibitem{Dunne2002}
-% Dunne JA, Williams RJ, Martinez ND (2002) Food-web structure and network
-%   theory: the role of connectance and size.
-% \newblock {\em Proc Natl Acad Sci USA} 99(20):12917--12922.
-% 
-% \bibitem{Pascual2006}
-% Pascual M, Dunne J (2006) {\em Ecological Networks: Linking Structure to
-%   Dynamics in Food Webs}.
-% \newblock (Oxford University Press, Oxford, UK).
-% 
-% \bibitem{Bascompte2013}
-% Bascompte J, Jordano P (2013) {\em Mutualistic Networks}, Monographs in
-%   Population Biology.
-% \newblock (Princeton University Press, Princeton, NJ).
-% 
-% \bibitem{May1972}
-% May RM (1972) {Will a large complex system be stable?}
-% \newblock {\em Nature} 238(5364):413--414.
-% 
-% \bibitem{Gross2009}
-% Gross T, Levin SA, Dieckmann U (2009) Generalized models reveal stabilizing
-%   factors in food webs.
-% \newblock {\em Science} 325(5941):747--750.
-% 
-% \bibitem{Allesina2012}
-% Allesina S, Tang S (2012) {Stability criteria for complex ecosystems}.
-% \newblock {\em Nature} 483(7388):205--208.
-% 
-% \bibitem{Ponisio2017}
-% Ponisio LC, Gaiarsa MP, Kremen C (2017) Opportunistic attachment assembles
-%   plant–pollinator networks.
-% \newblock {\em Ecol Lett} 20(10):1261--1272.
-% 
-% \bibitem{Guimaraes2017}
-% Guimar{\~a}es~Jr PR, Pires MM, Jordano P, Bascompte J, Thompson JN (2017)
-%   {Indirect effects drive coevolution in mutualistic networks}.
-% \newblock {\em Nature} 18:586.
-% 
-% \bibitem{Kefi2016}
-% K{\'e}fi S, Miele V, Wieters EA, Navarrete SA, Berlow EL (2016) How structured
-%   is the entangled bank? the surprisingly simple organization of multiplex
-%   ecological networks leads to increased persistence and resilience.
-% \newblock {\em PLoS Biol} 14(8):e1002527.
-% 
-% \bibitem{Pilosof2017}
-% Pilosof S, Porter MA, Pascual M, K{\'e}fi S (2017) The multilayer nature of
-%   ecological networks.
-% \newblock {\em Nature Ecol Evol} 1:0101.
-% 
-% \bibitem{Lawton1994}
-% Lawton JH (1994) What do species do in ecosystems?
-% \newblock {\em Oikos} 71(3):367--374.
-% 
-% \bibitem{OdlingSmee2013}
-% Odling-Smee J, Erwin DH, Palkovacs EP, Feldman MW, Laland KN (2013) {Niche
-%   construction theory: a practical guide for ecologists.}
-% \newblock {\em Q Rev Biol} 88(1):4--28.
-% 
-% \bibitem{OdlingSmee2013b}
-% Odling-Smee F, Laland K, Feldman M (2013) {\em Niche Construction: The
-%   Neglected Process in Evolution (MPB-37)}, Monographs in Population Biology.
-% \newblock (Princeton University Press, Princeton, NJ).
-% 
-% \bibitem{Fukami2015}
-% Fukami T (2015) {Historical Contingency in Community Assembly: Integrating
-%   Niches, Species Pools, and Priority Effects}.
-% \newblock {\em Annu Rev Ecol Evol Syst} 46(1):1--23.
-% 
-% \bibitem{Jones1994}
-% Jones CG, Lawton JH, Shachak M (1994) Organisms as ecosystem engineers.
-% \newblock {\em Oikos} 69(3):373--386.
-% 
-% \bibitem{Olff2009}
-% Olff H, et~al. (2009) {Parallel ecological networks in ecosystems}.
-% \newblock {\em Philos T Roy Soc B} 364(1524):1755.
-% 
-% \bibitem{Haynes2012}
-% Haynes G (2012) Elephants (and extinct relatives) as earth-movers and ecosystem
-%   engineers.
-% \newblock {\em Geomorphology} 157-158:99 -- 107.
-% 
-% \bibitem{Pringle2008}
-% Pringle RM (2008) Elephants as agents of habitat creation for small vertebrates
-%   at the patch scale.
-% \newblock {\em Ecology} 89(1):26--33.
-% 
-% \bibitem{Reichman2002}
-% Reichman O, Seabloom EW (2002) The role of pocket gophers as subterranean
-%   ecosystem engineers.
-% \newblock {\em Trends Ecol Evol} 17(1):44 -- 49.
-% 
-% \bibitem{Moore2006}
-% Moore JW (2006) {Animal Ecosystem Engineers in Streams}.
-% \newblock {\em BioScience} 56(3):237--246.
-% 
-% \bibitem{Meyer2011}
-% Meyer ST, Leal IR, Tabarelli M, Wirth R (2011) Ecosystem engineering by
-%   leaf-cutting ants: nests of atta cephalotes drastically alter forest
-%   structure and microclimate.
-% \newblock {\em Ecol Entomol} 36(1):14--24.
-% 
-% \bibitem{Hastings2007}
-% Hastings A, et~al. (2007) {Ecosystem engineering in space and time}.
-% \newblock {\em Ecol Lett} 10(2):153--164.
-% 
-% \bibitem{Erwin2008}
-% Erwin DH (2008) Macroevolution of ecosystem engineering, niche construction and
-%   diversity.
-% \newblock {\em Trends Ecol Evol} 23(6):304 -- 310.
-% 
-% \bibitem{Schirrmeister2013}
-% Schirrmeister BE, de~Vos JM, Antonelli A, Bagheri HC (2013) Evolution of
-%   multicellularity coincided with increased diversification of cyanobacteria
-%   and the great oxidation event.
-% \newblock {\em Proc Natl Acad Sci USA} 110(5):1791--1796.
-% 
-% \bibitem{Loladze2011}
-% Loladze I, Elser JJ (2011) The origins of the {R}edfield nitrogen-to-phosphorus
-%   ratio are in a homoeostatic protein-to-r{RNA} ratio.
-% \newblock {\em Ecol Lett} 14(3):244--250.
-% 
-% \bibitem{Woodward2010}
-% Woodward G, Perkins DM, Brown LE (2010) {Climate change and freshwater
-%   ecosystems: impacts across multiple levels of organization}.
-% \newblock {\em Philos T Roy Soc B} 365(1549):2093--2106.
-% 
-% \bibitem{Brose2012}
-% Brose U, et~al. (2012) Climate change in size-structured ecosystems.
-% \newblock {\em Philos T Roy Soc B} 367(1605):2903--2912.
-% 
-% \bibitem{Gibert2019b}
-% Gibert JP (2019) Temperature directly and indirectly influences food web
-%   structure.
-% \newblock {\em Sci Rep-UK} 9(1):5312.
-% 
-% \bibitem{Getz2011}
-% Getz WM (2011) {Biomass transformation webs provide a unified approach to
-%   consumer-resource modelling.}
-% \newblock {\em Ecol Lett} 14(2):113--124.
-% 
-% \bibitem{Pillai2011}
-% Pillai P, Gonzalez A, Loreau M (2011) {Metacommunity theory explains the
-%   emergence of food web complexity.}
-% \newblock {\em Proc Natl Acad Sci USA} 108(48):19293--19298.
-% 
-% \bibitem{Bascompte2003}
-% Bascompte J, Jordano P, Meli{\'a}n CJ, Olesen JM (2003) {The nested assembly of
-%   plant-animal mutualistic networks.}
-% \newblock {\em Proc Natl Acad Sci USA} 100(16):9383--9387.
-% 
-% \bibitem{Gravel2011}
-% Gravel D, Massol F, Canard E, Mouillot D, Mouquet N (2011) Trophic theory of
-%   island biogeography.
-% \newblock {\em Ecol Lett} 14(10):1010--1016.
-% 
-% \bibitem{Piechnik2008}
-% Piechnik DA, Lawler SP, Martinez ND (2008) {Food-web assembly during a classic
-%   biogeographic study: species'{\textquotedblleft}trophic
-%   breadth{\textquotedblright} corresponds to colonization order}.
-% \newblock {\em Oikos} 117(5).
-% 
-% \bibitem{Williams2000}
-% Williams RJ, Martinez ND (2000) {Simple rules yield complex food webs}.
-% \newblock {\em Nature} 404(6774):180--183.
-% 
-% \bibitem{Williams2002}
-% Williams R, Martinez N (2004) Limits to trophic levels and omnivory in complex
-%   food webs: Theory and data.
-% \newblock {\em Am Nat} 163(3):458--468.
-% 
-% \bibitem{Lafferty2006}
-% Lafferty KD, Dobson AP, Kuris AM (2006) {Parasites dominate food web links.}
-% \newblock {\em Proc Natl Acad Sci USA} 103(30):11211--11216.
-% 
-% \bibitem{Turney2016}
-% Turney S, Buddle CM (2016) Pyramids of species richness: the determinants and
-%   distribution of species diversity across trophic levels.
-% \newblock {\em Oikos} 125(9):1224--1232.
-% 
-% \bibitem{Rohr2014}
-% Rohr RP, Saavedra S, Bascompte J (2014) {On the structural stability of
-%   mutualistic systems}.
-% \newblock {\em Science} 345(6195):1253497--1253497.
-% 
-% \bibitem{Valdovinos2016}
-% Valdovinos FS, et~al. (2016) {Niche partitioning due to adaptive foraging
-%   reverses effects of nestedness and connectance on pollination network
-%   stability}.
-% \newblock {\em Ecol Lett} 19(10):1277--1286.
-% 
-% \bibitem{Valdovinos2019}
-% Valdovinos FS (2019) Mutualistic networks: moving closer to a predictive
-%   theory.
-% \newblock {\em Ecol Lett} 0(0).
-% 
-% \bibitem{Krishna2008}
-% Krishna A, Guimar{\~a}es~Jr PR, Jordano P, Bascompte J (2008) {A neutral-niche
-%   theory of nestedness in mutualistic networks}.
-% \newblock {\em Oikos} 117(11):1609--1618.
-% 
-% \bibitem{Stouffer2011}
-% Stouffer DB (2011) {Compartmentalization increases food-web persistence}.
-% \newblock {\em Proc Natl Acad Sci USA} 108(9):3648--3652.
-% 
-% \bibitem{Gilarranz2017}
-% Gilarranz LJ, Rayfield B, Li{\~n}{\'a}n-Cembrano G, Bascompte J, Gonzalez A
-%   (2017) {Effects of network modularity on the spread of perturbation impact in
-%   experimental metapopulations}.
-% \newblock {\em Science} 357(6347):199--201.
-% 
-% \bibitem{Araujo2010}
-% Ara\'{u}jo MS, et~al. (2010) Nested diets: a novel pattern of individual-level
-%   resource use.
-% \newblock {\em Oikos} 119(1):81--88.
-% 
-% \bibitem{Pires2011}
-% Pires MM, Prado PI, Guimar{\~a}es~Jr PR (2011) Do food web models reproduce the
-%   structure of mutualistic networks?
-% \newblock {\em PLoS ONE} 6(11):e27280.
-% 
-% \bibitem{Massol2011}
-% Massol F, et~al. (2011) {Linking community and ecosystem dynamics through
-%   spatial ecology}.
-% \newblock {\em Ecol Lett} 14(3):313--323.
-% 
-% \bibitem{Ponisio2019}
-% Ponisio LC, et~al. (2019) A network perspective for community assembly.
-% \newblock {\em Front Ecol Evol} 7:103.
-% 
-% \bibitem{Yeakel2013}
-% Yeakel JD, Guimar{\~a}es~Jr PR, Bocherens H, Koch PL (2013) {The impact of
-%   climate change on the structure of Pleistocene food webs across the mammoth
-%   steppe}.
-% \newblock {\em Proc Roy Soc B} 280(1762):20130239--20130239.
-% 
-% \bibitem{Bond1994}
-% Bond WJ, Lawton JH, May RM (1994) Do mutualisms matter? {A}ssessing the impact
-%   of pollinator and disperser disruption on plant extinction.
-% \newblock {\em Phil Trans Roy Soc B} 344(1307):83--90.
-% 
-% \bibitem{Colwell2012}
-% Colwell RK, Dunn RR, Harris NC (2012) Coextinction and persistence of dependent
-%   species in a changing world.
-% \newblock {\em Ann Rev Ecol Evol Sys} 43(1):183--203.
-% 
-% \bibitem{Dunn2009}
-% Dunn RR, Harris NC, Colwell RK, Koh LP, Sodhi NS (2009) The sixth mass
-%   coextinction: are most endangered species parasites and mutualists?
-% \newblock {\em Proc Roy Soc B} 276(1670):3037--3045.
-% 
-% \bibitem{AlmeidaNeto2008}
-% Almeida-Neto M, Guimar{\~a}es P, Guimar{\~a}es~Jr PR, Loyola RD, Ulrich W
-%   (2008) A consistent metric for nestedness analysis in ecological systems:
-%   reconciling concept and measurement.
-% \newblock {\em Oikos} 117(8):1227{\textendash}1239.
-% 
-% \bibitem{Ramos2012}
-% Ramos-Jiliberto R, Valdovinos FS, Moisset~de Espanés P, Flores JD (2012)
-%   Topological plasticity increases robustness of mutualistic networks.
-% \newblock {\em J Anim Ecol} 81(4):896--904.
-% 
-% \bibitem{Vieira2015}
-% Vieira MC, Almeida~Neto M (2015) {A simple stochastic model for complex
-%   coextinctions in mutualistic networks: robustness decreases with
-%   connectance}.
-% \newblock {\em Ecol Lett} 18(2):144--152.
-% 
-% \bibitem{Laland2015}
-% Laland KN, et~al. (2015) The extended evolutionary synthesis: its structure,
-%   assumptions and predictions.
-% \newblock {\em Proc Roy Soc B} 282(1813):20151019.
-% 
-% \bibitem{Gupta2017}
-% Gupta M, Prasad N, Dey S, Joshi A, Vidya T (2017) Niche construction in
-%   evolutionary theory: the construction of an academic niche?
-% \newblock {\em J Gen} 96(3):491--504.
-% 
-% \bibitem{Feldman2017}
-% Feldman MW, Odling-Smee J, Laland KN (2017) Why {G}upta et al.’s critique of
-%   niche construction theory is off target.
-% \newblock {\em J Gen} 96(3):505--508.
-% 
-% \bibitem{Cuddington2004}
-% Cuddington K (2004) {Invasive engineers}.
-% \newblock {\em Ecol Model} 178:335--347.
-% 
-% \bibitem{Wright2004}
-% Wright JP, Jones CG (2004) Predicting effects of ecosystem engineers on
-%   patch-scale species richness from primary productivity.
-% \newblock {\em Ecology} 85(8):2071--2081.
-% 
-% \bibitem{Kylafis2008}
-% Kylafis G, Loreau M (2008) Ecological and evolutionary consequences of niche
-%   construction for its agent.
-% \newblock {\em Ecol Lett} 11(10):1072--1081.
-% 
-% \bibitem{Krakauer2009}
-% Krakauer DC, Page KM, Erwin DH (2009) {Diversity, dilemmas, and monopolies of
-%   niche construction.}
-% \newblock {\em Am Nat} 173(1):26--40.
-% 
-% \bibitem{Laland1999}
-% Laland KN, Odling-Smee FJ, Feldman MW (1999) {Evolutionary consequences of
-%   niche construction and their implications for ecology}.
-% \newblock {\em Proc Natl Acad Sci USA} 96(18):10242--10247.
-% 
-% \bibitem{Kallus2017}
-% Kallus Y, Miller JH, Libby E (2017) {Paradoxes in leaky microbial trade}.
-% \newblock {\em Nat Commun} 8(1):1361.
-% 
-% \bibitem{Muscarella2017}
-% Muscarella ME, O'Dwyer JP (2017) Ecological insights from the evolutionary
-%   history of microbial innovations.
-% \newblock {\em bioRxiv} p. 220939.
-% 
-% \bibitem{Shipway2019}
-% Shipway JR, et~al. (2019) A rock-boring and rock-ingesting freshwater bivalve
-%   (shipworm) from the philippines.
-% \newblock {\em Proc Roy Soc B} 286(1905):20190434.
-% 
-% \bibitem{Kidwell1986}
-% Kidwell SM (1986) Taphonomic feedback in {M}iocene assemblages: testing the
-%   role of dead hardparts in benthic communities.
-% \newblock {\em Palaios} 1(3):239--255.
-% 
-% \bibitem{Polz2013}
-% Polz MF, Alm EJ, Hanage WP (2013) Horizontal gene transfer and the evolution of
-%   bacterial and archaeal population structure.
-% \newblock {\em Trends Genet} 29(3):170 -- 175.
-% 
-% \bibitem{Gillespie1977}
-% Gillespie DT (1977) Exact stochastic simulation of coupled chemical reactions.
-% \newblock {\em J Phys Chem} 81(25):2340--2361.
-% 
-% \bibitem{Williams2011}
-% Williams RJ, Purves DW (2011) {The probabilistic niche model reveals
-%   substantial variation in the niche structure of empirical food webs.}
-% \newblock {\em Ecology} 92(9):1849--1857.
-% 
-% \bibitem{Warren2010}
-% Warren CP, Pascual M, Lafferty KD, Kuris AM (2010) {The inverse niche model for
-%   food webs with parasites.}
-% \newblock {\em Theor Ecol} 3(4):285--294.
-% 
-% \end{thebibliography}
 
 
 \vspace{2mm}
@@ -1229,20 +806,28 @@ As past ecosystems have fundamentally altered the landscape on which contemporar
 
 \subsection*{Appendix 1: Building the source pool}
 Here and henceforth, we refer to the assembly model presented in the main text as the ENIgMa model (E:eat, N:need, Ig:ignore, Ma:make).
-To initiate the ENIgMa assembly model, we must first constract the source pool, where each ecological entity (species and modifiers) is defined by its potential interactions with each other.
-The source pool interaction matrix $\bm P$ is generated by first setting the number of species in the pool $\mathcal{S}_{\bm P}$ and determining the number of modifiers $\mathcal{M}_{\bm P}$ that are made by ecosystem engineers.
-The resulting matrix is $\mathcal{N}_{\bm P}\times\mathcal{N}_{\bm P}$ where $\mathcal{N}_{\bm P}=\mathcal{S}_{\bm P}+\mathcal{M}_{\bm P}$, and is subdivided into four quadrants, only two of which play a role here: species-species interactions and species-modifier interactions (see Fig. \ref{fig:model}).
-In these two quadrants, the expected frequency of eat interactions ${\rm E}\{p_\rr{e}\}$ and the expected frequency of need interactions ${\rm E}\{p_\rr{n}\}$ are free parameters, as is the expected number of modifiers made per species ${\rm E}\{\mathcal{M}_i\}=\eta$.
-Here and throughout, we simplify this parameter space by assuming that the frequency of eat and need interactions for species-species (SS) interactions and species-modifier (SM) interactions are equivalent, such that ${\rm E_{SS}}\{p_\rr{e}\} = {\rm E_{SM}}\{p_\rr{e}\}$ and ${\rm E_{SS}}\{p_\rr{n}\} = {\rm E_{SM}}\{p_\rr{n}\}$.
+To initiate the ENIgMa assembly model, we must first construct the source pool, where each ecological entity (species + modifiers) is defined by their potential interactions.
+The model is initialized by creating $S$ species and $M = \eta S$ modifiers, such that $N=S+M$ is the expected total number of entities (prior to considering engineering redundancies) and $\eta$ is the expected number of modifiers made per species in the community, where the expectation is taken across replicates.
+For each pair of species (x,y) there is a probability $p_e$ that x eats y and probability $p_n$ that x needs y.
+For each pair of species x and modifier m, there is a probability $q_e$ that species x eats modifier m and a probability $q_n$ that species x needs modifier m.
+For simplicity we assume throughout that $p_e$ = $q_e$ and that $p_n = q_n$, such that the probability of drawing trophic and service interactions for both species-species and species-modifier interactions is the same.
+% The source pool interaction matrix $\bm P$ is generated by first setting the number of species in the pool $S$ and determining the number of modifiers $M$ that are made by ecosystem engineers.
+% The resulting matrix is $N \times N$ where $ N = S + M$, and is subdivided into four quadrants, only two of which play a role here: species-species interactions and species-modifier interactions (see Fig. \ref{fig:model}).
+% In these two quadrants, the expected frequency of eat interactions ${\rm E}\{p_\rr{e}\}$ and the expected frequency of need interactions ${\rm E}\{p_\rr{n}\}$ are free parameters, as is the expected number of modifiers made per species ${\rm E}\{\mathcal{M}_i\}=\eta$.
+% Here and throughout, we simplify this parameter space by assuming that the frequency of eat and need interactions for species-species (SS) interactions and species-modifier (SM) interactions are equivalent, such that ${\rm E_{SS}}\{p_\rr{e}\} = {\rm E_{SM}}\{p_\rr{e}\}$ and ${\rm E_{SS}}\{p_\rr{n}\} = {\rm E_{SM}}\{p_\rr{n}\}$.
 % is given by the parameter ${\rm E}\{\mathcal{M}_i\}=\eta$, which determines how many modifiers will be present in the source pool.
 % The source pool interaction matrix $\bm P$ is generated by first setting the number of species $\mathcal{S}$ and the expected number of modifiers that are engineered per species ${\rm E}\{\mathcal{M}_i\}=\eta$.
-For each species, a set number of modifiers is drawn from ${\rm Poiss}(\eta)$, such that the expected proportion of species that are engineers (species that make modifiers) is $1-{e}^{-\eta}$.
-If a particular modifier is randomly and independently drawn for a given engineer from a complete list of all possible modifiers, such that multiple species -- with some probability -- can make the same modifier, the expected number of modifiers is
+
+Without engineering redundancies (i.e. each modifier that a species makes is unique), the expected number of modifiers is $M = \eta S$ where $\eta$ is the mean number of modifiers made per species $S$.
+If we allow for engineering redundancies, the realized number of modifiers $M^\prime < M$.
+To determine the number of modifiers in the pool, for each species a set number of modifiers is drawn, where $M_i \sim {\rm Poiss}(\eta)$.
+The expected proportion of species that are engineers (species that make modifiers) is thus $1-{e}^{-\eta}$, where $e$ is Euler's number.
+If a particular modifier is randomly and independently drawn for a given engineer from a complete list of all possible modifiers, such that multiple species -- with some probability -- can make the same modifier, the expected number of modifiers becomes
 \begin{equation}
-{\rm E}\{\mathcal{M}_{\bm P}\} = \mathcal{S}_{\bm P}\eta\left(1 - \frac{1}{{e}}\right),
+M^\prime = \eta S \left(1 - \frac{1}{{e}}\right).
 \label{eq:total}
 \end{equation}
-where $e$ is Euler's number.
+
 % This allows multiple species to make the same modifier.
 % If each species makes unique modifiers, the number of expected modifiers is $\mathcal{M} = \mathcal{S}\eta$, however because multiple species can make the same modifier, the realized number of modifiers will be lower.
 % % To determine whether modifiers are uniquely made or made by multiple engineers, we assign modifiers by randomly drawing independently modifier IDs from $[1:\mathcal{M}_{\rm max}]$ without replacement for each engineer; unassigned modifiers are discarded.
@@ -1251,40 +836,64 @@ where $e$ is Euler's number.
 % {\rm E}\{\mathcal{M}\} = \mathcal{S}\eta\left(1 - \frac{1}{{\rm e}}\right).
 % \end{equation}
 % where $\rm e$ is Euler's number.
-The frequency of engineering (make) interactions is then calculated as
+To set interactions between species and modifiers in the pool, we must know the frequency of each directed interaction type.
+The frequencies of eat and need interactions, $p_e$ and $p_n$ respectively, are assigned a priori (see Supplementary Appendix 2 for different model parameterizations).
+The frequency of engineering (make) interactions can be calculated as
 \begin{equation}
-{\rm E}\{p_\rr{m}\} = \frac{\eta}{\mathcal{S}_{\bm P}\left(1 + \eta - \frac{\eta}{e}\right)^2}.
+p_m = \frac{\eta}{S\left(1 + \eta - \frac{\eta}{e}\right)^2}.
 \end{equation}
-Finally the frequency of the non-interaction is calculated as $\rr{E_{SS}}\{p_\rr{\varnothing}\} = 1 - \rr{E_{SS}}\{p_\rr{e}\} + \rr{E_{SS}}\{p_\rr{n}\}$ and  $\rr{E_{SM}}\{p_\rr{\varnothing}\} = 1 - \rr{E_{SM}}\{p_\rr{e}\} + \rr{E_{SM}}\{p_\rr{n}\}+ \rr{E_{SM}}\{p_\rr{m}\}$ for species-species and species-modifier interactions, respectively.
-Pairwise interactions are assigned randomly from these probabilities between species-species and species-modifiers independently in both quadrants, such that the source pool matrix has no imbued structure apart from the number of species, the number of modifiers, and the frequency of each directional interaction type.
+The frequency of the null interaction is then calculated by $p_\rr{\varnothing} = 1 - (p_e + p_n)$ for species-species interactions and $p_\rr{\varnothing} = 1 - (p_e + p_n+ p_m)$ species-modifier interactions, respectively.
+Pairwise interactions are established randomly, such that the source pool matrix has no imbued structure apart from the number of species, the number of modifiers, and the frequency of each directional interaction type.
 Each source pool is provided a \emph{basal resource} (the first row/column).
 A species with a trophic interaction to this resource is identified as an autotroph (or mixotroph depending on its other trophic interactions).
 If they do not have service dependencies with other species/modifiers, it is these species that are uniquely able to initiate assembly.
 
-We can determine analytically the expected number of unique versus redundant modifiers in the source pool.
-As the total number of modifiers is given in Eq. \ref{eq:total}, the number of unique modifiers is given by ${\rm E}\{\mathcal{M}_{\bm P}\}_{\rr{unique}} = \mathcal{S}_{\bm P} \eta e^{-1}$.
-The number of redundant modifiers is then given as
+When engineering redundancies are allowed, the expected number of unique versus redundant modifiers in the source pool can be determined analytically.
+The total number of modifiers is $M^\prime = \eta S (1 - \rr{e}^{-1})$, and can be subdivided into modifiers that have a unique engineer and those that have multiple engineers.
+The number of modifiers with a single engineer is $M^\prime_{\rr{unique}} = \eta S e^{-1}$.
+The number of modifiers made by multiple engineers is calculated as $M^\prime - M^\prime_{\rr{unique}}$, such that
 \begin{equation}
-{\rm E}\{\mathcal{M}_{\bm P}\}_{\rr{redundant}} = \eta \mathcal{S}_{\bm P} \frac{e - 2}{e},
+M^\prime_{\rr{redundant}} =M^\prime - M^\prime_{\rr{unique}}= \eta S \frac{e - 2}{e},
 \label{eq:redundant}
 \end{equation}
 such that the proportion of redundant modifiers $\phi$ is
 \begin{equation}
-\phi = \frac{e-2}{e-1} \approx 0.418.
+\phi = \frac{M^\prime - M^\prime_{\rr{unique}}}{M^\prime} = \frac{e-2}{e-1} \approx 0.418.
 \label{eq:redundantprop}
 \end{equation}
 Accordingly, we find that the number of redundant modifiers increases linearly with $\eta$, while the proportion of modifiers that are redundant is fixed.
-Figure \ref{fig:redundancy}A,B shows both analytical expectations and numerically-derived measures for ${\rm E}\{\mathcal{M}_{\bm P}\}_{\rr{redundant}}$ and $\phi$, respectively.
+Figure \ref{fig:redundancy}a,b shows both analytical expectations and numerically-derived measures for $M^\prime_{\rr{redundant}}$ and $\phi$, respectively.
+
+As described in Methods, the assembly process can be simulated efficiently with an event-driven simulation utilizing a Gillespie algorithm.
+Generally, one computes the rates $r_j$ of all possible events $j$ in a given step.
+One then selects the time at which the next event happens by drawing a random number from an exponential distribution with mean $1/\sum_j{r_j}$.
+At this time, an event occurs that is randomly selected from the set of possible events such that the probability of event $a$ is $r_a/\sum_j{r_j}$.
+The effect of the event is then realized and the list of possible events is updated for the next step.
+
+In our framework, at the beginning of each simulation step we compute:
+1) all species in the pool and absent from the community that have trophic and service dependencies met by those species in the community: these species are subject to colonization;
+2) all species in the community that do not have a competition strength that is highest for at least one of their resources: these species are subject to primary extinction;
+3) all species in the community that do not meet their eat and/or need dependencies: these species are subject to secondary extinction;
+4) all modifiers in the community that no longer have an engineer: these modifiers are subject to elimination.
+We then select one of the four events with a probability proportional to the number of entities that satisfy the criteria for each event.
+The rates at which each event occurs change at each step, equal to the number of entities that meet the criteria for each event at that point in time.
+The species/modifier that colonizes or is eliminated from the community is randomly chosen once the event-type is determined.
+
+For example, if the community is empty, and 50 species are able to colonize, the probability of drawing `colonization' is 1, and the colonizer would be randomly drawn from the 50 capable of colonizing.
+Another example: if 20 species are able to colonize, 10 species are not superior competitors for any one of their resources, and 30 species do not meet their dependencies, $\sum_j{r_j} = 60$, and $r_\rr{colonize} = 1/3$, $r_\rr{primary~extinction} = 1/6$, and $r_\rr{secondary~extinction} = 1/2$.
+In this case, the most probable event is a secondary extinction.
+After this single event takes place, the community is updated depending on which event occurred, and the simulation proceeds to the next step.
+This algorithm is known to offer a much better approximation to the true stochastic continuous time process than a simulation in discrete time steps, while providing a much higher numerical efficiency \cite{Gillespie1977}.
 
 
 \subsection*{Appendix 2: Model parameterizations}
-Simulations described in the main text have default parameterizations of $S=200$, $p_{\rm e}=0.01$, $c_{\rm n} = \pi$, $c_{\rm e} = \sqrt{2}$, $c_{\rm v} = 1$, and $4000$ iterations (time-steps).
+Simulations described in the main text have default parameterizations of $S=200$, $p_e=0.01$, $c_{\rm n} = \pi$, $c_{\rm e} = \sqrt{2}$, $c_{\rm v} = 1$, and $4000$ iterations (time-steps).
 
-\noindent \textbf{Assembly without ecosystem engineering} Here we set the average number of modifiers made per species $\eta = 0$ and the probability of need interactions in the species pool $p_{\rm n}=0.002$.
+\noindent \textbf{Assembly without ecosystem engineering} Here we set the average number of modifiers made per species $\eta = 0$ and the probability of need interactions in the species pool $p_n=0.002$.
 
-\noindent \textbf{Structure and dynamics of mutualisms} Again we used the default parameterizations but set $\eta = 0$, while varying $p_{\rm n} \in [0,0.002]$.
+\noindent \textbf{Structure and dynamics of mutualisms} Again we used the default parameterizations but set $\eta = 0$, while varying $p_n \in [0,0.002]$.
 
-\noindent \textbf{Assembly with ecosystem engineering} Here we used the default parameterizations but varied $\eta \in [0,2]$ and $p_{\rm n} \in [0,0.002]$.
+\noindent \textbf{Assembly with ecosystem engineering} Here we used the default parameterizations but varied $\eta \in [0,2]$ and $p_n \in [0,0.002]$.
 
 
 \subsection*{Appendix 3: Comparison to Niche Model}
@@ -1295,7 +904,7 @@ While we consider a comparison of our framework with other food web models such 
 Our approach is intended to provide a deeper understanding into how multitype dependencies between species and the environment impact the dynamics of community assembly.
 While capturing general qualitative features of empirical systems demonstrates that the dynamics we consider are ecologically relevant, the goal of our approach is distinct from that of static food web models, which aim to maximize structural similarities between model and empirical systems \cite{Williams2000,Williams2011}.
 
-We compared steady state ecological networks that emerge from ENIgMa (described in Materials and Methods, main text) with food webs constructed from the Niche Model \cite{Williams2000} with similar species richness and connectance.
+We compared steady state ecological networks that emerge from ENIgMa (described in Methods, main text) with food webs constructed from the Niche Model \cite{Williams2000} with similar species richness and connectance.
 Because species richness and connectance of the Niche Model are often altered by eliminating disconnected species, we compared
 \emph{i}) species richness,
 \emph{ii}) connectance,
@@ -1323,16 +932,18 @@ While the inclusion of engineers ($\eta = 2$) does have an impact on stability i
 
 The role of specialists \emph{does} and \emph{does not} change with the introduction of engineering, depending on how specialization is defined.
 As in the main text, a specialist is defined when its generality index $G_i < 1$ relative to the steady state link density.
-When engineered modifiers are included, we account for a trophic interaction between a species and its another's modifier as an interaction between those two species.
+When engineered modifiers are included, we account for a trophic interaction between a species and another's modifier as an interaction that occurs between those two species indirectly through the modifier intermediary.
 So if a species $B$ makes a modifier $M$, and $A$ eats $M$, then we set $A$ to (indirectly) eat $B$.
 This accounting of both direct and indirect trophic interactions between species can then be compared to \emph{i}) the direct trophic link density of the community, or \emph{ii}) the direct + indirect trophic link density of the community, and some insights can be gained from both approaches.
 
-In the first case, where $G_i$ is determined relative to $L^*_{\rm direct}/S^*$, we find that there are no potential specialists that colonize the community, and -- as before -- functional specialists colonize first, but -- not as before -- become functional generalists at steady state (mean proportion specialists at steady state is 0.04; Fig. \ref{fig:trophiceng}b).
+In the first case, where $G_i$ is determined relative to $L^*_{\rm direct}/S^*$, we find that there are no potential specialists that colonize the community, and (as in the main text) functional specialists colonize first, but (not as in the main text) become functional generalists at steady state (mean proportion specialists at steady state is 0.04; Fig. \ref{fig:trophiceng}b).
 This means that the indirect links that define trophic interactions between species and modifiers increase the link-density of the network relative to that defined only by direct trophic interactions.
 In words, modifiers serve to connect otherwise disconnected species, formalizing the otherwise indirect relationships that structure the role of engineers in the community.
-
 In the second case, where $G_i$ is determined relative to $L^*_{\rm indirect}/S^*$, we find that the changes in both functional and potential specialists over the course of assembly (Fig. \ref{fig:trophiceng}c) follow those observed for non-engineered food webs (Fig. \ref{fig:trophic}b).
 
+Finally, we observe that while the number of trophic levels increase in the presence of species-modifier interactions, the overall trophic structure of the community advances over the course of assembly in much the same way as it does without engineers (Fig. \ref{fig:trophiceng}d).
+Trophic levels are calculated with respect to indirect species interactions through modifier intermediaries.
+Because species at any trophic level can engineer modifiers used as resources by other species, the mean trophic level of the community is systematically elevated.
 
 % 
 % \textbf{b}, The proportion of specialists as a function of assembly time, where a specialist is defined as a species with a generality index $G_i < 1$ relative to the steady state link density.
@@ -1343,7 +954,7 @@ In the second case, where $G_i$ is determined relative to $L^*_{\rm indirect}/S^
 % Diamonds represent functional (realized) trophic interactions; triangles represent potential trophic interactions.
 % \textbf{d}, The frequency distribution of trophic levels as a function of assembly time (iterations). 
 % Autotrophs occupy ${\rm TL}=1$.
-% Measures were evaluated across $10^4$ replicates; see Materials and Methods for parameter values.
+% Measures were evaluated across $10^4$ replicates; see Methods for parameter values.
 
 % 
 % \subsection*{Appendix 4: Measures of generality}
@@ -1383,7 +994,7 @@ In the second case, where $G_i$ is determined relative to $L^*_{\rm indirect}/S^
 \includegraphics[width=0.6\textwidth]{fig_conn.pdf}
 \caption{
 Left: Assembly of communities over time results in steady state species richness by ca. time-step 250.
-Right: Trophic connectance early in assembly is high because few species are tightly connected.
+Right: Trophic connectance early in assembly is high because a small number of species interact with each other such that the proportion of realized interactions (out of all possible interactions) is closer to unity.
 Over time, connectance decays as species richness increases, and the density of trophic interactions declines.
 }
 \label{fig:conn}
@@ -1393,7 +1004,7 @@ Over time, connectance decays as species richness increases, and the density of 
 
 \begin{figure*}[h!]
 \centering
-\includegraphics[width=0.8\textwidth]{fig_errorscatter.pdf}
+\includegraphics[width=0.8\textwidth]{fig_errorscatter2.pdf}
 \caption{
 Comparisons of raw structural measures for the assembly (y-axis) and Niche model (x-axis).
 If the models produce similar structures, metrics will tend to fall on the 1:1 line (drawn).
@@ -1404,11 +1015,11 @@ While the values for both models are similar, connectance, mean degree, and the 
 
 \begin{figure*}[h!]
 \centering
-\includegraphics[width=0.3\textwidth]{fig_error.pdf}
+\includegraphics[width=0.8\textwidth]{fig_error2.pdf}
 \caption{
 Error between structural measures of the assembly and Niche models.
 Error is measured as $\sqrt{(m_i - m_j)^2}$, where $m_i$ and $m_j$ are structural metrics for the assembly and Niche model, respectively.
-Only the trophic network of the assembly model used to assess metrics.
+Only the trophic network of the assembly model was used to assess metrics.
 }
 \label{fig:error2}
 \end{figure*}
@@ -1441,18 +1052,18 @@ Only the trophic network of the assembly model used to assess metrics.
 % \label{fig:mutsecext}
 % \end{figure*}
 
-
-\begin{figure*}[h!]
-\centering
-\includegraphics[width=0.6\textwidth]{fig_motif.pdf}
-\caption{
-\textbf{a}, The 4-species nested trophic and mutualistic motif described in the main text.
-\textbf{b}, A 6-species nested trophic and mutualistic motif. For the trophic motif at time-step 1, it is the core species of the motif that are at greatest risk of extinction. For the mutualistic motif at time-step 1 it is the peripheral species at greatest risk.
-\textbf{c}, Nestedness (UNODF) of the 6-species trophic and mutualistic motif over the course of the two time-steps illustrated in \textbf{b}. While nestedness decays in both following the primary and secondary extinctions, it decays more slowly for the mutualistic motif.
-While suggesting that the dynamics of a single (among many possible) motif cannot simply be extended to the entire network, we suggest that the maintenance of asymmetric interactions among species engaged in mutualistic interactions may be important for the observed increase in nestedness when service interactions are frequent.
-}
-\label{fig:motif}
-\end{figure*}
+% 
+% \begin{figure*}[h!]
+% \centering
+% \includegraphics[width=0.6\textwidth]{fig_motif.pdf}
+% \caption{
+% \textbf{a}, The 4-species nested trophic and mutualistic motif described in the main text.
+% \textbf{b}, A 6-species nested trophic and mutualistic motif. For the trophic motif at time-step 1, it is the core species of the motif that are at greatest risk of extinction. For the mutualistic motif at time-step 1 it is the peripheral species at greatest risk.
+% \textbf{c}, Nestedness (UNODF) of the 6-species trophic and mutualistic motif over the course of the two time-steps illustrated in \textbf{b}. While nestedness decays in both following the primary and secondary extinctions, it decays more slowly for the mutualistic motif.
+% While suggesting that the dynamics of a single (among many possible) motif cannot simply be extended to the entire network, we suggest that the maintenance of asymmetric interactions among species engaged in mutualistic interactions may be important for the observed increase in nestedness when service interactions are frequent.
+% }
+% \label{fig:motif}
+% \end{figure*}
 
 
 \begin{figure*}[h!]
@@ -1495,7 +1106,7 @@ Here $G_i$ is scaled to the steady state link density where links are composed o
 Diamonds represent functional (realized) trophic interactions; triangles represent potential trophic interactions.
 \textbf{d}, The frequency distribution of trophic levels as a function of assembly time (iterations). 
 Autotrophs occupy ${\rm TL}=1$.
-Measures were evaluated across $10^4$ replicates; see Materials and Methods for parameter values.
+Measures were evaluated across $10^4$ replicates; see Methods for parameter values.
 }
 \label{fig:trophiceng}
 \end{figure*}
@@ -1505,10 +1116,10 @@ Measures were evaluated across $10^4$ replicates; see Materials and Methods for 
 \centering
 \includegraphics[width=0.7\textwidth]{fig_indeng_combined.pdf}
 \caption{
-\textbf{a},\textbf{b}, Species-specific persistence as a function of trophic in-degree (number of resources a species has; top) and out-degree (number of consumers that eat the species; bottom) when there are no engineers in the community. 
-\textbf{c},\textbf{d}, Species-specific persistence as a function of trophic in-degree (number of resources a species has; top) and out-degree (number of consumers that eat the species; bottom) when engineers are rare ($\eta = 0.5$).
-The notion that having a small number of engineers and modifiers in the community increases rates of primary extinction (Fig. \ref{fig:engineers}a) by stabilizing consumers at the expense of their prey is supported by \emph{i}) increased persistence of generalist consumers, and \emph{ii}) the increase in species with higher numbers of consumers.
-\textbf{e},\textbf{f}, Species-specific persistence as a function of trophic in-degree (number of resources a species has; top) and out-degree (number of consumers that eat the species; bottom) when engineers are common ($\eta = 2.0$).
+Species-specific persistence as a function of \textbf{a} trophic in-degree (number of resources a species has; top) and \textbf{b} out-degree (number of consumers that eat the species; bottom) when there are no engineers in the community. 
+Species-specific persistence as a function of \textbf{c} trophic in-degree (number of resources a species has; top) and \textbf{d} out-degree (number of consumers that eat the species; bottom) when engineers are rare ($\eta = 0.5$).
+The notion that having a small number of engineers and modifiers in the community increases rates of primary extinction (Fig. \ref{fig:engineers}a) by stabilizing consumers at the expense of their prey is supported by \emph{i}) increased persistence of generalist consumers, and \emph{ii}) the presence of species with larger number of predators.
+Species-specific persistence as a function of \textbf{e} trophic in-degree (number of resources a species has; top) and \textbf{f} out-degree (number of consumers that eat the species; bottom) when engineers are common ($\eta = 2.0$).
 The notion that a large number of engineers and modifiers in the community decrease rates of primary extinction (Fig. \ref{fig:engineers}a) due to expanding niche space (diffusing the effects of competitive exclusion) is supported by the lack of correlation between trophic in/out-degree and persistence.
 }
 \label{fig:indeng}
@@ -1542,7 +1153,7 @@ The red dashed line shows the analytical expectation of $\phi \approx 0.418$ (Eq
 
 \begin{figure*}[h!]
 \centering
-\includegraphics[width=0.6\textwidth]{fig_engineers4_unique.pdf}
+\includegraphics[width=0.6\textwidth]{fig_engineers5_unique.pdf}
 \caption{
 Measures of community stability as a function of the frequency of service interactions and number of modifiers per species, where each modifier is uniquely made by an engineer.
 \textbf{a}, Mean rates of primary extinction, where primary extinctions occur from competitive exclusion of consumers over shared resources.
@@ -1550,7 +1161,7 @@ Measures of community stability as a function of the frequency of service intera
 \textbf{c}, Mean species persistence, defined as the percent simulation time the community is occupied by a given species, averaged across all species that successfully colonize.
 \textbf{d}, The ratio $S^*_{\rm u}/S^*$, where $S^*_{\rm u}$ denotes steady states for systems where all engineered modifiers are unique to each engineer, and $S^*$ denote steady states for systems with redundant engineering. Lower values of $S^*_{\rm u}/S^*$ mean that systems with redundant engineers have higher steady states than those without redundancies.
 Values are averaged over 50 replicates for each parameterization.
-See Materials and Methods for default parameter values.
+See Methods for default parameter values.
 }
 \label{fig:unique}
 \end{figure*}

@@ -55,22 +55,150 @@
 \newblock \emph{\bibinfo{journal}{Nature}} \textbf{\bibinfo{volume}{483}},
   \bibinfo{pages}{205--208} (\bibinfo{year}{2012}).
 
-\bibitem{Ponisio2017}
-\bibinfo{author}{Ponisio, L.~C.}, \bibinfo{author}{Gaiarsa, M.~P.} \&
-  \bibinfo{author}{Kremen, C.}
-\newblock \bibinfo{title}{Opportunistic attachment assembles plant–pollinator
-  networks}.
-\newblock \emph{\bibinfo{journal}{Ecol Lett}} \textbf{\bibinfo{volume}{20}},
-  \bibinfo{pages}{1261--1272} (\bibinfo{year}{2017}).
+\bibitem{Montoya2003}
+\bibinfo{author}{Montoya, J.~M.} \& \bibinfo{author}{Sol{\'e}, R.~V.}
+\newblock \bibinfo{title}{{Topological properties of food webs: from real data
+  to community assembly models}}.
+\newblock \emph{\bibinfo{journal}{Oikos}} \textbf{\bibinfo{volume}{102}},
+  \bibinfo{pages}{614--622} (\bibinfo{year}{2003}).
 
-\bibitem{Guimaraes2017}
-\bibinfo{author}{Guimar{\~a}es~Jr, P.~R.}, \bibinfo{author}{Pires, M.~M.},
-  \bibinfo{author}{Jordano, P.}, \bibinfo{author}{Bascompte, J.} \&
-  \bibinfo{author}{Thompson, J.~N.}
-\newblock \bibinfo{title}{{Indirect effects drive coevolution in mutualistic
+\bibitem{Bascompte2009}
+\bibinfo{author}{Bascompte, J.} \& \bibinfo{author}{Stouffer, D.}
+\newblock \bibinfo{title}{{The assembly and disassembly of ecological
   networks}}.
-\newblock \emph{\bibinfo{journal}{Nature}} \textbf{\bibinfo{volume}{18}},
-  \bibinfo{pages}{586} (\bibinfo{year}{2017}).
+\newblock \emph{\bibinfo{journal}{Philos. T. Roy. Soc. B}}
+  \textbf{\bibinfo{volume}{364}}, \bibinfo{pages}{1781} (\bibinfo{year}{2009}).
+
+\bibitem{Hubbell2001}
+\bibinfo{author}{Hubbell, S.}
+\newblock \emph{\bibinfo{title}{{The unified neutral theory of biodiversity and
+  biogeography}}} (\bibinfo{publisher}{Princeton Univ Press},
+  \bibinfo{year}{2001}).
+\newblock
+  \urlprefix\url{http://www.google.com/search?client=safari&rls=en-us&q=The+unified+neutral+theory+of+biodiversity&ie=UTF-8&oe=UTF-8}.
+
+\bibitem{Tilman2004}
+\bibinfo{author}{Tilman, D.}
+\newblock \bibinfo{title}{Niche tradeoffs, neutrality, and community structure:
+  a stochastic theory of resource competition, invasion, and community
+  assembly}.
+\newblock \emph{\bibinfo{journal}{Proceedings of the National Academy of
+  Sciences}} \textbf{\bibinfo{volume}{101}}, \bibinfo{pages}{10854--10861}
+  (\bibinfo{year}{2004}).
+
+\bibitem{Fukami2015}
+\bibinfo{author}{Fukami, T.}
+\newblock \bibinfo{title}{{Historical Contingency in Community Assembly:
+  Integrating Niches, Species Pools, and Priority Effects}}.
+\newblock \emph{\bibinfo{journal}{Annu Rev Ecol Evol Syst}}
+  \textbf{\bibinfo{volume}{46}}, \bibinfo{pages}{1--23} (\bibinfo{year}{2015}).
+
+\bibitem{Kraft2008}
+\bibinfo{author}{Kraft, N. J.~B.}, \bibinfo{author}{Valencia, R.} \&
+  \bibinfo{author}{Ackerly, D.~D.}
+\newblock \bibinfo{title}{{Functional Traits and Niche-Based Tree Community
+  Assembly in an Amazonian Forest}}.
+\newblock \emph{\bibinfo{journal}{Science}} \textbf{\bibinfo{volume}{322}},
+  \bibinfo{pages}{580--582} (\bibinfo{year}{2008}).
+
+\bibitem{ODwyer2009}
+\bibinfo{author}{O'Dwyer, J.~P.}, \bibinfo{author}{Lake, J.},
+  \bibinfo{author}{Ostling, A.}, \bibinfo{author}{Savage, V.~M.} \&
+  \bibinfo{author}{Green, J.}
+\newblock \bibinfo{title}{{An integrative framework for stochastic,
+  size-structured community assembly}}.
+\newblock \emph{\bibinfo{journal}{Proc. Natl. Acad. Sci. USA}}
+  \textbf{\bibinfo{volume}{106}}, \bibinfo{pages}{6170} (\bibinfo{year}{2009}).
+
+\bibitem{Brown2002}
+\bibinfo{author}{Brown, J.~H.}, \bibinfo{author}{Kelt, D.~A.} \&
+  \bibinfo{author}{Fox, B.~J.}
+\newblock \bibinfo{title}{{Assembly Rules and Competition in Desert Rodents}}.
+\newblock
+  \emph{\bibinfo{journal}{http://dx.doi.org.proxy.lib.sfu.ca/10.1086/679735}}
+  \textbf{\bibinfo{volume}{160}}, \bibinfo{pages}{815--818}
+  (\bibinfo{year}{2002}).
+
+\bibitem{Piechnik2008}
+\bibinfo{author}{Piechnik, D.~A.}, \bibinfo{author}{Lawler, S.~P.} \&
+  \bibinfo{author}{Martinez, N.~D.}
+\newblock \bibinfo{title}{{Food-web assembly during a classic biogeographic
+  study: species'{\textquotedblleft}trophic breadth{\textquotedblright}
+  corresponds to colonization order}}.
+\newblock \emph{\bibinfo{journal}{Oikos}} \textbf{\bibinfo{volume}{117}}
+  (\bibinfo{year}{2008}).
+
+\bibitem{Fahimipour2014}
+\bibinfo{author}{Fahimipour, A.~K.} \& \bibinfo{author}{Hein, A.~M.}
+\newblock \bibinfo{title}{{The dynamics of assembling food webs}}.
+\newblock \emph{\bibinfo{journal}{Ecol. Lett.}} \textbf{\bibinfo{volume}{17}},
+  \bibinfo{pages}{n/a--n/a} (\bibinfo{year}{2014}).
+
+\bibitem{Barbier2018}
+\bibinfo{author}{Barbier, M.}, \bibinfo{author}{Arnoldi, J.-F.},
+  \bibinfo{author}{Bunin, G.} \& \bibinfo{author}{Loreau, M.}
+\newblock \bibinfo{title}{{Generic assembly patterns in complex ecological
+  communities}}.
+\newblock \emph{\bibinfo{journal}{Proc. Natl. Acad. Sci. USA}}
+  \textbf{\bibinfo{volume}{115}}, \bibinfo{pages}{2156--2161}
+  (\bibinfo{year}{2018}).
+
+\bibitem{Campbell2011}
+\bibinfo{author}{Campbell, C.}, \bibinfo{author}{Yang, S.},
+  \bibinfo{author}{Albert, R.} \& \bibinfo{author}{Shea, K.}
+\newblock \bibinfo{title}{{A network model for plant-pollinator community
+  assembly}}.
+\newblock \emph{\bibinfo{journal}{Proc. Natl. Acad. Sci. USA}}
+  \textbf{\bibinfo{volume}{108}}, \bibinfo{pages}{197--202}
+  (\bibinfo{year}{2011}).
+
+\bibitem{Luh1993}
+\bibinfo{author}{Hang-Kwang, L.} \& \bibinfo{author}{Pimm, S.~L.}
+\newblock \bibinfo{title}{The assembly of ecological communities: A minimalist
+  approach}.
+\newblock \emph{\bibinfo{journal}{Journal of Animal Ecology}}
+  \textbf{\bibinfo{volume}{62}}, \bibinfo{pages}{749--765}
+  (\bibinfo{year}{1993}).
+
+\bibitem{Law1996}
+\bibinfo{author}{Law, R.} \& \bibinfo{author}{Morton, R.~D.}
+\newblock \bibinfo{title}{{Permanence and the Assembly of Ecological
+  Communities}}.
+\newblock \emph{\bibinfo{journal}{Ecology}} \textbf{\bibinfo{volume}{77}},
+  \bibinfo{pages}{762--775} (\bibinfo{year}{1996}).
+
+\bibitem{Valdovinos2010}
+\bibinfo{author}{Valdovinos, F.~S.}, \bibinfo{author}{Ramos-Jiliberto, R.},
+  \bibinfo{author}{Garay-Narv{\'a}ez, L.}, \bibinfo{author}{Urbani, P.} \&
+  \bibinfo{author}{Dunne, J.~A.}
+\newblock \bibinfo{title}{{Consequences of adaptive behaviour for the structure
+  and dynamics of food webs}}.
+\newblock \emph{\bibinfo{journal}{Ecol. Lett.}} \textbf{\bibinfo{volume}{13}},
+  \bibinfo{pages}{1546--1559} (\bibinfo{year}{2010}).
+
+\bibitem{RamosJiliberto2012}
+\bibinfo{author}{Ramos-Jiliberto, R.}, \bibinfo{author}{Valdovinos, F.~S.},
+  \bibinfo{author}{Moisset~de Espanés, P.} \& \bibinfo{author}{Flores, J.~D.}
+\newblock \bibinfo{title}{Topological plasticity increases robustness of
+  mutualistic networks}.
+\newblock \emph{\bibinfo{journal}{Journal of Animal Ecology}}
+  \textbf{\bibinfo{volume}{81}}, \bibinfo{pages}{896--904}
+  (\bibinfo{year}{2012}).
+\newblock
+  arXiv:\eprint{https://besjournals.onlinelibrary.wiley.com/doi/pdf/10.1111/j.1365-2656.2012.01960.x}.
+
+\bibitem{Valdovinos2016}
+\bibinfo{author}{Valdovinos, F.~S.} \emph{et~al.}
+\newblock \bibinfo{title}{{Niche partitioning due to adaptive foraging reverses
+  effects of nestedness and connectance on pollination network stability}}.
+\newblock \emph{\bibinfo{journal}{Ecol Lett}} \textbf{\bibinfo{volume}{19}},
+  \bibinfo{pages}{1277--1286} (\bibinfo{year}{2016}).
+
+\bibitem{Ponisio2019}
+\bibinfo{author}{Ponisio, L.~C.} \emph{et~al.}
+\newblock \bibinfo{title}{A network perspective for community assembly}.
+\newblock \emph{\bibinfo{journal}{Front Ecol Evol}}
+  \textbf{\bibinfo{volume}{7}}, \bibinfo{pages}{103} (\bibinfo{year}{2019}).
 
 \bibitem{Kefi2016}
 \bibinfo{author}{K{\'e}fi, S.}, \bibinfo{author}{Miele, V.},
@@ -112,13 +240,6 @@
 \newblock Monographs in Population Biology (\bibinfo{publisher}{Princeton
   University Press}, \bibinfo{address}{Princeton, NJ}, \bibinfo{year}{2013}).
 \newblock \urlprefix\url{https://books.google.com/books?id=0k-NujtWMZ0C}.
-
-\bibitem{Fukami2015}
-\bibinfo{author}{Fukami, T.}
-\newblock \bibinfo{title}{{Historical Contingency in Community Assembly:
-  Integrating Niches, Species Pools, and Priority Effects}}.
-\newblock \emph{\bibinfo{journal}{Annu Rev Ecol Evol Syst}}
-  \textbf{\bibinfo{volume}{46}}, \bibinfo{pages}{1--23} (\bibinfo{year}{2015}).
 
 \bibitem{Jones1994}
 \bibinfo{author}{Jones, C.~G.}, \bibinfo{author}{Lawton, J.~H.} \&
@@ -276,14 +397,51 @@
 \newblock \emph{\bibinfo{journal}{Ecol Lett}} \textbf{\bibinfo{volume}{14}},
   \bibinfo{pages}{1010--1016} (\bibinfo{year}{2011}).
 
-\bibitem{Piechnik2008}
-\bibinfo{author}{Piechnik, D.~A.}, \bibinfo{author}{Lawler, S.~P.} \&
-  \bibinfo{author}{Martinez, N.~D.}
-\newblock \bibinfo{title}{{Food-web assembly during a classic biogeographic
-  study: species'{\textquotedblleft}trophic breadth{\textquotedblright}
-  corresponds to colonization order}}.
-\newblock \emph{\bibinfo{journal}{Oikos}} \textbf{\bibinfo{volume}{117}}
-  (\bibinfo{year}{2008}).
+\bibitem{Bronstein1994}
+\bibinfo{author}{Bronstein, J.~L.}
+\newblock \bibinfo{title}{Conditional outcomes in mutualistic interactions}.
+\newblock \emph{\bibinfo{journal}{Trends in ecology \& evolution}}
+  \textbf{\bibinfo{volume}{9}}, \bibinfo{pages}{214--217}
+  (\bibinfo{year}{1994}).
+
+\bibitem{Macarthur1964}
+\bibinfo{author}{MacArthur, R.} \& \bibinfo{author}{Levins, R.}
+\newblock \bibinfo{title}{Competition, habitat selection, and character
+  displacement in a patchy environment}.
+\newblock \emph{\bibinfo{journal}{Proceedings of the National Academy of
+  Sciences of the United States of America}} \textbf{\bibinfo{volume}{51}},
+  \bibinfo{pages}{1207} (\bibinfo{year}{1964}).
+
+\bibitem{Dykhuizen1980}
+\bibinfo{author}{Dykhuizen, D.} \& \bibinfo{author}{Davies, M.}
+\newblock \bibinfo{title}{An experimental model: bacterial specialists and
+  generalists competing in chemostats}.
+\newblock \emph{\bibinfo{journal}{Ecology}} \textbf{\bibinfo{volume}{61}},
+  \bibinfo{pages}{1213--1227} (\bibinfo{year}{1980}).
+
+\bibitem{Futuyma1988}
+\bibinfo{author}{Futuyma, D.~J.} \& \bibinfo{author}{Moreno, G.}
+\newblock \bibinfo{title}{The evolution of ecological specialization}.
+\newblock \emph{\bibinfo{journal}{Annual review of Ecology and Systematics}}
+  \textbf{\bibinfo{volume}{19}}, \bibinfo{pages}{207--233}
+  (\bibinfo{year}{1988}).
+
+\bibitem{Costa2015}
+\bibinfo{author}{Costa, A.} \emph{et~al.}
+\newblock \bibinfo{title}{Generalisation within specialization:
+  inter-individual diet variation in the only specialized salamander in the
+  world}.
+\newblock \emph{\bibinfo{journal}{Scientific reports}}
+  \textbf{\bibinfo{volume}{5}}, \bibinfo{pages}{1--10} (\bibinfo{year}{2015}).
+
+\bibitem{Brown1994}
+\bibinfo{author}{Brown, J.~S.}, \bibinfo{author}{Kotler, B.~P.} \&
+  \bibinfo{author}{Valone, T.~J.}
+\newblock \bibinfo{title}{Foraging under predation - a comparison of energetic
+  and predation costs in rodent communities of the negev and sonoran deserts}.
+\newblock \emph{\bibinfo{journal}{Australian Journal of Zoology}}
+  \textbf{\bibinfo{volume}{42}}, \bibinfo{pages}{435--448}
+  (\bibinfo{year}{1994}).
 
 \bibitem{Williams2000}
 \bibinfo{author}{Williams, R.~J.} \& \bibinfo{author}{Martinez, N.~D.}
@@ -345,13 +503,6 @@
 \newblock \emph{\bibinfo{journal}{Science}} \textbf{\bibinfo{volume}{345}},
   \bibinfo{pages}{1253497--1253497} (\bibinfo{year}{2014}).
 
-\bibitem{Valdovinos2016}
-\bibinfo{author}{Valdovinos, F.~S.} \emph{et~al.}
-\newblock \bibinfo{title}{{Niche partitioning due to adaptive foraging reverses
-  effects of nestedness and connectance on pollination network stability}}.
-\newblock \emph{\bibinfo{journal}{Ecol Lett}} \textbf{\bibinfo{volume}{19}},
-  \bibinfo{pages}{1277--1286} (\bibinfo{year}{2016}).
-
 \bibitem{Valdovinos2019}
 \bibinfo{author}{Valdovinos, F.~S.}
 \newblock \bibinfo{title}{Mutualistic networks: moving closer to a predictive
@@ -366,6 +517,15 @@
   networks}}.
 \newblock \emph{\bibinfo{journal}{Oikos}} \textbf{\bibinfo{volume}{117}},
   \bibinfo{pages}{1609--1618} (\bibinfo{year}{2008}).
+
+\bibitem{Guimaraes2017}
+\bibinfo{author}{Guimar{\~a}es~Jr, P.~R.}, \bibinfo{author}{Pires, M.~M.},
+  \bibinfo{author}{Jordano, P.}, \bibinfo{author}{Bascompte, J.} \&
+  \bibinfo{author}{Thompson, J.~N.}
+\newblock \bibinfo{title}{{Indirect effects drive coevolution in mutualistic
+  networks}}.
+\newblock \emph{\bibinfo{journal}{Nature}} \textbf{\bibinfo{volume}{18}},
+  \bibinfo{pages}{586} (\bibinfo{year}{2017}).
 
 \bibitem{Stouffer2011}
 \bibinfo{author}{Stouffer, D.~B.}
@@ -398,12 +558,6 @@
   spatial ecology}}.
 \newblock \emph{\bibinfo{journal}{Ecol Lett}} \textbf{\bibinfo{volume}{14}},
   \bibinfo{pages}{313--323} (\bibinfo{year}{2011}).
-
-\bibitem{Ponisio2019}
-\bibinfo{author}{Ponisio, L.~C.} \emph{et~al.}
-\newblock \bibinfo{title}{A network perspective for community assembly}.
-\newblock \emph{\bibinfo{journal}{Front Ecol Evol}}
-  \textbf{\bibinfo{volume}{7}}, \bibinfo{pages}{103} (\bibinfo{year}{2019}).
 
 \bibitem{Yeakel2013}
 \bibinfo{author}{Yeakel, J.~D.}, \bibinfo{author}{Guimar{\~a}es~Jr, P.~R.},
@@ -439,6 +593,14 @@
   networks}.
 \newblock \emph{\bibinfo{journal}{Oikos}} \textbf{\bibinfo{volume}{122}},
   \bibinfo{pages}{1643--1648} (\bibinfo{year}{2013}).
+
+\bibitem{Ponisio2017}
+\bibinfo{author}{Ponisio, L.~C.}, \bibinfo{author}{Gaiarsa, M.~P.} \&
+  \bibinfo{author}{Kremen, C.}
+\newblock \bibinfo{title}{Opportunistic attachment assembles plant–pollinator
+  networks}.
+\newblock \emph{\bibinfo{journal}{Ecol Lett}} \textbf{\bibinfo{volume}{20}},
+  \bibinfo{pages}{1261--1272} (\bibinfo{year}{2017}).
 
 \bibitem{Cantor2017}
 \bibinfo{author}{Cantor, M.} \emph{et~al.}

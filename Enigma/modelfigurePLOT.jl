@@ -7,7 +7,7 @@ end
 
 S = 200;
 
-maxits =100;
+maxits =50;
 cn = pi;
 ce = sqrt(2);
 cp = 1;
@@ -262,10 +262,10 @@ trophic2 = trophic[keepnodes];
 maxTL = floor(max(trophic2)) + 1
 TLcoords = list()
 for (i in 1:maxTL) {
-    whole_ell = ellipse(matrix(c(0,0.0,0.0,0),2,2),c(2/(2*sqrt(i)+4),1))
-    low = which(whole_ell[,2] < 1 - i*0.2)
+    whole_ell = ellipse(matrix(c(0,0.0,0.0,0),2,2),c(2/(1*sqrt(i)+5),1))
+    low = which(whole_ell[,2] < 1 - i*0.1)
     TLcoords[[i]] = whole_ell[low,]
-    TLcoords[[i]][,2] = TLcoords[[i]][,2] + i + 2 + rnorm(length(TLcoords[[i]][,2]),0,0.1)
+    TLcoords[[i]][,2] = TLcoords[[i]][,2] + i + 2 + rnorm(length(TLcoords[[i]][,2]),-0.5,0.05)
     
 }
 coords = matrix(0,nrow=length(trophic2),ncol=2)

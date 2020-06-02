@@ -178,13 +178,19 @@ namespace = "data/niche/errordist_ce0.jld";
 filename = smartpath(namespace);
 @load filename enig_species enig_conn enig_mdegree enig_stdindegree enig_stdoutdegree niche_species niche_conn niche_mdegree niche_stdindegree niche_stdoutdegree err_species err_conn err_mdegree err_stdindegree err_stdoutdegree;
 
+namespace = "data/niche/errordist.jld";
+filename = smartpath(namespace);
+@load filename enig_species enig_conn enig_mdegree enig_stdindegree enig_stdoutdegree niche_species niche_conn niche_mdegree niche_stdindegree niche_stdoutdegree err_species err_conn err_mdegree err_stdindegree err_stdoutdegree;
+
 #Plot normalized error
 
-filename = "figures/niche/error.pdf";
+filename = "figures/yog/fig_error2.pdf";
 namespace = smartpath(filename);
 R"""
-pdf($namespace,height=12,width=3)
-par(mfrow=c(5,1))
+pdf($namespace,height=5,width=8)
+# par(mfrow=c(5,1))
+layout(matrix(c(1,2,3,4,5,6),2,3,byrow=TRUE))
+par(list(oma = c(1, 1, 1, 1), mar = c(4, 4, 1, 1)))
 hist($(err_species),main="",xlab="Error (Species)",col='darkgray')
 hist($(err_conn),main="",xlab="Error (Connectance)",col='darkgray')
 hist($(err_mdegree),main="",xlab="Error (Mean degree)",col='darkgray')
@@ -194,7 +200,7 @@ dev.off()
 """
 
 
-filename = "figures/niche/normerror.pdf";
+filename = "figures/yog/normerror2.pdf";
 namespace = smartpath(filename);
 R"""
 pdf($namespace,height=12,width=3)
@@ -207,11 +213,13 @@ hist($(err_stdoutdegree ./ std(enig_stdoutdegree)),main="",xlab="Normalized Erro
 dev.off()
 """
 
-filename = "figures/niche/errorscatter_cp0.pdf";
+filename = "figures/yog/fig_errorscatter2.pdf";
 namespace = smartpath(filename);
 R"""
-pdf($namespace,height = 10,width=10)
-par(mfrow=c(2,3))
+pdf($namespace,height = 5,width=8)
+# par(mfrow=c(2,3))
+layout(matrix(c(1,2,3,4,5,6),2,3,byrow=TRUE))
+par(list(oma = c(1, 1, 1, 1), mar = c(4, 4, 1, 1)))
 plot($niche_species,$enig_species,pch='.',ylim=c(50,200),xlim=c(50,200),xlab="Niche (species)",ylab="ENIgMa (species)")
 lines(seq(-10,500),seq(-10,500),lty=2)
 plot($niche_conn,$enig_conn,pch='.',ylim=c(0,0.025),xlim=c(0,0.025),xlab="Niche (connectance)",ylab="ENIgMa (connectance)")
@@ -224,4 +232,3 @@ plot($niche_stdoutdegree,$enig_stdoutdegree,pch='.',ylim=c(0.5,2.5),xlim=c(0.5,2
 lines(seq(-10,10),seq(-10,10),lty=2)
 dev.off()
 """
-

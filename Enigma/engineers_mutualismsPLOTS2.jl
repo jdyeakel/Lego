@@ -234,8 +234,8 @@ end
 # """
 
 
-filename = "../manuscript/fig_engineers4.pdf";
-namespace = smartpath(filename);
+namespace = "$(homedir())/Dropbox/PostDoc/2014_Lego/manuscript/fig_engineers6.pdf";
+# namespace = smartpath(filename);
 R"""
 library(RColorBrewer)
 library(fields)
@@ -272,13 +272,13 @@ mtext('Pers.',side=4,line=0.1,las=1,padj=-10)
 text(0.1,0.0019,'c',cex=2,col='Black',font=2)
 
 pal = brewer.pal(9,'Blues')
-image.plot(y=$nvec_scaled,x=$lambdavec,z=$(transpose(mss_surf_unique ./ mss_surf)),col=pal,ylab='',xlab='',nlevel=11,axes=FALSE)
+image.plot(y=$nvec_scaled,x=$lambdavec,z=$(transpose(mss_surf ./ mss_surf_unique)),col=pal,ylab='',xlab='',nlevel=11,axes=FALSE)
 # axis(2,at=seq(0,0.002,by=0.001),labels=TRUE,tck=-0.015,mgp=c(0.5,0.5,0))
 axis(1,at=seq(0,2,by=0.5),labels=TRUE,tck=-0.015,mgp=c(0.5,0.5,0),las=1)
 # title(ylab='Freq. service interactions', line=2.0, cex.lab=1.,las=1)
 # title(xlab='', line=1.5, cex.lab=1.)
-mtext(expression(paste({'S'['u']}^'*','/S'^'*')),side=4,line=0.1,las=1,padj=-6)
-text(0.1,0.0019,'d',cex=2,col='White',font=2)
+mtext(expression(paste('S'^'*',{'/S'['u']}^'*')),side=4,line=0.1,las=1,padj=-6)
+text(0.1,0.0019,'d',cex=2,col='Black',font=2)
 
 dev.off()
 """
@@ -298,8 +298,9 @@ title(xlab='Frequency of service interactions', line=1.5, cex.lab=1,las=1,outer=
 dev.off()
 """
 
-filename = "../manuscript/fig_engineers4_unique.pdf";
-namespace = smartpath(filename);
+# filename = "../manuscript/fig_engineers5_unique.pdf";
+# namespace = smartpath(filename);
+namespace = "$(homedir())/Dropbox/PostDoc/2014_Lego/manuscript/fig_engineers6_unique.pdf";
 R"""
 library(RColorBrewer)
 library(fields)
@@ -336,13 +337,13 @@ mtext('Pers.',side=4,line=0.1,las=1,padj=-10)
 text(0.1,0.0019,'c',cex=2,col='Black',font=2)
 
 pal = brewer.pal(9,'Blues')
-image.plot(y=$nvec_scaled,x=$lambdavec,z=$(transpose(mss_surf_unique ./ mss_surf)),col=pal,ylab='',xlab='',nlevel=11,axes=FALSE)
+image.plot(y=$nvec_scaled,x=$lambdavec,z=$(transpose(mss_surf./mss_surf_unique)),col=pal,ylab='',xlab='',nlevel=11,axes=FALSE)
 # axis(2,at=seq(0,0.002,by=0.001),labels=TRUE,tck=-0.015,mgp=c(0.5,0.5,0))
 axis(1,at=seq(0,2,by=0.5),labels=TRUE,tck=-0.015,mgp=c(0.5,0.5,0),las=1)
 # title(ylab='Freq. service interactions', line=2.0, cex.lab=1.,las=1)
 # title(xlab='', line=1.5, cex.lab=1.)
-mtext(expression(paste({'S'['u']}^'*','/S'^'*')),side=4,line=0.1,las=1,padj=-6)
-text(0.1,0.0019,'d',cex=2,col='White',font=2)
+mtext(expression(paste('S'^'*',{'/S'['u']}^'*')),side=4,line=0.1,las=1,padj=-6)
+text(0.1,0.0019,'d',cex=2,col='Black',font=2)
 
 dev.off()
 """
