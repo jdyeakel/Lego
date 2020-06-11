@@ -439,7 +439,7 @@ dev.off()
 """
 
 
-namespace = "$(homedir())/Dropbox/PostDoc/2014_Lego/manuscript/fig_nested4.pdf";
+namespace = "$(homedir())/Dropbox/PostDoc/2014_Lego/manuscript/fig_nested5.pdf";
 scaled_nestall = Int64.(floor.((nestall .- minimum(nestall)) ./ (maximum(nestall) .- minimum(nestall))*100));
 scaled_nestall[vec(findall(x->x==0,scaled_nestall))] .= 1;
 scaled_primextrate = Int64.(floor.((primextrate .- minimum(primextrate)) ./ (maximum(primextrate) .- minimum(primextrate))*100));
@@ -459,39 +459,46 @@ layout(matrix(c(1,2,3,4),2,2,byrow=TRUE), widths=c(1,1,1,1), heights=c(0.5,0.5,0
 par(list(oma = c(3, 2, 0.5, 0.5), mar = c(1, 3, 0, 1)))
 
 # par(list(new=TRUE, plt=c(.075, 1, .75, 1)))
-plot(jitter($nvecreshaped_scaled),$nestall * 100,xlab='',ylab='',pch='.',cex=1.5,axes=TRUE,xaxt='n',col=pal[$scaled_nestall],las=1)
+plot(jitter($nvecreshaped_scaled),$nestall * 100,xlab='',ylab='',pch='.',cex=1.5,axes=FALSE,xaxt='n',col=pal[$scaled_nestall],las=1)
 points($nvec_scaled,$mnest * 100,pch=16,col='black')
 lines($nvec_scaled,$mnest * 100)
 # axis(side=2,at=seq(0,2.5,by=0.5),line=0,las=1)
 mtext(side=2,'Nestedness (UNODF)',line=2.5)
 # mtext(side=3,'a',font=2,outer=TRUE)
+axis(2,labels=TRUE,las=1)
 
 # par(list(new=TRUE, plt=c(.075, 1, .48, .77)))
 pal=colorRampPalette(brewer.pal(9,"YlOrRd"))(100);
-plot(jitter($nvecreshaped_scaled),$primextrate,xlab='',ylab='',pch='.',cex=1.5,col=pal[$scaled_primextrate],axes=TRUE,xaxt='n',las=1)
+plot(jitter($nvecreshaped_scaled),$primextrate,xlab='',ylab='',pch='.',cex=1.5,col=pal[$scaled_primextrate],axes=FALSE,xaxt='n',las=1,ylim=c(10,30))
 points($nvec_scaled,$mprimext,pch=17,col='black')
 lines($nvec_scaled,$mprimext)
 # axis(side=2,at=seq(10,25,by=5),line=0,las=1)
 mtext(side=2,'1° extinction rate',line=2.5)
+axis(2,labels=TRUE,las=1)
 
 # par(list(new=TRUE, plt=c(.075, 1, .25, .5)))
 pal=colorRampPalette(brewer.pal(9,"YlOrRd"))(100);
-plot(jitter($nvecreshaped_scaled),$secextrate,xlab='',ylab='',pch='.',cex=1.5,col=pal[$scaled_secextrate],axes=TRUE,las=1)
+plot(jitter($nvecreshaped_scaled),$secextrate,xlab='',ylab='',pch='.',cex=1.5,col=pal[$scaled_secextrate],axes=FALSE,las=1)
 points($nvec_scaled,$msecext,pch=18,col='black')
 lines($nvec_scaled,$msecext)
 # axis(side=2,at=seq(2,12,by=2),line=0,las=1)
 mtext(side=2,'2° extinction rate',line=2.5)
 # mtext(side=1,'Frequency of mutualisms',line=1.5)
 # axis(side=1,at=seq(0,2,by=0.5),line=-1,las=1)
+axis(1,labels=TRUE,las=1)
+axis(2,labels=TRUE,las=1)
 
 
 # par(list(new=TRUE, plt=c(.075, 1,0, .25)))
 pal=colorRampPalette(brewer.pal(9,"Greens"))(100);
-plot(jitter($nvecreshaped_scaled),$persistence,xlab='',ylab='',pch='.',cex=1.5,col=pal[$scaled_persistence],axes=TRUE,las=1)
+plot(jitter($nvecreshaped_scaled),$persistence,xlab='',ylab='',pch='.',cex=1.5,col=pal[$scaled_persistence],axes=FALSE,las=1,ylim=c(0.5,1))
 points($nvec_scaled,$mpersist,pch=15,col='black')
 lines($nvec_scaled,$mpersist)
 # axis(side=2,at=seq(0.5,1,by=0.2),line=0,las=1)
 mtext(side=2,'Persistence',line=2.5)
+axis(1,labels=TRUE,las=1)
+axis(2,labels=TRUE,las=1)
+
 
 # axis(side=1,at=seq(0,2,by=0.5),line=-1,las=1)
 # mtext(side=1,'Frequency of mutualisms',line=1.5)

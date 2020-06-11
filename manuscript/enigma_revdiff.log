@@ -1,0 +1,916 @@
+This is pdfTeX, Version 3.14159265-2.6-1.40.20 (TeX Live 2019/Debian) (preloaded format=pdflatex 2020.5.12)  3 JUN 2020 14:26
+entering extended mode
+ restricted \write18 enabled.
+ %&-line parsing enabled.
+**enigma_revdiff.tex
+(./enigma_revdiff.tex
+LaTeX2e <2020-02-02> patch level 2
+L3 programming layer <2020-02-14>
+(/usr/share/texlive/texmf-dist/tex/latex/revtex/revtex4-1.cls
+Document Class: revtex4-1 2010/07/25/20:33:00 4.1r (http://publish.aps.org/revt
+ex4/ for documentation)
+ Copyright (c) 2009 The American Physical Society.
+ mailto:revtex@aps.org
+ Licensed under the LPPL:
+http://www.ctan.org/tex-archive/macros/latex/base/lppl.txt
+ Arthur Ogawa <arthur_ogawa at sbcglobal dot net>
+ Based on work by David Carlisle <david at dcarlisle.demon.co.uk>.
+ltxutil[2010/07/25/20:33:00 4.1r utilities package (portions licensed from W. E
+. Baxter web at superscript.com)]
+LaTeX Info: Redefining \@centercr on input line 308.
+Class revtex4-1 Info: Repairing broken LaTeX eqnarray on input line 358.
+\eqncolsep=\skip47
+Class revtex4-1 Info: Repairing hyperref-unfriendly LaTeX definition of \mpfoot
+note on input line 433.
+Class revtex4-1 Info: Repairing broken LateX \@sect on input line 755.
+\intertabularlinepenalty=\count167
+\@tbpen=\count168
+\@arstrutbox@hline=\box45
+Class revtex4-1 Info: Repairing broken LaTeX \@xbitor on input line 1786.
+Class revtex4-1 Info: Making \typeout \long on input line 2046.
+ltxfront[2010/07/25/20:33:00 4.1r frontmatter package (AO,DPC)]
+\c@affil=\count169
+\c@collab=\count170
+\absbox=\box46
+ltxgrid[2010/07/25/20:33:00 4.1r page grid package (portions licensed from W. E
+. Baxter web at superscript.com)]
+\c@linecount=\count171
+\output@latex=\toks14
+\box@size@1=\box47
+\box@size@2=\box48
+\@protection@box=\box49
+\@topmark@saved=\toks15
+\footins@saved=\box50
+\footins@recovered=\box51
+\column@recovered=\box52
+\pagesofar=\box53
+\footsofar=\box54
+\pagegrid@col=\count172
+
+Class revtex4-1 Warning: Failed to recognize \@vspace, \@vspacer, \@no@pgbk, \@
+newline, and \\; no patches applied. Please get a more up-to-date class, .
+
+\c@part=\count173
+\c@section=\count174
+\c@subsection=\count175
+\c@subsubsection=\count176
+\c@paragraph=\count177
+\c@subparagraph=\count178
+\abovecaptionskip=\skip48
+\belowcaptionskip=\skip49
+\c@figure=\count179
+\fbox@1=\box55
+\c@table=\count180
+\fbox@2=\box56
+\c@video=\count181
+\fbox@4=\box57
+\@bibdataout=\write3
+\widetext@top=\box58
+\widetext@bot=\box59
+
+Class revtex4-1 Warning: No Society specified, using default society aps.
+
+(/usr/share/texlive/texmf-dist/tex/latex/revtex/aps4-1.rtx
+File: aps4-1 2010/07/25/20:33:00 4.1r (http://publish.aps.org/revtex4/ for docu
+mentation)
+Class revtex4-1 Info: RevTeX society APS selected on input line 31.
+)
+
+Class revtex4-1 Warning: No journal specified, using default pra.
+
+Class revtex4-1 Info: APS journal PRA selected on input line 7545.
+
+Class revtex4-1 Warning: No type size specified, using default 10.
+
+(/usr/share/texlive/texmf-dist/tex/latex/revtex/aps10pt4-1.rtx
+File: aps10pt4-1 2010/07/25/20:33:00 4.1r (http://publish.aps.org/revtex4/ for 
+documentation)
+Class revtex4-1 Info: RevTeX pointsize 10pt selected on input line 30.
+)
+(/usr/share/texlive/texmf-dist/tex/latex/textcase/textcase.sty
+Package: textcase 2019/09/14 v1.00 Text only upper/lower case changing (DPC)
+)
+(/usr/share/texlive/texmf-dist/tex/latex/amsfonts/amssymb.sty
+Package: amssymb 2013/01/14 v3.01 AMS font symbols
+
+(/usr/share/texlive/texmf-dist/tex/latex/amsfonts/amsfonts.sty
+Package: amsfonts 2013/01/14 v3.01 Basic AMSFonts support
+\@emptytoks=\toks16
+\symAMSa=\mathgroup4
+\symAMSb=\mathgroup5
+LaTeX Font Info:    Redeclaring math symbol \hbar on input line 98.
+LaTeX Font Info:    Overwriting math alphabet `\mathfrak' in version `bold'
+(Font)                  U/euf/m/n --> U/euf/b/n on input line 106.
+))
+(/usr/share/texlive/texmf-dist/tex/latex/amsmath/amsmath.sty
+Package: amsmath 2020/01/20 v2.17e AMS math features
+\@mathmargin=\skip50
+
+For additional information on amsmath, use the `?' option.
+(/usr/share/texlive/texmf-dist/tex/latex/amsmath/amstext.sty
+Package: amstext 2000/06/29 v2.01 AMS text
+
+(/usr/share/texlive/texmf-dist/tex/latex/amsmath/amsgen.sty
+File: amsgen.sty 1999/11/30 v2.0 generic functions
+\@emptytoks=\toks17
+\ex@=\dimen134
+)
+LaTeX Info: Redefining \text on input line 28.
+)
+(/usr/share/texlive/texmf-dist/tex/latex/amsmath/amsbsy.sty
+Package: amsbsy 1999/11/29 v1.2d Bold Symbols
+\pmbraise@=\dimen135
+)
+(/usr/share/texlive/texmf-dist/tex/latex/amsmath/amsopn.sty
+Package: amsopn 2016/03/08 v2.02 operator names
+)
+\inf@bad=\count182
+LaTeX Info: Redefining \frac on input line 227.
+\uproot@=\count183
+\leftroot@=\count184
+LaTeX Info: Redefining \overline on input line 389.
+\classnum@=\count185
+\DOTSCASE@=\count186
+LaTeX Info: Redefining \ldots on input line 486.
+LaTeX Info: Redefining \dots on input line 489.
+LaTeX Info: Redefining \cdots on input line 610.
+\Mathstrutbox@=\box60
+\strutbox@=\box61
+\big@size=\dimen136
+LaTeX Font Info:    Redeclaring font encoding OML on input line 733.
+LaTeX Font Info:    Redeclaring font encoding OMS on input line 734.
+\macc@depth=\count187
+\c@MaxMatrixCols=\count188
+\dotsspace@=\muskip16
+\c@parentequation=\count189
+\dspbrk@lvl=\count190
+\tag@help=\toks18
+\row@=\count191
+\column@=\count192
+\maxfields@=\count193
+\andhelp@=\toks19
+\eqnshift@=\dimen137
+\alignsep@=\dimen138
+\tagshift@=\dimen139
+\tagwidth@=\dimen140
+\totwidth@=\dimen141
+\lineht@=\dimen142
+\@envbody=\toks20
+\multlinegap=\skip51
+\multlinetaggap=\skip52
+\mathdisplay@stack=\toks21
+LaTeX Info: Redefining \[ on input line 2859.
+LaTeX Info: Redefining \] on input line 2860.
+)
+(/usr/share/texlive/texmf-dist/tex/latex/url/url.sty
+\Urlmuskip=\muskip17
+Package: url 2013/09/16  ver 3.4  Verb mode for urls, etc.
+)
+(/usr/share/texlive/texmf-dist/tex/latex/natbib/natbib.sty
+Package: natbib 2010/09/13 8.31b (PWD, AO)
+\bibhang=\skip53
+\bibsep=\skip54
+LaTeX Info: Redefining \cite on input line 694.
+\c@NAT@ctr=\count194
+)
+Class revtex4-1 Info: Repairing natbib's \BibitemShut on input line 7549.
+
+(/usr/share/texlive/texmf-dist/tex/latex/revtex/revsymb4-1.sty
+Package: revsymb4-1 2010/07/25/20:33:00 4.1r (http://publish.aps.org/revtex4/ f
+or documentation)
+LaTeX Info: Redefining \frak on input line 95.
+LaTeX Info: Redefining \Bbb on input line 111.
+LaTeX Info: Redefining \REV@mathfrak on input line 119.
+))
+(/usr/share/texlive/texmf-dist/tex/latex/graphics/color.sty
+Package: color 2019/11/23 v1.2a Standard LaTeX Color (DPC)
+
+(/usr/share/texlive/texmf-dist/tex/latex/graphics-cfg/color.cfg
+File: color.cfg 2016/01/02 v1.6 sample color configuration
+)
+Package color Info: Driver file: pdftex.def on input line 147.
+
+(/usr/share/texlive/texmf-dist/tex/latex/graphics-def/pdftex.def
+File: pdftex.def 2018/01/08 v1.0l Graphics/color driver for pdftex
+))
+(/usr/share/texlive/texmf-dist/tex/generic/babel/babel.sty
+Package: babel 2020/02/14 3.40 The Babel package
+
+(/usr/share/texlive/texmf-dist/tex/generic/babel/switch.def
+File: switch.def 2020/02/14 3.40 Babel switching mechanism
+)
+(/usr/share/texlive/texmf-dist/tex/generic/babel-english/english.ldf
+Language: english 2017/06/06 v3.3r English support from the babel system
+
+(/usr/share/texlive/texmf-dist/tex/generic/babel/babel.def
+File: babel.def 2020/02/14 3.40 Babel common definitions
+\babel@savecnt=\count195
+\U@D=\dimen143
+
+(/usr/share/texlive/texmf-dist/tex/generic/babel/txtbabel.def)
+\bbl@readstream=\read2
+\bbl@dirlevel=\count196
+)
+Package babel Info: \l@canadian = using hyphenrules for english
+(babel)             (\language0) on input line 102.
+Package babel Info: \l@australian = using hyphenrules for ukenglish
+(babel)             (\language5) on input line 105.
+Package babel Info: \l@newzealand = using hyphenrules for ukenglish
+(babel)             (\language5) on input line 108.
+))
+(/usr/share/texlive/texmf-dist/tex/latex/base/fontenc.sty
+Package: fontenc 2020/02/11 v2.0o Standard LaTeX package
+)
+(/usr/share/texlive/texmf-dist/tex/latex/float/float.sty
+Package: float 2001/11/08 v1.3d Float enhancements (AL)
+\c@float@type=\count197
+\float@exts=\toks22
+\float@box=\box62
+\@float@everytoks=\toks23
+\@floatcapt=\box63
+)
+(/usr/share/texlive/texmf-dist/tex/latex/tools/verbatim.sty
+Package: verbatim 2019/11/10 v1.5r LaTeX2e package for verbatim enhancements
+\every@verbatim=\toks24
+\verbatim@line=\toks25
+\verbatim@in@stream=\read3
+)
+(/usr/share/texlive/texmf-dist/tex/latex/graphics/graphicx.sty
+Package: graphicx 2019/11/30 v1.2a Enhanced LaTeX Graphics (DPC,SPQR)
+
+(/usr/share/texlive/texmf-dist/tex/latex/graphics/keyval.sty
+Package: keyval 2014/10/28 v1.15 key=value parser (DPC)
+\KV@toks@=\toks26
+)
+(/usr/share/texlive/texmf-dist/tex/latex/graphics/graphics.sty
+Package: graphics 2019/11/30 v1.4a Standard LaTeX Graphics (DPC,SPQR)
+
+(/usr/share/texlive/texmf-dist/tex/latex/graphics/trig.sty
+Package: trig 2016/01/03 v1.10 sin cos tan (DPC)
+)
+(/usr/share/texlive/texmf-dist/tex/latex/graphics-cfg/graphics.cfg
+File: graphics.cfg 2016/06/04 v1.11 sample graphics configuration
+)
+Package graphics Info: Driver file: pdftex.def on input line 105.
+)
+\Gin@req@height=\dimen144
+\Gin@req@width=\dimen145
+)
+(/usr/share/texlive/texmf-dist/tex/latex/tools/bm.sty
+Package: bm 2019/07/24 v1.2d Bold Symbol Support (DPC/FMi)
+\symboldoperators=\mathgroup6
+\symboldletters=\mathgroup7
+\symboldsymbols=\mathgroup8
+LaTeX Font Info:    Redeclaring math alphabet \mathbf on input line 141.
+LaTeX Info: Redefining \bm on input line 209.
+)
+(/usr/share/texlive/texmf-dist/tex/latex/mathtools/mathtools.sty
+Package: mathtools 2020/01/17 v1.23 mathematical typesetting tools
+
+(/usr/share/texlive/texmf-dist/tex/latex/tools/calc.sty
+Package: calc 2017/05/25 v4.3 Infix arithmetic (KKT,FJ)
+\calc@Acount=\count198
+\calc@Bcount=\count199
+\calc@Adimen=\dimen146
+\calc@Bdimen=\dimen147
+\calc@Askip=\skip55
+\calc@Bskip=\skip56
+LaTeX Info: Redefining \setlength on input line 80.
+LaTeX Info: Redefining \addtolength on input line 81.
+\calc@Ccount=\count266
+\calc@Cskip=\skip57
+)
+(/usr/share/texlive/texmf-dist/tex/latex/mathtools/mhsetup.sty
+Package: mhsetup 2017/03/31 v1.3 programming setup (MH)
+)
+LaTeX Info: Thecontrolsequence`\('isalreadyrobust on input line 129.
+LaTeX Info: Thecontrolsequence`\)'isalreadyrobust on input line 129.
+LaTeX Info: Thecontrolsequence`\['isalreadyrobust on input line 129.
+LaTeX Info: Thecontrolsequence`\]'isalreadyrobust on input line 129.
+\g_MT_multlinerow_int=\count267
+\l_MT_multwidth_dim=\dimen148
+\origjot=\skip58
+\l_MT_shortvdotswithinadjustabove_dim=\dimen149
+\l_MT_shortvdotswithinadjustbelow_dim=\dimen150
+\l_MT_above_intertext_sep=\dimen151
+\l_MT_below_intertext_sep=\dimen152
+\l_MT_above_shortintertext_sep=\dimen153
+\l_MT_below_shortintertext_sep=\dimen154
+)
+(/usr/share/texlive/texmf-dist/tex/latex/stmaryrd/stmaryrd.sty
+Package: stmaryrd 1994/03/03 St Mary's Road symbol package
+\symstmry=\mathgroup9
+LaTeX Font Info:    Overwriting symbol font `stmry' in version `bold'
+(Font)                  U/stmry/m/n --> U/stmry/b/n on input line 89.
+)
+(/usr/share/texlive/texmf-dist/tex/latex/anyfontsize/anyfontsize.sty
+Package: anyfontsize 2007/11/22 anyfontsize.sty by pts
+)
+(/usr/share/texlive/texmf-dist/tex/latex/changepage/changepage.sty
+Package: changepage 2009/10/20 v1.0c check page and change page layout
+\c@cp@cntr=\count268
+\cp@tempcnt=\count269
+)
+
+! LaTeX Error: Option clash for package natbib.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.45 \bibpunct
+              {}{}{,}{s}{}{;}
+? 
+(/usr/share/texlive/texmf-dist/tex/generic/ulem/ulem.sty
+\UL@box=\box64
+\UL@hyphenbox=\box65
+\UL@skip=\skip59
+\UL@hook=\toks27
+\UL@height=\dimen155
+\UL@pe=\count270
+\UL@pixel=\dimen156
+\ULC@box=\box66
+Package: ulem 2019/11/18
+\ULdepth=\dimen157
+)
+(/usr/share/texlive/texmf-dist/tex/latex/oberdiek/settobox.sty
+Package: settobox 2016/05/16 v1.5 Assign box dimensions to length registers (HO
+)
+)
+(/usr/share/texlive/texmf-dist/tex/latex/letltxmacro/letltxmacro.sty
+Package: letltxmacro 2019/12/03 v1.6 Let assignment for LaTeX macros (HO)
+)
+\DIFdelgraphicsbox=\box67
+\DIFdelgraphicswidth=\skip60
+\DIFdelgraphicsheight=\skip61
+LaTeX Info: Redefining \DIFaddbegin on input line 148.
+LaTeX Info: Redefining \DIFaddend on input line 149.
+LaTeX Info: Redefining \DIFdelbegin on input line 150.
+LaTeX Info: Redefining \DIFdelend on input line 151.
+LaTeX Info: Redefining \DIFaddbeginFL on input line 156.
+LaTeX Info: Redefining \DIFaddendFL on input line 157.
+LaTeX Info: Redefining \DIFdelbeginFL on input line 158.
+LaTeX Info: Redefining \DIFdelendFL on input line 159.
+
+(/usr/share/texlive/texmf-dist/tex/latex/listings/listings.sty
+\lst@mode=\count271
+\lst@gtempboxa=\box68
+\lst@token=\toks28
+\lst@length=\count272
+\lst@currlwidth=\dimen158
+\lst@column=\count273
+\lst@pos=\count274
+\lst@lostspace=\dimen159
+\lst@width=\dimen160
+\lst@newlines=\count275
+\lst@lineno=\count276
+\lst@maxwidth=\dimen161
+
+(/usr/share/texlive/texmf-dist/tex/latex/listings/lstmisc.sty
+File: lstmisc.sty 2019/09/10 1.8c (Carsten Heinz)
+\c@lstnumber=\count277
+\lst@skipnumbers=\count278
+\lst@framebox=\box69
+)
+(/usr/share/texlive/texmf-dist/tex/latex/listings/listings.cfg
+File: listings.cfg 2019/09/10 1.8c listings configuration
+))
+Package: listings 2019/09/10 1.8c (Carsten Heinz)
+Class revtex4-1 Info: Unrecognized LaTeX tabular. Please update this document c
+lass! (Proceeding with fingers crossed.) on input line 178.
+
+
+Class revtex4-1 Warning: Repair the float package.
+
+Class revtex4-1 Info: cite was not loaded (OK!) on input line 178.
+Class revtex4-1 Info: mcite was not loaded (OK!) on input line 178.
+Class revtex4-1 Info: multicol was not loaded (OK!) on input line 178.
+(/usr/share/texlive/texmf-dist/tex/latex/l3backend/l3backend-pdfmode.def
+File: l3backend-pdfmode.def 2020-02-03 L3 backend support: PDF mode
+\l__kernel_color_stack_int=\count279
+\l__pdf_internal_box=\box70
+)
+(./enigma_revdiff.aux)
+\openout1 = `enigma_revdiff.aux'.
+
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 178.
+LaTeX Font Info:    ... okay on input line 178.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 178.
+LaTeX Font Info:    ... okay on input line 178.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 178.
+LaTeX Font Info:    ... okay on input line 178.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 178.
+LaTeX Font Info:    ... okay on input line 178.
+LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 178.
+LaTeX Font Info:    ... okay on input line 178.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 178.
+LaTeX Font Info:    ... okay on input line 178.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 178.
+LaTeX Font Info:    ... okay on input line 178.
+
+(/usr/share/texlive/texmf-dist/tex/context/base/mkii/supp-pdf.mkii
+[Loading MPS to PDF converter (version 2006.09.02).]
+\scratchcounter=\count280
+\scratchdimen=\dimen162
+\scratchbox=\box71
+\nofMPsegments=\count281
+\nofMParguments=\count282
+\everyMPshowfont=\toks29
+\MPscratchCnt=\count283
+\MPscratchDim=\dimen163
+\MPnumerator=\count284
+\makeMPintoPDFobject=\count285
+\everyMPtoPDFconversion=\toks30
+) (/usr/share/texlive/texmf-dist/tex/latex/epstopdf-pkg/epstopdf-base.sty
+Package: epstopdf-base 2020-01-24 v2.11 Base part for package epstopdf
+Package epstopdf-base Info: Redefining graphics rule for `.eps' on input line 4
+85.
+
+(/usr/share/texlive/texmf-dist/tex/latex/latexconfig/epstopdf-sys.cfg
+File: epstopdf-sys.cfg 2010/07/13 v1.3 Configuration of (r)epstopdf for TeX Liv
+e
+))
+\c@lstlisting=\count286
+\openout3 = `enigma_revdiffNotes.bib'.
+
+
+(/usr/share/texlive/texmf-dist/tex/latex/lineno/lineno.sty
+Package: lineno 2005/11/02 line numbers on paragraphs v4.41
+\linenopenalty=\count287
+\output=\toks31
+\linenoprevgraf=\count288
+\linenumbersep=\dimen164
+\linenumberwidth=\dimen165
+\c@linenumber=\count289
+\c@pagewiselinenumber=\count290
+\c@LN@truepage=\count291
+\c@internallinenumber=\count292
+\c@internallinenumbers=\count293
+\quotelinenumbersep=\dimen166
+\bframerule=\dimen167
+\bframesep=\dimen168
+\bframebox=\box72
+LaTeX Info: Redefining \\ on input line 3056.
+)
+LaTeX Font Info:    Trying to load font information for T1+cmss on input line 2
+27.
+
+(/usr/share/texlive/texmf-dist/tex/latex/base/t1cmss.fd
+File: t1cmss.fd 2019/12/16 v2.5j Standard LaTeX font definitions
+)
+LaTeX Font Info:    Trying to load font information for U+msa on input line 227
+.
+
+(/usr/share/texlive/texmf-dist/tex/latex/amsfonts/umsa.fd
+File: umsa.fd 2013/01/14 v3.01 AMS symbols A
+)
+LaTeX Font Info:    Trying to load font information for U+msb on input line 227
+.
+
+(/usr/share/texlive/texmf-dist/tex/latex/amsfonts/umsb.fd
+File: umsb.fd 2013/01/14 v3.01 AMS symbols B
+)
+LaTeX Font Info:    Trying to load font information for U+stmry on input line 2
+27.
+
+(/usr/share/texlive/texmf-dist/tex/latex/stmaryrd/Ustmry.fd) [1{/var/lib/texmf/
+fonts/map/pdftex/updmap/pdftex.map}]
+Underfull \hbox (badness 1112) in paragraph at lines 356--369
+\T1/cmr/m/n/10 mul-ti-type in-ter-ac-tions and ecosys-tem en-gi-neer-ing in
+ []
+
+
+Underfull \hbox (badness 1097) in paragraph at lines 356--369
+\T1/cmr/m/n/10 a com-mon fea-ture of di-verse mu-tu-al-is-tic systems$[]$,
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 356--369
+
+ []
+
+[2]
+
+pdfTeX warning: pdflatex (file ./fig_model2.pdf): PDF inclusion: found PDF vers
+ion <1.7>, but at most version <1.5> allowed
+<fig_model2.pdf, id=19, 360.6273pt x 331.92607pt>
+File: fig_model2.pdf Graphic file (type pdf)
+<use fig_model2.pdf>
+Package pdftex.def Info: fig_model2.pdf  used on input line 428.
+(pdftex.def)             Requested size: 244.79782pt x 225.31169pt.
+
+LaTeX Warning: `!h' float specifier changed to `!ht'.
+
+
+LaTeX Warning: Reference `fig:conn' on page 3 undefined on input line 448.
+
+
+Underfull \hbox (badness 5403) in paragraph at lines 477--490
+\T1/cmr/m/n/10 spe-cial-ists col-o-nize af-ter a di-verse re-source base
+ []
+
+
+Underfull \hbox (badness 3386) in paragraph at lines 477--490
+\T1/cmr/m/n/10 has accumulated$[]$. Here the trophic gen-er-al-
+ []
+
+[3 <./fig_model2.pdf>]
+Underfull \hbox (badness 1960) in paragraph at lines 504--510
+[]\T1/cmr/m/n/10 The dom-i-nance of func-tional spe-cial-ists []|   []   |   []
+
+ []
+
+
+Underfull \hbox (badness 1163) in paragraph at lines 504--510
+|   []   |   []   |   []   [][]|   []   |   []   |   []   |   []
+ []
+
+
+Underfull \hbox (badness 1210) in paragraph at lines 504--510
+|   []   |   []   |   []   []\T1/cmr/m/n/10 due to the []|   []   |   []   |   
+[]
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 511--515
+
+ []
+
+<fig_trophic3.pdf, id=89, 433.62pt x 361.35pt>
+File: fig_trophic3.pdf Graphic file (type pdf)
+<use fig_trophic3.pdf>
+Package pdftex.def Info: fig_trophic3.pdf  used on input line 548.
+(pdftex.def)             Requested size: 255.0pt x 212.49992pt.
+
+Overfull \hbox (9.0pt too wide) in paragraph at lines 548--550
+ [][] 
+ []
+
+
+LaTeX Warning: `!h' float specifier changed to `!ht'.
+
+
+LaTeX Warning: Reference `fig:nestsize' on page 4 undefined on input line 576.
+
+[4 <./fig_trophic3.pdf>]
+
+LaTeX Warning: Reference `fig:degree' on page 5 undefined on input line 642.
+
+
+
+pdfTeX warning: pdflatex (file ./fig_nested5_ed.pdf): PDF inclusion: found PDF 
+version <1.7>, but at most version <1.5> allowed
+<fig_nested5_ed.pdf, id=109, 433.62pt x 361.35pt>
+File: fig_nested5_ed.pdf Graphic file (type pdf)
+<use fig_nested5_ed.pdf>
+Package pdftex.def Info: fig_nested5_ed.pdf  used on input line 667.
+(pdftex.def)             Requested size: 255.0pt x 212.49992pt.
+
+Overfull \hbox (15.79999pt too wide) in paragraph at lines 667--669
+ [][][] 
+ []
+
+
+LaTeX Warning: `!h' float specifier changed to `!ht'.
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 686--694
+
+ []
+
+[5 <./fig_nested5_ed.pdf>]
+
+LaTeX Warning: Reference `fig:trophiceng' on page 6 undefined on input line 736
+.
+
+
+LaTeX Warning: Reference `fig:indeng' on page 6 undefined on input line 755.
+
+<fig_engineers6.pdf, id=137, 578.16pt x 433.62pt>
+File: fig_engineers6.pdf Graphic file (type pdf)
+<use fig_engineers6.pdf>
+Package pdftex.def Info: fig_engineers6.pdf  used on input line 791.
+(pdftex.def)             Requested size: 255.0pt x 191.24992pt.
+
+Overfull \hbox (15.79999pt too wide) in paragraph at lines 791--793
+ [][][] 
+ []
+
+[6 <./fig_engineers6.pdf>]
+
+LaTeX Warning: Reference `fig:redundancy' on page 7 undefined on input line 826
+.
+
+
+LaTeX Warning: Reference `fig:unique' on page 7 undefined on input line 829.
+
+
+LaTeX Warning: Reference `fig:steadystate' on page 7 undefined on input line 83
+1.
+
+
+LaTeX Warning: Reference `fig:steadystate' on page 7 undefined on input line 83
+2.
+
+
+LaTeX Warning: Reference `fig:steadystate' on page 7 undefined on input line 83
+5.
+
+
+Underfull \hbox (badness 2970) in paragraph at lines 835--842
+[]\T1/cmr/m/n/10 Communities lack-ing re-dun-dant en-gi-neer-ing have
+ []
+
+
+Underfull \hbox (badness 1668) in paragraph at lines 835--842
+\T1/cmr/m/n/10 lower species rich-ness be-cause species' trophic and
+ []
+
+
+Underfull \hbox (badness 1668) in paragraph at lines 835--842
+\T1/cmr/m/n/10 Col-o-niza-tion oc-curs only when trophic and ser-vice
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 835--842
+
+ []
+
+
+Underfull \hbox (badness 3769) in paragraph at lines 843--852
+\T1/cmr/m/n/10 can pro-duce com-mu-ni-ties with re-al-is-tic struc-tures
+ []
+
+
+Underfull \hbox (badness 1122) in paragraph at lines 843--852
+\T1/cmr/m/n/10 As past ecosys-tems have fun-da-men-tally al-tered the
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 843--852
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 860--869
+
+ []
+
+[7]
+Underfull \hbox (badness 10000) in paragraph at lines 983--991
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 983--991
+
+ []
+
+[8]
+Runaway argument?
+{\DIFdelbegin \DIFdel {, }\DIFdel {(}\DIFdel {). }
+! Paragraph ended before \text@command was complete.
+<to be read again> 
+                   \par 
+l.1271 ...lend \DIFaddbegin \bibinfo{volume}{164}}
+                                                  \DIFadd{,
+? 
+! Extra }, or forgotten \endgroup.
+<recently read> \egroup 
+                        
+l.1271 ...lend \DIFaddbegin \bibinfo{volume}{164}}
+                                                  \DIFadd{,
+? 
+
+Underfull \hbox (badness 1354) in paragraph at lines 1380--1387
+ \T1/cmr/bx/it/9 Proc. Natl. Acad. Sci. USA \T1/cmr/bx/n/9 110, 1791--1796
+ []
+
+[9]
+Underfull \hbox (badness 4001) in paragraph at lines 1639--1647
+ []\T1/cmr/bx/n/9 Díaz-Castelazo, C., Sánchez-Galván, I. R.,
+ []
+
+
+Underfull \hbox (badness 1221) in paragraph at lines 1662--1668
+ []\T1/cmr/bx/n/9 Ponisio, L. C., Ga-iarsa, M. P. & Kre-men,
+ []
+
+
+Underfull \hbox (badness 2173) in paragraph at lines 1785--1792
+ |   [][]\T1/cmr/bx/n/9 Princeton Uni-ver-sity Press[]|   []   []Prince-ton, NJ
+[]|   []
+ []
+
+[10]
+No file enigma_revdiff.bbl.
+
+Underfull \hbox (badness 1028) in paragraph at lines 1836--1860
+\T1/cmr/m/n/8 and CNPq (302049/2015-0) to MAMA, CNPq and FAPESP
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 1836--1860
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 1836--1860
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 1861--1869
+
+ []
+
+[11]
+Underfull \hbox (badness 1122) in paragraph at lines 1935--1935
+[]|   []   |   []   |   []   |   []   |   []   |   []   |   []   |   []   |   [
+]   |   []
+ []
+
+
+Underfull \hbox (badness 1142) in paragraph at lines 1935--1935
+|   []   |   []   |   []   |   []   |   []   |   []   |   []   |   []
+ []
+
+
+Underfull \hbox (badness 4739) in paragraph at lines 1937--1945
+[]|   []   |   []   |   []   |   []   |   []   |   []   |   []   |   []   |   [
+]
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 1937--1945
+|   []   |   []   |   []   |   []   |   []   |   []
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 1937--1945
+|   []   |   []   |   []
+ []
+
+
+Underfull \hbox (badness 1173) in paragraph at lines 1937--1945
+|   []   |   []   |   []   |   []   |   []   |   []
+ []
+
+
+Underfull \hbox (badness 1400) in paragraph at lines 1951--1951
+[]|   []   |   []   |   []   |   []   |   []   |   []   |   []
+ []
+
+
+LaTeX Warning: Reference `fig:redundancy' on page 12 undefined on input line 19
+62.
+
+
+Underfull \hbox (badness 1205) in paragraph at lines 1991--1992
+|   []   |   []   |   []   |   []   |   []
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 1997--1998
+[]|   []   |   []   |   []   |   []   |   []   |   []   |   []   |   []
+ []
+
+
+Underfull \hbox (badness 5022) in paragraph at lines 1997--1998
+|   []   |   []   |   []   |   []   |   []   |   []
+ []
+
+
+Underfull \hbox (badness 2503) in paragraph at lines 2005--2008
+|   []   |   []   |   []   |   []   |   []   |   []   |   []   |   []
+ []
+
+[12]
+
+Package natbib Warning: Citation `Williams2011' on page 13 undefined on input l
+ine 2027.
+
+
+LaTeX Warning: Reference `fig:error1' on page 13 undefined on input line 2060.
+
+
+LaTeX Warning: Reference `fig:error2' on page 13 undefined on input line 2060.
+
+
+Package natbib Warning: Citation `Warren2010' on page 13 undefined on input lin
+e 2060.
+
+
+Underfull \hbox (badness 1253) in paragraph at lines 2060--2061
+|   []   |   []   |   []   |   []   |   []   |   []   |   []   |   []   |   []
+ []
+
+
+LaTeX Warning: Reference `fig:trophiceng' on page 13 undefined on input line 20
+69.
+
+
+Underfull \hbox (badness 1577) in paragraph at lines 2069--2070
+[]|   []   |   []   |   []   |   []   |   []   |   []   |   []   |   []   |   [
+]
+ []
+
+
+LaTeX Warning: Reference `fig:trophiceng' on page 13 undefined on input line 20
+88.
+
+
+LaTeX Warning: Reference `fig:trophiceng' on page 13 undefined on input line 20
+88.
+
+
+LaTeX Warning: Reference `fig:trophiceng' on page 13 undefined on input line 20
+94.
+
+
+Underfull \hbox (badness 1237) in paragraph at lines 2206--2211
+[]|   []   |   []   |   []   |   []   |   []   |   []   |   []   |   []
+ []
+
+
+Underfull \hbox (badness 1270) in paragraph at lines 2295--2300
+|   []   |   []   |   []   |   []   |   []   |   []   |   []   |   []
+ []
+
+[13]
+
+LaTeX Warning: Reference `eq:redundant' on page 14 undefined on input line 2377
+.
+
+
+LaTeX Warning: Reference `eq:redundantprop' on page 14 undefined on input line 
+2380.
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 2415--2429
+[][]|   [][][]|   []   |   []   |   []   |   []   |   []   |   []   |   []
+ []
+
+
+Underfull \hbox (badness 2165) in paragraph at lines 2415--2429
+|   []   [][]|   [][][]|   []   |   []   |   []   |   []   |   []   |   []   | 
+  []   |   []
+ []
+
+
+Underfull \hbox (badness 2020) in paragraph at lines 2415--2429
+|   []   |   []   |   []   |   []   |   []   |   []   |   []   |   []   |   []
+ []
+
+
+Package natbib Warning: There were undefined citations.
+
+[14] (./enigma_revdiff.aux)
+
+LaTeX Warning: There were undefined references.
+
+ ) 
+Here is how much of TeX's memory you used:
+ 8265 strings out of 481239
+ 113554 string characters out of 5920377
+ 631680 words of memory out of 5000000
+ 23374 multiletter control sequences out of 15000+600000
+ 558314 words of font info for 92 fonts, out of 8000000 for 9000
+ 1141 hyphenation exceptions out of 8191
+ 38i,7n,36p,2161b,688s stack positions out of 5000i,500n,10000p,200000b,80000s
+{/usr/share/texmf/fonts/enc/dvips/cm-super/cm-super-t1.enc}</usr/share/texliv
+e/texmf-dist/fonts/type1/public/amsfonts/cmextra/cmex8.pfb></usr/share/texlive/
+texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/share/texlive/texmf-
+dist/fonts/type1/public/amsfonts/cm/cmmi6.pfb></usr/share/texlive/texmf-dist/fo
+nts/type1/public/amsfonts/cm/cmmi7.pfb></usr/share/texlive/texmf-dist/fonts/typ
+e1/public/amsfonts/cm/cmmi8.pfb></usr/share/texlive/texmf-dist/fonts/type1/publ
+ic/amsfonts/cm/cmmi9.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsf
+onts/cm/cmr10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm
+/cmr6.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr7.pf
+b></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr8.pfb></usr/
+share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr9.pfb></usr/share/te
+xlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/share/texlive/
+texmf-dist/fonts/type1/public/amsfonts/cm/cmsy6.pfb></usr/share/texlive/texmf-d
+ist/fonts/type1/public/amsfonts/cm/cmsy7.pfb></usr/share/texlive/texmf-dist/fon
+ts/type1/public/amsfonts/cm/cmsy8.pfb></usr/share/texlive/texmf-dist/fonts/type
+1/public/amsfonts/cm/cmsy9.pfb></usr/share/texlive/texmf-dist/fonts/type1/publi
+c/amsfonts/latxfont/lasy6.pfb></usr/share/texlive/texmf-dist/fonts/type1/public
+/amsfonts/symbols/msbm7.pfb></usr/share/texmf/fonts/type1/public/cm-super/sfbi0
+900.pfb></usr/share/texmf/fonts/type1/public/cm-super/sfbx0600.pfb></usr/share/
+texmf/fonts/type1/public/cm-super/sfbx0800.pfb></usr/share/texmf/fonts/type1/pu
+blic/cm-super/sfbx0900.pfb></usr/share/texmf/fonts/type1/public/cm-super/sfbx10
+00.pfb></usr/share/texmf/fonts/type1/public/cm-super/sfbx1200.pfb></usr/share/t
+exmf/fonts/type1/public/cm-super/sfrm0600.pfb></usr/share/texmf/fonts/type1/pub
+lic/cm-super/sfrm0700.pfb></usr/share/texmf/fonts/type1/public/cm-super/sfrm080
+0.pfb></usr/share/texmf/fonts/type1/public/cm-super/sfrm0900.pfb></usr/share/te
+xmf/fonts/type1/public/cm-super/sfrm1000.pfb></usr/share/texmf/fonts/type1/publ
+ic/cm-super/sfss0500.pfb></usr/share/texmf/fonts/type1/public/cm-super/sfti0800
+.pfb></usr/share/texmf/fonts/type1/public/cm-super/sfti0900.pfb></usr/share/tex
+mf/fonts/type1/public/cm-super/sfti1000.pfb>
+Output written on enigma_revdiff.pdf (14 pages, 9534228 bytes).
+PDF statistics:
+ 290 PDF objects out of 1000 (max. 8388607)
+ 213 compressed objects within 3 object streams
+ 0 named destinations out of 1000 (max. 500000)
+ 21 words of extra memory for PDF output out of 10000 (max. 10000000)
+

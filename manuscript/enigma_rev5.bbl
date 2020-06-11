@@ -587,12 +587,6 @@
   \textbf{\bibinfo{volume}{111}}, \bibinfo{pages}{1285--1293}
   (\bibinfo{year}{2013}).
 
-\bibitem{Cantor2017}
-\bibinfo{author}{Cantor, M.} \emph{et~al.}
-\newblock \bibinfo{title}{Nestedness across biological scales}.
-\newblock \emph{\bibinfo{journal}{PloS one}} \textbf{\bibinfo{volume}{12}}
-  (\bibinfo{year}{2017}).
-
 \bibitem{Vieira2015}
 \bibinfo{author}{Vieira, M.~C.} \& \bibinfo{author}{Almeida~Neto, M.}
 \newblock \bibinfo{title}{{A simple stochastic model for complex coextinctions
@@ -761,5 +755,11 @@
 \newblock \emph{\bibinfo{journal}{J. Phys. Chem.}}
   \textbf{\bibinfo{volume}{81}}, \bibinfo{pages}{2340--2361}
   (\bibinfo{year}{1977}).
+
+\bibitem{Cantor2017}
+\bibinfo{author}{Cantor, M.} \emph{et~al.}
+\newblock \bibinfo{title}{Nestedness across biological scales}.
+\newblock \emph{\bibinfo{journal}{PloS one}} \textbf{\bibinfo{volume}{12}}
+  (\bibinfo{year}{2017}).
 
 \end{thebibliography}

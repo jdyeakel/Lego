@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.20 (TeX Live 2019/Debian) (preloaded format=pdflatex 2020.5.12)  1 JUN 2020 17:09
+This is pdfTeX, Version 3.14159265-2.6-1.40.20 (TeX Live 2019/Debian) (preloaded format=pdflatex 2020.5.12)  10 JUN 2020 15:21
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -318,41 +318,338 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.34 \bibpunct
+l.29 \bibpunct
               {}{}{,}{s}{}{;}
 ? 
 Class revtex4-1 Info: Unrecognized LaTeX tabular. Please update this document c
-lass! (Proceeding with fingers crossed.) on input line 86.
+lass! (Proceeding with fingers crossed.) on input line 81.
 
 Class revtex4-1 Warning: Repair the float package.
 
-Class revtex4-1 Info: cite was not loaded (OK!) on input line 86.
-Class revtex4-1 Info: mcite was not loaded (OK!) on input line 86.
-Class revtex4-1 Info: multicol was not loaded (OK!) on input line 86.
+Class revtex4-1 Info: cite was not loaded (OK!) on input line 81.
+Class revtex4-1 Info: mcite was not loaded (OK!) on input line 81.
+Class revtex4-1 Info: multicol was not loaded (OK!) on input line 81.
 (/usr/share/texlive/texmf-dist/tex/latex/l3backend/l3backend-pdfmode.def
 File: l3backend-pdfmode.def 2020-02-03 L3 backend support: PDF mode
 \l__kernel_color_stack_int=\count270
 \l__pdf_internal_box=\box64
 )
-(./enigma_rev5.aux)
+(./enigma_rev5.aux
+
+Package natbib Warning: Citation `Paine1966' multiply defined.
+
+
+Package natbib Warning: Citation `Dunne2002' multiply defined.
+
+
+Package natbib Warning: Citation `Pascual2006' multiply defined.
+
+
+Package natbib Warning: Citation `Bascompte2013' multiply defined.
+
+
+Package natbib Warning: Citation `May1972' multiply defined.
+
+
+Package natbib Warning: Citation `Gross2009' multiply defined.
+
+
+Package natbib Warning: Citation `Allesina2012' multiply defined.
+
+
+Package natbib Warning: Citation `Montoya2003' multiply defined.
+
+
+Package natbib Warning: Citation `Bascompte2009' multiply defined.
+
+
+Package natbib Warning: Citation `Hubbell2001' multiply defined.
+
+
+Package natbib Warning: Citation `Tilman2004' multiply defined.
+
+
+Package natbib Warning: Citation `Fukami2015' multiply defined.
+
+
+Package natbib Warning: Citation `Kraft2008' multiply defined.
+
+
+Package natbib Warning: Citation `ODwyer2009' multiply defined.
+
+
+Package natbib Warning: Citation `Brown2002' multiply defined.
+
+
+Package natbib Warning: Citation `Piechnik2008' multiply defined.
+
+
+Package natbib Warning: Citation `Fahimipour2014' multiply defined.
+
+
+Package natbib Warning: Citation `Barbier2018' multiply defined.
+
+
+Package natbib Warning: Citation `Campbell2011' multiply defined.
+
+
+Package natbib Warning: Citation `Luh1993' multiply defined.
+
+
+Package natbib Warning: Citation `Law1996' multiply defined.
+
+
+Package natbib Warning: Citation `Valdovinos2010' multiply defined.
+
+
+Package natbib Warning: Citation `RamosJiliberto2012' multiply defined.
+
+
+Package natbib Warning: Citation `Valdovinos2016' multiply defined.
+
+
+Package natbib Warning: Citation `Ponisio2019' multiply defined.
+
+
+Package natbib Warning: Citation `Kefi2016' multiply defined.
+
+
+Package natbib Warning: Citation `Pilosof2017' multiply defined.
+
+
+Package natbib Warning: Citation `Odum1969' multiply defined.
+
+
+Package natbib Warning: Citation `Jones1994' multiply defined.
+
+
+Package natbib Warning: Citation `Olff2009' multiply defined.
+
+
+Package natbib Warning: Citation `OdlingSmee2013' multiply defined.
+
+
+Package natbib Warning: Citation `Leuthold1996' multiply defined.
+
+
+Package natbib Warning: Citation `Haynes2012' multiply defined.
+
+
+Package natbib Warning: Citation `Pringle2008' multiply defined.
+
+
+Package natbib Warning: Citation `Reichman2002' multiply defined.
+
+
+Package natbib Warning: Citation `Hagenah2013' multiply defined.
+
+
+Package natbib Warning: Citation `Moore2006' multiply defined.
+
+
+Package natbib Warning: Citation `Meyer2011' multiply defined.
+
+
+Package natbib Warning: Citation `Hastings2007' multiply defined.
+
+
+Package natbib Warning: Citation `Wright2006b' multiply defined.
+
+
+Package natbib Warning: Citation `Jones2012' multiply defined.
+
+
+Package natbib Warning: Citation `Erwin2008' multiply defined.
+
+
+Package natbib Warning: Citation `Schirrmeister2013' multiply defined.
+
+
+Package natbib Warning: Citation `Loladze2011' multiply defined.
+
+
+Package natbib Warning: Citation `Woodward2010' multiply defined.
+
+
+Package natbib Warning: Citation `Brose2012' multiply defined.
+
+
+Package natbib Warning: Citation `Gibert2019b' multiply defined.
+
+
+Package natbib Warning: Citation `Getz2011' multiply defined.
+
+
+Package natbib Warning: Citation `Pillai2011' multiply defined.
+
+
+Package natbib Warning: Citation `Bascompte2003' multiply defined.
+
+
+Package natbib Warning: Citation `Gravel2011' multiply defined.
+
+
+Package natbib Warning: Citation `Bronstein1994' multiply defined.
+
+
+Package natbib Warning: Citation `Macarthur1964' multiply defined.
+
+
+Package natbib Warning: Citation `Dykhuizen1980' multiply defined.
+
+
+Package natbib Warning: Citation `Futuyma1988' multiply defined.
+
+
+Package natbib Warning: Citation `Costa2015' multiply defined.
+
+
+Package natbib Warning: Citation `Brown1994' multiply defined.
+
+
+Package natbib Warning: Citation `Williams2000' multiply defined.
+
+
+Package natbib Warning: Citation `Williams2002' multiply defined.
+
+
+Package natbib Warning: Citation `Lafferty2006' multiply defined.
+
+
+Package natbib Warning: Citation `Turney2016' multiply defined.
+
+
+Package natbib Warning: Citation `Bascompte2006' multiply defined.
+
+
+Package natbib Warning: Citation `Guimaraes2006' multiply defined.
+
+
+Package natbib Warning: Citation `Araujo2010' multiply defined.
+
+
+Package natbib Warning: Citation `Rohr2014' multiply defined.
+
+
+Package natbib Warning: Citation `Valdovinos2019' multiply defined.
+
+
+Package natbib Warning: Citation `Krishna2008' multiply defined.
+
+
+Package natbib Warning: Citation `Guimaraes2017' multiply defined.
+
+
+Package natbib Warning: Citation `Stouffer2011' multiply defined.
+
+
+Package natbib Warning: Citation `Gilarranz2017' multiply defined.
+
+
+Package natbib Warning: Citation `Pires2011' multiply defined.
+
+
+Package natbib Warning: Citation `Massol2011' multiply defined.
+
+
+Package natbib Warning: Citation `Yeakel2013' multiply defined.
+
+
+Package natbib Warning: Citation `Bond1994' multiply defined.
+
+
+Package natbib Warning: Citation `Colwell2012' multiply defined.
+
+
+Package natbib Warning: Citation `DiazCastelazo2013' multiply defined.
+
+
+Package natbib Warning: Citation `Vieira2015' multiply defined.
+
+
+Package natbib Warning: Citation `Ponisio2017' multiply defined.
+
+
+Package natbib Warning: Citation `Laland2015' multiply defined.
+
+
+Package natbib Warning: Citation `Gupta2017' multiply defined.
+
+
+Package natbib Warning: Citation `Feldman2017' multiply defined.
+
+
+Package natbib Warning: Citation `Cuddington2004' multiply defined.
+
+
+Package natbib Warning: Citation `Wright2004' multiply defined.
+
+
+Package natbib Warning: Citation `Kylafis2008' multiply defined.
+
+
+Package natbib Warning: Citation `Krakauer2009' multiply defined.
+
+
+Package natbib Warning: Citation `Laland1999' multiply defined.
+
+
+Package natbib Warning: Citation `Kallus2017' multiply defined.
+
+
+Package natbib Warning: Citation `Butler2018' multiply defined.
+
+
+Package natbib Warning: Citation `Amundson2015' multiply defined.
+
+
+Package natbib Warning: Citation `Gutierrez2006' multiply defined.
+
+
+Package natbib Warning: Citation `Jouquet2006' multiply defined.
+
+
+Package natbib Warning: Citation `Shipway2019' multiply defined.
+
+
+Package natbib Warning: Citation `Lawton1994' multiply defined.
+
+
+Package natbib Warning: Citation `OdlingSmee2013b' multiply defined.
+
+
+Package natbib Warning: Citation `Kidwell1986' multiply defined.
+
+
+Package natbib Warning: Citation `Polz2013' multiply defined.
+
+
+Package natbib Warning: Citation `Corlett2015' multiply defined.
+
+
+Package natbib Warning: Citation `Gillespie1977' multiply defined.
+
+
+Package natbib Warning: Citation `Cantor2017' multiply defined.
+
+)
 \openout1 = `enigma_rev5.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 86.
-LaTeX Font Info:    ... okay on input line 86.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 86.
-LaTeX Font Info:    ... okay on input line 86.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 86.
-LaTeX Font Info:    ... okay on input line 86.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 86.
-LaTeX Font Info:    ... okay on input line 86.
-LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 86.
-LaTeX Font Info:    ... okay on input line 86.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 86.
-LaTeX Font Info:    ... okay on input line 86.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 86.
-LaTeX Font Info:    ... okay on input line 86.
-
-(/usr/share/texlive/texmf-dist/tex/context/base/mkii/supp-pdf.mkii
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 81.
+LaTeX Font Info:    ... okay on input line 81.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 81.
+LaTeX Font Info:    ... okay on input line 81.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 81.
+LaTeX Font Info:    ... okay on input line 81.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 81.
+LaTeX Font Info:    ... okay on input line 81.
+LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 81.
+LaTeX Font Info:    ... okay on input line 81.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 81.
+LaTeX Font Info:    ... okay on input line 81.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 81.
+LaTeX Font Info:    ... okay on input line 81.
+ (/usr/share/texlive/texmf-dist/tex/context/base/mkii/supp-pdf.mkii
 [Loading MPS to PDF converter (version 2006.09.02).]
 \scratchcounter=\count271
 \scratchdimen=\dimen155
@@ -396,265 +693,188 @@ Package: lineno 2005/11/02 line numbers on paragraphs v4.41
 LaTeX Info: Redefining \\ on input line 3056.
 )
 LaTeX Font Info:    Trying to load font information for T1+cmss on input line 1
-15.
+10.
 
 (/usr/share/texlive/texmf-dist/tex/latex/base/t1cmss.fd
 File: t1cmss.fd 2019/12/16 v2.5j Standard LaTeX font definitions
 )
-LaTeX Font Info:    Trying to load font information for U+msa on input line 115
+LaTeX Font Info:    Trying to load font information for U+msa on input line 110
 .
 
 (/usr/share/texlive/texmf-dist/tex/latex/amsfonts/umsa.fd
 File: umsa.fd 2013/01/14 v3.01 AMS symbols A
 )
-LaTeX Font Info:    Trying to load font information for U+msb on input line 115
+LaTeX Font Info:    Trying to load font information for U+msb on input line 110
 .
 
 (/usr/share/texlive/texmf-dist/tex/latex/amsfonts/umsb.fd
 File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 )
 LaTeX Font Info:    Trying to load font information for U+stmry on input line 1
-15.
+10.
 
 (/usr/share/texlive/texmf-dist/tex/latex/stmaryrd/Ustmry.fd) [1{/var/lib/texmf/
 fonts/map/pdftex/updmap/pdftex.map}]
-Underfull \hbox (badness 1112) in paragraph at lines 221--234
+Underfull \hbox (badness 1112) in paragraph at lines 201--214
 \T1/cmr/m/n/10 mul-ti-type in-ter-ac-tions and ecosys-tem en-gi-neer-ing in
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 221--234
+Underfull \hbox (badness 10000) in paragraph at lines 201--214
 
  []
-
-
-
-pdfTeX warning: pdflatex (file ./fig_model2.pdf): PDF inclusion: found PDF vers
-ion <1.7>, but at most version <1.5> allowed
-<fig_model2.pdf, id=13, 360.6273pt x 331.92607pt>
-File: fig_model2.pdf Graphic file (type pdf)
-<use fig_model2.pdf>
-Package pdftex.def Info: fig_model2.pdf  used on input line 262.
-(pdftex.def)             Requested size: 244.79782pt x 225.31169pt.
-
-LaTeX Warning: `!h' float specifier changed to `!ht'.
-
-
-LaTeX Warning: Reference `fig:conn' on page 2 undefined on input line 281.
 
 [2]
 
-LaTeX Warning: A float is stuck (cannot be placed); try class option [floatfix]
- on input line 290.
+Package natbib Warning: Citation `Kones2009' on page 3 undefined on input line 
+272.
 
 
-Underfull \hbox (badness 1097) in paragraph at lines 333--337
-\T1/cmr/m/n/10 bars, Fig. 2[]c). Com-pellingly, the trophic rich-ness
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 333--337
+Underfull \hbox (badness 10000) in paragraph at lines 278--282
 
  []
 
-[3 <./fig_model2.pdf>]
-<fig_trophic3.pdf, id=88, 433.62pt x 361.35pt>
-File: fig_trophic3.pdf Graphic file (type pdf)
-<use fig_trophic3.pdf>
-Package pdftex.def Info: fig_trophic3.pdf  used on input line 368.
-(pdftex.def)             Requested size: 255.0pt x 212.49992pt.
 
-Overfull \hbox (9.0pt too wide) in paragraph at lines 368--370
- [][] 
+Underfull \hbox (badness 1087) in paragraph at lines 287--294
+\T1/cmr/m/n/10 ag-ing behaviors$[]$ and neu-tral processes$[]$, and
  []
 
-
-LaTeX Warning: Reference `fig:nestsize' on page 4 undefined on input line 393.
-
-
-LaTeX Warning: Reference `fig:degree' on page 4 undefined on input line 402.
-
-
-
-pdfTeX warning: pdflatex (file ./fig_nested4.pdf): PDF inclusion: found PDF ver
-sion <1.7>, but at most version <1.5> allowed
-<fig_nested4.pdf, id=89, 433.62pt x 361.35pt>
-File: fig_nested4.pdf Graphic file (type pdf)
-<use fig_nested4.pdf>
-Package pdftex.def Info: fig_nested4.pdf  used on input line 411.
-(pdftex.def)             Requested size: 255.0pt x 212.49992pt.
-
-Overfull \hbox (9.0pt too wide) in paragraph at lines 411--413
- [][] 
- []
-
-
-LaTeX Warning: `!h' float specifier changed to `!ht'.
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 430--438
+[3]
+Underfull \hbox (badness 10000) in paragraph at lines 319--327
 
  []
 
-[4 <./fig_trophic3.pdf>]
-
-LaTeX Warning: A float is stuck (cannot be placed); try class option [floatfix]
- on input line 438.
-
-
-LaTeX Warning: Reference `fig:trophiceng' on page 5 undefined on input line 480
-.
-
-
-LaTeX Warning: Reference `fig:indeng' on page 5 undefined on input line 493.
-
-[5 <./fig_nested4.pdf>]
-<fig_engineers6.pdf, id=142, 578.16pt x 433.62pt>
-File: fig_engineers6.pdf Graphic file (type pdf)
-<use fig_engineers6.pdf>
-Package pdftex.def Info: fig_engineers6.pdf  used on input line 524.
-(pdftex.def)             Requested size: 255.0pt x 191.24992pt.
-
-Overfull \hbox (9.0pt too wide) in paragraph at lines 524--526
- [][] 
+[4]
+Underfull \hbox (badness 2970) in paragraph at lines 436--442
+[]\T1/cmr/m/n/10 Communities lack-ing re-dun-dant en-gi-neer-ing have
  []
 
 
-LaTeX Warning: Reference `fig:redundancy' on page 6 undefined on input line 559
-.
+Underfull \hbox (badness 1668) in paragraph at lines 436--442
+\T1/cmr/m/n/10 lower species rich-ness be-cause species' trophic and
+ []
 
 
-LaTeX Warning: Reference `fig:unique' on page 6 undefined on input line 561.
+Underfull \hbox (badness 3138) in paragraph at lines 436--442
+\T1/cmr/m/n/10 a given as-sem-blage (Sup-ple-men-tary Fig-ure 10c,d).
+ []
 
 
-LaTeX Warning: Reference `fig:steadystate' on page 6 undefined on input line 56
-3.
+Underfull \hbox (badness 1668) in paragraph at lines 436--442
+\T1/cmr/m/n/10 Col-o-niza-tion oc-curs only when trophic and ser-vice
+ []
 
 
-LaTeX Warning: Reference `fig:steadystate' on page 6 undefined on input line 56
-4.
+Underfull \hbox (badness 10000) in paragraph at lines 436--442
+
+ []
 
 
-LaTeX Warning: Reference `fig:steadystate' on page 6 undefined on input line 56
-6.
-
-[6 <./fig_engineers6.pdf>]
-Underfull \hbox (badness 2503) in paragraph at lines 576--581
+Underfull \hbox (badness 2503) in paragraph at lines 446--451
 []\T1/cmr/m/n/10 We have shown that sim-ple process-based rules
  []
 
 
-Underfull \hbox (badness 3158) in paragraph at lines 576--581
+Underfull \hbox (badness 3158) in paragraph at lines 446--451
 \T1/cmr/m/n/10 gov-ern-ing the as-sem-bly of species with mul-ti-type
  []
 
 
-Underfull \hbox (badness 1490) in paragraph at lines 576--581
+Underfull \hbox (badness 1490) in paragraph at lines 446--451
 \T1/cmr/m/n/10 in-ter-ac-tions can pro-duce com-mu-ni-ties with re-al-is-tic
  []
 
 
-Underfull \hbox (badness 1092) in paragraph at lines 576--581
+Underfull \hbox (badness 1092) in paragraph at lines 446--451
 \T1/cmr/m/n/10 that low lev-els of en-gi-neer-ing may be ex-pected to
  []
 
 
-Underfull \hbox (badness 1122) in paragraph at lines 576--581
-\T1/cmr/m/n/10 As past ecosys-tems have fun-da-men-tally al-tered the
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 576--581
+Underfull \hbox (badness 10000) in paragraph at lines 446--451
 
  []
 
-
-Underfull \hbox (badness 10000) in paragraph at lines 648--656
-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 648--656
+[5]
+Underfull \hbox (badness 10000) in paragraph at lines 518--526
 
  []
 
-(./enigma_rev5.bbl [7] [8]
-Underfull \hbox (badness 3179) in paragraph at lines 408--413
- []\T1/cmr/m/n/9 Dykhuizen, D. & Davies, M.  An ex-per-i-men-tal
+[6]
+Underfull \hbox (badness 10000) in paragraph at lines 529--530
+
  []
 
-[9]
-Underfull \hbox (badness 1242) in paragraph at lines 712--718
- \T1/cmr/m/n/9 fresh-wa-ter bi-valve (ship-worm) from the Philip-pines.
+[7]
+Underfull \hbox (badness 10000) in paragraph at lines 622--622
+
  []
 
-
-Underfull \hbox (badness 1490) in paragraph at lines 726--732
- \T1/cmr/m/n/9 graphs in Pop-u-la-tion Bi-ol-ogy (Prince-ton Uni-ver-sity
- []
-
-)
-Underfull \hbox (badness 1028) in paragraph at lines 1430--1454
-\T1/cmr/m/n/8 and CNPq (302049/2015-0) to MAMA, CNPq and FAPESP
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 1430--1454
+[8] [9] (./enigma_rev5.bbl [10] [11] [12])
+Underfull \hbox (badness 10000) in paragraph at lines 1393--1417
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 1430--1454
+Underfull \hbox (badness 10000) in paragraph at lines 1393--1417
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 1455--1463
+Underfull \hbox (badness 10000) in paragraph at lines 1418--1426
 
  []
 
-[10] (./enigma_rev5.aux)
+[13]
 
-LaTeX Warning: There were undefined references.
+Package natbib Warning: There were undefined citations.
 
- ) 
+
+Package natbib Warning: There were multiply defined citations.
+
+(./enigma_rev5.aux
+
+Package natbib Warning: Citation(s) may have changed.
+(natbib)                Rerun to get citations correct.
+
+) ) 
 Here is how much of TeX's memory you used:
- 6743 strings out of 481239
- 92046 string characters out of 5920377
- 417063 words of memory out of 5000000
- 21878 multiletter control sequences out of 15000+600000
- 556040 words of font info for 88 fonts, out of 8000000 for 9000
+ 6709 strings out of 481239
+ 91360 string characters out of 5920377
+ 367341 words of memory out of 5000000
+ 21847 multiletter control sequences out of 15000+600000
+ 556821 words of font info for 89 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 38i,7n,35p,1465b,641s stack positions out of 5000i,500n,10000p,200000b,80000s
-{/usr/share/texmf/fonts/enc/dvips/cm-super/cm-super-t1.enc}</usr/share/texliv
-e/texmf-dist/fonts/type1/public/amsfonts/cmextra/cmex8.pfb></usr/share/texlive/
-texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/share/texlive/texmf-
-dist/fonts/type1/public/amsfonts/cm/cmmi6.pfb></usr/share/texlive/texmf-dist/fo
-nts/type1/public/amsfonts/cm/cmmi7.pfb></usr/share/texlive/texmf-dist/fonts/typ
-e1/public/amsfonts/cm/cmmi8.pfb></usr/share/texlive/texmf-dist/fonts/type1/publ
-ic/amsfonts/cm/cmmi9.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsf
-onts/cm/cmr10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm
-/cmr6.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr7.pf
-b></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr8.pfb></usr/
-share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr9.pfb></usr/share/te
-xlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/share/texlive/
-texmf-dist/fonts/type1/public/amsfonts/cm/cmsy6.pfb></usr/share/texlive/texmf-d
-ist/fonts/type1/public/amsfonts/cm/cmsy7.pfb></usr/share/texlive/texmf-dist/fon
-ts/type1/public/amsfonts/cm/cmsy8.pfb></usr/share/texlive/texmf-dist/fonts/type
-1/public/amsfonts/cm/cmsy9.pfb></usr/share/texmf/fonts/type1/public/cm-super/sf
-bx0800.pfb></usr/share/texmf/fonts/type1/public/cm-super/sfbx0900.pfb></usr/sha
-re/texmf/fonts/type1/public/cm-super/sfbx1000.pfb></usr/share/texmf/fonts/type1
-/public/cm-super/sfbx1200.pfb></usr/share/texmf/fonts/type1/public/cm-super/sfr
-m0600.pfb></usr/share/texmf/fonts/type1/public/cm-super/sfrm0700.pfb></usr/shar
-e/texmf/fonts/type1/public/cm-super/sfrm0800.pfb></usr/share/texmf/fonts/type1/
-public/cm-super/sfrm0900.pfb></usr/share/texmf/fonts/type1/public/cm-super/sfrm
-1000.pfb></usr/share/texmf/fonts/type1/public/cm-super/sfss0500.pfb></usr/share
-/texmf/fonts/type1/public/cm-super/sfti0900.pfb></usr/share/texmf/fonts/type1/p
-ublic/cm-super/sfti1000.pfb>
-Output written on enigma_rev5.pdf (10 pages, 9336660 bytes).
+ 38i,7n,35p,1465b,909s stack positions out of 5000i,500n,10000p,200000b,80000s
+{/usr/share/texmf/fonts/enc/dvips/cm-super/cm-super-t1.enc}</usr/share/texli
+ve/texmf-dist/fonts/type1/public/amsfonts/cmextra/cmex8.pfb></usr/share/texlive
+/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/share/texlive/texmf
+-dist/fonts/type1/public/amsfonts/cm/cmmi6.pfb></usr/share/texlive/texmf-dist/f
+onts/type1/public/amsfonts/cm/cmmi7.pfb></usr/share/texlive/texmf-dist/fonts/ty
+pe1/public/amsfonts/cm/cmmi8.pfb></usr/share/texlive/texmf-dist/fonts/type1/pub
+lic/amsfonts/cm/cmmi9.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/ams
+fonts/cm/cmr10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/c
+m/cmr6.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr7.p
+fb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr8.pfb></usr
+/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr9.pfb></usr/share/t
+exlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/share/texlive
+/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy6.pfb></usr/share/texlive/texmf-
+dist/fonts/type1/public/amsfonts/cm/cmsy7.pfb></usr/share/texlive/texmf-dist/fo
+nts/type1/public/amsfonts/cm/cmsy8.pfb></usr/share/texlive/texmf-dist/fonts/typ
+e1/public/amsfonts/cm/cmsy9.pfb></usr/share/texmf/fonts/type1/public/cm-super/s
+fbx0700.pfb></usr/share/texmf/fonts/type1/public/cm-super/sfbx0800.pfb></usr/sh
+are/texmf/fonts/type1/public/cm-super/sfbx0900.pfb></usr/share/texmf/fonts/type
+1/public/cm-super/sfbx1000.pfb></usr/share/texmf/fonts/type1/public/cm-super/sf
+bx1200.pfb></usr/share/texmf/fonts/type1/public/cm-super/sfrm0600.pfb></usr/sha
+re/texmf/fonts/type1/public/cm-super/sfrm0700.pfb></usr/share/texmf/fonts/type1
+/public/cm-super/sfrm0800.pfb></usr/share/texmf/fonts/type1/public/cm-super/sfr
+m0900.pfb></usr/share/texmf/fonts/type1/public/cm-super/sfrm1000.pfb></usr/shar
+e/texmf/fonts/type1/public/cm-super/sfss0500.pfb></usr/share/texmf/fonts/type1/
+public/cm-super/sfti0900.pfb></usr/share/texmf/fonts/type1/public/cm-super/sfti
+1000.pfb>
+Output written on enigma_rev5.pdf (13 pages, 488716 bytes).
 PDF statistics:
- 263 PDF objects out of 1000 (max. 8388607)
- 194 compressed objects within 2 object streams
+ 165 PDF objects out of 1000 (max. 8388607)
+ 119 compressed objects within 2 object streams
  0 named destinations out of 1000 (max. 500000)
- 21 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 1 words of extra memory for PDF output out of 10000 (max. 10000000)
 

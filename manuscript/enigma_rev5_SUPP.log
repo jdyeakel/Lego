@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.20 (TeX Live 2019/Debian) (preloaded format=pdflatex 2020.5.12)  1 JUN 2020 15:15
+This is pdfTeX, Version 3.14159265-2.6-1.40.20 (TeX Live 2019/Debian) (preloaded format=pdflatex 2020.5.12)  10 JUN 2020 14:44
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -323,18 +323,18 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.34 \bibpunct
+l.36 \bibpunct
               {}{}{,}{s}{}{;}
 ? 
 \gdef\bu@bibstyle{naturemag}
 Class revtex4-1 Info: Unrecognized LaTeX tabular. Please update this document c
-lass! (Proceeding with fingers crossed.) on input line 86.
+lass! (Proceeding with fingers crossed.) on input line 88.
 
 Class revtex4-1 Warning: Repair the float package.
 
-Class revtex4-1 Info: cite was not loaded (OK!) on input line 86.
-Class revtex4-1 Info: mcite was not loaded (OK!) on input line 86.
-Class revtex4-1 Info: multicol was not loaded (OK!) on input line 86.
+Class revtex4-1 Info: cite was not loaded (OK!) on input line 88.
+Class revtex4-1 Info: mcite was not loaded (OK!) on input line 88.
+Class revtex4-1 Info: multicol was not loaded (OK!) on input line 88.
 (/usr/share/texlive/texmf-dist/tex/latex/l3backend/l3backend-pdfmode.def
 File: l3backend-pdfmode.def 2020-02-03 L3 backend support: PDF mode
 \l__kernel_color_stack_int=\count271
@@ -343,20 +343,20 @@ File: l3backend-pdfmode.def 2020-02-03 L3 backend support: PDF mode
 (./enigma_rev5_SUPP.aux (./bu.aux) (./bu.aux))
 \openout1 = `enigma_rev5_SUPP.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 86.
-LaTeX Font Info:    ... okay on input line 86.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 86.
-LaTeX Font Info:    ... okay on input line 86.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 86.
-LaTeX Font Info:    ... okay on input line 86.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 86.
-LaTeX Font Info:    ... okay on input line 86.
-LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 86.
-LaTeX Font Info:    ... okay on input line 86.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 86.
-LaTeX Font Info:    ... okay on input line 86.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 86.
-LaTeX Font Info:    ... okay on input line 86.
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 88.
+LaTeX Font Info:    ... okay on input line 88.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 88.
+LaTeX Font Info:    ... okay on input line 88.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 88.
+LaTeX Font Info:    ... okay on input line 88.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 88.
+LaTeX Font Info:    ... okay on input line 88.
+LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 88.
+LaTeX Font Info:    ... okay on input line 88.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 88.
+LaTeX Font Info:    ... okay on input line 88.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 88.
+LaTeX Font Info:    ... okay on input line 88.
 
 (/usr/share/texlive/texmf-dist/tex/context/base/mkii/supp-pdf.mkii
 [Loading MPS to PDF converter (version 2006.09.02).]
@@ -383,209 +383,183 @@ e
 \openout3 = `enigma_rev5_SUPPNotes.bib'.
 
 
-(/usr/share/texlive/texmf-dist/tex/latex/lineno/lineno.sty
-Package: lineno 2005/11/02 line numbers on paragraphs v4.41
-\linenopenalty=\count278
-\output=\toks29
-\linenoprevgraf=\count279
-\linenumbersep=\dimen157
-\linenumberwidth=\dimen158
-\c@linenumber=\count280
-\c@pagewiselinenumber=\count281
-\c@LN@truepage=\count282
-\c@internallinenumber=\count283
-\c@internallinenumbers=\count284
-\quotelinenumbersep=\dimen159
-\bframerule=\dimen160
-\bframesep=\dimen161
-\bframebox=\box66
-LaTeX Info: Redefining \\ on input line 3056.
-)
-LaTeX Font Info:    Trying to load font information for T1+cmss on input line 1
-11.
+Underfull \hbox (badness 10000) in paragraph at lines 136--138
 
-(/usr/share/texlive/texmf-dist/tex/latex/base/t1cmss.fd
-File: t1cmss.fd 2019/12/16 v2.5j Standard LaTeX font definitions
-)
-LaTeX Font Info:    Trying to load font information for U+msa on input line 111
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 136--138
+
+ []
+
+[1{/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}]
+LaTeX Font Info:    Trying to load font information for U+msa on input line 147
 .
 
 (/usr/share/texlive/texmf-dist/tex/latex/amsfonts/umsa.fd
 File: umsa.fd 2013/01/14 v3.01 AMS symbols A
 )
-LaTeX Font Info:    Trying to load font information for U+msb on input line 111
+LaTeX Font Info:    Trying to load font information for U+msb on input line 147
 .
 
 (/usr/share/texlive/texmf-dist/tex/latex/amsfonts/umsb.fd
 File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 )
 LaTeX Font Info:    Trying to load font information for U+stmry on input line 1
-11.
+47.
 
-(/usr/share/texlive/texmf-dist/tex/latex/stmaryrd/Ustmry.fd) [1{/var/lib/texmf/
-fonts/map/pdftex/updmap/pdftex.map}] (./bu1.aux)
+(/usr/share/texlive/texmf-dist/tex/latex/stmaryrd/Ustmry.fd) [2] (./bu1.aux)
 \openout4 = `bu1.aux'.
 
- [2]
 
-LaTeX Warning: Reference `fig:trophic' on page 3 undefined on input line 259.
+Underfull \hbox (badness 10000) in paragraph at lines 219--224
+
+ []
 
 
-LaTeX Warning: Reference `fig:trophic' on page 3 undefined on input line 271.
+Underfull \hbox (badness 10000) in paragraph at lines 237--238
 
-\openout4 = `bu.aux'.
+ []
 
-No file enigma_rev5_SUPP.bbl.
-(./bu1.aux) (./bu.aux)
-<fig_conn.pdf, id=26, 722.7pt x 361.35pt>
+
+Underfull \hbox (badness 10000) in paragraph at lines 258--268
+
+ []
+
+[3] [4]
+Underfull \hbox (badness 10000) in paragraph at lines 294--295
+
+ []
+
+<fig_conn.pdf, id=27, 722.7pt x 361.35pt>
 File: fig_conn.pdf Graphic file (type pdf)
 <use fig_conn.pdf>
-Package pdftex.def Info: fig_conn.pdf  used on input line 320.
+Package pdftex.def Info: fig_conn.pdf  used on input line 298.
 (pdftex.def)             Requested size: 306.00311pt x 153.00104pt.
-
-
-Class revtex4-1 Warning: Float cannot be placed.
-
-<fig_errorscatter2.pdf, id=27, 578.16pt x 361.35pt>
+<fig_errorscatter2.pdf, id=28, 578.16pt x 361.35pt>
 File: fig_errorscatter2.pdf Graphic file (type pdf)
 <use fig_errorscatter2.pdf>
-Package pdftex.def Info: fig_errorscatter2.pdf  used on input line 334.
+Package pdftex.def Info: fig_errorscatter2.pdf  used on input line 313.
 (pdftex.def)             Requested size: 408.00156pt x 254.99991pt.
-
-Class revtex4-1 Warning: Float cannot be placed.
-
-<fig_error2.pdf, id=28, 578.16pt x 361.35pt>
+<fig_error2.pdf, id=29, 578.16pt x 361.35pt>
 File: fig_error2.pdf Graphic file (type pdf)
 <use fig_error2.pdf>
-Package pdftex.def Info: fig_error2.pdf  used on input line 345.
+Package pdftex.def Info: fig_error2.pdf  used on input line 324.
 (pdftex.def)             Requested size: 408.00156pt x 254.99991pt.
 
-Class revtex4-1 Warning: Float cannot be placed.
+LaTeX Warning: `!h' float specifier changed to `!ht'.
 
-<fig_nestedvsize.pdf, id=29, 433.62pt x 361.35pt>
+<fig_nestedvsize.pdf, id=30, 433.62pt x 361.35pt>
 File: fig_nestedvsize.pdf Graphic file (type pdf)
 <use fig_nestedvsize.pdf>
-Package pdftex.def Info: fig_nestedvsize.pdf  used on input line 398.
-(pdftex.def)             Requested size: 408.00156pt x 340.01642pt.
+Package pdftex.def Info: fig_nestedvsize.pdf  used on input line 377.
+(pdftex.def)             Requested size: 255.0pt x 212.49992pt.
 
-Class revtex4-1 Warning: Float cannot be placed.
+LaTeX Warning: `!h' float specifier changed to `!ht'.
 
-<fig_persistdegree_boxall2.pdf, id=30, 722.7pt x 433.62pt>
+<fig_persistdegree_boxall2.pdf, id=31, 722.7pt x 433.62pt>
 File: fig_persistdegree_boxall2.pdf Graphic file (type pdf)
 <use fig_persistdegree_boxall2.pdf>
-Package pdftex.def Info: fig_persistdegree_boxall2.pdf  used on input line 411.
+Package pdftex.def Info: fig_persistdegree_boxall2.pdf  used on input line 390.
 
 (pdftex.def)             Requested size: 408.00156pt x 244.80388pt.
 
-Class revtex4-1 Warning: Float cannot be placed.
+LaTeX Warning: `!h' float specifier changed to `!ht'.
 
-<fig_trophic3_eng.pdf, id=31, 433.62pt x 361.35pt>
+<fig_trophic3_eng.pdf, id=32, 433.62pt x 361.35pt>
 File: fig_trophic3_eng.pdf Graphic file (type pdf)
 <use fig_trophic3_eng.pdf>
-Package pdftex.def Info: fig_trophic3_eng.pdf  used on input line 426.
+Package pdftex.def Info: fig_trophic3_eng.pdf  used on input line 405.
 (pdftex.def)             Requested size: 356.99844pt x 297.51091pt.
 
-Class revtex4-1 Warning: Float cannot be placed.
+LaTeX Warning: `!h' float specifier changed to `!ht'.
 
 
 
 pdfTeX warning: pdflatex (file ./fig_indeng_combined.pdf): PDF inclusion: found
  PDF version <1.7>, but at most version <1.5> allowed
-<fig_indeng_combined.pdf, id=32, 433.62pt x 289.08pt>
+<fig_indeng_combined.pdf, id=33, 433.62pt x 289.08pt>
 File: fig_indeng_combined.pdf Graphic file (type pdf)
 <use fig_indeng_combined.pdf>
-Package pdftex.def Info: fig_indeng_combined.pdf  used on input line 446.
+Package pdftex.def Info: fig_indeng_combined.pdf  used on input line 426.
 (pdftex.def)             Requested size: 356.99844pt x 238.00873pt.
 
-LaTeX Warning: Reference `fig:engineers' on page 3 undefined on input line 454.
+LaTeX Warning: `!h' float specifier changed to `!ht'.
 
-
-
-LaTeX Warning: Reference `fig:engineers' on page 3 undefined on input line 454.
-
-
-
-LaTeX Warning: Reference `fig:engineers' on page 3 undefined on input line 454.
-
-
-
-LaTeX Warning: Reference `fig:engineers' on page 3 undefined on input line 454.
-
-
-
-Class revtex4-1 Warning: Float cannot be placed.
-
-<fig_redundancy.pdf, id=33, 578.16pt x 578.16pt>
+<fig_redundancy.pdf, id=34, 578.16pt x 578.16pt>
 File: fig_redundancy.pdf Graphic file (type pdf)
 <use fig_redundancy.pdf>
-Package pdftex.def Info: fig_redundancy.pdf  used on input line 463.
+Package pdftex.def Info: fig_redundancy.pdf  used on input line 443.
 (pdftex.def)             Requested size: 306.00311pt x 305.99988pt.
 
-Class revtex4-1 Warning: Float cannot be placed.
+LaTeX Warning: `!h' float specifier changed to `!ht'.
 
-<fig_engineers6_unique.pdf, id=34, 578.16pt x 433.62pt>
+<fig_engineers6_unique.pdf, id=35, 578.16pt x 433.62pt>
 File: fig_engineers6_unique.pdf Graphic file (type pdf)
 <use fig_engineers6_unique.pdf>
-Package pdftex.def Info: fig_engineers6_unique.pdf  used on input line 476.
+Package pdftex.def Info: fig_engineers6_unique.pdf  used on input line 456.
 (pdftex.def)             Requested size: 306.00311pt x 229.49991pt.
 
-Class revtex4-1 Warning: Float cannot be placed.
+LaTeX Warning: `!h' float specifier changed to `!ht'.
 
-<fig_steadystates2.pdf, id=35, 578.16pt x 505.89pt>
+<fig_steadystates2.pdf, id=36, 578.16pt x 505.89pt>
 File: fig_steadystates2.pdf Graphic file (type pdf)
 <use fig_steadystates2.pdf>
-Package pdftex.def Info: fig_steadystates2.pdf  used on input line 492.
+Package pdftex.def Info: fig_steadystates2.pdf  used on input line 472.
 (pdftex.def)             Requested size: 408.00156pt x 356.99985pt.
 
-Class revtex4-1 Warning: Float cannot be placed.
+LaTeX Warning: `!h' float specifier changed to `!ht'.
+
+[5 <./fig_conn.pdf> <./fig_errorscatter2.pdf>] [6 <./fig_error2.pdf> <./fig_nes
+tedvsize.pdf>] [7 <./fig_persistdegree_boxall2.pdf>] [8 <./fig_trophic3_eng.pdf
+>] [9 <./fig_indeng_combined.pdf>] [10 <./fig_redundancy.pdf>] [11 <./fig_engin
+eers6_unique.pdf>] [12 <./fig_steadystates2.pdf>]
+Underfull \hbox (badness 10000) in paragraph at lines 486--486
+
+ []
 
 \openout4 = `bu.aux'.
 
 No file enigma_rev5_SUPP.bbl.
-[3] [4 <./fig_conn.pdf> <./fig_errorscatter2.pdf>] [5 <./fig_error2.pdf>]
-[6 <./fig_nestedvsize.pdf>] [7 <./fig_persistdegree_boxall2.pdf>] [8 <./fig_tro
-phic3_eng.pdf>] [9 <./fig_indeng_combined.pdf>] [10 <./fig_redundancy.pdf>]
-[11 <./fig_engineers6_unique.pdf>] [12 <./fig_steadystates2.pdf>]
-(./enigma_rev5_SUPP.aux (./bu.aux) (./bu.aux))
+(./bu1.aux) (./bu.aux)
+\openout4 = `bu.aux'.
 
-LaTeX Warning: There were undefined references.
 
- ) 
+No file enigma_rev5_SUPP.bbl.
+[13] (./enigma_rev5_SUPP.aux (./bu.aux) (./bu.aux)) ) 
 Here is how much of TeX's memory you used:
- 6558 strings out of 481239
- 88751 string characters out of 5920377
- 395356 words of memory out of 5000000
- 21679 multiletter control sequences out of 15000+600000
- 551829 words of font info for 76 fonts, out of 8000000 for 9000
+ 6328 strings out of 481239
+ 85034 string characters out of 5920377
+ 360843 words of memory out of 5000000
+ 21461 multiletter control sequences out of 15000+600000
+ 547982 words of font info for 71 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 38i,8n,35p,1643b,352s stack positions out of 5000i,500n,10000p,200000b,80000s
-{/usr/share/texmf/fonts/enc/dvips/cm-super/cm-super-t1.enc}</usr/share/texliv
-e/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb></usr/share/texlive/texm
-f-dist/fonts/type1/public/amsfonts/cmextra/cmex9.pfb></usr/share/texlive/texmf-
-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/share/texlive/texmf-dist/f
-onts/type1/public/amsfonts/cm/cmmi6.pfb></usr/share/texlive/texmf-dist/fonts/ty
-pe1/public/amsfonts/cm/cmmi7.pfb></usr/share/texlive/texmf-dist/fonts/type1/pub
-lic/amsfonts/cm/cmmi9.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/ams
-fonts/cm/cmr10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/c
-m/cmr6.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr7.p
-fb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr9.pfb></usr
-/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/share
-/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy6.pfb></usr/share/texliv
-e/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy7.pfb></usr/share/texlive/texmf
--dist/fonts/type1/public/amsfonts/cm/cmsy9.pfb></usr/share/texlive/texmf-dist/f
-onts/type1/public/amsfonts/symbols/msbm7.pfb></usr/share/texmf/fonts/type1/publ
-ic/cm-super/sfbx0900.pfb></usr/share/texmf/fonts/type1/public/cm-super/sfbx1000
-.pfb></usr/share/texmf/fonts/type1/public/cm-super/sfbx1200.pfb></usr/share/tex
-mf/fonts/type1/public/cm-super/sfrm0600.pfb></usr/share/texmf/fonts/type1/publi
-c/cm-super/sfrm0700.pfb></usr/share/texmf/fonts/type1/public/cm-super/sfrm0900.
-pfb></usr/share/texmf/fonts/type1/public/cm-super/sfrm1000.pfb></usr/share/texm
-f/fonts/type1/public/cm-super/sfss0500.pfb></usr/share/texmf/fonts/type1/public
-/cm-super/sfti0900.pfb></usr/share/texmf/fonts/type1/public/cm-super/sfti1000.p
-fb>
-Output written on enigma_rev5_SUPP.pdf (12 pages, 5007022 bytes).
+ 38i,6n,35p,1697b,373s stack positions out of 5000i,500n,10000p,200000b,80000s
+{/usr/share/texmf/fonts/en
+c/dvips/cm-super/cm-super-t1.enc}</usr/share/texlive/texmf-dist/fonts/type1/pub
+lic/amsfonts/cm/cmex10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/am
+sfonts/cmextra/cmex9.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsf
+onts/cm/cmmi10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/c
+m/cmmi6.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi7
+.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi9.pfb></
+usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/sha
+re/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr6.pfb></usr/share/texli
+ve/texmf-dist/fonts/type1/public/amsfonts/cm/cmr7.pfb></usr/share/texlive/texmf
+-dist/fonts/type1/public/amsfonts/cm/cmr9.pfb></usr/share/texlive/texmf-dist/fo
+nts/type1/public/amsfonts/cm/cmsy10.pfb></usr/share/texlive/texmf-dist/fonts/ty
+pe1/public/amsfonts/cm/cmsy6.pfb></usr/share/texlive/texmf-dist/fonts/type1/pub
+lic/amsfonts/cm/cmsy7.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/ams
+fonts/cm/cmsy9.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/s
+ymbols/msbm7.pfb></usr/share/texmf/fonts/type1/public/cm-super/sfbx0900.pfb></u
+sr/share/texmf/fonts/type1/public/cm-super/sfbx1000.pfb></usr/share/texmf/fonts
+/type1/public/cm-super/sfrm0700.pfb></usr/share/texmf/fonts/type1/public/cm-sup
+er/sfrm0900.pfb></usr/share/texmf/fonts/type1/public/cm-super/sfrm1000.pfb></us
+r/share/texmf/fonts/type1/public/cm-super/sfti0900.pfb></usr/share/texmf/fonts/
+type1/public/cm-super/sfti1000.pfb>
+Output written on enigma_rev5_SUPP.pdf (13 pages, 4937408 bytes).
 PDF statistics:
- 254 PDF objects out of 1000 (max. 8388607)
- 187 compressed objects within 2 object streams
+ 246 PDF objects out of 1000 (max. 8388607)
+ 181 compressed objects within 2 object streams
  0 named destinations out of 1000 (max. 500000)
  51 words of extra memory for PDF output out of 10000 (max. 10000000)
 

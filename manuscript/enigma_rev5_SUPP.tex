@@ -1,4 +1,4 @@
-\documentclass[twocolumn,preprintnumbers,amsmath,amssymb,superscriptaddress,linenumbers]{revtex4-1}
+\documentclass[onecolumn,preprintnumbers,amsmath,amssymb,superscriptaddress]{revtex4-1}
 % Note that the use of elements such as single-column equations
 % may affect the guide line number alignment.
 % \templatetype{pnasresearcharticle} % Choose template
@@ -26,6 +26,8 @@
 \usepackage{changepage}
 \usepackage{bibunits}
 
+\def\bibsection{\noindent \textbf{Supplementary References\\}}
+
 % \usepackage{natbib}
 % \setcitestyle{comma, sort&compress, super}
 % \bibliographystyle{apsrev}
@@ -43,11 +45,11 @@
 \newcommand{\beginsupplement}{%
         \clearpage
         \setcounter{table}{0}
-        \renewcommand{\thetable}{S\arabic{table}}%
+        \renewcommand{\tablename}{Supplementary Table}%
         \setcounter{figure}{0}
-        \renewcommand{\thefigure}{S\arabic{figure}}%
-        \setcounter{equation}{0}
-        \renewcommand{\theequation}{S\arabic{equation}}
+        \renewcommand{\figurename}{Supplementary Figure}%
+        % \setcounter{equation}{0}
+        % \renewcommand{\equationname}{Supplementary Equation}
      }
 
 
@@ -89,27 +91,27 @@
 % \title{Resource heterogeneity predicts life history tradeoffs and extinction risk from the dynamics of consumer energetic state}
 % Scaling resource variability with body size predicts life history strategies, extinction risk, and provides insight into the evolution of grazing}
 % \title{Scaling the risk landscape in a consumer foraging model provides insight into optimal life history strategies and the evolution of grazing} %extinction risks
-\title{Supplementary Methods for Diverse interactions and ecosystem engineering can stabilize community assembly} %extinction risks
-
-
-
-\author{Justin D. Yeakel} \affiliation{University of California, Merced, Merced, CA 95340, USA} \affiliation{Santa Fe Institute, 1399 Hyde Park Road, Santa Fe, NM 87501, USA}
-
-\author{Mathias M. Pires} \affiliation{Universidade Estadual de Campinas, Campinas - SP, Brazil}
-
-\author{Marcus A. M. de Aguiar} \affiliation{Universidade Estadual de Campinas, Campinas - SP, Brazil}
-
-\author{James L. O'Donnell} \affiliation{University of Washington, Seattle, WA 98195, USA}
-
-\author{Paulo R. Guimar\~aes Jr.} \affiliation{Universidade de S\~ao Paulo, S\~ao Paulo, Brazil}
-
-\author{Dominique Gravel} \affiliation{Universit\`e de Sherbrooke, Sherbrooke, QCJ1K0A5, Canada}
-
-\author{Thilo Gross} \affiliation{University of California, Davis, Davis, CA 95616, USA} \affiliation{Alfred-Wegener-Institut Helmholtz-Zentrum f\"ur Polar- und Meeresforschung} \affiliation{Helmholtz Institute for Functional Marine Biodiversity at the University of Oldenburg (HIFMB), Ammerl\"ander Heerstrasse 231, 26129 Oldenburg, Germany} \affiliation{University of Oldenburg, ICBM, 26129 Oldenburg, Germany}
-
-
-\maketitle
-
+% \title{Supplementary Methods for ``Diverse interactions and ecosystem engineering can stabilize community assembly''} %extinction risks
+% 
+% 
+% 
+% \author{Justin D. Yeakel} \affiliation{University of California, Merced, Merced, CA 95340, USA} \affiliation{Santa Fe Institute, 1399 Hyde Park Road, Santa Fe, NM 87501, USA}
+% 
+% \author{Mathias M. Pires} \affiliation{Universidade Estadual de Campinas, Campinas - SP, Brazil}
+% 
+% \author{Marcus A. M. de Aguiar} \affiliation{Universidade Estadual de Campinas, Campinas - SP, Brazil}
+% 
+% \author{James L. O'Donnell} \affiliation{University of Washington, Seattle, WA 98195, USA}
+% 
+% \author{Paulo R. Guimar\~aes Jr.} \affiliation{Universidade de S\~ao Paulo, S\~ao Paulo, Brazil}
+% 
+% \author{Dominique Gravel} \affiliation{Universit\`e de Sherbrooke, Sherbrooke, QCJ1K0A5, Canada}
+% 
+% \author{Thilo Gross} \affiliation{University of California, Davis, Davis, CA 95616, USA} \affiliation{Alfred-Wegener-Institut Helmholtz-Zentrum f\"ur Polar- und Meeresforschung} \affiliation{Helmholtz Institute for Functional Marine Biodiversity at the University of Oldenburg (HIFMB), Ammerl\"ander Heerstrasse 231, 26129 Oldenburg, Germany} \affiliation{University of Oldenburg, ICBM, 26129 Oldenburg, Germany}
+% 
+% 
+% \maketitle
+% 
 
 % \vspace{3mm}
 % \begin{adjustwidth}{2.5em}{0em}
@@ -122,7 +124,7 @@
 \begin{bibunit}
 
 % \section*{Supplementary Methods}
-% \subsection*{Appendix A}
+% \subsection*{Supplementary Note A}
 
 % \setcounter{figure}{0}
 % \renewcommand{\thefigure}{S\arabic{figure}}
@@ -130,7 +132,16 @@
 % \setcounter{equation}{0}
 % \renewcommand{\theequation}{S\arabic{equation}}
 
-\subsection*{Appendix 1: Building the source pool}
+
+\noindent \textbf{Supplementary Information\\ \\
+Diverse interactions and ecosystem engineering can stabilize community assembly}\\
+
+\noindent Yeakel et al.
+
+\clearpage
+
+% \subsection*{Supplementary Note 1: Building the source pool}
+\noindent \textbf{Supplementary Note 1: Building the source pool}\\
 Here and henceforth, we refer to the assembly model presented in the main text as the ENIgMa model (E:eat, N:need, Ig:ignore, Ma:make).
 To initiate the ENIgMa assembly model, we must first construct the source pool, where each ecological entity (species + modifiers) is defined by their potential interactions.
 The model is initialized by creating $S$ species and $M = \eta S$ modifiers, such that $N=S+M$ is the expected total number of entities (prior to considering engineering redundancies) and $\eta$ is the expected number of modifiers made per species in the community, where the expectation is taken across replicates.
@@ -163,7 +174,7 @@ M^\prime = \eta S \left(1 - \frac{1}{{e}}\right).
 % \end{equation}
 % where $\rm e$ is Euler's number.
 % To set interactions between species and modifiers in the pool, we must know the frequency of each directed interaction type.
-The frequencies of eat and need interactions, $p_e$ and $p_n$ respectively, are assigned a priori (see Supplementary Appendix 2 for different model parameterizations).
+The frequencies of eat and need interactions, $p_e$ and $p_n$ respectively, are assigned a priori (see Supplementary Supplementary Note 2 for different model parameterizations).
 The frequency of engineering (make) interactions can be calculated as
 \begin{equation}
 p_m = \frac{\eta S}{(S + M^\prime)^2} = \frac{\eta}{S\left(1 + \eta - \frac{\eta}{\rr{e}}\right)^2}.
@@ -209,23 +220,25 @@ For example, if the community is empty, and 50 species are able to colonize, the
 Another example: if 20 species are able to colonize, 10 species are not superior competitors for any one of their resources, and 30 species do not meet their dependencies, $\sum_j{r_j} = 60$, and $r_\rr{colonize} = 1/3$, $r_\rr{primary~extinction} = 1/6$, and $r_\rr{secondary~extinction} = 1/2$.
 In this case, the most probable event is a secondary extinction.
 After this single event takes place, the community is updated depending on which event occurred, and the simulation proceeds to the next step.
-This algorithm is known to offer a much better approximation to the true stochastic continuous time process than a simulation in discrete time steps, while providing a much higher numerical efficiency \cite{Gillespie1977}.
+This algorithm is known to offer a much better approximation to the true stochastic continuous time process than a simulation in discrete time steps, while providing a much higher numerical efficiency \cite{Gillespie1977}.\\
 
 
-\subsection*{Appendix 2: Model parameterizations}
+% \subsection*{Supplementary Note 2: Model parameterizations}
+\noindent \textbf{Supplementary Note 2: Model parameterizations}\\
 Simulations described in the main text have default parameterizations of $S=200$, $p_e=0.01$, $c_{\rm n} = \pi$, $c_{\rm e} = \sqrt{2}$, $c_{\rm v} = 1$, and $4000$ iterations (time-steps).
 Replicates are defined as the independent assembly of independently drawn source pools with a given parameterization.
 
-\noindent \textbf{Assembly without ecosystem engineering} Here we set the average number of modifiers made per species $\eta = 0$ and the probability of need interactions in the species pool $p_n=0.002$.
+Assembly without ecosystem engineering: Here we set the average number of modifiers made per species $\eta = 0$ and the probability of need interactions in the species pool $p_n=0.002$.
 
-\noindent \textbf{Structure and dynamics of mutualisms} Again we used the default parameterizations but set $\eta = 0$, while varying $p_n \in [0,0.002]$.
+Structure and dynamics of mutualisms: Again we used the default parameterizations but set $\eta = 0$, while varying $p_n \in [0,0.002]$.
 We note that while the density of eat interactions is not changed as service interaction frequency increases, what would previously have been a trophic interaction is more likely to be a mutualism (trophic in one direction, service in the other) if an incoming eat interaction is paired with an outgoing need interaction. 
 In other words, as service interaction frequency increases, eat interactions are not substituted with need interactions (maintaining the fixed trophic interaction frequency), however null interactions are substituted with need interactions.
 
-\noindent \textbf{Assembly with ecosystem engineering} Here we used the default parameterizations but varied $\eta \in [0,2]$ and $p_n \in [0,0.002]$.
+Assembly with ecosystem engineering: Here we used the default parameterizations but varied $\eta \in [0,2]$ and $p_n \in [0,0.002]$.\\
 
 
-\subsection*{Appendix 3: Comparison to Niche Model}
+% \subsection*{Supplementary Note 3: Comparison to Niche Model}
+\noindent \textbf{Supplementary Note 3: Comparison to Niche Model}\\
 We compared certain structural features of ENIgMa at steady state to those of the Niche Model \cite{Williams2000}.
 Comparisons were restricted to networks constructed in the absence of engineering because engineers introduce indirect effects that are not considered in static food web models, and may make such comparisons irrelevant.
 While there are many similarities, there are also some important differences, some of which are highlighted in the main text.
@@ -251,12 +264,13 @@ An important difference between the Niche Model and ENIgMa is that we do not dis
 A different framework known as the Inverse Niche Model \cite{Warren2010} has been proposed to address parasitic interactions.
 The Inverse Niche Model assumes increasing specialization with feeding hierarchies, which would serve to lower the average generality of species (lower degree).
 In addition, the Inverse Niche model outputs lower standard deviations of in- and out-degree distributions.
-Together these trends suggest that the qualitative structural differences that we observe for the assembly and Niche model may reflect an important structural distinction between food webs that do and do not include parasitic species.
+Together these trends suggest that the qualitative structural differences that we observe for the assembly and Niche model may reflect an important structural distinction between food webs that do and do not include parasitic species.\\
 
-\subsection*{Appendix 4: The structure of engineered food webs}
+% \subsection*{Supplementary Note 4: The structure of engineered food webs}
+\noindent \textbf{Supplementary Note 4: The structure of engineered food webs}\\
 We examined whether and to what extent the structure of food webs was altered when engineers are introduced into the community.
 Because trophic links can now exist between species-modifiers as well as species-species, there are different ways of accounting for structure, making direct comparisons with non-engineered food webs somewhat difficult.
-We note that we exclude service interactions in this case to best match the structural analysis described in the main text and shown in Fig.\ \ref{fig:trophic}.
+We note that we exclude service interactions in this case to best match the structural analysis described in the main text and shown in Fig.\ 2.
 While the inclusion of engineers ($\eta = 2$) does have an impact on stability in terms of primary versus secondary extinction rates, there is not a strong effect of engineering on steady state species richness (Fig.\ \ref{fig:trophiceng}a; species richness is shown in blue, modifier richness is shown in red).
 
 The role of specialists does and does not change with the introduction of engineering, depending on how specialization is defined.
@@ -268,52 +282,16 @@ This accounting of both direct and indirect trophic interactions between species
 In the first case, where $G_i$ is determined relative to $L^*_{\rm direct}/S^*$, we find that there are no potential specialists that colonize the community, and (as in the main text) functional specialists colonize first, but (not as in the main text) become functional generalists at steady state (mean proportion specialists at steady state is 0.04; Fig.\ \ref{fig:trophiceng}b).
 This means that the indirect links that define trophic interactions between species and modifiers increase the link-density of the network relative to that defined only by direct trophic interactions.
 In words, modifiers serve to connect otherwise disconnected species, formalizing the otherwise indirect relationships that structure the role of engineers in the community.
-In the second case, where $G_i$ is determined relative to $L^*_{\rm indirect}/S^*$, we find that the changes in both functional and potential specialists over the course of assembly (Fig.\ \ref{fig:trophiceng}c) follow those observed for non-engineered food webs (Fig.\ \ref{fig:trophic}b).
+In the second case, where $G_i$ is determined relative to $L^*_{\rm indirect}/S^*$, we find that the changes in both functional and potential specialists over the course of assembly (Fig.\ \ref{fig:trophiceng}c) follow those observed for non-engineered food webs (Fig.\ 2b).
 
 Finally, we observe that while the number of trophic levels increase in the presence of species-modifier interactions, the overall trophic structure of the community advances over the course of assembly in much the same way as it does without engineers (Fig.\ \ref{fig:trophiceng}d).
 Trophic levels are calculated with respect to indirect species interactions through modifier intermediaries.
 Because species at any trophic level can engineer modifiers used as resources by other species, the mean trophic level of the community is systematically elevated.
 
-% \putbib[aabib]
-\begin{thebibliography}{1}
-\expandafter\ifx\csname url\endcsname\relax
-  \def\url#1{\texttt{#1}}\fi
-\expandafter\ifx\csname urlprefix\endcsname\relax\def\urlprefix{URL }\fi
-\providecommand{\bibinfo}[2]{#2}
-\providecommand{\eprint}[2][]{\url{#2}}
+\clearpage
 
-\bibitem{Gillespie1977}
-\bibinfo{author}{Gillespie, D.~T.}
-\newblock \bibinfo{title}{Exact stochastic simulation of coupled chemical
-  reactions}.
-\newblock \emph{\bibinfo{journal}{J. Phys. Chem.}}
-  \textbf{\bibinfo{volume}{81}}, \bibinfo{pages}{2340--2361}
-  (\bibinfo{year}{1977}).
-
-\bibitem{Williams2000}
-\bibinfo{author}{Williams, R.~J.} \& \bibinfo{author}{Martinez, N.~D.}
-\newblock \bibinfo{title}{{Simple rules yield complex food webs}}.
-\newblock \emph{\bibinfo{journal}{Nature}} \textbf{\bibinfo{volume}{404}},
-  \bibinfo{pages}{180--183} (\bibinfo{year}{2000}).
-
-\bibitem{Williams2011}
-\bibinfo{author}{Williams, R.~J.} \& \bibinfo{author}{Purves, D.~W.}
-\newblock \bibinfo{title}{{The probabilistic niche model reveals substantial
-  variation in the niche structure of empirical food webs.}}
-\newblock \emph{\bibinfo{journal}{Ecology}} \textbf{\bibinfo{volume}{92}},
-  \bibinfo{pages}{1849--1857} (\bibinfo{year}{2011}).
-
-\bibitem{Warren2010}
-\bibinfo{author}{Warren, C.~P.}, \bibinfo{author}{Pascual, M.},
-  \bibinfo{author}{Lafferty, K.~D.} \& \bibinfo{author}{Kuris, A.~M.}
-\newblock \bibinfo{title}{{The inverse niche model for food webs with
-  parasites.}}
-\newblock \emph{\bibinfo{journal}{Theor. Ecol.}} \textbf{\bibinfo{volume}{3}},
-  \bibinfo{pages}{285--294} (\bibinfo{year}{2010}).
-
-\end{thebibliography}
-
-\end{bibunit}
+% \subsection*{Supplementary Figures}
+\noindent \textbf{Supplementary Figures}\\
 
 \begin{figure*}[h!]
 \centering
@@ -322,6 +300,7 @@ Because species at any trophic level can engineer modifiers used as resources by
 Left: Assembly of communities over time results in steady state species richness by ca. time-step 250.
 Right: Trophic connectance early in assembly is high because a small number of species interact with each other such that the proportion of realized interactions (out of all possible interactions) is closer to unity.
 Over time, connectance decays as species richness increases, and the density of trophic interactions declines.
+Boxplots are composed of simulation replicates, with the mean value denoted by the central bar.
 Box edges define the 25th and 75th percentiles of simulation results, and whiskers represent $1.5\times$ the interquartile range.
 }
 \label{fig:conn}
@@ -395,7 +374,7 @@ Only the trophic network of the assembly model was used to assess metrics.
 
 \begin{figure*}[h!]
 \centering
-\includegraphics[width=0.8\textwidth]{fig_nestedvsize.pdf}
+\includegraphics[width=0.5\textwidth]{fig_nestedvsize.pdf}
 \caption{
 Nestedness (UNODF) as a function of steady state richness for 1000 replicated communities without service interactions ($p_n = 0$) compared to those with a high frequency of service interactions ($p_n = 0.002$).
 While higher frequencies of service interactions do lower steady state species richness (due to increasing secondary extinction rates), there is not a relationship between nestedness and species richness across replicates for a given service interaction frequency.
@@ -415,8 +394,8 @@ Left column: species-specific persistence as a function of trophic in-degree (th
 Right column: species-specific persistence as a function of the mutualism in-degree (the number of service donors a species has; top) and out-degree (the number of service receivers a species has; bottom).
 As the trophic in- and out-degree of species increases, competition strength is lowered and persistence decreases.
 As the mutualism in-degree increases, so does the number of service donors that are needed for the receiving species to remain in the community. This introduces structural constraints that lowers persistence.
-Box edges define the 25th and 75th percentiles of simulation results, and whiskers represent $1.5\times$ the interquartile range.
-}
+Boxplots are composed of simulation replicates, with the mean value denoted by the central bar.
+Box edges define the 25th and 75th percentiles of simulation results, and whiskers represent $1.5\times$ the interquartile range.}
 \label{fig:degree}
 \end{figure*}
 
@@ -425,10 +404,11 @@ Box edges define the 25th and 75th percentiles of simulation results, and whiske
 \centering
 \includegraphics[width=0.7\textwidth]{fig_trophic3_eng.pdf}
 \caption{
-\textbf{a}, Assembling communities over time from a pool of 200 engineering species. Species richness is blue; modifier richness is red.
+\textbf{a}, Assembling communities over time from a pool of 200 species, some of which are ecosystem engineers and produce modifier nodes. 
+Species richness is blue; modifier richness is red.
 Steady state species richness is reached by $t=250$.
 \textbf{b}, The proportion of specialists as a function of assembly time, where a specialist is defined as a species with a generality index $G_i < 1$ relative to the steady state link density.
-$G_i$ is scaled to the steady state link density where links are direct trophic interactions between species.
+Here $G_i$ is scaled to the steady state link density where links are direct trophic interactions between species.
 Diamonds represent functional (realized) trophic interactions; triangles represent potential trophic interactions.
 \textbf{c}, The proportion of specialists as a function of assembly time, where a specialist is defined as a species with a generality index $G_i < 1$.
 Here $G_i$ is scaled to the steady state link density where links are composed of both direct trophic interactions between species and indirect trophic interactions between consumers and those species that produce modifiers as resources.
@@ -447,11 +427,11 @@ Measures were evaluated across $10^4$ replicates; see Methods for parameter valu
 \caption{
 Species-specific persistence as a function of \textbf{a}, trophic in-degree (number of resources a species has; top) and \textbf{b}, out-degree (number of consumers that eat the species; bottom) when there are no engineers in the community. 
 Species-specific persistence as a function of \textbf{c}, trophic in-degree (number of resources a species has; top) and \textbf{d}, out-degree (number of consumers that eat the species; bottom) when engineers are rare ($\eta = 0.5$).
-The notion that having a small number of engineers and modifiers in the community increases rates of primary extinction (Fig.\ \ref{fig:engineers}a) by stabilizing consumers at the expense of their prey is supported by \emph{i}) increased persistence of generalist consumers, and \emph{ii}) the presence of species with larger number of predators.
+The notion that having a small number of engineers and modifiers in the community increases rates of primary extinction (Fig.\ 4a) by stabilizing consumers at the expense of their prey is supported by \emph{i}) increased persistence of generalist consumers, and \emph{ii}) the presence of species with larger number of predators.
 Species-specific persistence as a function of \textbf{e}, trophic in-degree (number of resources a species has; top) and \textbf{f}, out-degree (number of consumers that eat the species; bottom) when engineers are common ($\eta = 2.0$).
-The notion that a large number of engineers and modifiers in the community decrease rates of primary extinction (Fig.\ \ref{fig:engineers}a) due to expanding niche space (diffusing the effects of competitive exclusion) is supported by the lack of correlation between trophic in/out-degree and persistence.
-Box edges define the 25th and 75th percentiles of simulation results, and whiskers represent $1.5\times$ the interquartile range.
-}
+The notion that a large number of engineers and modifiers in the community decrease rates of primary extinction (Fig.\ 4a) due to expanding niche space (diffusing the effects of competitive exclusion) is supported by the lack of correlation between trophic in/out-degree and persistence.
+Boxplots are composed of simulation replicates, with the mean value denoted by the central bar.
+Box edges define the 25th and 75th percentiles of simulation results, and whiskers represent $1.5\times$ the interquartile range.}
 \label{fig:indeng}
 \end{figure*}
 
@@ -463,11 +443,11 @@ Box edges define the 25th and 75th percentiles of simulation results, and whiske
 \includegraphics[width=0.6\textwidth]{fig_redundancy.pdf}
 \caption{
 \textbf{a}, Number of redundant modifiers in the source pool as a function of the expected number of modifiers made per species $\eta$.
-The red dashed line shows the analytical expectation (Equation (\ref{eq:redundant})).
+The red dashed line shows the analytical expectation (Supplementary Equation (\ref{eq:redundant})).
 \textbf{b}, Proportion of redundant modifiers $\phi$ versus the total number of modifiers in the source pool as a function of the expected number of modifiers made per species $\eta$.
-The red dashed line shows the analytical expectation of $\phi \approx 0.418$ (Equation (\ref{eq:redundantprop})).
-Box edges define the 25th and 75th percentiles of simulation results, and whiskers represent $1.5\times$ the interquartile range.
-}
+The red dashed line shows the analytical expectation of $\phi \approx 0.418$ (Supplementary Equation (\ref{eq:redundantprop})).
+Boxplots are composed of simulation replicates, with the mean value denoted by the central bar.
+Box edges define the 25th and 75th percentiles of simulation results, and whiskers represent $1.5\times$ the interquartile range.}
 \label{fig:redundancy}
 \end{figure*}
 
@@ -482,7 +462,7 @@ Measures of community stability as a function of the frequency of service intera
 \textbf{d}, The ratio $S^*/S^*_{\rm u}$, where $S^*_{\rm u}$ denotes steady states for systems where all engineered modifiers are unique to each engineer, and $S^*$ denote steady states for systems with redundant engineering. Higher values of $S^*/S^*_{\rm u}$ mean that systems with redundant engineers have higher richness at the steady state than those without redundancies.
 Primary and secondary extinction rates were evaluated at the community level, whereas persistence was determined for each species and averaged across the community.
 Each measure reports the expectation taken across $50$ replicates.
-See Methods and Supplementary Appendix 2 for parameter values.
+See Methods and Supplementary Supplementary Note 2 for parameter values.
 }
 \label{fig:unique}
 \end{figure*}
@@ -498,6 +478,50 @@ See Methods and Supplementary Appendix 2 for parameter values.
 }
 \label{fig:steadystate}
 \end{figure*}
+
+\clearpage
+
+
+% \putbib[aabib]
+\begin{thebibliography}{1}
+\expandafter\ifx\csname url\endcsname\relax
+  \def\url#1{\texttt{#1}}\fi
+\expandafter\ifx\csname urlprefix\endcsname\relax\def\urlprefix{URL }\fi
+\providecommand{\bibinfo}[2]{#2}
+\providecommand{\eprint}[2][]{\url{#2}}
+
+\bibitem{Gillespie1977}
+\bibinfo{author}{Gillespie, D.~T.}
+\newblock \bibinfo{title}{Exact stochastic simulation of coupled chemical
+  reactions}.
+\newblock \emph{\bibinfo{journal}{J. Phys. Chem.}}
+  \textbf{\bibinfo{volume}{81}}, \bibinfo{pages}{2340--2361}
+  (\bibinfo{year}{1977}).
+
+\bibitem{Williams2000}
+\bibinfo{author}{Williams, R.~J.} \& \bibinfo{author}{Martinez, N.~D.}
+\newblock \bibinfo{title}{{Simple rules yield complex food webs}}.
+\newblock \emph{\bibinfo{journal}{Nature}} \textbf{\bibinfo{volume}{404}},
+  \bibinfo{pages}{180--183} (\bibinfo{year}{2000}).
+
+\bibitem{Williams2011}
+\bibinfo{author}{Williams, R.~J.} \& \bibinfo{author}{Purves, D.~W.}
+\newblock \bibinfo{title}{{The probabilistic niche model reveals substantial
+  variation in the niche structure of empirical food webs.}}
+\newblock \emph{\bibinfo{journal}{Ecology}} \textbf{\bibinfo{volume}{92}},
+  \bibinfo{pages}{1849--1857} (\bibinfo{year}{2011}).
+
+\bibitem{Warren2010}
+\bibinfo{author}{Warren, C.~P.}, \bibinfo{author}{Pascual, M.},
+  \bibinfo{author}{Lafferty, K.~D.} \& \bibinfo{author}{Kuris, A.~M.}
+\newblock \bibinfo{title}{{The inverse niche model for food webs with
+  parasites.}}
+\newblock \emph{\bibinfo{journal}{Theor. Ecol.}} \textbf{\bibinfo{volume}{3}},
+  \bibinfo{pages}{285--294} (\bibinfo{year}{2010}).
+
+\end{thebibliography}
+
+\end{bibunit}
 
 
 \end{document}
