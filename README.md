@@ -7,9 +7,9 @@ The basic assembly model can be run by:
 > 2) running lines 7-49 in `sim.jl` 
 
 Here is the list of the output: 
-> `sprich`: vector of species richness over time
-> `rich`: vector of total richness over time (species + modifiers)
-> `clock`: time vector
-> `CID`: boolean array with species/modifier IDs as rows and simulation steps as column. TRUE=present
+> `sprich`: vector of species richness over time 
+> `rich`: vector of total richness over time (species + modifiers) 
+> `clock`: time vector 
+> `CID`: boolean array with species/modifier IDs as rows and simulation steps as column. TRUE=present 
 > `events`: a vector that tracks the different events that occur. Colonization = 0; Primary extinction = 1; Secondary extinction = 2; Modifier extinction = 3.
 
